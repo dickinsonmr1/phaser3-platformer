@@ -150,14 +150,16 @@ export class MainScene extends Phaser.Scene {
         var enemiesTileSet = world.map.addTilesetImage('spritesheet_enemies_64x64', 'enemyTiles');
         var requestTileSet = world.map.addTilesetImage('platformer-requests-sheet_64x64', 'platformerRequestTiles');
 
+        var tileSets = [tileSet, itemsTileSet, groundTileSet, enemiesTileSet, requestTileSet];
         
          // background layer
-         world.layer01 = world.map.createStaticLayer('layer01-background-passable', tileSet, 0, 0, );
+        var groundTileSet = world.map.addTilesetImage('spritesheet_ground_64x64', 'ground');
+        world.layer01 = world.map.createStaticLayer('layer01-background-passable', tileSets, 0, 0, );
          world.layer01.alpha = 1.0;
          //world.layer01.resizeWorld();
  
          // non-passable blocks layer
-         world.layer02 = world.map.createStaticLayer('layer02-nonpassable', tileSet, 0, 0);
+         world.layer02 = world.map.createStaticLayer('layer02-nonpassable', tileSets, 0, 0);
          world.layer02.alpha = 1.0;
 
          /*
@@ -173,6 +175,30 @@ export class MainScene extends Phaser.Scene {
          //  Un-comment this on to see the collision tiles
          //layer.debug = true;
          //layer2.debug = true;
+
+                 //---------------------------------------------------------------------------------------------------
+        // foreground semi-transparent layer (water, lava, clouds, etc.)
+        //---------------------------------------------------------------------------------------------------
+        world.layer03 = world.map.createStaticLayer('layer03-foreground-passable-semitransparent', tileSets, 0, 0);
+        world.layer03.alpha = 0.5;
+        //world.layer03.resizeWorld();
+
+        //---------------------------------------------------------------------------------------------------
+        // FOREGROUND PASSABLE OPAQUE LAYER (front wall of a cave, plant, etc.)
+        //---------------------------------------------------------------------------------------------------
+        world.layer04 = world.map.createStaticLayer('layer04-foreground-passable-opaque', tileSets, 0, 0);
+        world.layer04.alpha = 1.0;
+        //world.layer04.resizeWorld();
+
+
+           //---------------------------------------------------------------------------------------------------
+        // COLLECTIBLES
+        //---------------------------------------------------------------------------------------------------
+        world.layer05 = world.map.createStaticLayer('layer05-collectibles', tileSets, 0, 0);
+        world.layer05.alpha = 1.0;//0.75;
+
+        world.layer06 = world.map.createStaticLayer('layer06-gameobjects', tileSets, 0, 0);
+        world.layer06.alpha = 0.0;//0.75;
 
         return world;
     }
