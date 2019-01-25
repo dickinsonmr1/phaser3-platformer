@@ -7,6 +7,8 @@
  /// <reference path="../phaser.d.ts"/>
 
 import "phaser";
+import { Player } from "../player";
+import { Constants } from "../constants";
 
 export class MainScene extends Phaser.Scene {
   private phaserSprite: Phaser.GameObjects.Sprite;
@@ -19,7 +21,7 @@ export class MainScene extends Phaser.Scene {
   selectedPlayerIndex = 0;
   
   // player stuff
-  player: Phaser.GameObjects.Sprite; // player instance
+  player: Player; // player instance
   playerSpaceShip: Phaser.GameObjects.Sprite;
   playerBox: PlayerBox;
 
@@ -102,7 +104,7 @@ export class MainScene extends Phaser.Scene {
     this.enemiesPhysics = this.add.group();  // removed 324
     this.enemiesNonGravity = this.add.group();
 
-    this.createPlayer();
+    //this.createPlayer();
 
     this.world = this.createWorld('level1');
   }
@@ -149,6 +151,9 @@ export class MainScene extends Phaser.Scene {
         var groundTileSet = world.map.addTilesetImage('spritesheet_ground_64x64', 'ground');
         var enemiesTileSet = world.map.addTilesetImage('spritesheet_enemies_64x64', 'enemyTiles');
         var requestTileSet = world.map.addTilesetImage('platformer-requests-sheet_64x64', 'platformerRequestTiles');
+        var playerTileSet = this.load.atlasXML('playerSprites', 'assets/sprites/player/spritesheet_players.png', 'assets/sprites/player/spritesheet_players.xml');
+
+        this.add.image(0, 0, 'playerSprites', 'alienBlue_front.png');
 
         var tileSets = [tileSet, itemsTileSet, groundTileSet, enemiesTileSet, requestTileSet];
         
@@ -161,7 +166,13 @@ export class MainScene extends Phaser.Scene {
          // non-passable blocks layer
          world.layer02 = world.map.createStaticLayer('layer02-nonpassable', tileSets, 0, 0);
          world.layer02.alpha = 1.0;
+         //world.map.setCollisionBetween(0, 2000, true, true, world.layer02.data);
 
+
+
+         this.player = this.createPlayer();
+
+         this.physics.add.collider(this.player, world.layer02);
          /*
          //map.setCollisionBetween(0, 133, true, layer02, true);
          world.map.setCollisionBetween(0, 2000, true, world.layer02, true);
@@ -200,15 +211,21 @@ export class MainScene extends Phaser.Scene {
         world.layer06 = world.map.createStaticLayer('layer06-gameobjects', tileSets, 0, 0);
         world.layer06.alpha = 0.0;//0.75;
 
+          //---------------------------------------------------------------------------------------------------
+        // ENEMIES
+        //---------------------------------------------------------------------------------------------------
+        world.layer07 = world.map.createDynamicLayer('layer07-enemies', tileSets, 0, 0);
+        world.layer07.alpha = 0.1;
+                
+        //world.map.createFromTiles([297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371],null, 'ghost', 'layer07-enemies', enemiesPhysics);//, this.enemyPhysics);
+        //world.map.createFromTiles([324], null, 'piranha', 'layer07-enemies', enemiesNonGravity);//, this.enemyNonGravity);
+
+
         return world;
     }
 
-    createPlayer(): Phaser.GameObjects.Sprite {
-        var player = this.add.sprite(64, 64, 'playerSprites', 'alienBlue_front.png');
-        player.setScale(Constants.playerDrawScale, Constants.playerDrawScale);
-        player.setOrigin(.5, .5);
-
-        return player;
+    createPlayer(): Player {
+        return new Player({sceme: this, x: 64, y: 64, key: 'playerSprites', frame: 'alienBlue_front.png'});
     }
 
   update(): void {
@@ -222,20 +239,9 @@ export class MainScene extends Phaser.Scene {
   updatePlayer(): void {
 
   }
-}
 
-
-
-export class Constants {
-  public static get tileKeyBlueKey(): number { return 141; }
-  public static get tileKeyGemGreen(): number { return 142; }
-  public static get tileKeyGemRed(): number { return 157; }
-  public static get tileKeyGemYellow(): number { return 134; }
-  public static get tileKeyGemBlue(): number { return 149; }
-  public static get tileKeySpring(): number { return 266; }
-  public static get enemySpeed(): number {return 200;}
-  public static get playerDrawScale(): number {return 0.5;}
-  public static get enemyDrawScale(): number {return 1;}
+  processInput(): void {
+  }
 }
 
 export class PlayerBox {
@@ -270,7 +276,7 @@ export class World {
   layer04: Phaser.Tilemaps.StaticTilemapLayer;
   layer05: Phaser.Tilemaps.StaticTilemapLayer;
   layer06: Phaser.Tilemaps.StaticTilemapLayer;
-  layer07: Phaser.Tilemaps.StaticTilemapLayer;
+  layer07: Phaser.Tilemaps.DynamicTilemapLayer;
   layer02: Phaser.Tilemaps.StaticTilemapLayer;
   isWorldLoaded: boolean;
   sky: Phaser.GameObjects.TileSprite;

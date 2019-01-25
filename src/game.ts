@@ -15,6 +15,7 @@ const config: GameConfig = {
   height: 2160,
   type: Phaser.AUTO,
   parent: "game",
+  input: { keyboard: true},
   scene: MainScene,
   physics: {
     default: "arcade",
