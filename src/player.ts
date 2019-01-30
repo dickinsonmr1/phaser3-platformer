@@ -1,8 +1,11 @@
 import { Constants } from "./constants";
 
-export class Player extends Phaser.GameObjects.Sprite {
+// TODO: fix and move implementation here once basic player functionality is working in main scene
+export class Player { //extends Phaser.GameObjects.Sprite {
+    public sprite: Phaser.Physics.Arcade.Sprite;
     private currentScene: Phaser.Scene;
     private cursors: Phaser.Input.Keyboard.CursorKeys;
+    private anims: Phaser.Animations.AnimationManager;
 
     private moveKeyLeft: Phaser.Input.Keyboard.Key;
     private moveKeyRight: Phaser.Input.Keyboard.Key;
@@ -13,16 +16,19 @@ export class Player extends Phaser.GameObjects.Sprite {
     private bullets: Phaser.GameObjects.Group;
     private playerPrefixes = ['alienBeige', 'alienBlue', 'alienGreen', 'alienPink', 'alienYellow'];
 
-    constructor(params) {
-        super(params.scene, params.x, params.y, params.key, params.frame);
     
-        this.currentScene = params.scene;
-        //this.initImage();
-        
-            
-        // image
-        this.setScale(Constants.playerDrawScale, Constants.playerDrawScale);
-        this.setOrigin(0.5, 0.5);
+    constructor(physics: Phaser.Physics.Arcade.ArcadePhysics,
+        input: Phaser.Input.InputPlugin,
+        anims: Phaser.Animations.AnimationManager) {
+        //super(params.scene, params.x, params.y, params.key, params.frame);
+
+        this.anims = anims;
+    
+        this.sprite = physics.add.sprite(300, 100, 'player');
+        this.sprite.setBounce(0.05);
+        //this.currentScene = params.scene;
+
+        //this.initImage(input);
 
         var playerName = 'alienBlue';
 
@@ -38,7 +44,7 @@ export class Player extends Phaser.GameObjects.Sprite {
             repeat: -1
         });
         */
-       
+
         for (var i = 0; i < this.playerPrefixes.length; i++) {            
                 /*
                 frames: this.currentScene.anims.generateFrameNames(
@@ -46,26 +52,32 @@ export class Player extends Phaser.GameObjects.Sprite {
                     config: new GenerateFrameNamesConfig {} {start: 1, end: 2}),
                 frameRate: 10});
                 */
+                
                 /*
-            this.animations.add(
+            this.anims.add(
                 this.playerPrefixes[i] + 'swim',
                 Phaser.Animation.generateFrameNames(this.playerPrefixes[i] + + '_swim', 1, 2, '.png'),
                 10);
             this.animations.add(
                 this.playerPrefixes[i] + 'climb',
                 Phaser.Animation.generateFrameNames(this.playerPrefixes[i] + '_climb', 1, 2, '.png'),
-                10);*/
+                10);
+*/
+                this.anims.create({
+                    key: 'walk',
+                    frames: this.anims.generateFrameNames('playerSprites', { prefix: 'alienBlue_walk1', start: 1, end: 2, zeroPad: 0 }),
+                    frameRate: 10,
+                    repeat: -1
+                });               
+                
+                this.anims.create({
+                    key: 'idle',
+                    frames: [{key: 'player', frame: 'p1_stand'}],
+                    frameRate: 10,
+                });
+             
         }
-
-        // physics
-        params.scene.physics.world.enable(this);
-        this.body.allowGravity = true;
-        //this.body.setVelocityX(-200);
-        //this.body.setSize(20, 20);
-        this.body.setBounce(0.2);
-        this.body.setCollideWorldBounds(true);
-
-        params.scene.add.existing(this);
+        this.sprite.anims.play('idle', true);
 
         /*
 
@@ -102,7 +114,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         return this.bullets;
     }
 
-    private initImage() {
+    private initImage(input: Phaser.Input.InputPlugin) {
         /*
         // variables
         this.health = 1;
@@ -131,25 +143,27 @@ export class Player extends Phaser.GameObjects.Sprite {
         });
         */
         // input
-        this.cursors = this.currentScene.input.keyboard.createCursorKeys();
+        this.cursors = input.keyboard.createCursorKeys();
         this.moveKeyLeft = this.currentScene.input.keyboard.addKey(
         Phaser.Input.Keyboard.KeyCodes.A
         );
-        this.moveKeyRight = this.currentScene.input.keyboard.addKey(
+        this.moveKeyRight = input.keyboard.addKey(
         Phaser.Input.Keyboard.KeyCodes.D
         );
-        this.shootingKey = this.currentScene.input.keyboard.addKey(
+        this.shootingKey = input.keyboard.addKey(
         Phaser.Input.Keyboard.KeyCodes.CTRL
         );
-        this.jumpingKey = this.currentScene.input.keyboard.addKey(
+        this.jumpingKey = input.keyboard.addKey(
         Phaser.Input.Keyboard.KeyCodes.SPACE
         );
 
         // physics
-        this.currentScene.physics.world.enable(this);
+        //this.currentScene.physics.world.enable(this);
     }
 
     update(): void {
-        //if (cursors.left.isDown || keyboard.isDown(Phaser.Keyboard.A)) {            
+        if (this.cursors.left.isDown) { // || keyboard.isDown(this.moveKeyLeft)) {  
+            this.sprite.setVelocity(-200); // move left
+        }          
     }
 }

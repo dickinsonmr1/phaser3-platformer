@@ -107,6 +107,8 @@ export class MainScene extends Phaser.Scene {
     //this.createPlayer();
 
     this.world = this.createWorld('level1');
+
+    //cursors = this.input.keyboard.createCursorKeys();
   }
 
   createAudio(): void {
@@ -167,12 +169,44 @@ export class MainScene extends Phaser.Scene {
          world.layer02 = world.map.createStaticLayer('layer02-nonpassable', tileSets, 0, 0);
          world.layer02.alpha = 1.0;
          //world.map.setCollisionBetween(0, 2000, true, true, world.layer02.data);
+         world.layer02.setCollisionByExclusion([-1]);
 
+         // create the player sprite    
+        //this.player = this.createPlayer(this.physics, this.input, this.anims);
+        //this.physics.world.enable(this.player.sprite);
+        //this.player.sprite.setCollideWorldBounds(true);
+        //this.physics.add.collider(this.player.sprite, world.layer02);
 
+        // temporary player implementation
+        var player2 = this.physics.add.sprite(200, 200, 'player2'); 
+        player2.setBounce(0.2); // our player will bounce from items
+        player2.setCollideWorldBounds(true); // don't go out of the map
+        this.physics.add.collider(player2, world.layer02);
 
-         this.player = this.createPlayer();
+        this.anims.create({
+            key: 'walk',
+            frames: this.anims.generateFrameNames('playerSprites', { prefix: 'alienBlue_walk', start: 1, end: 2, zeroPad: 1, suffix: '.png' }),
+            frameRate: 10,
+            repeat: -1
+        });
+        // idle with only one frame, so repeat is not neaded
+        this.anims.create({
+            key: 'idle',
+            frames: [{key: 'playerSprites', frame: 'alienBlue_stand'}],
+            frameRate: 10,
+        });
+        player2.anims.play('walk', true);
 
-         this.physics.add.collider(this.player, world.layer02);
+        /*
+        // set bounds so the camera won't go outside the game world
+        this.cameras.main.setBounds(0, 0, 1000,1000 );
+        // make the camera follow the player
+        this.cameras.main.startFollow(this.player.sprite);
+        
+        // set background color, so the sky is not black    
+        this.cameras.main.setBackgroundColor('#ccccff'); 
+        */
+
          /*
          //map.setCollisionBetween(0, 133, true, layer02, true);
          world.map.setCollisionBetween(0, 2000, true, world.layer02, true);
@@ -224,8 +258,9 @@ export class MainScene extends Phaser.Scene {
         return world;
     }
 
-    createPlayer(): Player {
-        return new Player({sceme: this, x: 64, y: 64, key: 'playerSprites', frame: 'alienBlue_front.png'});
+    createPlayer(physics: Phaser.Physics.Arcade.ArcadePhysics, input: Phaser.Input.InputPlugin, anims: Phaser.Animations.AnimationManager): Player {
+        return new Player(physics, input, anims);
+        //return new Player({scene: this, x: 64, y: 64, key: 'playerSprites', frame: 'alienBlue_front.png'});
     }
 
   update(): void {
