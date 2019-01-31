@@ -1,11 +1,11 @@
 import { Constants } from "./constants";
 
 // TODO: fix and move implementation here once basic player functionality is working in main scene
-export class Player { //extends Phaser.GameObjects.Sprite {
+export class Player extends Phaser.GameObjects.Sprite {
     public sprite: Phaser.Physics.Arcade.Sprite;
     private currentScene: Phaser.Scene;
     private cursors: Phaser.Input.Keyboard.CursorKeys;
-    private anims: Phaser.Animations.AnimationManager;
+    //private anims: Phaser.Animations.AnimationManager;
 
     private moveKeyLeft: Phaser.Input.Keyboard.Key;
     private moveKeyRight: Phaser.Input.Keyboard.Key;
@@ -16,103 +16,98 @@ export class Player { //extends Phaser.GameObjects.Sprite {
     private bullets: Phaser.GameObjects.Group;
     private playerPrefixes = ['alienBeige', 'alienBlue', 'alienGreen', 'alienPink', 'alienYellow'];
 
-    
-    constructor(physics: Phaser.Physics.Arcade.ArcadePhysics,
-        input: Phaser.Input.InputPlugin,
-        anims: Phaser.Animations.AnimationManager) {
+    constructor(params) {
+        super(params.scene, params.x, params.y, params.key, params.frame);
+
+        this.currentScene = params.scene;
+        //this.initSprite();
+        
+        //this.setAlpha(0.5);
+        //this.body.setOffset(4, 0);
+
+        this.initSprite();
+        this.currentScene.add.existing(this);
+        
+    //constructor(physics: Phaser.Physics.Arcade.ArcadePhysics,
+        //input: Phaser.Input.InputPlugin,
+        //anims: Phaser.Animations.AnimationManager) {
         //super(params.scene, params.x, params.y, params.key, params.frame);
 
-        this.anims = anims;
+        //this.anims = params.scene.anims;
     
-        this.sprite = physics.add.sprite(300, 100, 'player');
-        this.sprite.setBounce(0.05);
+        //this.sprite = params.scene.physics.add.sprite(300, 100, 'player');
+        //this.sprite.setBounce(0.05);
         //this.currentScene = params.scene;
 
         //this.initImage(input);
-
-        var playerName = 'alienBlue';
-
-        /*
-        this.currentScene.anims.create({
-            key: 'alienblue_walk',
-            frames:
-            [
-                { key: 'alienblue_walk1' },
-                { key: 'alienblue_walk2' }
-            ],
-            frameRate: 10,
-            repeat: -1
-        });
-        */
-
-        for (var i = 0; i < this.playerPrefixes.length; i++) {            
-                /*
-                frames: this.currentScene.anims.generateFrameNames(
-                    key: this.playerPrefixes[i] + '_walk',
-                    config: new GenerateFrameNamesConfig {} {start: 1, end: 2}),
-                frameRate: 10});
-                */
-                
-                /*
-            this.anims.add(
-                this.playerPrefixes[i] + 'swim',
-                Phaser.Animation.generateFrameNames(this.playerPrefixes[i] + + '_swim', 1, 2, '.png'),
-                10);
-            this.animations.add(
-                this.playerPrefixes[i] + 'climb',
-                Phaser.Animation.generateFrameNames(this.playerPrefixes[i] + '_climb', 1, 2, '.png'),
-                10);
-*/
-                this.anims.create({
-                    key: 'walk',
-                    frames: this.anims.generateFrameNames('playerSprites', { prefix: 'alienBlue_walk1', start: 1, end: 2, zeroPad: 0 }),
-                    frameRate: 10,
-                    repeat: -1
-                });               
-                
-                this.anims.create({
-                    key: 'idle',
-                    frames: [{key: 'player', frame: 'p1_stand'}],
-                    frameRate: 10,
-                });
-             
-        }
-        this.sprite.anims.play('idle', true);
-
-        /*
-
-                var player = this.game.add.sprite(64, 64, 'playerSprites', 'alienBlue_front.png');
-        player.scale.setTo(Constants.playerDrawScale, Constants.playerDrawScale);
-        player.anchor.setTo(.5, .5);
-        //player.isInSpaceShip = false;
-
-        for (var i = 0; i < this.playerPrefixes.length; i++) {
-            player.animations.add(this.playerPrefixes[i] + 'walk', Phaser.Animation.generateFrameNames(this.playerPrefixes[i] + '_walk', 1, 2, '.png'), 10);
-            player.animations.add(this.playerPrefixes[i] + 'swim', Phaser.Animation.generateFrameNames(this.playerPrefixes[i] + + '_swim', 1, 2, '.png'), 10);
-            player.animations.add(this.playerPrefixes[i] + 'climb', Phaser.Animation.generateFrameNames(this.playerPrefixes[i] + '_climb', 1, 2, '.png'), 10);
-        }
-
-        this.game.physics.enable(player);
-        this.game.physics.arcade.gravity.y = 600;
-        player.body.setSize(64, 64, 0, 47);
-        player.body.bounce.y = 0.05;
-        player.body.linearDamping = 1;
-        player.body.collideWorldBounds = true;
-
-        player.frameName = this.playerPrefixes[this.selectedPlayerIndex] + "_stand.png";
 
         //player.isFacingRight = true;
         
         //player.isCurrentlyTouchingSpring = false;     
 
-        this.game.camera.follow(player);
-
-        */
+        //this.game.camera.follow(player);
       }
 
     public getBullets(): Phaser.GameObjects.Group {
         return this.bullets;
     }
+
+    private initSprite() {
+        // variables
+        /*
+        this.marioSize = this.currentScene.registry.get("marioSize");
+        this.acceleration = 500;
+        this.isJumping = false;
+        this.isDying = false;
+        this.isVulnerable = true;
+        this.vulnerableCounter = 100;
+        */
+
+        // sprite
+        //this.setOrigin(0.5, 0.5);
+        this.setFlipX(false);
+
+
+
+        //this.displayOriginX = 0;
+        //this.displayOriginY = 0;
+        //this.displayWidth = 32;
+        //this.displayHeight = 64;
+
+        /*
+        this.physics.world.setBounds(0, 0, 400, 400);
+        var star = this.physics.add.sprite(128, 128, 'star');
+        star.displayOriginX = 0;
+        star.displayOriginY = 0;
+        star.displayWidth = 20;
+        star.displayHeight = 20;
+        star.x = 0;
+        star.y = 0;
+        star.setGravity(40, 100);
+        star.setBounce(1).setCollideWorldBounds(true);
+        */
+        //this.setDisplaySize(100, 100);
+        //this.displayHeight = 75;
+        //this.displayWidth = 75;
+        //this.setScale()
+        //this.setScale(0.75, 0.75);
+    
+        // input
+        /*
+        this.keys = new Map([
+          ["LEFT", this.addKey("LEFT")],
+          ["RIGHT", this.addKey("RIGHT")],
+          ["DOWN", this.addKey("DOWN")],
+          ["JUMP", this.addKey("SPACE")]
+        ]);
+        */
+    
+        // physics
+        this.currentScene.physics.world.enable(this);
+        //this.adjustPhysicBodyToSmallSize();
+        this.body.maxVelocity.x = 50;
+        this.body.maxVelocity.y = 300;
+      }
 
     private initImage(input: Phaser.Input.InputPlugin) {
         /*

@@ -22,6 +22,7 @@ export class MainScene extends Phaser.Scene {
   
   // player stuff
   player: Player; // player instance
+  player2: Player; //Phaser.Physics.Arcade.Sprite; 
   playerSpaceShip: Phaser.GameObjects.Sprite;
   playerBox: PlayerBox;
 
@@ -30,6 +31,7 @@ export class MainScene extends Phaser.Scene {
   enemiesPhysics: Phaser.GameObjects.Group;
   enemiesNonGravity: Phaser.GameObjects.Group;
 
+  cursors: Phaser.Input.Keyboard.CursorKeys;
     // audio
     jumpsound;
     gemSound;
@@ -109,6 +111,9 @@ export class MainScene extends Phaser.Scene {
     this.world = this.createWorld('level1');
 
     //cursors = this.input.keyboard.createCursorKeys();
+    this.cursors = this.input.keyboard.createCursorKeys();
+
+    this.cameras.main.startFollow(this.player2);
   }
 
   createAudio(): void {
@@ -178,10 +183,23 @@ export class MainScene extends Phaser.Scene {
         //this.physics.add.collider(this.player.sprite, world.layer02);
 
         // temporary player implementation
-        var player2 = this.physics.add.sprite(200, 200, 'player2'); 
-        player2.setBounce(0.2); // our player will bounce from items
-        player2.setCollideWorldBounds(true); // don't go out of the map
-        this.physics.add.collider(player2, world.layer02);
+        //this.player2 = this.physics.add.sprite(200, 200, 'player2'); 
+        this.player2 = new Player({
+            scene: this,
+            x: 200,//this.registry.get("spawn").x,
+            y: 200,//this.registry.get("spawn").y,
+            key: "player2"
+          });        
+
+          this.player2.body.setSize(44,64,true);
+          this.player2.body.offset.y = -44;
+        //this.player2.setOrigin(1, 1);
+        //this.player2.setScale(0.75, 0.75);//, 0, 47);
+        //this.player2.setSize(64, 64);//, 0, 47);
+        //this.player2.setBounce(0.2); // our player will bounce from items
+        
+        this.player2.body.setCollideWorldBounds(true); // don't go out of the map
+        this.physics.add.collider(this.player2, world.layer02);
 
         this.anims.create({
             key: 'walk',
@@ -192,10 +210,10 @@ export class MainScene extends Phaser.Scene {
         // idle with only one frame, so repeat is not neaded
         this.anims.create({
             key: 'idle',
-            frames: [{key: 'playerSprites', frame: 'alienBlue_stand'}],
+            frames: [{key: 'playerSprites', frame: 'alienBlue_stand.png'}],
             frameRate: 10,
         });
-        player2.anims.play('walk', true);
+        //this.player2.anims.play('idle', true);
 
         /*
         // set bounds so the camera won't go outside the game world
@@ -259,12 +277,27 @@ export class MainScene extends Phaser.Scene {
     }
 
     createPlayer(physics: Phaser.Physics.Arcade.ArcadePhysics, input: Phaser.Input.InputPlugin, anims: Phaser.Animations.AnimationManager): Player {
-        return new Player(physics, input, anims);
+        return new Player(this);//physics, input, anims);
         //return new Player({scene: this, x: 64, y: 64, key: 'playerSprites', frame: 'alienBlue_front.png'});
     }
 
   update(): void {
 
+    if (this.cursors.left.isDown)
+    {
+        this.player2.body.setVelocityX(-200); // move left
+        this.player2.anims.play('walk', true); // play walk animation
+        this.player2.flipX= true; // flip the sprite to the left
+    }
+    else if (this.cursors.right.isDown)
+    {
+        this.player2.body.setVelocityX(200); // move right
+        this.player2.anims.play('walk', true); // play walk animatio
+        this.player2.flipX = false; // use the original sprite looking to the right
+    } else {
+        this.player2.body.setVelocityX(0);
+        this.player2.anims.play('idle', true);
+    }     
   }
 
   updatePhysics(): void {
