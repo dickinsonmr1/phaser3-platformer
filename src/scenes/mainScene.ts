@@ -1,7 +1,7 @@
 /**
- * @author       Digitsensitive <digit.sensitivee@gmail.com>
- * @copyright    2018 Digitsensitive
- * @license      Digitsensitive
+ * @author       Mark Dickinson
+ * @copyright    2019 Mark Dickinson
+ * @license      none
  */
 
  /// <reference path="../phaser.d.ts"/>
@@ -14,56 +14,57 @@ export class MainScene extends Phaser.Scene {
   private phaserSprite: Phaser.GameObjects.Sprite;
   private skySprite: Phaser.GameObjects.TileSprite;
 
-  world: World;
+    world: World;
 
-  // player selection
-  playerPrefixes = ['alienBeige', 'alienBlue', 'alienGreen', 'alienPink', 'alienYellow'];
-  selectedPlayerIndex = 0;
-  
-  // player stuff
-  player2: Player; //Phaser.Physics.Arcade.Sprite; 
-  playerSpaceShip: Phaser.GameObjects.Sprite;
-  playerBox: PlayerBox;
+    // player selection
+    playerPrefixes = ['alienBeige', 'alienBlue', 'alienGreen', 'alienPink', 'alienYellow'];
+    selectedPlayerIndex = 0;
+    
+    // player stuff
+    player: Player; //Phaser.Physics.Arcade.Sprite; 
+    playerSpaceShip: Phaser.GameObjects.Sprite;
+    playerBox: PlayerBox;
 
-  enemy;
-  enemies : Phaser.GameObjects.Group;
-  enemiesPhysics: Phaser.GameObjects.Group;
-  enemiesNonGravity: Phaser.GameObjects.Group;
+    enemy;
+    enemies : Phaser.GameObjects.Group;
+    enemiesPhysics: Phaser.GameObjects.Group;
+    enemiesNonGravity: Phaser.GameObjects.Group;
 
-  cursors: Phaser.Input.Keyboard.CursorKeys;              
-  zoomInKey: Phaser.Input.Keyboard.Key;
-  zoomOutKey: Phaser.Input.Keyboard.Key;
-      
-  constructor() {
+    cursors: Phaser.Input.Keyboard.CursorKeys;              
+    zoomInKey: Phaser.Input.Keyboard.Key;
+    zoomOutKey: Phaser.Input.Keyboard.Key;
+     
+    constructor() {
     super({
-      key: "MainScene"
+        key: "MainScene", active: true
     });
-  }
+    }
 
-  preload(): void {
+    preload(): void {
 
     this.loadAudio();
     this.loadSprites();
     this.loadTileMaps();   
-   
-  }
 
-  loadAudio(): void {
+    }
+
+    loadAudio(): void {
     this.load.audio('jumpSound', './assets/audio/jump.wav');
     this.load.audio('gemSound', './assets/audio/coin.wav');
     this.load.audio('keySound', './assets/audio/key.wav');
     this.load.audio('springSound', './assets/audio/spring.wav');
     this.load.audio('laserSound', './assets/audio/laser5.ogg');
     this.load.audio('hurtSound', './assets/audio/hurt.wav');
-  }
+    }
 
-  loadSprites(): void {
+    loadSprites(): void {
         // spritesheets for game objects (not in the game map)
         this.load.atlasXML('enemySprites', './assets/sprites/enemies/enemies.png', './assets/sprites/enemies/enemies.xml');
         this.load.atlasXML('tileObjectSprites', './assets/sprites/objects/spritesheet_complete.png', './assets/sprites/objects/spritesheet_complete.xml');
         this.load.atlasXML('playerSprites', './assets/sprites/player/spritesheet_players.png', './assets/sprites/player/spritesheet_players.xml');
         this.load.atlasXML('alienShipSprites', './assets/sprites/ships/spritesheet_spaceships.png', './assets/sprites/ships/spritesheet_spaceships.xml');
         this.load.atlasXML('alienShipLaserSprites', './assets/sprites/ships/spritesheet_lasers.png', './assets/sprites/ships/spritesheet_lasers.xml');
+        //this.load.atlasXML('hudSprites', './assets/sprites/HUD/spritesheet_hud.png', './assets/sprites/HUD/spritesheet_hud.xml');
 
         // initial placeholders for animated objects
         this.load.image('ghost', './assets/sprites/enemies/ghost.png');
@@ -76,9 +77,9 @@ export class MainScene extends Phaser.Scene {
 
         this.load.image('logo', './assets/sample/phaser.png');
         this.load.image('sky', './assets/sample/colored_grass.png');
-  }
+    }
 
-  loadTileMaps(): void {
+    loadTileMaps(): void {
         // tilemap for level building
         this.load.tilemapTiledJSON('level1', './assets/tilemaps/maps/world-01-02.json');
         //this.game.load.tilemap('level1', './assets/tilemaps/maps/world-00-overworld.json', null, Phaser.Tilemap.TILED_JSON);
@@ -87,29 +88,30 @@ export class MainScene extends Phaser.Scene {
         this.load.image('ground', './assets/tilemaps/tiles/spritesheet_ground_64x64.png');
         this.load.image('platformerRequestTiles', './assets/tilemaps/tiles/platformer-requests-sheet_64x64.png');
         this.load.image('enemyTiles', './assets/tilemaps/tiles/spritesheet_enemies_64x64.png');
-  }
+    }
 
-  create(): void {    
-    this.skySprite = this.add.tileSprite(0, 0, 20480, 1024, 'sky');
-    this.phaserSprite = this.add.sprite(400, 300, "logo");
-    //this.skySprite = this.add.sprite(0, 0, 'sky');
+    create(): void {    
+        this.skySprite = this.add.tileSprite(0, 0, 20480, 1024, 'sky');            
+        
+        this.enemies = this.add.group();
+        this.enemiesPhysics = this.add.group();  // removed 324
+        this.enemiesNonGravity = this.add.group();
 
-    this.enemies = this.add.group();
-    this.enemiesPhysics = this.add.group();  // removed 324
-    this.enemiesNonGravity = this.add.group();
+        //this.createPlayer();
 
-    //this.createPlayer();
+        this.world = this.createWorld('level1');
 
-    this.world = this.createWorld('level1');
+        //cursors = this.input.keyboard.createCursorKeys();
+        this.cursors = this.input.keyboard.createCursorKeys();
+        this.zoomInKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
+        this.zoomOutKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
 
-    //cursors = this.input.keyboard.createCursorKeys();
-    this.cursors = this.input.keyboard.createCursorKeys();
-    this.zoomInKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
-    this.zoomOutKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
+        this.cameras.main.startFollow(this.player);
+        this.cameras.main.setBackgroundColor('#ccccff');
 
-    this.cameras.main.startFollow(this.player2);
-    this.cameras.main.setBackgroundColor('#ccccff');
-  }
+        //this.scene.launch("HudScene");
+        //this.scene.bringToTop('HudScene');
+    }
 
     createWorld(worldName): World {
         // using the Tiled map editor, here is the order of the layers from back to front:
@@ -145,17 +147,17 @@ export class MainScene extends Phaser.Scene {
 
         var tileSets = [tileSet, itemsTileSet, groundTileSet, enemiesTileSet, requestTileSet];
         
-         // background layer
+            // background layer
         var groundTileSet = world.map.addTilesetImage('spritesheet_ground_64x64', 'ground');
         world.layer01 = world.map.createStaticLayer('layer01-background-passable', tileSets, 0, 0, );
-         world.layer01.alpha = 1.0;
-         //world.layer01.resizeWorld();
- 
-         // non-passable blocks layer
-         world.layer02 = world.map.createStaticLayer('layer02-nonpassable', tileSets, 0, 0);
-         world.layer02.alpha = 1.0;
-         //world.map.setCollisionBetween(0, 2000, true, true, world.layer02.data);
-         world.layer02.setCollisionByExclusion([-1]);
+            world.layer01.alpha = 1.0;
+            //world.layer01.resizeWorld();
+
+            // non-passable blocks layer
+            world.layer02 = world.map.createStaticLayer('layer02-nonpassable', tileSets, 0, 0);
+            world.layer02.alpha = 1.0;
+            //world.map.setCollisionBetween(0, 2000, true, true, world.layer02.data);
+            world.layer02.setCollisionByExclusion([-1]);
 
         this.anims.create({
             key: 'walk',
@@ -176,17 +178,17 @@ export class MainScene extends Phaser.Scene {
             frameRate: 10,
         });
 
-        this.player2 = new Player({
+        this.player = new Player({
             scene: this,
             x: 200,
             y: 200,
             key: "player2"
-          });        
+            });        
 
-          // small fix to our player images, we resize the physics body object slightly
+            // small fix to our player images, we resize the physics body object slightly
         //this.player2.body.setSize(this.player2.width, this.player2.height-8);
 
-        this.physics.add.collider(this.player2, world.layer02);
+        this.physics.add.collider(this.player, world.layer02);
 
         /*
         // set bounds so the camera won't go outside the game world
@@ -198,19 +200,19 @@ export class MainScene extends Phaser.Scene {
         this.cameras.main.setBackgroundColor('#ccccff'); 
         */
 
-         /*
-         //map.setCollisionBetween(0, 133, true, layer02, true);
-         world.map.setCollisionBetween(0, 2000, true, world.layer02, true);
-         //map.setCollisionBetween(158, 400, true, layer02, true);
- 
-         world.layer02.resizeWorld();
-         world.layer02.debug = false;
-         //map.setCollision();
-         */
+            /*
+            //map.setCollisionBetween(0, 133, true, layer02, true);
+            world.map.setCollisionBetween(0, 2000, true, world.layer02, true);
+            //map.setCollisionBetween(158, 400, true, layer02, true);
 
-         //  Un-comment this on to see the collision tiles
-         //world.layer01.debug = true;
-         //world.layer02.debug = true;
+            world.layer02.resizeWorld();
+            world.layer02.debug = false;
+            //map.setCollision();
+            */
+
+            //  Un-comment this on to see the collision tiles
+            //world.layer01.debug = true;
+            //world.layer02.debug = true;
 
         //---------------------------------------------------------------------------------------------------
         // foreground semi-transparent layer (water, lava, clouds, etc.)
@@ -233,7 +235,7 @@ export class MainScene extends Phaser.Scene {
         world.layer05 = world.map.createDynamicLayer('layer05-collectibles', tileSets, 0, 0);
         world.layer05.alpha = 1.0;//0.75;
 
-        this.physics.add.overlap(this.player2, world.layer05);
+        this.physics.add.overlap(this.player, world.layer05);
         world.layer05.setTileIndexCallback(Constants.tileKeyGemRed, this.collectGem, this);
         world.layer05.setTileIndexCallback(Constants.tileKeyGemGreen, this.collectGem, this);
         world.layer05.setTileIndexCallback(Constants.tileKeyGemYellow, this.collectGem, this);
@@ -243,7 +245,7 @@ export class MainScene extends Phaser.Scene {
         world.layer06 = world.map.createStaticLayer('layer06-gameobjects', tileSets, 0, 0);
         world.layer06.alpha = 0.0;//0.75;
 
-          //---------------------------------------------------------------------------------------------------
+            //---------------------------------------------------------------------------------------------------
         // ENEMIES
         //---------------------------------------------------------------------------------------------------
         world.layer07 = world.map.createDynamicLayer('layer07-enemies', tileSets, 0, 0);
@@ -261,166 +263,127 @@ export class MainScene extends Phaser.Scene {
         //return new Player({scene: this, x: 64, y: 64, key: 'playerSprites', frame: 'alienBlue_front.png'});
     }
 
-  update(): void {
+    update(): void {
 
-    this.world.sky.setX(0);
-    this.world.sky.setY(768);
-    this.world.sky.setTilePosition(-(this.cameras.main.scrollX * 0.25), -(this.cameras.main.scrollY * 0.05));
+        this.world.sky.setX(0);
+        this.world.sky.setY(768);
+        this.world.sky.setTilePosition(-(this.cameras.main.scrollX * 0.25), -(this.cameras.main.scrollY * 0.05));
 
-    if(this.zoomInKey.isDown){
-        this.cameras.main.zoom = 0.75;
-    }
-    if(this.zoomOutKey.isDown){
-        this.cameras.main.zoom = 1.25;
-    }
-    if (this.cursors.left.isDown)
-    {
-        this.player2.body.setVelocityX(-300); // move left
-        
-        if(this.player2.body.onFloor()) {         
-            this.player2.anims.play('walk', true); // play walk animation
+        if(this.zoomInKey.isDown) {
+            this.cameras.main.zoom = 0.75;
+        }
+        if(this.zoomOutKey.isDown) {
+            this.cameras.main.zoom = 1.25;
+        }
+        if (this.cursors.left.isDown) {
+            this.player.body.setVelocityX(-300); // move left
+            
+            if(this.player.body.onFloor()) {         
+                this.player.anims.play('walk', true); // play walk animation
+            }
+            else {
+                this.player.anims.play('jump', true); // play walk animation
+            }
+            
+            this.player.flipX= true; // flip the sprite to the left
+        }
+        else if (this.cursors.right.isDown) {
+            this.player.body.setVelocityX(300); // move right
+            if(this.player.body.onFloor()) {
+                this.player.anims.play('walk', true); // play walk animation
+            }
+            else {
+                this.player.anims.play('jump', true); // play walk animation
+            }
+
+            this.player.flipX = false; // use the original sprite looking to the right
         }
         else {
-            this.player2.anims.play('jump', true); // play walk animation
+            this.player.body.setVelocityX(0);
+            if(this.player.body.onFloor())
+            {
+                this.player.anims.play('idle', true);
+            }
+            else
+            {
+                this.player.anims.play('jump', true);
+            }
+        }     
+
+        // Jumping
+        if ((this.cursors.space.isDown || this.cursors.up.isDown) && this.player.body.onFloor())
+        {
+            this.player.body.setVelocityY(-400);
+            this.player.anims.play('jump', true);
+            this.sound.play("jumpSound");
         }
-        
-        this.player2.flipX= true; // flip the sprite to the left
     }
-    else if (this.cursors.right.isDown)
-    {
-        this.player2.body.setVelocityX(300); // move right
-        if(this.player2.body.onFloor()) {
-            this.player2.anims.play('walk', true); // play walk animation
-        }
-        else {
-            this.player2.anims.play('jump', true); // play walk animation
-        }
 
-        this.player2.flipX = false; // use the original sprite looking to the right
-    } else {
-        this.player2.body.setVelocityX(0);
-        if(this.player2.body.onFloor())
-        {
-            this.player2.anims.play('idle', true);
-        }
-        else
-        {
-            this.player2.anims.play('jump', true);
-        }
-    }     
+    updatePhysics(): void {
 
-     // Jumping
-     if ((this.cursors.space.isDown || this.cursors.up.isDown) && this.player2.body.onFloor())
-     {
-         this.player2.body.setVelocityY(-400);
-         this.player2.anims.play('jump', true);
-         this.sound.play("jumpSound");
-     }
-  }
+    }
 
-  updatePhysics(): void {
+    updatePlayer(): void {
 
-  }
+    }
 
-  updatePlayer(): void {
+    processInput(): void {
 
-  }
-
-  processInput(): void {
-  }
+    }
 
     collectGem (sprite, tile): boolean
     {
         this.world.layer05. removeTileAt(tile.x, tile.y);
         this.sound.play("gemSound");
 
-        /*
-        if (tile.alpha > 0) {
-            //this.gemSound.play();
-
-            this.world.layer05. removeTileAt(tile.x, tile.y);
-            
-            tile.alpha = 0;
-            tile.collideUp = false;
-            tile.collideDown = false;
-            tile.collideLeft = false;
-            tile.collideRight = false;
-            //this.world.layer05.dirty = true;
-            //this.world.map.dirty = true;
-            this.world.map.setLayer(this.world.layer05);
-            
-        }
-        */
         return false;
     }
-    
+
     collectKey (sprite, tile): boolean
     {
         this.world.layer05.removeTileAt(tile.x, tile.y);
         this.sound.play("keySound");
 
-        /*
-        if (tile.alpha > 0) {
-            //this.gemSound.play();
-
-            this.world.layer05. removeTileAt(tile.x, tile.y);
-            
-            tile.alpha = 0;
-            tile.collideUp = false;
-            tile.collideDown = false;
-            tile.collideLeft = false;
-            tile.collideRight = false;
-            //this.world.layer05.dirty = true;
-            //this.world.map.dirty = true;
-            this.world.map.setLayer(this.world.layer05);
-            
-        }
-        */
         return false;
     }
 }
 
 export class PlayerBox {
-  isInSpaceShip : boolean;
-  isTouchingSpring: boolean;
-  isFacingRight: boolean;
-  constructor(isInSpaceShip: boolean, isTouchingSpring: boolean, isFacingRight: boolean) {
-      this.isInSpaceShip = isInSpaceShip;
-      this.isTouchingSpring = isTouchingSpring;
-      this.isFacingRight = isFacingRight;
-  }
-  playerGun: Phaser.GameObjects.Sprite;
-  bullet: Phaser.GameObjects.Sprite;
-  bullets: Phaser.GameObjects.Group;
-  bulletTime: number = 0;
-  bulletDrawOffsetX: number = 6;
-  bulletDrawOffsetY: number = 8;
-  hurtTime: number = 0;
+    isInSpaceShip : boolean;
+    isTouchingSpring: boolean;
+    isFacingRight: boolean;
+    constructor(isInSpaceShip: boolean, isTouchingSpring: boolean, isFacingRight: boolean) {
+        this.isInSpaceShip = isInSpaceShip;
+        this.isTouchingSpring = isTouchingSpring;
+        this.isFacingRight = isFacingRight;
+    }
+    playerGun: Phaser.GameObjects.Sprite;
+    bullet: Phaser.GameObjects.Sprite;
+    bullets: Phaser.GameObjects.Group;
+    bulletTime: number = 0;
+    bulletDrawOffsetX: number = 6;
+    bulletDrawOffsetY: number = 8;
+    hurtTime: number = 0;
 }
 
 export class EnemyBox {
-  sprite: Phaser.GameObjects.Sprite;
-  isFacingRight: boolean;
-  enemyType: string;
+    sprite: Phaser.GameObjects.Sprite;
+    isFacingRight: boolean;
+    enemyType: string;
 }
 
 export class World {
-  map: Phaser.Tilemaps.Tilemap;
-  //tileset;
-  layer01: Phaser.Tilemaps.StaticTilemapLayer;
-  layer03: Phaser.Tilemaps.StaticTilemapLayer;
-  layer04: Phaser.Tilemaps.StaticTilemapLayer;
-  layer05: Phaser.Tilemaps.DynamicTilemapLayer;
-  layer06: Phaser.Tilemaps.StaticTilemapLayer;
-  layer07: Phaser.Tilemaps.DynamicTilemapLayer;
-  layer02: Phaser.Tilemaps.StaticTilemapLayer;
-  isWorldLoaded: boolean;
-  sky: Phaser.GameObjects.TileSprite;
-}
-
-export class HUDComponent {
-  hudGroup: Phaser.GameObjects.Group;
-  playerHudIcon: Phaser.GameObjects.Image;
+    map: Phaser.Tilemaps.Tilemap;
+    //tileset;
+    layer01: Phaser.Tilemaps.StaticTilemapLayer;
+    layer03: Phaser.Tilemaps.StaticTilemapLayer;
+    layer04: Phaser.Tilemaps.StaticTilemapLayer;
+    layer05: Phaser.Tilemaps.DynamicTilemapLayer;
+    layer06: Phaser.Tilemaps.StaticTilemapLayer;
+    layer07: Phaser.Tilemaps.DynamicTilemapLayer;
+    layer02: Phaser.Tilemaps.StaticTilemapLayer;
+    isWorldLoaded: boolean;
+    sky: Phaser.GameObjects.TileSprite;
 }
 
  /*

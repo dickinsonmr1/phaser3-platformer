@@ -1,3 +1,8 @@
+/**
+ * @author       Mark Dickinson
+ * @copyright    2019 Mark Dickinson
+ * @license      none
+ */
 import { Constants } from "./constants";
 
 // TODO: fix and move implementation here once basic player functionality is working in main scene

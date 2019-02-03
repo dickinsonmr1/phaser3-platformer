@@ -8,15 +8,16 @@
 
 import "phaser";
 import { MainScene } from "./scenes/mainScene";
+import { HudScene } from "./scenes/hudScene";
 
 // main game configuration
 const config: GameConfig = {
-  width: 3840,
-  height: 2160,
+  width: 1920,
+  height: 1080,
   type: Phaser.AUTO,
   parent: "game",
   input: { keyboard: true},
-  scene: MainScene,
+  scene: [ MainScene, HudScene ],
   physics: {
     default: "arcade",
     arcade: {
