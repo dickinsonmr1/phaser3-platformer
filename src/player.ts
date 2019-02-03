@@ -20,94 +20,36 @@ export class Player extends Phaser.GameObjects.Sprite {
         super(params.scene, params.x, params.y, params.key, params.frame);
 
         this.currentScene = params.scene;
-        //this.initSprite();
         
-        //this.setAlpha(0.5);
-        //this.body.setOffset(4, 0);
+        this.setFlipX(false);
 
-        this.initSprite();
-        this.currentScene.add.existing(this);
-        
-    //constructor(physics: Phaser.Physics.Arcade.ArcadePhysics,
-        //input: Phaser.Input.InputPlugin,
-        //anims: Phaser.Animations.AnimationManager) {
-        //super(params.scene, params.x, params.y, params.key, params.frame);
-
-        //this.anims = params.scene.anims;
     
-        //this.sprite = params.scene.physics.add.sprite(300, 100, 'player');
-        //this.sprite.setBounce(0.05);
-        //this.currentScene = params.scene;
+        // physics
+        this.currentScene.physics.world.enable(this);
 
-        //this.initImage(input);
-
-        //player.isFacingRight = true;
         
-        //player.isCurrentlyTouchingSpring = false;     
+        this.width = 128;
+        this.height = 256;
+        this.displayOriginX = 0.5;
+        this.displayOriginY = 0.5;
+        this.displayWidth = 128;
+        this.displayHeight = 256;
+        
+        this.body.maxVelocity.x = 500;
+        this.body.maxVelocity.y = 500;
+        this.body.setSize(128, 256);
 
-        //this.game.camera.follow(player);
-      }
+        this.currentScene.add.existing(this);
+
+        this.setScale(0.75, 0.75);
+        this.body.setCollideWorldBounds(true); // don't go out of the map
+    }
 
     public getBullets(): Phaser.GameObjects.Group {
         return this.bullets;
     }
 
-    private initSprite() {
-        // variables
-        /*
-        this.marioSize = this.currentScene.registry.get("marioSize");
-        this.acceleration = 500;
-        this.isJumping = false;
-        this.isDying = false;
-        this.isVulnerable = true;
-        this.vulnerableCounter = 100;
-        */
-
-        // sprite
-        //this.setOrigin(0.5, 0.5);
-        this.setFlipX(false);
-
-
-
-        //this.displayOriginX = 0;
-        //this.displayOriginY = 0;
-        //this.displayWidth = 32;
-        //this.displayHeight = 64;
-
-        /*
-        this.physics.world.setBounds(0, 0, 400, 400);
-        var star = this.physics.add.sprite(128, 128, 'star');
-        star.displayOriginX = 0;
-        star.displayOriginY = 0;
-        star.displayWidth = 20;
-        star.displayHeight = 20;
-        star.x = 0;
-        star.y = 0;
-        star.setGravity(40, 100);
-        star.setBounce(1).setCollideWorldBounds(true);
-        */
-        //this.setDisplaySize(100, 100);
-        //this.displayHeight = 75;
-        //this.displayWidth = 75;
-        //this.setScale()
-        //this.setScale(0.75, 0.75);
-    
-        // input
-        /*
-        this.keys = new Map([
-          ["LEFT", this.addKey("LEFT")],
-          ["RIGHT", this.addKey("RIGHT")],
-          ["DOWN", this.addKey("DOWN")],
-          ["JUMP", this.addKey("SPACE")]
-        ]);
-        */
-    
-        // physics
-        this.currentScene.physics.world.enable(this);
-        //this.adjustPhysicBodyToSmallSize();
-        this.body.maxVelocity.x = 50;
-        this.body.maxVelocity.y = 300;
-      }
+   
 
     private initImage(input: Phaser.Input.InputPlugin) {
         /*

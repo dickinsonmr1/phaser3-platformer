@@ -21,7 +21,6 @@ export class MainScene extends Phaser.Scene {
   selectedPlayerIndex = 0;
   
   // player stuff
-  player: Player; // player instance
   player2: Player; //Phaser.Physics.Arcade.Sprite; 
   playerSpaceShip: Phaser.GameObjects.Sprite;
   playerBox: PlayerBox;
@@ -31,15 +30,9 @@ export class MainScene extends Phaser.Scene {
   enemiesPhysics: Phaser.GameObjects.Group;
   enemiesNonGravity: Phaser.GameObjects.Group;
 
-  cursors: Phaser.Input.Keyboard.CursorKeys;
-    // audio
-    jumpsound;
-    gemSound;
-    keySound;
-    springSound;
-    laserSound;
-    hurtSound;
-                
+  cursors: Phaser.Input.Keyboard.CursorKeys;              
+  zoomInKey: Phaser.Input.Keyboard.Key;
+  zoomOutKey: Phaser.Input.Keyboard.Key;
       
   constructor() {
     super({
@@ -51,21 +44,17 @@ export class MainScene extends Phaser.Scene {
 
     this.loadAudio();
     this.loadSprites();
-    this.loadTileMaps();
-
-    this.load.image('logo', './assets/sample/phaser.png');
-    this.load.image('sky', './assets/sample/colored_grass.png');
-    
-    
+    this.loadTileMaps();   
+   
   }
 
   loadAudio(): void {
-    this.load.audio('jump', './assets/audio/jump.wav');
+    this.load.audio('jumpSound', './assets/audio/jump.wav');
     this.load.audio('gemSound', './assets/audio/coin.wav');
-    this.load.audio('key', './assets/audio/key.wav');
+    this.load.audio('keySound', './assets/audio/key.wav');
     this.load.audio('springSound', './assets/audio/spring.wav');
-    this.load.audio('laser', './assets/audio/laser5.ogg');
-    this.load.audio('hurt', './assets/audio/hurt.wav');
+    this.load.audio('laserSound', './assets/audio/laser5.ogg');
+    this.load.audio('hurtSound', './assets/audio/hurt.wav');
   }
 
   loadSprites(): void {
@@ -84,6 +73,9 @@ export class MainScene extends Phaser.Scene {
 
         this.load.image('playerGun', './assets/sprites/player/raygunPurpleBig.png');
         this.load.image('playerGunBullet', './assets/sprites/player/laserPurpleDot15x15.png');
+
+        this.load.image('logo', './assets/sample/phaser.png');
+        this.load.image('sky', './assets/sample/colored_grass.png');
   }
 
   loadTileMaps(): void {
@@ -112,23 +104,12 @@ export class MainScene extends Phaser.Scene {
 
     //cursors = this.input.keyboard.createCursorKeys();
     this.cursors = this.input.keyboard.createCursorKeys();
+    this.zoomInKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
+    this.zoomOutKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
 
     this.cameras.main.startFollow(this.player2);
+    this.cameras.main.setBackgroundColor('#ccccff');
   }
-
-  createAudio(): void {
-    /*
-    this.jumpsound = this.add.audio('jump');
-    this.gemSound = this.add.audio('gemSound');
-    this.keySound = this.add.audio('key');
-    this.springSound = this.add.audio('springSound');
-    this.springSound.allowMultiple = false;
-    this.laserSound = this.add.audio('laser');
-    this.laserSound.allowMultiple = true;
-    this.hurtSound = this.add.audio('hurt');
-    this.hurtSound.allowMultiple = false;
-    */
-    }
 
     createWorld(worldName): World {
         // using the Tiled map editor, here is the order of the layers from back to front:
@@ -176,31 +157,6 @@ export class MainScene extends Phaser.Scene {
          //world.map.setCollisionBetween(0, 2000, true, true, world.layer02.data);
          world.layer02.setCollisionByExclusion([-1]);
 
-         // create the player sprite    
-        //this.player = this.createPlayer(this.physics, this.input, this.anims);
-        //this.physics.world.enable(this.player.sprite);
-        //this.player.sprite.setCollideWorldBounds(true);
-        //this.physics.add.collider(this.player.sprite, world.layer02);
-
-        // temporary player implementation
-        //this.player2 = this.physics.add.sprite(200, 200, 'player2'); 
-        this.player2 = new Player({
-            scene: this,
-            x: 200,//this.registry.get("spawn").x,
-            y: 200,//this.registry.get("spawn").y,
-            key: "player2"
-          });        
-
-          this.player2.body.setSize(44,64,true);
-          this.player2.body.offset.y = -44;
-        //this.player2.setOrigin(1, 1);
-        //this.player2.setScale(0.75, 0.75);//, 0, 47);
-        //this.player2.setSize(64, 64);//, 0, 47);
-        //this.player2.setBounce(0.2); // our player will bounce from items
-        
-        this.player2.body.setCollideWorldBounds(true); // don't go out of the map
-        this.physics.add.collider(this.player2, world.layer02);
-
         this.anims.create({
             key: 'walk',
             frames: this.anims.generateFrameNames('playerSprites', { prefix: 'alienBlue_walk', start: 1, end: 2, zeroPad: 1, suffix: '.png' }),
@@ -213,7 +169,24 @@ export class MainScene extends Phaser.Scene {
             frames: [{key: 'playerSprites', frame: 'alienBlue_stand.png'}],
             frameRate: 10,
         });
-        //this.player2.anims.play('idle', true);
+
+        this.anims.create({
+            key: 'jump',
+            frames: [{key: 'playerSprites', frame: 'alienBlue_jump.png'}],
+            frameRate: 10,
+        });
+
+        this.player2 = new Player({
+            scene: this,
+            x: 200,
+            y: 200,
+            key: "player2"
+          });        
+
+          // small fix to our player images, we resize the physics body object slightly
+        //this.player2.body.setSize(this.player2.width, this.player2.height-8);
+
+        this.physics.add.collider(this.player2, world.layer02);
 
         /*
         // set bounds so the camera won't go outside the game world
@@ -236,10 +209,10 @@ export class MainScene extends Phaser.Scene {
          */
 
          //  Un-comment this on to see the collision tiles
-         //layer.debug = true;
-         //layer2.debug = true;
+         //world.layer01.debug = true;
+         //world.layer02.debug = true;
 
-                 //---------------------------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------------------------
         // foreground semi-transparent layer (water, lava, clouds, etc.)
         //---------------------------------------------------------------------------------------------------
         world.layer03 = world.map.createStaticLayer('layer03-foreground-passable-semitransparent', tileSets, 0, 0);
@@ -254,11 +227,18 @@ export class MainScene extends Phaser.Scene {
         //world.layer04.resizeWorld();
 
 
-           //---------------------------------------------------------------------------------------------------
+        //---------------------------------------------------------------------------------------------------
         // COLLECTIBLES
         //---------------------------------------------------------------------------------------------------
-        world.layer05 = world.map.createStaticLayer('layer05-collectibles', tileSets, 0, 0);
+        world.layer05 = world.map.createDynamicLayer('layer05-collectibles', tileSets, 0, 0);
         world.layer05.alpha = 1.0;//0.75;
+
+        this.physics.add.overlap(this.player2, world.layer05);
+        world.layer05.setTileIndexCallback(Constants.tileKeyGemRed, this.collectGem, this);
+        world.layer05.setTileIndexCallback(Constants.tileKeyGemGreen, this.collectGem, this);
+        world.layer05.setTileIndexCallback(Constants.tileKeyGemYellow, this.collectGem, this);
+        world.layer05.setTileIndexCallback(Constants.tileKeyGemBlue, this.collectGem, this);
+        world.layer05.setTileIndexCallback(Constants.tileKeyBlueKey, this.collectKey, this);
 
         world.layer06 = world.map.createStaticLayer('layer06-gameobjects', tileSets, 0, 0);
         world.layer06.alpha = 0.0;//0.75;
@@ -283,21 +263,59 @@ export class MainScene extends Phaser.Scene {
 
   update(): void {
 
+    this.world.sky.setX(0);
+    this.world.sky.setY(768);
+    this.world.sky.setTilePosition(-(this.cameras.main.scrollX * 0.25), -(this.cameras.main.scrollY * 0.05));
+
+    if(this.zoomInKey.isDown){
+        this.cameras.main.zoom = 0.75;
+    }
+    if(this.zoomOutKey.isDown){
+        this.cameras.main.zoom = 1.25;
+    }
     if (this.cursors.left.isDown)
     {
-        this.player2.body.setVelocityX(-200); // move left
-        this.player2.anims.play('walk', true); // play walk animation
+        this.player2.body.setVelocityX(-300); // move left
+        
+        if(this.player2.body.onFloor()) {         
+            this.player2.anims.play('walk', true); // play walk animation
+        }
+        else {
+            this.player2.anims.play('jump', true); // play walk animation
+        }
+        
         this.player2.flipX= true; // flip the sprite to the left
     }
     else if (this.cursors.right.isDown)
     {
-        this.player2.body.setVelocityX(200); // move right
-        this.player2.anims.play('walk', true); // play walk animatio
+        this.player2.body.setVelocityX(300); // move right
+        if(this.player2.body.onFloor()) {
+            this.player2.anims.play('walk', true); // play walk animation
+        }
+        else {
+            this.player2.anims.play('jump', true); // play walk animation
+        }
+
         this.player2.flipX = false; // use the original sprite looking to the right
     } else {
         this.player2.body.setVelocityX(0);
-        this.player2.anims.play('idle', true);
+        if(this.player2.body.onFloor())
+        {
+            this.player2.anims.play('idle', true);
+        }
+        else
+        {
+            this.player2.anims.play('jump', true);
+        }
     }     
+
+     // Jumping
+     if ((this.cursors.space.isDown || this.cursors.up.isDown) && this.player2.body.onFloor())
+     {
+         this.player2.body.setVelocityY(-400);
+         this.player2.anims.play('jump', true);
+         this.sound.play("jumpSound");
+     }
   }
 
   updatePhysics(): void {
@@ -310,6 +328,56 @@ export class MainScene extends Phaser.Scene {
 
   processInput(): void {
   }
+
+    collectGem (sprite, tile): boolean
+    {
+        this.world.layer05. removeTileAt(tile.x, tile.y);
+        this.sound.play("gemSound");
+
+        /*
+        if (tile.alpha > 0) {
+            //this.gemSound.play();
+
+            this.world.layer05. removeTileAt(tile.x, tile.y);
+            
+            tile.alpha = 0;
+            tile.collideUp = false;
+            tile.collideDown = false;
+            tile.collideLeft = false;
+            tile.collideRight = false;
+            //this.world.layer05.dirty = true;
+            //this.world.map.dirty = true;
+            this.world.map.setLayer(this.world.layer05);
+            
+        }
+        */
+        return false;
+    }
+    
+    collectKey (sprite, tile): boolean
+    {
+        this.world.layer05.removeTileAt(tile.x, tile.y);
+        this.sound.play("keySound");
+
+        /*
+        if (tile.alpha > 0) {
+            //this.gemSound.play();
+
+            this.world.layer05. removeTileAt(tile.x, tile.y);
+            
+            tile.alpha = 0;
+            tile.collideUp = false;
+            tile.collideDown = false;
+            tile.collideLeft = false;
+            tile.collideRight = false;
+            //this.world.layer05.dirty = true;
+            //this.world.map.dirty = true;
+            this.world.map.setLayer(this.world.layer05);
+            
+        }
+        */
+        return false;
+    }
 }
 
 export class PlayerBox {
@@ -342,7 +410,7 @@ export class World {
   layer01: Phaser.Tilemaps.StaticTilemapLayer;
   layer03: Phaser.Tilemaps.StaticTilemapLayer;
   layer04: Phaser.Tilemaps.StaticTilemapLayer;
-  layer05: Phaser.Tilemaps.StaticTilemapLayer;
+  layer05: Phaser.Tilemaps.DynamicTilemapLayer;
   layer06: Phaser.Tilemaps.StaticTilemapLayer;
   layer07: Phaser.Tilemaps.DynamicTilemapLayer;
   layer02: Phaser.Tilemaps.StaticTilemapLayer;
