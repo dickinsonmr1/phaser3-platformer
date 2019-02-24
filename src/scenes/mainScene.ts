@@ -81,12 +81,13 @@ export class MainScene extends Phaser.Scene {
 
     loadTileMaps(): void {
         // tilemap for level building
-        this.load.tilemapTiledJSON('level1', './assets/tilemaps/maps/world-01-02.json');
+        this.load.tilemapTiledJSON('level1', './assets/tilemaps/maps/world-01-03.json');
         //this.game.load.tilemap('level1', './assets/tilemaps/maps/world-00-overworld.json', null, Phaser.Tilemap.TILED_JSON);
         this.load.image('tiles', './assets/tilemaps/tiles/spritesheet_tiles_64x64.png');
         this.load.image('items', './assets/tilemaps/tiles/spritesheet_items_64x64.png');
         this.load.image('ground', './assets/tilemaps/tiles/spritesheet_ground_64x64.png');
         this.load.image('platformerRequestTiles', './assets/tilemaps/tiles/platformer-requests-sheet_64x64.png');
+        this.load.image('industrialTiles', './assets/tilemaps/tiles/platformerPack_industrial_tilesheet_64x64.png');
         this.load.image('enemyTiles', './assets/tilemaps/tiles/spritesheet_enemies_64x64.png');
     }
 
@@ -141,23 +142,26 @@ export class MainScene extends Phaser.Scene {
         var groundTileSet = world.map.addTilesetImage('spritesheet_ground_64x64', 'ground');
         var enemiesTileSet = world.map.addTilesetImage('spritesheet_enemies_64x64', 'enemyTiles');
         var requestTileSet = world.map.addTilesetImage('platformer-requests-sheet_64x64', 'platformerRequestTiles');
+        var industrialTileSet = world.map.addTilesetImage('platformerPack_industrial_tilesheet_64x64', 'industrialTiles');
         var playerTileSet = this.load.atlasXML('playerSprites', 'assets/sprites/player/spritesheet_players.png', 'assets/sprites/player/spritesheet_players.xml');
 
         this.add.image(0, 0, 'playerSprites', 'alienBlue_front.png');
 
-        var tileSets = [tileSet, itemsTileSet, groundTileSet, enemiesTileSet, requestTileSet];
+        var tileSets = [tileSet, itemsTileSet, groundTileSet, enemiesTileSet, requestTileSet, industrialTileSet];
         
             // background layer
-        var groundTileSet = world.map.addTilesetImage('spritesheet_ground_64x64', 'ground');
+        //var groundTileSet = world.map.addTilesetImage('spritesheet_ground_64x64', 'ground');
         world.layer01 = world.map.createStaticLayer('layer01-background-passable', tileSets, 0, 0, );
-            world.layer01.alpha = 1.0;
-            //world.layer01.resizeWorld();
+        world.layer01.alpha = 1.0;
+        //world.layer01.resizeWorld();
 
-            // non-passable blocks layer
-            world.layer02 = world.map.createStaticLayer('layer02-nonpassable', tileSets, 0, 0);
-            world.layer02.alpha = 1.0;
-            //world.map.setCollisionBetween(0, 2000, true, true, world.layer02.data);
-            world.layer02.setCollisionByExclusion([-1]);
+        // non-passable blocks layer
+        world.layer02 = world.map.createDynamicLayer('layer02-nonpassable', tileSets, 0, 0);
+        world.layer02.alpha = 1.0;
+        //world.map.setCollisionBetween(0, 2000, true, true, world.layer02.data);
+        world.layer02.setCollisionByExclusion([-1],true);//, Constants.tileLockBlue]);
+        //world.layer02.set
+        world.layer02.setTileIndexCallback(Constants.tileLockBlue, this.unlockDoor, this);
 
         this.anims.create({
             key: 'walk',
@@ -240,10 +244,10 @@ export class MainScene extends Phaser.Scene {
         world.layer05.setTileIndexCallback(Constants.tileKeyGemGreen, this.collectGem, this);
         world.layer05.setTileIndexCallback(Constants.tileKeyGemYellow, this.collectGem, this);
         world.layer05.setTileIndexCallback(Constants.tileKeyGemBlue, this.collectGem, this);
-        world.layer05.setTileIndexCallback(Constants.tileKeyBlueKey, this.collectKey, this);
+        world.layer05.setTileIndexCallback(Constants.tileKeyBlueKey, this.collectKey, this);        
 
         world.layer06 = world.map.createStaticLayer('layer06-gameobjects', tileSets, 0, 0);
-        world.layer06.alpha = 0.0;//0.75;
+        world.layer06.alpha = 0.25;
 
             //---------------------------------------------------------------------------------------------------
         // ENEMIES
@@ -341,9 +345,19 @@ export class MainScene extends Phaser.Scene {
 
     collectKey (sprite, tile): boolean
     {
+        this.player.hasBlueKey = true;
         this.world.layer05.removeTileAt(tile.x, tile.y);
         this.sound.play("keySound");
 
+        return false;
+    }
+    
+    unlockDoor (sprite, tile): boolean
+    {
+        if(this.player.hasBlueKey) {
+            this.world.layer02.removeTileAt(tile.x, tile.y);
+            this.sound.play("keySound");
+        }
         return false;
     }
 }
@@ -381,7 +395,7 @@ export class World {
     layer05: Phaser.Tilemaps.DynamicTilemapLayer;
     layer06: Phaser.Tilemaps.StaticTilemapLayer;
     layer07: Phaser.Tilemaps.DynamicTilemapLayer;
-    layer02: Phaser.Tilemaps.StaticTilemapLayer;
+    layer02: Phaser.Tilemaps.DynamicTilemapLayer;
     isWorldLoaded: boolean;
     sky: Phaser.GameObjects.TileSprite;
 }

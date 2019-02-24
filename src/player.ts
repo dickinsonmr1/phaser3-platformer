@@ -21,6 +21,8 @@ export class Player extends Phaser.GameObjects.Sprite {
     private bullets: Phaser.GameObjects.Group;
     private playerPrefixes = ['alienBeige', 'alienBlue', 'alienGreen', 'alienPink', 'alienYellow'];
 
+    public hasBlueKey: boolean;
+
     constructor(params) {
         super(params.scene, params.x, params.y, params.key, params.frame);
 
@@ -47,7 +49,9 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.currentScene.add.existing(this);
 
         this.setScale(0.75, 0.75);
-        this.body.setCollideWorldBounds(true); // don't go out of the map
+
+        this.hasBlueKey = false;
+        //this.body.setCollideWorldBounds(true); // don't go out of the map
     }
 
     public getBullets(): Phaser.GameObjects.Group {
