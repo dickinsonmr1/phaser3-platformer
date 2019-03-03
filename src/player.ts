@@ -32,24 +32,28 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     
         // physics
-        this.currentScene.physics.world.enable(this);
+        
 
         
         this.width = 128;
         this.height = 256;
-        this.displayOriginX = 0.5;
-        this.displayOriginY = 0.5;
-        this.displayWidth = 128;
-        this.displayHeight = 256;
         
+        this.currentScene.physics.world.enable(this);
+
+        this.displayWidth = 128;
+        this.displayHeight = 256;                   
+
         this.body.maxVelocity.x = 500;
         this.body.maxVelocity.y = 500;
-        this.body.setSize(128, 256);
+        this.body.setSize(128, 256);        
 
-        this.currentScene.add.existing(this);
+        this.displayOriginX = 0.5;
+        this.displayOriginY = 0.5;
 
         this.setScale(0.75, 0.75);
 
+        this.currentScene.add.existing(this);
+    
         this.hasBlueKey = false;
         //this.body.setCollideWorldBounds(true); // don't go out of the map
     }

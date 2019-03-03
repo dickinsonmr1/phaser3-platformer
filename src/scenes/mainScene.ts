@@ -169,6 +169,13 @@ export class MainScene extends Phaser.Scene {
             frameRate: 10,
             repeat: -1
         });
+
+        this.anims.create({
+            key: 'swim',
+            frames: this.anims.generateFrameNames('playerSprites', { prefix: 'alienBlue_swim', start: 1, end: 2, zeroPad: 1, suffix: '.png' }),
+            frameRate: 10,
+            repeat: -1
+        });
         // idle with only one frame, so repeat is not neaded
         this.anims.create({
             key: 'idle',
@@ -179,6 +186,12 @@ export class MainScene extends Phaser.Scene {
         this.anims.create({
             key: 'jump',
             frames: [{key: 'playerSprites', frame: 'alienBlue_jump.png'}],
+            frameRate: 10,
+        });
+
+        this.anims.create({
+            key: 'duck',
+            frames: [{key: 'playerSprites', frame: 'alienBlue_duck.png'}],
             frameRate: 10,
         });
 
@@ -249,16 +262,58 @@ export class MainScene extends Phaser.Scene {
         world.layer06 = world.map.createStaticLayer('layer06-gameobjects', tileSets, 0, 0);
         world.layer06.alpha = 0.25;
 
-            //---------------------------------------------------------------------------------------------------
+        var allEnemyTypes = [297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371];
+        //---------------------------------------------------------------------------------------------------
         // ENEMIES
         //---------------------------------------------------------------------------------------------------
         world.layer07 = world.map.createDynamicLayer('layer07-enemies', tileSets, 0, 0);
         world.layer07.alpha = 0.1;
-                
-        //world.map.createFromTiles([297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371],null, 'ghost', 'layer07-enemies', enemiesPhysics);//, this.enemyPhysics);
+        world.layer07.forEachTile(tile => {
+            if(allEnemyTypes.includes(tile.index)) {
+                const x = tile.getCenterX();
+                const y = tile.getCenterY();
+                const enemy = this.enemies.create(x, y, "ghost");
+                this.physics.world.enable(enemy);   
+                this.add.existing(enemy);
+
+                world.layer07.removeTileAt(tile.x, tile.y);
+            }
+        });
+
+        this.physics.add.collider(this.player, world.layer07);
+                        
+        //world.layer07.createFromTiles([297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371], null, this.make.sprite(), this, this.cameras.main);//, this.enemyPhysics);
         //world.map.createFromTiles([324], null, 'piranha', 'layer07-enemies', enemiesNonGravity);//, this.enemyNonGravity);
 
+        /*
+        world.map.createFromTiles([297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371], null, 'ghost', 'layer07-enemies', enemiesPhysics);//, this.enemyPhysics);
 
+        world.map.createFromTiles([324], null, 'piranha', 'layer07-enemies', enemiesNonGravity);//, this.enemyNonGravity);
+
+        world.layer07.resizeWorld();
+
+        game.physics.enable(enemiesNonGravity);
+        enemiesNonGravity.forEach(function (enemy) {
+            enemy.enemyType = "nonGravity";
+            enemy.movementTime = 0;
+
+            enemy.enableBody = true;
+            enemy.body.allowGravity = false;
+            enemy.body.velocity.y = 150;
+            enemy.body.collideWorldBounds = false;
+            enemy.isFacingRight = true;
+        }, this);
+        enemies.add(enemiesNonGravity);
+
+        game.physics.enable(enemiesPhysics);
+        enemiesPhysics.forEach(function (enemy) {
+            enemy.enemyType = "physics";
+            enemy.enableBody = true;
+            enemy.body.collideWorldBounds = true;
+            enemy.isFacingRight = true;
+        }, this);
+        enemies.add(enemiesPhysics);
+        */
         return world;
     }
 
@@ -283,24 +338,30 @@ export class MainScene extends Phaser.Scene {
             this.player.body.setVelocityX(-300); // move left
             
             if(this.player.body.onFloor()) {         
-                this.player.anims.play('walk', true); // play walk animation
+                this.player.anims.play('walk', true);
             }
             else {
-                this.player.anims.play('jump', true); // play walk animation
+                this.player.anims.play('jump', true);
             }
             
-            this.player.flipX= true; // flip the sprite to the left
+            this.player.flipX = true; // flip the sprite to the left
         }
         else if (this.cursors.right.isDown) {
             this.player.body.setVelocityX(300); // move right
             if(this.player.body.onFloor()) {
-                this.player.anims.play('walk', true); // play walk animation
+                this.player.anims.play('walk', true);
             }
             else {
-                this.player.anims.play('jump', true); // play walk animation
+                this.player.anims.play('jump', true);
             }
 
             this.player.flipX = false; // use the original sprite looking to the right
+        }
+        else if (this.cursors.down.isDown) {
+            if(this.player.body.onFloor())
+            {
+                this.player.anims.play('duck', true);
+            }
         }
         else {
             this.player.body.setVelocityX(0);
