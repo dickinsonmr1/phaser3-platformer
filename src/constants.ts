@@ -10,6 +10,8 @@ export class Constants {
     public static get tileLockRed(): number { return 243; }
     public static get tileLockGreen(): number { return 251; }
     public static get tileLockBlue(): number { return 259; }
+    public static get tileWaterTop(): number { return 162; }
+    public static get tileWater(): number { return 170; }
     public static get enemySpeed(): number {return 200;}
     public static get playerDrawScale(): number {return 0.5;}
     public static get enemyDrawScale(): number {return 1;}

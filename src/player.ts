@@ -22,6 +22,8 @@ export class Player extends Phaser.GameObjects.Sprite {
     private playerPrefixes = ['alienBeige', 'alienBlue', 'alienGreen', 'alienPink', 'alienYellow'];
 
     public hasBlueKey: boolean;
+    public isInWater: boolean;
+    public hurtTime: number;
 
     constructor(params) {
         super(params.scene, params.x, params.y, params.key, params.frame);
@@ -55,6 +57,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.currentScene.add.existing(this);
     
         this.hasBlueKey = false;
+        this.isInWater = false;
         //this.body.setCollideWorldBounds(true); // don't go out of the map
     }
 

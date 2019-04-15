@@ -236,6 +236,9 @@ export class MainScene extends Phaser.Scene {
         //---------------------------------------------------------------------------------------------------
         world.layer03 = world.map.createStaticLayer('layer03-foreground-passable-semitransparent', tileSets, 0, 0);
         world.layer03.alpha = 0.5;
+        this.physics.add.overlap(this.player, world.layer03);
+        world.layer03.setTileIndexCallback(Constants.tileWater, this.inWater, this);
+        world.layer03.setTileIndexCallback(Constants.tileWaterTop, this.inWater, this);
         //world.layer03.resizeWorld();
 
         //---------------------------------------------------------------------------------------------------
@@ -281,6 +284,7 @@ export class MainScene extends Phaser.Scene {
         });
 
         this.physics.add.collider(this.player, world.layer07);
+        this.physics.add.collider(this.player, this.enemies, this.playerTouchingEnemiesHandler);
                         
         //world.layer07.createFromTiles([297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371], null, this.make.sprite(), this, this.cameras.main);//, this.enemyPhysics);
         //world.map.createFromTiles([324], null, 'piranha', 'layer07-enemies', enemiesNonGravity);//, this.enemyNonGravity);
@@ -329,30 +333,41 @@ export class MainScene extends Phaser.Scene {
         this.world.sky.setTilePosition(-(this.cameras.main.scrollX * 0.25), -(this.cameras.main.scrollY * 0.05));
 
         if(this.zoomInKey.isDown) {
-            this.cameras.main.zoom = 0.75;
+            this.cameras.main.zoom -= 0.01;
         }
         if(this.zoomOutKey.isDown) {
-            this.cameras.main.zoom = 1.25;
+            this.cameras.main.zoom += 0.01;
         }
         if (this.cursors.left.isDown) {
             this.player.body.setVelocityX(-300); // move left
             
-            if(this.player.body.onFloor()) {         
-                this.player.anims.play('walk', true);
+            if(this.player.isInWater) {
+                this.player.anims.play('swim', true);
             }
             else {
-                this.player.anims.play('jump', true);
+                if(this.player.body.onFloor()) {         
+                    this.player.anims.play('walk', true);
+                }
+                else {
+                    this.player.anims.play('jump', true);
+                }
             }
             
             this.player.flipX = true; // flip the sprite to the left
         }
         else if (this.cursors.right.isDown) {
             this.player.body.setVelocityX(300); // move right
-            if(this.player.body.onFloor()) {
-                this.player.anims.play('walk', true);
+
+            if(this.player.isInWater) {
+                this.player.anims.play('swim', true);
             }
             else {
-                this.player.anims.play('jump', true);
+                if(this.player.body.onFloor()) {
+                    this.player.anims.play('walk', true);
+                }
+                else {
+                    this.player.anims.play('jump', true);
+                }
             }
 
             this.player.flipX = false; // use the original sprite looking to the right
@@ -382,6 +397,13 @@ export class MainScene extends Phaser.Scene {
             this.player.anims.play('jump', true);
             this.sound.play("jumpSound");
         }
+
+        this.player.isInWater = false;
+        if(this.player.hurtTime > 0) {
+            this.player.hurtTime--;
+        }
+
+        //if(player.)
     }
 
     updatePhysics(): void {
@@ -404,6 +426,14 @@ export class MainScene extends Phaser.Scene {
         return false;
     }
 
+    inWater (sprite, tile): boolean
+    {
+        this.player.isInWater = true;
+
+        return false;
+    }
+
+
     collectKey (sprite, tile): boolean
     {
         this.player.hasBlueKey = true;
@@ -420,6 +450,15 @@ export class MainScene extends Phaser.Scene {
             this.sound.play("keySound");
         }
         return false;
+    }
+
+    playerTouchingEnemiesHandler(player, enemies): void {
+
+        //if (!this.playerBox.isInSpaceShip &&
+        if(player.hurtTime == 0) {
+            this.sound.play("hurtSound");
+            this.player.hurtTime = 60;
+        }
     }
 }
 
