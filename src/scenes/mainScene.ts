@@ -283,9 +283,10 @@ export class MainScene extends Phaser.Scene {
             }
         });
 
+        this.physics.add.collider(this.player, world.layer02);
         this.physics.add.collider(this.player, world.layer07);
         this.physics.add.collider(this.player, this.enemies, this.playerTouchingEnemiesHandler);
-                        
+        this.physics.add.collider(this.enemies, world.layer02);
         //world.layer07.createFromTiles([297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371], null, this.make.sprite(), this, this.cameras.main);//, this.enemyPhysics);
         //world.map.createFromTiles([324], null, 'piranha', 'layer07-enemies', enemiesNonGravity);//, this.enemyNonGravity);
 
@@ -456,8 +457,8 @@ export class MainScene extends Phaser.Scene {
 
         //if (!this.playerBox.isInSpaceShip &&
         if(player.hurtTime == 0) {
-            this.sound.play("hurtSound");
-            this.player.hurtTime = 60;
+            //this.sound.play("hurtSound");
+            player.hurtTime = 60;
         }
     }
 }

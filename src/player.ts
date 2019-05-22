@@ -24,6 +24,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     public hasBlueKey: boolean;
     public isInWater: boolean;
     public hurtTime: number;
+    public health: number;
 
     constructor(params) {
         super(params.scene, params.x, params.y, params.key, params.frame);
@@ -42,12 +43,12 @@ export class Player extends Phaser.GameObjects.Sprite {
         
         this.currentScene.physics.world.enable(this);
 
-        this.displayWidth = 128;
-        this.displayHeight = 256;                   
+        this.displayWidth = 64;
+        this.displayHeight = 128;                   
 
         this.body.maxVelocity.x = 500;
         this.body.maxVelocity.y = 500;
-        this.body.setSize(128, 256);        
+        this.body.setSize(64, 128).setOffset(32, 128);        
 
         this.displayOriginX = 0.5;
         this.displayOriginY = 0.5;
@@ -58,6 +59,9 @@ export class Player extends Phaser.GameObjects.Sprite {
     
         this.hasBlueKey = false;
         this.isInWater = false;
+
+        this.hurtTime = 0;
+        this.health = 8;
         //this.body.setCollideWorldBounds(true); // don't go out of the map
     }
 

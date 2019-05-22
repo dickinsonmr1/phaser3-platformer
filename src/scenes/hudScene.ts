@@ -43,12 +43,54 @@
         
         this.hudComponent.heart4 = this.add.sprite(450, 200, 'hudSprites', 'hudHeart_empty.png');
         this.hudComponent.heart4.setScale(0.5);
+
+        this.hudComponent.heartHalf1 = this.add.image(300, 200, 'hudSprites', 'hudHeart_full.png');
+        this.hudComponent.heartHalf1.setScale(0.5);
+
+        this.hudComponent.heartHalf2 = this.add.sprite(350, 200, 'hudSprites', 'hudHeart_full.png');
+        this.hudComponent.heartHalf2.setScale(0.5);
+        
+        this.hudComponent.heartHalf3 = this.add.sprite(400, 200, 'hudSprites', 'hudHeart_half.png');
+        this.hudComponent.heartHalf3.setScale(0.5);
+        
+        this.hudComponent.heartHalf4 = this.add.sprite(450, 200, 'hudSprites', 'hudHeart_empty.png');
+        this.hudComponent.heartHalf4.setScale(0.5);
         
         this.scene.bringToTop;
     }
 
     update(): void {
    
+    }
+
+    public setHealth(health: number): void {
+        switch(health) {
+            case 0:
+                this.hudComponent.heartHalf1.visible = true;
+                this.hudComponent.heart1.visible = false;
+                this.hudComponent.heartHalf2.visible = false;
+                this.hudComponent.heart2.visible = false;
+                this.hudComponent.heartHalf3.visible = false;
+                this.hudComponent.heart3.visible = false;
+                this.hudComponent.heartHalf4.visible = false;
+                this.hudComponent.heart4.visible = false;
+            case 1:
+                this.hudComponent.heartHalf1.visible = true;
+                this.hudComponent.heart1.visible = false;
+                this.hudComponent.heartHalf2.visible = false;
+                this.hudComponent.heart2.visible = false;
+                this.hudComponent.heartHalf3.visible = false;
+                this.hudComponent.heart3.visible = false;
+                this.hudComponent.heartHalf4.visible = false;
+                this.hudComponent.heart4.visible = false;
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+        }
     }
  }
 
@@ -59,6 +101,10 @@ export class HUDComponent {
     heart2: Phaser.GameObjects.Image;
     heart3: Phaser.GameObjects.Image;
     heart4: Phaser.GameObjects.Image;
+    heartHalf1: Phaser.GameObjects.Image;
+    heartHalf2: Phaser.GameObjects.Image;
+    heartHalf3: Phaser.GameObjects.Image;
+    heartHalf4: Phaser.GameObjects.Image;
 
 }
 
