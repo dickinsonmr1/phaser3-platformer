@@ -33,6 +33,8 @@ export class MainScene extends Phaser.Scene {
     cursors: Phaser.Input.Keyboard.CursorKeys;              
     zoomInKey: Phaser.Input.Keyboard.Key;
     zoomOutKey: Phaser.Input.Keyboard.Key;
+    shootKey: Phaser.Input.Keyboard.Key;
+    shootKey2: Phaser.Input.Keyboard.Key;
      
     constructor() {
     super({
@@ -106,6 +108,8 @@ export class MainScene extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
         this.zoomInKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
         this.zoomOutKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
+        this.shootKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);
+        this.shootKey2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
 
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setBackgroundColor('#ccccff');
@@ -333,6 +337,14 @@ export class MainScene extends Phaser.Scene {
         this.world.sky.setY(768);
         this.world.sky.setTilePosition(-(this.cameras.main.scrollX * 0.25), -(this.cameras.main.scrollY * 0.05));
 
+        if(this.shootKey.isDown) {
+            this.events.emit("playerHealthUpdated", this.player.health);
+        }
+
+        if(this.shootKey2.isDown) {
+            this.events.emit("playerHurt");
+        }
+
         if(this.zoomInKey.isDown) {
             this.cameras.main.zoom -= 0.01;
         }
@@ -404,7 +416,8 @@ export class MainScene extends Phaser.Scene {
             this.player.hurtTime--;
         }
 
-        //if(player.)
+        //var hudScene = this.scene.get('HudScene');
+        //hudScene.setHealth(this.player.health);
     }
 
     updatePhysics(): void {
