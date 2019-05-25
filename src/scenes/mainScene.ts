@@ -14,7 +14,8 @@ export class MainScene extends Phaser.Scene {
   private phaserSprite: Phaser.GameObjects.Sprite;
   private skySprite: Phaser.GameObjects.TileSprite;
 
-    world: World;
+    world: World;    
+    emitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
     // player selection
     playerPrefixes = ['alienBeige', 'alienBlue', 'alienGreen', 'alienPink', 'alienYellow'];
@@ -23,7 +24,7 @@ export class MainScene extends Phaser.Scene {
     // player stuff
     player: Player; //Phaser.Physics.Arcade.Sprite; 
     playerSpaceShip: Phaser.GameObjects.Sprite;
-    playerBox: PlayerBox;
+    //playerBox: PlayerBox;
 
     enemy;
     enemies : Phaser.GameObjects.Group;
@@ -38,25 +39,27 @@ export class MainScene extends Phaser.Scene {
      
     constructor() {
     super({
-        key: "MainScene", active: true
+        key: "MainScene",
+        active: true
+        //map: {   events: 'events', audio: 'audio'}
     });
     }
 
     preload(): void {
 
-    this.loadAudio();
-    this.loadSprites();
-    this.loadTileMaps();   
+        this.loadAudio();
+        this.loadSprites();
+        this.loadTileMaps();   
 
     }
 
     loadAudio(): void {
-    this.load.audio('jumpSound', './assets/audio/jump.wav');
-    this.load.audio('gemSound', './assets/audio/coin.wav');
-    this.load.audio('keySound', './assets/audio/key.wav');
-    this.load.audio('springSound', './assets/audio/spring.wav');
-    this.load.audio('laserSound', './assets/audio/laser5.ogg');
-    this.load.audio('hurtSound', './assets/audio/hurt.wav');
+        this.load.audio('jumpSound', './assets/audio/jump.wav');
+        this.load.audio('gemSound', './assets/audio/coin.wav');
+        this.load.audio('keySound', './assets/audio/key.wav');
+        this.load.audio('springSound', './assets/audio/spring.wav');
+        this.load.audio('laserSound', './assets/audio/laser5.ogg');
+        this.load.audio('hurtSound', './assets/audio/hurt.wav');
     }
 
     loadSprites(): void {
@@ -114,6 +117,40 @@ export class MainScene extends Phaser.Scene {
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setBackgroundColor('#ccccff');
 
+        var particles = this.add.particles('playerGunBullet');
+
+        /*
+        var source = {
+            contains: function (x, y)
+            {
+                this.enemies.body.hitTest(x, y);
+
+                return
+            }
+        };
+        */
+
+        
+        this.emitter = particles.createEmitter({
+            x: 600,
+            y: 100,
+            angle: { min: 180, max: 180 },
+            speed: 500,
+            gravityY: 0,
+            lifespan: 1000,
+            maxParticles: 10,
+            alpha: 0.75
+        });
+
+        /*
+        var config = {
+            type: 'onEnter',  // 'onEnter', or 'onLeave'
+            source: source      // Geom like Circle or Rect that supports a 'contains' function
+        };
+        this.emitter.setDeathZone(config);
+        */
+        //this.emitter.setBlendMode('SCREEN');
+
         //this.scene.launch("HudScene");
         //this.scene.bringToTop('HudScene');
     }
@@ -157,7 +194,7 @@ export class MainScene extends Phaser.Scene {
         //var groundTileSet = world.map.addTilesetImage('spritesheet_ground_64x64', 'ground');
         world.layer01 = world.map.createStaticLayer('layer01-background-passable', tileSets, 0, 0, );
         world.layer01.alpha = 1.0;
-        //world.layer01.resizeWorld();
+        //world.layer01.resizeWorld();f
 
         // non-passable blocks layer
         world.layer02 = world.map.createDynamicLayer('layer02-nonpassable', tileSets, 0, 0);
@@ -201,11 +238,13 @@ export class MainScene extends Phaser.Scene {
 
         this.player = new Player({
             scene: this,
-            x: 200,
-            y: 200,
+            x: 20,
+            y: 600,
             key: "player2"
             });        
-
+        //this.player
+        //this.player.playerGun = this.add.image(64, 64, 'playerGun', 'playerGun');
+        //this.playerBox.playerGun.anchor.setTo(0.5, 0.5);
             // small fix to our player images, we resize the physics body object slightly
         //this.player2.body.setSize(this.player2.width, this.player2.height-8);
 
@@ -326,10 +365,10 @@ export class MainScene extends Phaser.Scene {
         return world;
     }
 
-    createPlayer(physics: Phaser.Physics.Arcade.ArcadePhysics, input: Phaser.Input.InputPlugin, anims: Phaser.Animations.AnimationManager): Player {
-        return new Player(this);//physics, input, anims);
-        //return new Player({scene: this, x: 64, y: 64, key: 'playerSprites', frame: 'alienBlue_front.png'});
-    }
+    //createPlayer(physics: Phaser.Physics.Arcade.ArcadePhysics, input: Phaser.Input.InputPlugin, anims: Phaser.Animations.AnimationManager): Player {
+        //return new Player(this);//physics, input, anims);
+        ////return new Player({scene: this, x: 64, y: 64, key: 'playerSprites', frame: 'alienBlue_front.png'});
+    //}
 
     update(): void {
 
@@ -338,7 +377,8 @@ export class MainScene extends Phaser.Scene {
         this.world.sky.setTilePosition(-(this.cameras.main.scrollX * 0.25), -(this.cameras.main.scrollY * 0.05));
 
         if(this.shootKey.isDown) {
-            this.events.emit("playerHealthUpdated", this.player.health);
+            //this.events.emit("playerHealthUpdated", this.player.health);
+            this.emitter.start();
         }
 
         if(this.shootKey2.isDown) {
@@ -414,10 +454,19 @@ export class MainScene extends Phaser.Scene {
         this.player.isInWater = false;
         if(this.player.hurtTime > 0) {
             this.player.hurtTime--;
+            if(this.player.hurtTime > 30)
+                this.player.setAlpha(0.5);
+            else
+                this.player.setAlpha(1);
         }
 
         //var hudScene = this.scene.get('HudScene');
         //hudScene.setHealth(this.player.health);
+        this.emitter.setPosition(this.player.x + 20, this.player.y + 200);
+        if(this.player.flipX)
+            this.emitter.setAngle(180);
+        else
+            this.emitter.setAngle(0);
     }
 
     updatePhysics(): void {
@@ -466,14 +515,74 @@ export class MainScene extends Phaser.Scene {
         return false;
     }
 
-    playerTouchingEnemiesHandler(player, enemies): void {
-
+    playerTouchingEnemiesHandler(player, enemies): void
+    {
+        console.log(this);
         //if (!this.playerBox.isInSpaceShip &&
         if(player.hurtTime == 0) {
-            //this.sound.play("hurtSound");
-            player.hurtTime = 60;
+            if(player.health > 0) {
+                player.health--;
+                player.currentScene.events.emit("playerHealthUpdated", player.health);
+                player.currentScene.sound.play("hurtSound");
+                player.hurtTime = 60;
+            }
         }
     }
+
+    bulletTouchingEnemyHandler(enemy, bullet): void {
+
+        enemy.kill();
+        bullet.kill();
+        //if (!this.playerBox.isInSpaceShip && !this.playerBox.isTouchingSpring) {
+            //if(springSound.)
+            //if (tile.alpha > 0) {
+            //player.body.velocity.y = -650;
+            this.sound.play("laserSound");
+            //this.playerBox.isTouchingSpring = true;
+        //}
+    }
+
+    bulletTouchingImpassableLayerHandler(bullet, layer): void {
+
+        bullet.kill();
+    }
+/*
+    fireBullet = (bullet, playerBox) => {
+
+        if (this.Time..time.now > this.playerBox.bulletTime) {
+            //this.bullet = this.bullets.getFirstExists(false);
+
+            if (bullet) {
+                if (playerBox.isFacingRight) {
+                    bullet.reset(this.player.playerGun.body.x + 30, this.player.playerGun.body.y + 20);
+                    bullet.body.velocity.x = 500;
+                    bullet.body.velocity.y = 0;
+                    //bullet.scale.setTo(0.5, 0.5);
+                    //bullet.anchor.setTo(0.5, 0.5);
+                }
+                else {
+                    bullet.reset(this.player.playerGun.body.x, this.plyer.playerGun.body.y + 20);
+                    bullet.body.velocity.x = -500;
+                    bullet.body.velocity.y = 0;
+                    //bullet.scale.setTo(0.5, 0.5);
+                    //bullet.anchor.setTo(0.5, 0.5);
+                }
+                this.playerBox.bulletTime = this.game.time.now + 150;
+                this.laserSound.play();
+            }
+        }
+
+    }
+
+    bulletIntervalElapsed = (now, time) =>{
+        return now > time;
+    }
+
+    //  Called if the bullet goes out of the screen
+    resetBullet = (bullet) => {
+        bullet.kill();
+    }
+    */
 }
 
 export class PlayerBox {
@@ -505,6 +614,7 @@ export class World {
     //tileset;
     layer01: Phaser.Tilemaps.StaticTilemapLayer;
     layer03: Phaser.Tilemaps.StaticTilemapLayer;
+    layer03A: Phaser.Tilemaps.StaticTilemapLayer;
     layer04: Phaser.Tilemaps.StaticTilemapLayer;
     layer05: Phaser.Tilemaps.DynamicTilemapLayer;
     layer06: Phaser.Tilemaps.StaticTilemapLayer;
@@ -542,25 +652,9 @@ export class World {
             player.playerBox.hurtTime = 60;
         }
     }
-
-    bulletTouchingEnemyHandler(enemy, bullet): void {
-
-        enemy.kill();
-        bullet.kill();
-        //if (!this.playerBox.isInSpaceShip && !this.playerBox.isTouchingSpring) {
-            //if(springSound.)
-            //if (tile.alpha > 0) {
-            //player.body.velocity.y = -650;
-            this.springSound.play();
-            //this.playerBox.isTouchingSpring = true;
-        //}
-    }
-
-    bulletTouchingImpassableLayerHandler(bullet, layer): void {
-
-        bullet.kill();
-    }
-
+*/
+   
+/*
     playerExitingSpaceship(player, playerSpaceShip, playerBox): void {
         playerBox.isInSpaceShip = false;
         player.body.velocity.y = -400;

@@ -67,7 +67,10 @@
 
         this.hudComponent.heartEmpty4 = this.add.image(450, 200, 'hudSprites', 'hudHeart_empty.png');
         this.hudComponent.heartEmpty4.setScale(0.5);
-       
+
+        this.hudComponent.gem = this.add.image(800, 200, 'hudSprites', 'hudJewel_green.png');
+        this.hudComponent.gem.setScale(1.0);
+
         //  Grab a reference to the Game Scene
         let ourGame = this.scene.get('MainScene');
 
@@ -80,6 +83,12 @@
         ourGame.events.on('playerHurt', function () {
             this.setHealth(1);
         }, this);
+
+        //  Listen for events from it
+        ourGame.events.on('gemCountUpdated', function () {
+            this.setHealth(1);
+        }, this);
+        
 
         this.setHealth(8);
         
@@ -101,9 +110,9 @@
         this.hudComponent.heart4.visible = (health == 8);   
 
         this.hudComponent.heartEmpty1.visible = (health == 0);
-        this.hudComponent.heartEmpty2.visible = (health < 2);
-        this.hudComponent.heartEmpty3.visible = (health < 4);
-        this.hudComponent.heartEmpty4.visible = (health < 6);
+        this.hudComponent.heartEmpty2.visible = (health < 3);
+        this.hudComponent.heartEmpty3.visible = (health < 5);
+        this.hudComponent.heartEmpty4.visible = (health < 7);
     }
  }
 
@@ -122,4 +131,5 @@ export class HUDComponent {
     heartEmpty2: Phaser.GameObjects.Image;
     heartEmpty3: Phaser.GameObjects.Image;
     heartEmpty4: Phaser.GameObjects.Image;
+    gem: Phaser.GameObjects.Image;
 }

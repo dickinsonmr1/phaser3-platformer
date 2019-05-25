@@ -8,6 +8,7 @@ import { Constants } from "./constants";
 // TODO: fix and move implementation here once basic player functionality is working in main scene
 export class Player extends Phaser.GameObjects.Sprite {
     public sprite: Phaser.Physics.Arcade.Sprite;
+    public playerGun: Phaser.Physics.Arcade.Sprite;
     private currentScene: Phaser.Scene;
     private cursors: Phaser.Input.Keyboard.CursorKeys;
     //private anims: Phaser.Animations.AnimationManager;
@@ -62,6 +63,19 @@ export class Player extends Phaser.GameObjects.Sprite {
 
         this.hurtTime = 0;
         this.health = 8;
+
+        this.bullets = this.currentScene.add.group();
+        for (var i = 0; i < 200; i++) {
+            var b = this.bullets.create(0, 0, 'playerGunBullet');
+            b.name = 'bullet' + i;
+            //b.exists = false;
+            b.visible = false;
+            //b.checkWorldBounds = true;
+            //b.body.gravity.y = 0;
+            b.setScale(0.5, 0.5);
+            //b.body.collideWorldBounds = true;
+            //b.events.onOutOfBounds.add(this.currentScene.resetBullet, this);
+        }
         //this.body.setCollideWorldBounds(true); // don't go out of the map
     }
 
