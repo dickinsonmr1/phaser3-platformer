@@ -132,4 +132,13 @@ export class HUDComponent {
     heartEmpty3: Phaser.GameObjects.Image;
     heartEmpty4: Phaser.GameObjects.Image;
     gem: Phaser.GameObjects.Image;
+    number0: Phaser.GameObjects.Image;
+    number1: Phaser.GameObjects.Image;
+    number3: Phaser.GameObjects.Image;
+    number4: Phaser.GameObjects.Image;
+    number5: Phaser.GameObjects.Image;
+    number6: Phaser.GameObjects.Image;
+    number7: Phaser.GameObjects.Image;
+    number8: Phaser.GameObjects.Image;
+    number9: Phaser.GameObjects.Image;
 }

@@ -9,6 +9,7 @@
 import "phaser";
 import { Player } from "../player";
 import { Constants } from "../constants";
+import { Bullet } from "../bullet";
 
 export class MainScene extends Phaser.Scene {
   private phaserSprite: Phaser.GameObjects.Sprite;
@@ -36,6 +37,8 @@ export class MainScene extends Phaser.Scene {
     zoomOutKey: Phaser.Input.Keyboard.Key;
     shootKey: Phaser.Input.Keyboard.Key;
     shootKey2: Phaser.Input.Keyboard.Key;
+
+    playerBullets: Phaser.GameObjects.Group;
      
     constructor() {
     super({
@@ -117,7 +120,7 @@ export class MainScene extends Phaser.Scene {
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setBackgroundColor('#ccccff');
 
-        var particles = this.add.particles('playerGunBullet');
+        //var particles = this.add.particles('playerGunBullet');
 
         /*
         var source = {
@@ -130,7 +133,7 @@ export class MainScene extends Phaser.Scene {
         };
         */
 
-        
+        /*
         this.emitter = particles.createEmitter({
             x: 600,
             y: 100,
@@ -141,6 +144,7 @@ export class MainScene extends Phaser.Scene {
             maxParticles: 10,
             alpha: 0.75
         });
+        */
 
         /*
         var config = {
@@ -325,11 +329,18 @@ export class MainScene extends Phaser.Scene {
                 world.layer07.removeTileAt(tile.x, tile.y);
             }
         });
-
+      
         this.physics.add.collider(this.player, world.layer02);
         this.physics.add.collider(this.player, world.layer07);
         this.physics.add.collider(this.player, this.enemies, this.playerTouchingEnemiesHandler);
         this.physics.add.collider(this.enemies, world.layer02);
+
+        
+
+
+        this.playerBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
+        
+        //this.physics.world.setBoundsCollision(true, true, true, true);
         //world.layer07.createFromTiles([297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371], null, this.make.sprite(), this, this.cameras.main);//, this.enemyPhysics);
         //world.map.createFromTiles([324], null, 'piranha', 'layer07-enemies', enemiesNonGravity);//, this.enemyNonGravity);
 
@@ -377,8 +388,11 @@ export class MainScene extends Phaser.Scene {
         this.world.sky.setTilePosition(-(this.cameras.main.scrollX * 0.25), -(this.cameras.main.scrollY * 0.05));
 
         if(this.shootKey.isDown) {
+            if(this.bulletIntervalElapsed(this.sys.game.loop.time, this.player.bulletTime)) {
+                this.fireBullet();
+            }    
             //this.events.emit("playerHealthUpdated", this.player.health);
-            this.emitter.start();
+            //this.emitter.start();
         }
 
         if(this.shootKey2.isDown) {
@@ -462,11 +476,13 @@ export class MainScene extends Phaser.Scene {
 
         //var hudScene = this.scene.get('HudScene');
         //hudScene.setHealth(this.player.health);
+        /*
         this.emitter.setPosition(this.player.x + 20, this.player.y + 200);
         if(this.player.flipX)
             this.emitter.setAngle(180);
         else
             this.emitter.setAngle(0);
+        */
     }
 
     updatePhysics(): void {
@@ -546,30 +562,45 @@ export class MainScene extends Phaser.Scene {
 
         bullet.kill();
     }
-/*
-    fireBullet = (bullet, playerBox) => {
 
-        if (this.Time..time.now > this.playerBox.bulletTime) {
+    fireBullet(): void {
+        if (this.game.loop.time > this.player.bulletTime) {
+
+            var bullet = this.player.bullets.getFirstDead(false);//.getFirstAlive(true);
+            //var bullet = this.player.bullets.get(0, 0, 'playerGunBullet');//.setActive(true).setVisible(true);
+            bullet.setActive(true);
+            bullet.setVisible(true);
+
+        
             //this.bullet = this.bullets.getFirstExists(false);
 
             if (bullet) {
-                if (playerBox.isFacingRight) {
-                    bullet.reset(this.player.playerGun.body.x + 30, this.player.playerGun.body.y + 20);
-                    bullet.body.velocity.x = 500;
+                if (!this.player.flipX) {
+                    //bullet.reset(this.player.playerGun.body.x + 30, this.player.playerGun.body.y + 20);
+                    bullet.setPosition(this.player.body.x + 30, this.player.body.y + 20);
+                    bullet.body.velocity.x = 500;                    
                     bullet.body.velocity.y = 0;
+                    bullet.body.gravityY = 0;
                     //bullet.scale.setTo(0.5, 0.5);
                     //bullet.anchor.setTo(0.5, 0.5);
                 }
                 else {
-                    bullet.reset(this.player.playerGun.body.x, this.plyer.playerGun.body.y + 20);
+                    //bullet.reset(this.player.playerGun.body.x, this.player.playerGun.body.y + 20);
+                    bullet.setPosition(this.player.body.x, this.player.body.y + 20);
                     bullet.body.velocity.x = -500;
                     bullet.body.velocity.y = 0;
+                    bullet.body.gravityY = 0;
                     //bullet.scale.setTo(0.5, 0.5);
                     //bullet.anchor.setTo(0.5, 0.5);
                 }
-                this.playerBox.bulletTime = this.game.time.now + 150;
-                this.laserSound.play();
+                this.player.bulletTime = this.game.loop.time + 150;
+                this.sound.play("laserSound");
+                
+                this.player.lastUsedBulletIndex++
+                if(this.player.lastUsedBulletIndex > 20)
+                    this.player.lastUsedBulletIndex = 0;
             }
+
         }
 
     }
@@ -579,10 +610,9 @@ export class MainScene extends Phaser.Scene {
     }
 
     //  Called if the bullet goes out of the screen
-    resetBullet = (bullet) => {
+    resetBullet(bullet): void {
         bullet.kill();
     }
-    */
 }
 
 export class PlayerBox {

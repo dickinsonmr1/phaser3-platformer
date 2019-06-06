@@ -8,7 +8,7 @@ import { Constants } from "./constants";
 // TODO: fix and move implementation here once basic player functionality is working in main scene
 export class Player extends Phaser.GameObjects.Sprite {
     public sprite: Phaser.Physics.Arcade.Sprite;
-    public playerGun: Phaser.Physics.Arcade.Sprite;
+    public playerGun: any;//Phaser.Physics.Arcade.Image;
     private currentScene: Phaser.Scene;
     private cursors: Phaser.Input.Keyboard.CursorKeys;
     //private anims: Phaser.Animations.AnimationManager;
@@ -19,7 +19,9 @@ export class Player extends Phaser.GameObjects.Sprite {
     private jumpingKey: Phaser.Input.Keyboard.Key;
 
     // game objects
-    private bullets: Phaser.GameObjects.Group;
+    public bullets: Phaser.GameObjects.Group;
+    public lastUsedBulletIndex: number;
+    public bulletTime: number;
     private playerPrefixes = ['alienBeige', 'alienBlue', 'alienGreen', 'alienPink', 'alienYellow'];
 
     public hasBlueKey: boolean;
@@ -63,20 +65,42 @@ export class Player extends Phaser.GameObjects.Sprite {
 
         this.hurtTime = 0;
         this.health = 8;
+        this.bulletTime = 0;
+        this.lastUsedBulletIndex = 0;
 
-        this.bullets = this.currentScene.add.group();
-        for (var i = 0; i < 200; i++) {
+        this.playerGun = this.currentScene.add.sprite(0, 0, 'playergun');
+
+
+        this.bullets = this.currentScene.add.group();//{ classType: Bullet, runChildUpdate: true });
+        //this.bullets = this.currentScene.add.group();
+        
+        for (var i = 0; i < 20; i++) {
             var b = this.bullets.create(0, 0, 'playerGunBullet');
-            b.name = 'bullet' + i;
+            this.currentScene.physics.world.enable(b);
+            this.currentScene.add.existing(b);
+
+            //b.name = 'bullet' + i;
             //b.exists = false;
-            b.visible = false;
+            //b.visible = true;
             //b.checkWorldBounds = true;
+            
+            //b.setScale(2, 2);
+            
+        
+            
+
             //b.body.gravity.y = 0;
-            b.setScale(0.5, 0.5);
-            //b.body.collideWorldBounds = true;
+            //b.exists = true;
+            //b.active = true;
+            
+            //b.checkWorldBounds = true;
+            //b.onOutOfBounds
+            //b.events = 
             //b.events.onOutOfBounds.add(this.currentScene.resetBullet, this);
         }
         //this.body.setCollideWorldBounds(true); // don't go out of the map
+        this.lastUsedBulletIndex = 0;
+        
     }
 
     public getBullets(): Phaser.GameObjects.Group {
