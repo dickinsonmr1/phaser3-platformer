@@ -15,5 +15,4 @@ export class Constants {
     public static get enemySpeed(): number {return 200;}
     public static get playerDrawScale(): number {return 0.5;}
     public static get enemyDrawScale(): number {return 1;}
-  }
-  
+}

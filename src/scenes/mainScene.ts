@@ -32,6 +32,8 @@ export class MainScene extends Phaser.Scene {
     enemiesPhysics: Phaser.GameObjects.Group;
     enemiesNonGravity: Phaser.GameObjects.Group;
 
+    springs: Phaser.GameObjects.Group;
+
     cursors: Phaser.Input.Keyboard.CursorKeys;              
     zoomInKey: Phaser.Input.Keyboard.Key;
     zoomOutKey: Phaser.Input.Keyboard.Key;
@@ -105,6 +107,8 @@ export class MainScene extends Phaser.Scene {
         this.enemies = this.add.group();
         this.enemiesPhysics = this.add.group();  // removed 324
         this.enemiesNonGravity = this.add.group();
+
+        this.springs = this.add.group();
 
         //this.createPlayer();
 
@@ -310,7 +314,35 @@ export class MainScene extends Phaser.Scene {
         world.layer05.setTileIndexCallback(Constants.tileKeyBlueKey, this.collectKey, this);        
 
         world.layer06 = world.map.createStaticLayer('layer06-gameobjects', tileSets, 0, 0);
-        world.layer06.alpha = 0.25;
+        world.layer06.alpha = 0.0;
+
+        world.layer06.forEachTile(tile => {
+            if(tile.index == Constants.tileKeySpring)
+            {
+                const x = tile.getCenterX();
+                const y = tile.getCenterY();
+                const spring = this.springs.create(x, y, "sprung");
+                this.physics.world.enable(spring);   
+                spring.body.moves = false;
+                spring.body.immovable = true;
+
+                this.add.existing(spring);
+                
+
+
+                //world.layer06.removeTileAt(tile.x, tile.y);
+            }
+        })
+
+        /*
+        this.springs.runChildUpdate(function (item) {        
+            item.enableBody = true;
+            item.immovable = true;
+            item.body.moves = false;
+            item.scale.setTo(0.5, 0.5);
+            item.anchor.setTo(0, 0);
+        }, this);
+        */
 
         var allEnemyTypes = [297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371];
         //---------------------------------------------------------------------------------------------------
@@ -333,12 +365,13 @@ export class MainScene extends Phaser.Scene {
         this.physics.add.collider(this.player, world.layer02);
         this.physics.add.collider(this.player, world.layer07);
         this.physics.add.collider(this.player, this.enemies, this.playerTouchingEnemiesHandler);
+        this.physics.add.collider(this.player, this.springs, this.playerTouchingSpringHandler);
         this.physics.add.collider(this.enemies, world.layer02);
 
         
 
 
-        this.playerBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
+        this.playerBullets = this.physics.add.group();//{ classType: Bullet, runChildUpdate: true });
         
         //this.physics.world.setBoundsCollision(true, true, true, true);
         //world.layer07.createFromTiles([297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371], null, this.make.sprite(), this, this.cameras.main);//, this.enemyPhysics);
@@ -390,9 +423,19 @@ export class MainScene extends Phaser.Scene {
         if(this.shootKey.isDown) {
             if(this.bulletIntervalElapsed(this.sys.game.loop.time, this.player.bulletTime)) {
                 this.fireBullet();
+                //this.events.emit("playerHealthUpdated", this.player.health);
+                //this.emitter.start();
+
+                // Get bullet from bullets group
+                //var bullet = this.playerBullets.get().setActive(true).setVisible(true);
+                //var bullet = this.playerBullets.create(this.player.x, this.player.y, 'playerGunBullet')
+
+                //if (bullet)
+                //{
+                    //bullet.fire(this.player.x, this.player.y, this.player.flipX);
+                    //this.physics.add.collider(enemy, bullet, enemyHitCallback);
+                //}
             }    
-            //this.events.emit("playerHealthUpdated", this.player.health);
-            //this.emitter.start();
         }
 
         if(this.shootKey2.isDown) {
@@ -490,7 +533,7 @@ export class MainScene extends Phaser.Scene {
     }
 
     updatePlayer(): void {
-
+        //this.player.isTouchingSpring = false;
     }
 
     processInput(): void {
@@ -530,6 +573,19 @@ export class MainScene extends Phaser.Scene {
         }
         return false;
     }
+    playerTouchingSpringHandler(player, springs): void {
+        var gameLoopTime = player.scene.game.loop.time;
+        if (gameLoopTime > player.springTime) {
+        //if (!this.playerBox.isInSpaceShip && !this.playerBox.isTouchingSpring) {
+        //if (!player.isTouchingSpring) {
+            //if(springSound.)
+            //if (tile.alpha > 0) {
+            player.body.velocity.y = -650;
+            player.currentScene.sound.play("springSound");
+
+            player.springTime = gameLoopTime + 1000;
+        }
+    }
 
     playerTouchingEnemiesHandler(player, enemies): void
     {
@@ -566,11 +622,12 @@ export class MainScene extends Phaser.Scene {
     fireBullet(): void {
         if (this.game.loop.time > this.player.bulletTime) {
 
-            var bullet = this.player.bullets.getFirstDead(false);//.getFirstAlive(true);
+            //var bullet = this.player.bullets.getFirstDead(true, this.player.x, this.player.y, "bullet");//.getFirstAlive(true);
             //var bullet = this.player.bullets.get(0, 0, 'playerGunBullet');//.setActive(true).setVisible(true);
-            bullet.setActive(true);
-            bullet.setVisible(true);
+            //bullet.setActive(true);
+            //bullet.setVisible(true);
 
+            var bullet = this.player.bullets.getFirst();
         
             //this.bullet = this.bullets.getFirstExists(false);
 
@@ -593,7 +650,7 @@ export class MainScene extends Phaser.Scene {
                     //bullet.scale.setTo(0.5, 0.5);
                     //bullet.anchor.setTo(0.5, 0.5);
                 }
-                this.player.bulletTime = this.game.loop.time + 150;
+                this.player.bulletTime = this.game.loop.time + 250;
                 this.sound.play("laserSound");
                 
                 this.player.lastUsedBulletIndex++
