@@ -65,6 +65,7 @@ export class MainScene extends Phaser.Scene {
         this.load.audio('springSound', './assets/audio/spring.wav');
         this.load.audio('laserSound', './assets/audio/laser5.ogg');
         this.load.audio('hurtSound', './assets/audio/hurt.wav');
+        this.load.audio('enemyDeathSound', './assets/audio/lowRandom.ogg');
     }
 
     loadSprites(): void {
@@ -256,6 +257,7 @@ export class MainScene extends Phaser.Scene {
             // small fix to our player images, we resize the physics body object slightly
         //this.player2.body.setSize(this.player2.width, this.player2.height-8);
 
+
         this.physics.add.collider(this.player, world.layer02);
 
         /*
@@ -355,6 +357,7 @@ export class MainScene extends Phaser.Scene {
                 const x = tile.getCenterX();
                 const y = tile.getCenterY();
                 const enemy = this.enemies.create(x, y, "ghost");
+                enemy.currentScene = this;
                 this.physics.world.enable(enemy);   
                 this.add.existing(enemy);
 
@@ -369,9 +372,15 @@ export class MainScene extends Phaser.Scene {
         this.physics.add.collider(this.enemies, world.layer02);
 
         
+        //this.playerBullets = this.physics.add.group();//{ classType: Bullet, runChildUpdate: true });
+        this.player.bullets = this.physics.add.group({
+            allowGravity: false,
+            //velocityX:
+        })
 
-
-        this.playerBullets = this.physics.add.group();//{ classType: Bullet, runChildUpdate: true });
+        this.physics.add.collider(this.enemies, this.player.bullets, this.bulletTouchingEnemyHandler);
+        this.physics.add.collider(this.player.bullets, world.layer02, this.bulletTouchingImpassableLayerHandler);
+        
         
         //this.physics.world.setBoundsCollision(true, true, true, true);
         //world.layer07.createFromTiles([297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371], null, this.make.sprite(), this, this.cameras.main);//, this.enemyPhysics);
@@ -423,18 +432,6 @@ export class MainScene extends Phaser.Scene {
         if(this.shootKey.isDown) {
             if(this.bulletIntervalElapsed(this.sys.game.loop.time, this.player.bulletTime)) {
                 this.fireBullet();
-                //this.events.emit("playerHealthUpdated", this.player.health);
-                //this.emitter.start();
-
-                // Get bullet from bullets group
-                //var bullet = this.playerBullets.get().setActive(true).setVisible(true);
-                //var bullet = this.playerBullets.create(this.player.x, this.player.y, 'playerGunBullet')
-
-                //if (bullet)
-                //{
-                    //bullet.fire(this.player.x, this.player.y, this.player.flipX);
-                    //this.physics.add.collider(enemy, bullet, enemyHitCallback);
-                //}
             }    
         }
 
@@ -517,6 +514,9 @@ export class MainScene extends Phaser.Scene {
                 this.player.setAlpha(1);
         }
 
+        this.player.update();
+        //this.player.playerGun.setSize(64, 64).setOffset(100, 100);
+
         //var hudScene = this.scene.get('HudScene');
         //hudScene.setHealth(this.player.health);
         /*
@@ -555,7 +555,6 @@ export class MainScene extends Phaser.Scene {
         return false;
     }
 
-
     collectKey (sprite, tile): boolean
     {
         this.player.hasBlueKey = true;
@@ -575,7 +574,7 @@ export class MainScene extends Phaser.Scene {
     }
     playerTouchingSpringHandler(player, springs): void {
         var gameLoopTime = player.scene.game.loop.time;
-        if (gameLoopTime > player.springTime) {
+        if (gameLoopTime > player.springTime && !player.body.onFloor()) {
         //if (!this.playerBox.isInSpaceShip && !this.playerBox.isTouchingSpring) {
         //if (!player.isTouchingSpring) {
             //if(springSound.)
@@ -601,65 +600,41 @@ export class MainScene extends Phaser.Scene {
         }
     }
 
-    bulletTouchingEnemyHandler(enemy, bullet): void {
-
-        enemy.kill();
-        bullet.kill();
+    bulletTouchingEnemyHandler(enemy, bullet: Bullet): void {
+        bullet.destroy();
+        enemy.destroy();
+        enemy.currentScene.sound.play("enemyDeathSound");
+        
         //if (!this.playerBox.isInSpaceShip && !this.playerBox.isTouchingSpring) {
             //if(springSound.)
             //if (tile.alpha > 0) {
             //player.body.velocity.y = -650;
-            this.sound.play("laserSound");
+            //enemy.currentScene.sound.play("hurtSound");
+            //this.sound.play("laserSound");
             //this.playerBox.isTouchingSpring = true;
         //}
     }
 
     bulletTouchingImpassableLayerHandler(bullet, layer): void {
-
-        bullet.kill();
+        bullet.destroy();
     }
 
     fireBullet(): void {
         if (this.game.loop.time > this.player.bulletTime) {
-
-            //var bullet = this.player.bullets.getFirstDead(true, this.player.x, this.player.y, "bullet");//.getFirstAlive(true);
-            //var bullet = this.player.bullets.get(0, 0, 'playerGunBullet');//.setActive(true).setVisible(true);
-            //bullet.setActive(true);
-            //bullet.setVisible(true);
-
-            var bullet = this.player.bullets.getFirst();
-        
-            //this.bullet = this.bullets.getFirstExists(false);
-
-            if (bullet) {
-                if (!this.player.flipX) {
-                    //bullet.reset(this.player.playerGun.body.x + 30, this.player.playerGun.body.y + 20);
-                    bullet.setPosition(this.player.body.x + 30, this.player.body.y + 20);
-                    bullet.body.velocity.x = 500;                    
-                    bullet.body.velocity.y = 0;
-                    bullet.body.gravityY = 0;
-                    //bullet.scale.setTo(0.5, 0.5);
-                    //bullet.anchor.setTo(0.5, 0.5);
-                }
-                else {
-                    //bullet.reset(this.player.playerGun.body.x, this.player.playerGun.body.y + 20);
-                    bullet.setPosition(this.player.body.x, this.player.body.y + 20);
-                    bullet.body.velocity.x = -500;
-                    bullet.body.velocity.y = 0;
-                    bullet.body.gravityY = 0;
-                    //bullet.scale.setTo(0.5, 0.5);
-                    //bullet.anchor.setTo(0.5, 0.5);
-                }
-                this.player.bulletTime = this.game.loop.time + 250;
-                this.sound.play("laserSound");
-                
-                this.player.lastUsedBulletIndex++
-                if(this.player.lastUsedBulletIndex > 20)
-                    this.player.lastUsedBulletIndex = 0;
+            if (!this.player.flipX) {
+                this.player.bullets.create(this.player.body.x + 66, this.player.body.y + 45, "playerGunBullet").body.setVelocityX(600).setVelocityY(0);
             }
-
+            else {
+                this.player.bullets.create(this.player.body.x + 66, this.player.body.y + 45, "playerGunBullet").body.setVelocityX(-600).setVelocityY(0);
+            }
+            this.player.bulletTime = this.game.loop.time + 250;
+            this.sound.play("laserSound");
         }
+    }    
 
+    killBullet(bullet): void {
+        //this.events.emit()
+        //bullet.kill();
     }
 
     bulletIntervalElapsed = (now, time) =>{
@@ -668,32 +643,8 @@ export class MainScene extends Phaser.Scene {
 
     //  Called if the bullet goes out of the screen
     resetBullet(bullet): void {
-        bullet.kill();
+        //bullet.kill();
     }
-}
-
-export class PlayerBox {
-    isInSpaceShip : boolean;
-    isTouchingSpring: boolean;
-    isFacingRight: boolean;
-    constructor(isInSpaceShip: boolean, isTouchingSpring: boolean, isFacingRight: boolean) {
-        this.isInSpaceShip = isInSpaceShip;
-        this.isTouchingSpring = isTouchingSpring;
-        this.isFacingRight = isFacingRight;
-    }
-    playerGun: Phaser.GameObjects.Sprite;
-    bullet: Phaser.GameObjects.Sprite;
-    bullets: Phaser.GameObjects.Group;
-    bulletTime: number = 0;
-    bulletDrawOffsetX: number = 6;
-    bulletDrawOffsetY: number = 8;
-    hurtTime: number = 0;
-}
-
-export class EnemyBox {
-    sprite: Phaser.GameObjects.Sprite;
-    isFacingRight: boolean;
-    enemyType: string;
 }
 
 export class World {

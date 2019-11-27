@@ -23,7 +23,6 @@ export class Player extends Phaser.GameObjects.Sprite {
     public lastUsedBulletIndex: number;
     public bulletTime: number;
     
-
     private playerPrefixes = ['alienBeige', 'alienBlue', 'alienGreen', 'alienPink', 'alienYellow'];
 
     public hasBlueKey: boolean;
@@ -41,11 +40,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         
         this.setFlipX(false);
 
-    
         // physics
-        
-
-        
         this.width = 128;
         this.height = 256;
         
@@ -56,7 +51,9 @@ export class Player extends Phaser.GameObjects.Sprite {
 
         this.body.maxVelocity.x = 500;
         this.body.maxVelocity.y = 500;
-        this.body.setSize(64, 128).setOffset(32, 128);        
+        this.body
+            .setSize(64, 128)
+            .setOffset(Constants.playerOffsetX, Constants.playerOffsetY);    
 
         this.displayOriginX = 0.5;
         this.displayOriginY = 0.5;
@@ -74,11 +71,14 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.lastUsedBulletIndex = 0;
         this.springTime = 0;
 
-        this.playerGun = this.currentScene.add.sprite(0, 0, 'playergun');
-
+        this.playerGun = this.currentScene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, 'playerGun')
+        //.setOrigin(0.25, 0.5);
+        //this.playerGun.setOrigin(0.5, 0.5);
         //this.bullets = this.currentScene.add.group();//{ classType: Bullet, runChildUpdate: true });
         this.bullets = this.currentScene.add.group();
         
+        return;
+        /*
         for (var i = 0; i < 20; i++) {
             var b = this.bullets.create(0, 0, 'playerGunBullet');
             this.currentScene.physics.world.enable(b);
@@ -106,6 +106,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         }
         //this.body.setCollideWorldBounds(true); // don't go out of the map
         this.lastUsedBulletIndex = 0;
+        */
         
     }
 
@@ -163,8 +164,25 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     update(): void {
+
+        /*
+        this.bullets.getChildren().forEach(bullet => {
+            bullet.body.gravityY = 0;
+            //bullet.body.
+        });
+        */
+        /*
         if (this.cursors.left.isDown) { // || keyboard.isDown(this.moveKeyLeft)) {  
             //this.sprite.setVelocity(-200); // move left
         }          
+        */
+        if(this.flipX) {
+            this.playerGun.setFlipX(true);
+            this.playerGun.setPosition(this.x + Constants.playerGunOffsetXFacingLeft, this.y + Constants.playerGunOffsetY);//.setOffset(32, 128);
+        }       
+        else {
+            this.playerGun.setFlipX(false);
+            this.playerGun.setPosition(this.x + Constants.playerGunOffsetXFacingRight, this.y + Constants.playerGunOffsetY);//.setOffset(32, 128);
+        }        
     }
 }

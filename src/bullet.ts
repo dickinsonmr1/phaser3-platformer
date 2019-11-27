@@ -50,4 +50,8 @@ export class Bullet extends Phaser.GameObjects.Sprite {
             this.setVisible(false);
         }
     }   
+
+    public kill(){
+        this.kill();
+    }
 }
