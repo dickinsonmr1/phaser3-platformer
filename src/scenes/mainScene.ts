@@ -292,15 +292,12 @@ export class MainScene extends Phaser.Scene {
         this.physics.add.overlap(this.player, world.layer03);
         world.layer03.setTileIndexCallback(Constants.tileWater, this.inWater, this);
         world.layer03.setTileIndexCallback(Constants.tileWaterTop, this.inWater, this);
-        //world.layer03.resizeWorld();
 
         //---------------------------------------------------------------------------------------------------
         // FOREGROUND PASSABLE OPAQUE LAYER (front wall of a cave, plant, etc.)
         //---------------------------------------------------------------------------------------------------
         world.layer04 = world.map.createStaticLayer('layer04-foreground-passable-opaque', tileSets, 0, 0);
         world.layer04.alpha = 1.0;
-        //world.layer04.resizeWorld();
-
 
         //---------------------------------------------------------------------------------------------------
         // COLLECTIBLES
@@ -329,9 +326,6 @@ export class MainScene extends Phaser.Scene {
                 spring.body.immovable = true;
 
                 this.add.existing(spring);
-                
-
-
                 //world.layer06.removeTileAt(tile.x, tile.y);
             }
         })
@@ -371,17 +365,13 @@ export class MainScene extends Phaser.Scene {
         this.physics.add.collider(this.player, this.springs, this.playerTouchingSpringHandler);
         this.physics.add.collider(this.enemies, world.layer02);
 
-        
-        //this.playerBullets = this.physics.add.group();//{ classType: Bullet, runChildUpdate: true });
         this.player.bullets = this.physics.add.group({
-            allowGravity: false,
-            //velocityX:
+            allowGravity: false
         })
 
         this.physics.add.collider(this.enemies, this.player.bullets, this.bulletTouchingEnemyHandler);
         this.physics.add.collider(this.player.bullets, world.layer02, this.bulletTouchingImpassableLayerHandler);
-        
-        
+                
         //this.physics.world.setBoundsCollision(true, true, true, true);
         //world.layer07.createFromTiles([297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371], null, this.make.sprite(), this, this.cameras.main);//, this.enemyPhysics);
         //world.map.createFromTiles([324], null, 'piranha', 'layer07-enemies', enemiesNonGravity);//, this.enemyNonGravity);
@@ -430,9 +420,7 @@ export class MainScene extends Phaser.Scene {
         this.world.sky.setTilePosition(-(this.cameras.main.scrollX * 0.25), -(this.cameras.main.scrollY * 0.05));
 
         if(this.shootKey.isDown) {
-            if(this.bulletIntervalElapsed(this.sys.game.loop.time, this.player.bulletTime)) {
-                this.fireBullet();
-            }    
+            this.player.tryFireBullet(this.sys.game.loop.time, this.sound);
         }
 
         if(this.shootKey2.isDown) {
@@ -446,73 +434,23 @@ export class MainScene extends Phaser.Scene {
             this.cameras.main.zoom += 0.01;
         }
         if (this.cursors.left.isDown) {
-            this.player.body.setVelocityX(-300); // move left
-            
-            if(this.player.isInWater) {
-                this.player.anims.play('swim', true);
-            }
-            else {
-                if(this.player.body.onFloor()) {         
-                    this.player.anims.play('walk', true);
-                }
-                else {
-                    this.player.anims.play('jump', true);
-                }
-            }
-            
-            this.player.flipX = true; // flip the sprite to the left
+           this.player.moveLeft();
         }
         else if (this.cursors.right.isDown) {
-            this.player.body.setVelocityX(300); // move right
-
-            if(this.player.isInWater) {
-                this.player.anims.play('swim', true);
-            }
-            else {
-                if(this.player.body.onFloor()) {
-                    this.player.anims.play('walk', true);
-                }
-                else {
-                    this.player.anims.play('jump', true);
-                }
-            }
-
-            this.player.flipX = false; // use the original sprite looking to the right
+           this.player.moveRight();
         }
         else if (this.cursors.down.isDown) {
-            if(this.player.body.onFloor())
-            {
-                this.player.anims.play('duck', true);
-            }
+           this.player.duck();
         }
         else {
-            this.player.body.setVelocityX(0);
-            if(this.player.body.onFloor())
-            {
-                this.player.anims.play('idle', true);
-            }
-            else
-            {
-                this.player.anims.play('jump', true);
-            }
-        }     
+            this.player.stand();
+        }
 
         // Jumping
-        if ((this.cursors.space.isDown || this.cursors.up.isDown) && this.player.body.onFloor())
+        if ((this.cursors.space.isDown || this.cursors.up.isDown))
         {
-            this.player.body.setVelocityY(-400);
-            this.player.anims.play('jump', true);
-            this.sound.play("jumpSound");
-        }
-
-        this.player.isInWater = false;
-        if(this.player.hurtTime > 0) {
-            this.player.hurtTime--;
-            if(this.player.hurtTime > 30)
-                this.player.setAlpha(0.5);
-            else
-                this.player.setAlpha(1);
-        }
+            this.player.tryJump(this.sound);
+        }      
 
         this.player.update();
         //this.player.playerGun.setSize(64, 64).setOffset(100, 100);
@@ -532,10 +470,6 @@ export class MainScene extends Phaser.Scene {
 
     }
 
-    updatePlayer(): void {
-        //this.player.isTouchingSpring = false;
-    }
-
     processInput(): void {
 
     }
@@ -548,9 +482,9 @@ export class MainScene extends Phaser.Scene {
         return false;
     }
 
-    inWater (sprite, tile): boolean
+    inWater (player: Player, tile): boolean
     {
-        this.player.isInWater = true;
+        player.isInWater = true;
 
         return false;
     }
@@ -564,9 +498,9 @@ export class MainScene extends Phaser.Scene {
         return false;
     }
     
-    unlockDoor (sprite, tile): boolean
+    unlockDoor (player: Player, tile): boolean
     {
-        if(this.player.hasBlueKey) {
+        if(player.hasBlueKey) {
             this.world.layer02.removeTileAt(tile.x, tile.y);
             this.sound.play("keySound");
         }
@@ -586,18 +520,10 @@ export class MainScene extends Phaser.Scene {
         }
     }
 
-    playerTouchingEnemiesHandler(player, enemies): void
+    playerTouchingEnemiesHandler(player: Player, enemies): void
     {
         console.log(this);
-        //if (!this.playerBox.isInSpaceShip &&
-        if(player.hurtTime == 0) {
-            if(player.health > 0) {
-                player.health--;
-                player.currentScene.events.emit("playerHealthUpdated", player.health);
-                player.currentScene.sound.play("hurtSound");
-                player.hurtTime = 60;
-            }
-        }
+        player.tryDamage();
     }
 
     bulletTouchingEnemyHandler(enemy, bullet: Bullet): void {
@@ -618,25 +544,7 @@ export class MainScene extends Phaser.Scene {
     bulletTouchingImpassableLayerHandler(bullet, layer): void {
         bullet.destroy();
     }
-
-    fireBullet(): void {
-        if (this.game.loop.time > this.player.bulletTime) {
-            if (!this.player.flipX) {
-                this.player.bullets.create(this.player.body.x + 66, this.player.body.y + 45, "playerGunBullet").body.setVelocityX(600).setVelocityY(0);
-            }
-            else {
-                this.player.bullets.create(this.player.body.x + 66, this.player.body.y + 45, "playerGunBullet").body.setVelocityX(-600).setVelocityY(0);
-            }
-            this.player.bulletTime = this.game.loop.time + 250;
-            this.sound.play("laserSound");
-        }
-    }    
-
-    killBullet(bullet): void {
-        //this.events.emit()
-        //bullet.kill();
-    }
-
+  
     bulletIntervalElapsed = (now, time) =>{
         return now > time;
     }

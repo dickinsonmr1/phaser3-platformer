@@ -4,12 +4,14 @@
  * @license      none
  */
 import { Constants } from "./constants";
+import "phaser";
 
 // TODO: fix and move implementation here once basic player functionality is working in main scene
 export class Player extends Phaser.GameObjects.Sprite {
     public sprite: Phaser.Physics.Arcade.Sprite;
     public playerGun: any;//Phaser.Physics.Arcade.Image;
     private currentScene: Phaser.Scene;
+
     private cursors: Phaser.Input.Keyboard.CursorKeys;
     //private anims: Phaser.Animations.AnimationManager;
 
@@ -27,6 +29,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     public hasBlueKey: boolean;
     public isInWater: boolean;
+    public isDucking: boolean;
     public hurtTime: number;
     public health: number;
 
@@ -70,80 +73,15 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.bulletTime = 0;
         this.lastUsedBulletIndex = 0;
         this.springTime = 0;
+        this.isDucking = false;
 
-        this.playerGun = this.currentScene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, 'playerGun')
-        //.setOrigin(0.25, 0.5);
-        //this.playerGun.setOrigin(0.5, 0.5);
-        //this.bullets = this.currentScene.add.group();//{ classType: Bullet, runChildUpdate: true });
-        this.bullets = this.currentScene.add.group();
+        this.playerGun = this.currentScene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, 'playerGun')        
+        //this.bullets = this.currentScene.add.group();
         
-        return;
-        /*
-        for (var i = 0; i < 20; i++) {
-            var b = this.bullets.create(0, 0, 'playerGunBullet');
-            this.currentScene.physics.world.enable(b);
-            this.currentScene.add.existing(b);
+        return;        
+    } 
 
-            //b.name = 'bullet' + i;
-            b.exists = false;
-            b.visible = true;
-            b.active = false;
-            //b.checkWorldBounds = true;
-            
-            //b.setScale(2, 2);
-            
-        
-            
-
-            b.body.gravity.y = 0;
-            //b.exists = true;
-            //b.active = true;
-            
-            //b.checkWorldBounds = true;
-            //b.onOutOfBounds
-            //b.events = 
-            //b.events.onOutOfBounds.add(this.currentScene.resetBullet, this);
-        }
-        //this.body.setCollideWorldBounds(true); // don't go out of the map
-        this.lastUsedBulletIndex = 0;
-        */
-        
-    }
-
-    public getBullets(): Phaser.GameObjects.Group {
-        return this.bullets;
-    }
-
-   
-
-    private initImage(input: Phaser.Input.InputPlugin) {
-        /*
-        // variables
-        this.health = 1;
-        this.lastShoot = 0;
-        this.speed = 100;
-
-        // image
-        this.setOrigin(0.5, 0.5);
-        this.setDepth(0);
-        this.angle = 180;
-
-        this.barrel = this.currentScene.add.image(this.x, this.y, "barrelBlue");
-        this.barrel.setOrigin(0.5, 1);
-        this.barrel.setDepth(1);
-        this.barrel.angle = 180;
-
-        this.lifeBar = this.currentScene.add.graphics();
-        this.redrawLifebar();
-
-        // game objects
-        this.bullets = this.currentScene.add.group({
-        classType: Bullet,
-        active: true,
-        maxSize: 10,
-        runChildUpdate: true
-        });
-        */
+    private initImage(input: Phaser.Input.InputPlugin) {       
         // input
         this.cursors = input.keyboard.createCursorKeys();
         this.moveKeyLeft = this.currentScene.input.keyboard.addKey(
@@ -158,12 +96,138 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.jumpingKey = input.keyboard.addKey(
         Phaser.Input.Keyboard.KeyCodes.SPACE
         );
+    }
 
-        // physics
-        //this.currentScene.physics.world.enable(this);
+    processinput(): void {
+
+    }
+
+    moveLeft(): void {
+        this.body.setVelocityX(-300); // move left
+            
+            if(this.isInWater) {
+                this.anims.play('swim', true);
+            }
+            else {
+                if(this.body.onFloor()) {         
+                    this.anims.play('walk', true);
+                }
+                else {
+                    this.anims.play('jump', true);
+                }
+            }
+            
+            this.flipX = true; // flip the sprite to the left 
+    }
+
+    moveRight(): void {
+        this.body.setVelocityX(300); // move right
+
+        if(this.isInWater) {
+            this.anims.play('swim', true);
+        }
+        else {
+            if(this.body.onFloor()) {
+                this.anims.play('walk', true);
+            }
+            else {
+                this.anims.play('jump', true);
+            }
+        }
+
+        this.flipX = false; // use the original sprite looking to the right
+    }
+
+    duck(): void {
+        if(this.body.onFloor())
+        {
+            this.anims.play('duck', true);
+            this.isDucking = true;
+        }
+    }
+
+    stand(): void {
+        this.isDucking = false;
+        this.body.setVelocityX(0);
+        if(this.body.onFloor())
+        {
+            this.anims.play('idle', true);
+        }
+        else
+        {
+            this.anims.play('jump', true);
+        }
+    }
+
+    tryJump(sound): void {
+        if(this.body.onFloor()) {
+            this.body.setVelocityY(-400);
+            this.anims.play('jump', true);
+            this.play("jumpSound");
+        }
+    }
+
+    tryFireBullet(gameTime: number, sound): void {
+        if (gameTime > this.bulletTime) {
+
+            this.createBullet();
+            this.bulletTime = gameTime + 250;
+            sound.play("laserSound");
+        }
+    }
+
+    private createBullet() : void {
+        if (this.flipX) {
+            this.bullets.create(this.body.x, this.body.y + this.getBulletOffsetY(), "playerGunBullet").body.setVelocityX(-600).setVelocityY(0);
+        }
+        else {
+            this.bullets.create(this.body.x + 66, this.body.y + this.getBulletOffsetY(), "playerGunBullet").body.setVelocityX(600).setVelocityY(0);
+        }
+    }
+
+    getBullets(): Phaser.GameObjects.Group {
+        return this.bullets;
+    }
+
+    tryDamage(): void {
+        if(this.hurtTime == 0) {
+            if(this.health > 0) {
+                this.health--;
+                this.currentScene.events.emit("playerHealthUpdated", this.health);
+                this.currentScene.sound.play("hurtSound");
+                this.hurtTime = 60;
+            }
+        }
+    }
+
+    getGunOffsetY() : number {
+        var offsetY = Constants.playerGunOffsetY;
+        if(this.isDucking) {
+            offsetY += Constants.playerDuckingGunOffsetY;
+        }
+
+        return offsetY;
+    }
+
+    getBulletOffsetY() : number {
+        var offsetY = 45;
+        if(this.isDucking) {
+            offsetY += Constants.playerDuckingGunOffsetY;
+        }
+
+        return offsetY;
     }
 
     update(): void {
+
+        this.isInWater = false;
+        if(this.hurtTime > 0) {
+            this.hurtTime--;
+            if(this.hurtTime > 30)
+                this.setAlpha(0.5);
+            else
+                this.setAlpha(1);
+        }
 
         /*
         this.bullets.getChildren().forEach(bullet => {
@@ -176,13 +240,14 @@ export class Player extends Phaser.GameObjects.Sprite {
             //this.sprite.setVelocity(-200); // move left
         }          
         */
+       
         if(this.flipX) {
-            this.playerGun.setFlipX(true);
-            this.playerGun.setPosition(this.x + Constants.playerGunOffsetXFacingLeft, this.y + Constants.playerGunOffsetY);//.setOffset(32, 128);
+            this.playerGun.setFlipX(true);          
+            this.playerGun.setPosition(this.x + Constants.playerGunOffsetXFacingLeft, this.y + this.getGunOffsetY());//.setOffset(32, 128);
         }       
         else {
             this.playerGun.setFlipX(false);
-            this.playerGun.setPosition(this.x + Constants.playerGunOffsetXFacingRight, this.y + Constants.playerGunOffsetY);//.setOffset(32, 128);
+            this.playerGun.setPosition(this.x + Constants.playerGunOffsetXFacingRight, this.y + this.getGunOffsetY());//.setOffset(32, 128);
         }        
     }
 }

@@ -19,5 +19,6 @@ export class Constants {
     public static get playerOffsetY(): number {return 128;}
     public static get playerGunOffsetXFacingLeft(): number {return 0;}
     public static get playerGunOffsetY(): number {return 145;}
-    public static get playerGunOffsetXFacingRight(): number {return 86;}    
+    public static get playerGunOffsetXFacingRight(): number {return 86;}  
+    public static get playerDuckingGunOffsetY(): number {return 24;}
 }
