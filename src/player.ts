@@ -32,6 +32,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     public isDucking: boolean;
     public hurtTime: number;
     public health: number;
+    public gemsCollected: number;
 
     public isTouchingSpring: boolean;
     public springTime: number;
@@ -70,6 +71,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
         this.hurtTime = 0;
         this.health = 8;
+        this.gemsCollected = 0;
         this.bulletTime = 0;
         this.lastUsedBulletIndex = 0;
         this.springTime = 0;
@@ -163,7 +165,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         if(this.body.onFloor()) {
             this.body.setVelocityY(-400);
             this.anims.play('jump', true);
-            this.play("jumpSound");
+            sound.play("jumpSound");
         }
     }
 
@@ -174,6 +176,19 @@ export class Player extends Phaser.GameObjects.Sprite {
             this.bulletTime = gameTime + 250;
             sound.play("laserSound");
         }
+    }
+
+    tryBounce(gameTime: number, sound) {
+        if (gameTime > this.springTime) { //} && !this.body.onFloor()) {
+            //if (!this.playerBox.isInSpaceShip && !this.playerBox.isTouchingSpring) {
+            //if (!player.isTouchingSpring) {
+                //if(springSound.)
+                //if (tile.alpha > 0) {
+                this.body.velocity.y = -650;
+                sound.play("springSound");
+    
+                this.springTime = gameTime + 1000;
+            }
     }
 
     private createBullet() : void {
@@ -228,18 +243,6 @@ export class Player extends Phaser.GameObjects.Sprite {
             else
                 this.setAlpha(1);
         }
-
-        /*
-        this.bullets.getChildren().forEach(bullet => {
-            bullet.body.gravityY = 0;
-            //bullet.body.
-        });
-        */
-        /*
-        if (this.cursors.left.isDown) { // || keyboard.isDown(this.moveKeyLeft)) {  
-            //this.sprite.setVelocity(-200); // move left
-        }          
-        */
        
         if(this.flipX) {
             this.playerGun.setFlipX(true);          

@@ -27,7 +27,7 @@
     }
 
     create(): void {
-       
+
         this.hudComponent = new HUDComponent();
         this.hudComponent.playerHudIcon = this.add.sprite(200, 200, 'hudSprites', 'hudPlayer_blue.png');
         this.hudComponent.playerHudIcon.setScrollFactor(0);
@@ -68,8 +68,17 @@
         this.hudComponent.heartEmpty4 = this.add.image(450, 200, 'hudSprites', 'hudHeart_empty.png');
         this.hudComponent.heartEmpty4.setScale(0.5);
 
-        this.hudComponent.gem = this.add.image(800, 200, 'hudSprites', 'hudJewel_green.png');
+        this.hudComponent.gem = this.add.image(1720, 200, 'hudSprites', 'hudJewel_green.png');
         this.hudComponent.gem.setScale(1.0);
+
+        this.hudComponent.gemCountText = this.add.text(1500, 150, '0',
+        {
+            fontFamily: 'KenneyRocketSquare',
+            fontSize: 64,
+            align: 'right',            
+            color:"rgb(255,255,255)",
+        });
+        this.hudComponent.gemCountText.setStroke('rgb(0,0,0)', 16);
 
         //  Grab a reference to the Game Scene
         let ourGame = this.scene.get('MainScene');
@@ -85,8 +94,12 @@
         }, this);
 
         //  Listen for events from it
-        ourGame.events.on('gemCountUpdated', function () {
-            this.setHealth(1);
+        ourGame.events.on('gemCollected', function (gemCount) {
+            this.setGemCount(gemCount);
+        }, this);
+
+        ourGame.events.on('enemyDamage', function (x, y, damage) {
+            this.emitExpiringText(x, y, damage);
         }, this);
         
 
@@ -96,7 +109,7 @@
     }
 
     update(): void {
-   
+        
     }
 
     setHealth(health: number): void {        
@@ -114,6 +127,13 @@
         this.hudComponent.heartEmpty3.visible = (health < 5);
         this.hudComponent.heartEmpty4.visible = (health < 7);
     }
+
+    setGemCount(gemCount: number): void {
+        this.hudComponent.gemCountText.setText(gemCount.toString());
+        //this.hudComponent.gemCountOutlineText.setText(gemCount.toString());
+    }
+
+   
  }
 
 export class HUDComponent {
@@ -132,6 +152,11 @@ export class HUDComponent {
     heartEmpty3: Phaser.GameObjects.Image;
     heartEmpty4: Phaser.GameObjects.Image;
     gem: Phaser.GameObjects.Image;
+    digit10000: Phaser.GameObjects.Image;
+    digit1000: Phaser.GameObjects.Image;
+    digit100: Phaser.GameObjects.Image;
+    digit10: Phaser.GameObjects.Image;
+    digit1: Phaser.GameObjects.Image;
     number0: Phaser.GameObjects.Image;
     number1: Phaser.GameObjects.Image;
     number3: Phaser.GameObjects.Image;
@@ -141,4 +166,5 @@ export class HUDComponent {
     number7: Phaser.GameObjects.Image;
     number8: Phaser.GameObjects.Image;
     number9: Phaser.GameObjects.Image;
+    gemCountText: Phaser.GameObjects.Text;
 }

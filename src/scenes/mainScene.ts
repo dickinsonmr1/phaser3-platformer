@@ -41,6 +41,8 @@ export class MainScene extends Phaser.Scene {
     shootKey2: Phaser.Input.Keyboard.Key;
 
     playerBullets: Phaser.GameObjects.Group;
+
+    expiringMessagesGroup: Phaser.GameObjects.Group;
      
     constructor() {
     super({
@@ -108,6 +110,11 @@ export class MainScene extends Phaser.Scene {
         this.enemies = this.add.group();
         this.enemiesPhysics = this.add.group();  // removed 324
         this.enemiesNonGravity = this.add.group();
+
+        this.expiringMessagesGroup = this.physics.add.group({
+            allowGravity: false,
+            velocityY: 100
+        })
 
         this.springs = this.add.group();
 
@@ -405,6 +412,8 @@ export class MainScene extends Phaser.Scene {
         }, this);
         enemies.add(enemiesPhysics);
         */
+
+        
         return world;
     }
 
@@ -464,6 +473,8 @@ export class MainScene extends Phaser.Scene {
         else
             this.emitter.setAngle(0);
         */
+
+        this.updateExpiringText();
     }
 
     updatePhysics(): void {
@@ -478,6 +489,7 @@ export class MainScene extends Phaser.Scene {
     {
         this.world.layer05. removeTileAt(tile.x, tile.y);
         this.sound.play("gemSound");
+        this.events.emit("gemCollected", this.player.gemsCollected++);
 
         return false;
     }
@@ -497,7 +509,7 @@ export class MainScene extends Phaser.Scene {
 
         return false;
     }
-    
+     
     unlockDoor (player: Player, tile): boolean
     {
         if(player.hasBlueKey) {
@@ -507,17 +519,7 @@ export class MainScene extends Phaser.Scene {
         return false;
     }
     playerTouchingSpringHandler(player, springs): void {
-        var gameLoopTime = player.scene.game.loop.time;
-        if (gameLoopTime > player.springTime && !player.body.onFloor()) {
-        //if (!this.playerBox.isInSpaceShip && !this.playerBox.isTouchingSpring) {
-        //if (!player.isTouchingSpring) {
-            //if(springSound.)
-            //if (tile.alpha > 0) {
-            player.body.velocity.y = -650;
-            player.currentScene.sound.play("springSound");
-
-            player.springTime = gameLoopTime + 1000;
-        }
+        player.tryBounce(player.scene.game.loop.time, player.currentScene.sound);
     }
 
     playerTouchingEnemiesHandler(player: Player, enemies): void
@@ -530,7 +532,27 @@ export class MainScene extends Phaser.Scene {
         bullet.destroy();
         enemy.destroy();
         enemy.currentScene.sound.play("enemyDeathSound");
-        
+        var damage = 100;
+
+        //const spring = enemy.currentScene.expiringMessagesGroup.create(enemy.x, enemy.y, "sprung");
+        //this.physics.world.enable(spring);
+
+        const emitText = enemy.currentScene.add.text(enemy.x, enemy.y, damage.toString(),
+        {
+            fontFamily: 'KenneyRocketSquare',
+            fontSize: 24,
+            align: 'right',            
+            color:"rgb(255,255,255)",
+        });
+        emitText.setAlpha(0.75);
+        emitText.setStroke('rgb(0,0,0)', 4);
+
+        enemy.currentScene.physics.world.enable(emitText);
+        emitText.body.alpha = 0.6;
+        enemy.currentScene.expiringMessagesGroup.add(emitText);
+
+        //enemy.currentScene.events.emit("enemyDamage", );
+
         //if (!this.playerBox.isInSpaceShip && !this.playerBox.isTouchingSpring) {
             //if(springSound.)
             //if (tile.alpha > 0) {
@@ -552,6 +574,19 @@ export class MainScene extends Phaser.Scene {
     //  Called if the bullet goes out of the screen
     resetBullet(bullet): void {
         //bullet.kill();
+    }
+    
+    updateExpiringText(): void {
+        this.expiringMessagesGroup.getChildren().forEach(x => {
+
+            var message = <Phaser.GameObjects.Text> x;
+            message.setAlpha(message.body.alpha);
+            message.body.setVelocityY(-200);
+            message.body.alpha -= 0.02;
+
+            if(message.body.alpha <= 0)
+                message.destroy();
+        });
     }
 }
 

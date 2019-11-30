@@ -1,1 +1,23 @@
-@font-face{font-family:"Connection";src:url("../../assets/font/Connection.ttf") format("truetype")}body{font-size:10px;color:black;background-color:#ffffff}body div.container{text-align:center}body div.container h1{font-family:"Connection",cursive;padding:0;font-size:50px}body div.container div#game{display:block;margin-left:auto;margin-right:auto}
+@font-face
+{
+    font-family:"KenneyRocketSquare";
+    src:url("../../assets/fonts/KenneyRocketSquare.ttf") format("truetype")
+}
+body
+{
+    font-size:32px; color:black;background-color:#ffffff
+}
+body div.container
+{
+    text-align:center
+}
+body div.container h1
+{
+    font-family:"KenneyRocketSquare",cursive;padding:0;font-size:50px
+}
+body div.container div#game
+{
+
+    font-family:"KenneyRocketSquare",cursive;padding:0;font-size:100px;color:black;background-color:#ffffff
+    display:block;margin-left:auto;margin-right:auto
+}
