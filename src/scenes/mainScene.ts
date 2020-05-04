@@ -39,6 +39,7 @@ export class MainScene extends Phaser.Scene {
     zoomOutKey: Phaser.Input.Keyboard.Key;
     shootKey: Phaser.Input.Keyboard.Key;
     shootKey2: Phaser.Input.Keyboard.Key;
+    pauseKey: Phaser.Input.Keyboard.Key;
 
     playerBullets: Phaser.GameObjects.Group;
 
@@ -47,17 +48,15 @@ export class MainScene extends Phaser.Scene {
     constructor() {
     super({
         key: "MainScene",
-        active: true
+        //active: true
         //map: {   events: 'events', audio: 'audio'}
     });
     }
 
     preload(): void {
-
         this.loadAudio();
         this.loadSprites();
         this.loadTileMaps();   
-
     }
 
     loadAudio(): void {
@@ -128,6 +127,7 @@ export class MainScene extends Phaser.Scene {
         this.zoomOutKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         this.shootKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);
         this.shootKey2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
+        this.pauseKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setBackgroundColor('#ccccff');
@@ -412,7 +412,6 @@ export class MainScene extends Phaser.Scene {
         }, this);
         enemies.add(enemiesPhysics);
         */
-
         
         return world;
     }
@@ -442,6 +441,7 @@ export class MainScene extends Phaser.Scene {
         if(this.zoomOutKey.isDown) {
             this.cameras.main.zoom += 0.01;
         }
+
         if (this.cursors.left.isDown) {
            this.player.moveLeft();
         }
@@ -453,6 +453,13 @@ export class MainScene extends Phaser.Scene {
         }
         else {
             this.player.stand();
+        }
+        if(Phaser.Input.Keyboard.JustDown(this.pauseKey)) {
+            this.scene.pause('MainScene');
+            this.scene.pause('HudScene');
+            this.scene.setVisible(false, "HudScene");
+            this.scene.switch("PauseScene");
+            this.scene.resume
         }
 
         // Jumping

@@ -7,8 +7,10 @@
 /// <reference path="phaser.d.ts"/>
 
 import "phaser";
+import { TitleScene } from "./scenes/titleScene";
 import { MainScene } from "./scenes/mainScene";
 import { HudScene } from "./scenes/hudScene";
+import { PauseScene } from "./scenes/pauseScene";
 
 // main game configuration
 const config: GameConfig = {
@@ -17,7 +19,7 @@ const config: GameConfig = {
   type: Phaser.AUTO,
   parent: "game",
   input: { keyboard: true},
-  scene: [ MainScene, HudScene ],
+  scene: [ TitleScene, MainScene, HudScene, PauseScene ],
   physics: {
     default: "arcade",
     arcade: {

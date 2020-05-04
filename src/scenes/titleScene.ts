@@ -10,79 +10,29 @@
  import { Player } from "../player";
  import { Constants } from "../constants";
  
- export class HudScene extends Phaser.Scene {
+ export class TitleScene extends Phaser.Scene {
 
     // HUD
     hudComponent: HUDComponent;
 
     constructor() {
         super({
-            key: "HudScene"
+            key: "TitleScene"//, active: true
         });
     }
 
         
     preload(): void {
-        this.load.atlasXML('hudSprites', './assets/sprites/HUD/spritesheet_hud.png', './assets/sprites/HUD/spritesheet_hud.xml');        
+        //this.load.atlasXML('hudSprites', './assets/sprites/HUD/spritesheet_hud.png', './assets/sprites/HUD/spritesheet_hud.xml');        
     }
 
     create(): void {
 
-        this.hudComponent = new HUDComponent();
-        this.hudComponent.playerHudIcon = this.add.sprite(200, 200, 'hudSprites', 'hudPlayer_blue.png');
-        this.hudComponent.playerHudIcon.setScrollFactor(0);
-
-        this.hudComponent.heart1 = this.add.image(300, 200, 'hudSprites', 'hudHeart_full.png');
-        this.hudComponent.heart1.setScale(0.5);
-
-        this.hudComponent.heart2 = this.add.sprite(350, 200, 'hudSprites', 'hudHeart_full.png');
-        this.hudComponent.heart2.setScale(0.5);
-        
-        this.hudComponent.heart3 = this.add.sprite(400, 200, 'hudSprites', 'hudHeart_full.png');
-        this.hudComponent.heart3.setScale(0.5);
-        
-        this.hudComponent.heart4 = this.add.sprite(450, 200, 'hudSprites', 'hudHeart_full.png');
-        this.hudComponent.heart4.setScale(0.5);
-
-        this.hudComponent.heartHalf1 = this.add.image(300, 200, 'hudSprites', 'hudHeart_half.png');
-        this.hudComponent.heartHalf1.setScale(0.5);
-
-        this.hudComponent.heartHalf2 = this.add.sprite(350, 200, 'hudSprites', 'hudHeart_half.png');
-        this.hudComponent.heartHalf2.setScale(0.5);
-        
-        this.hudComponent.heartHalf3 = this.add.sprite(400, 200, 'hudSprites', 'hudHeart_half.png');
-        this.hudComponent.heartHalf3.setScale(0.5);
-        
-        this.hudComponent.heartHalf4 = this.add.sprite(450, 200, 'hudSprites', 'hudHeart_half.png');
-        this.hudComponent.heartHalf4.setScale(0.5);
-               
-        this.hudComponent.heartEmpty1 = this.add.image(300, 200, 'hudSprites', 'hudHeart_empty.png');
-        this.hudComponent.heartEmpty1.setScale(0.5);
-
-        this.hudComponent.heartEmpty2 = this.add.image(350, 200, 'hudSprites', 'hudHeart_empty.png');
-        this.hudComponent.heartEmpty2.setScale(0.5);
-
-        this.hudComponent.heartEmpty3 = this.add.image(400, 200, 'hudSprites', 'hudHeart_empty.png');
-        this.hudComponent.heartEmpty3.setScale(0.5);
-
-        this.hudComponent.heartEmpty4 = this.add.image(450, 200, 'hudSprites', 'hudHeart_empty.png');
-        this.hudComponent.heartEmpty4.setScale(0.5);
-
-        this.hudComponent.gem = this.add.image(1720, 200, 'hudSprites', 'hudJewel_green.png');
-        this.hudComponent.gem.setScale(1.0);
-
-        this.hudComponent.gemCountText = this.add.text(1500, 150, '0',
-        {
-            fontFamily: 'KenneyRocketSquare',
-            fontSize: 64,
-            align: 'right',            
-            color:"rgb(255,255,255)",
-        });
-        this.hudComponent.gemCountText.setStroke('rgb(0,0,0)', 16);
-
+      
         //  Grab a reference to the Game Scene
-        let ourGame = this.scene.get('MainScene');
+        //let ourGame = this.scene.get('MainScene');
 
+        /*
         //  Listen for events from it
         ourGame.events.on('playerHealthUpdated', function (health) {
             this.setHealth(health);
@@ -101,11 +51,29 @@
         ourGame.events.on('enemyDamage', function (x, y, damage) {
             this.emitExpiringText(x, y, damage);
         }, this);
-        
+        */
 
-        this.setHealth(8);
-        
+        /*
+       var text = this.add.text(100,100, 'Welcome to my game!');
+       text.setInteractive({ useHandCursor: true });
+       text.on('pointerdown', () => this.clickButton());
+               
         this.scene.bringToTop;
+        this.scene.start('MenuScene');
+*/
+
+    var text = this.add.text(100,100, 'Welcome to my game!');
+
+        this.input.once('pointerdown', function (event) {
+
+            this.scene.start('MainScene');
+            this.scene.start('HudScene');
+
+        }, this);
+    }
+
+    clickButton() {
+        this.scene.switch('MainScene');
     }
 
     update(): void {
