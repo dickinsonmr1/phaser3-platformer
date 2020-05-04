@@ -1,5 +1,6 @@
 export class Menu {
     title: Phaser.GameObjects.Text;
+    footer: Phaser.GameObjects.Text;
     marker: Phaser.GameObjects.Text;
     items: Phaser.GameObjects.Group;
     selectedIndex: integer;
@@ -8,7 +9,10 @@ export class Menu {
     menuStartY: number;
 
     titleOffsetX(): number {return -100;}
-    titleOffsetY(): number {return -100;}
+    titleOffsetY(): number {return -300;}
+
+    footerStartX: number;
+    footerStartY: number;
 
     markerOffsetX(): number {return -100;}
     menuItemDistanceY(): number {return 60;}
@@ -18,7 +22,9 @@ export class Menu {
         this.selectedIndex = 0;
 
         this.menuStartX = scene.game.canvas.width / 4;
-        this.menuStartY = scene.game.canvas.height / 4;
+        this.menuStartY = scene.game.canvas.height / 2;
+        this.footerStartX = scene.game.canvas.width / 4 + this.titleOffsetX();
+        this.footerStartY = scene.game.canvas.height - scene.game.canvas.height / 8;
     }
 
     addMenuItem(scene: Phaser.Scene, text: string) {
@@ -43,6 +49,18 @@ export class Menu {
         });
         this.title.setStroke('rgb(0,0,0)', 16);
     }
+
+    setFooter(scene: Phaser.Scene, text: string) {
+        this.footer = scene.add.text(this.footerStartX, this.footerStartY, text,
+        {
+            fontFamily: 'KenneyRocketSquare',
+            fontSize: 48,
+            align: 'right',            
+            color:"rgb(255,255,255)",
+        });
+        this.footer.setStroke('rgb(0,0,0)', 16);
+    }
+
 
     setMarker(scene: Phaser.Scene, text: string) {
         this.marker = scene.add.text(this.menuStartX + this.markerOffsetX(), this.menuStartY, text,
