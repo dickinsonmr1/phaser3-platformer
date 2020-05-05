@@ -134,7 +134,7 @@
     }
 
    
- }
+}
 
 export class HUDComponent {
     hudGroup: Phaser.GameObjects.Group;

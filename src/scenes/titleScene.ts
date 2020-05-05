@@ -7,16 +7,12 @@
  /// <reference path="../phaser.d.ts"/>
 
  import "phaser";
- import { Player } from "../player";
- import { Constants } from "../constants";
  import { Menu } from "./menu";
  
  export class TitleScene extends Phaser.Scene {
 
-    // HUD
     menu: Menu;
 
-    //cursors: Phaser.Input.Keyboard.CursorKeys;     
     pauseKey: Phaser.Input.Keyboard.Key;
     selectKey: Phaser.Input.Keyboard.Key;
     cursorUp: Phaser.Input.Keyboard.Key;
@@ -29,10 +25,14 @@
     }
         
     preload(): void {
-
+        this.load.image('menuSky', './assets/sample/colored_grass.png');
     }
 
     create(): void {
+
+        var skySprite = this.add.tileSprite(0, 0, 20480, 1024, 'menuSky');
+        skySprite.setX(0);
+        skySprite.setY(768);
 
         this.pauseKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         this.selectKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
@@ -46,7 +46,7 @@
         this.menu.addMenuItem(this, "Start Game");
         this.menu.addMenuItem(this, "Continue Game");
         this.menu.addMenuItem(this, "Exit");
-        this.menu.setFooter(this, "Powered by Phaser 3");
+        this.menu.setFooter(this, "©2020 by Mark Dickinson  //  Powered by Phaser 3");
     }
 
     update(): void {
@@ -62,14 +62,5 @@
         if(Phaser.Input.Keyboard.JustDown(this.cursorDown)) {
             this.menu.selectNextItem();
         }
-
     }
-
-    setHealth(health: number): void {        
-      
-    }   
- }
-
- export class MenuItem {
-    item: Phaser.GameObjects.Text;
  }

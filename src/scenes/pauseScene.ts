@@ -45,12 +45,14 @@
         this.menu.setMarker(this, ">>");
         this.menu.addMenuItem(this, "Resume");
         this.menu.addMenuItem(this, "Toggle Sound - On");
-        this.menu.addMenuItem(this, "Exit");        
+        this.menu.addMenuItem(this, "Exit to Title");     
+        
+        this.scene.bringToTop;
     }
 
     update(): void {
         if(Phaser.Input.Keyboard.JustDown(this.pauseKey)) {
-            this.endGameAndReturnToTitleMenu();
+            this.returnToGame();
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.selectKey)) {
@@ -64,8 +66,8 @@
         }
          
         if(Phaser.Input.Keyboard.JustDown(this.selectKey) && this.menu.selectedIndex == 2) {
-            this.scene.remove('MainScene');
-            this.scene.remove('HudScene');
+            this.scene.stop('MainScene');
+            this.scene.stop('HudScene');
             this.scene.switch('TitleScene');
         }
 

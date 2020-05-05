@@ -10,6 +10,7 @@ import "phaser";
 import { Player } from "../player";
 import { Constants } from "../constants";
 import { Bullet } from "../bullet";
+import { World } from "../world/world";
 
 export class MainScene extends Phaser.Scene {
   private phaserSprite: Phaser.GameObjects.Sprite;
@@ -40,6 +41,7 @@ export class MainScene extends Phaser.Scene {
     shootKey: Phaser.Input.Keyboard.Key;
     shootKey2: Phaser.Input.Keyboard.Key;
     pauseKey: Phaser.Input.Keyboard.Key;
+    moveWaterKey: Phaser.Input.Keyboard.Key;
 
     playerBullets: Phaser.GameObjects.Group;
 
@@ -128,6 +130,7 @@ export class MainScene extends Phaser.Scene {
         this.shootKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);
         this.shootKey2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
         this.pauseKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        this.moveWaterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
 
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setBackgroundColor('#ccccff');
@@ -299,7 +302,7 @@ export class MainScene extends Phaser.Scene {
         this.physics.add.overlap(this.player, world.layer03);
         world.layer03.setTileIndexCallback(Constants.tileWater, this.inWater, this);
         world.layer03.setTileIndexCallback(Constants.tileWaterTop, this.inWater, this);
-
+        
         //---------------------------------------------------------------------------------------------------
         // FOREGROUND PASSABLE OPAQUE LAYER (front wall of a cave, plant, etc.)
         //---------------------------------------------------------------------------------------------------
@@ -442,6 +445,10 @@ export class MainScene extends Phaser.Scene {
             this.cameras.main.zoom += 0.01;
         }
 
+        if(this.moveWaterKey.isDown) {
+            // debug stuff here    
+        }
+
         if (this.cursors.left.isDown) {
            this.player.moveLeft();
         }
@@ -455,11 +462,11 @@ export class MainScene extends Phaser.Scene {
             this.player.stand();
         }
         if(Phaser.Input.Keyboard.JustDown(this.pauseKey)) {
-            this.scene.pause('MainScene');
+            //this.scene.pause('MainScene');
             this.scene.pause('HudScene');
             this.scene.setVisible(false, "HudScene");
             this.scene.switch("PauseScene");
-            this.scene.resume
+            //this.scene.resume
         }
 
         // Jumping
@@ -595,21 +602,6 @@ export class MainScene extends Phaser.Scene {
                 message.destroy();
         });
     }
-}
-
-export class World {
-    map: Phaser.Tilemaps.Tilemap;
-    //tileset;
-    layer01: Phaser.Tilemaps.StaticTilemapLayer;
-    layer03: Phaser.Tilemaps.StaticTilemapLayer;
-    layer03A: Phaser.Tilemaps.StaticTilemapLayer;
-    layer04: Phaser.Tilemaps.StaticTilemapLayer;
-    layer05: Phaser.Tilemaps.DynamicTilemapLayer;
-    layer06: Phaser.Tilemaps.StaticTilemapLayer;
-    layer07: Phaser.Tilemaps.DynamicTilemapLayer;
-    layer02: Phaser.Tilemaps.DynamicTilemapLayer;
-    isWorldLoaded: boolean;
-    sky: Phaser.GameObjects.TileSprite;
 }
 
  /*

@@ -86,18 +86,10 @@ export class Player extends Phaser.GameObjects.Sprite {
     private initImage(input: Phaser.Input.InputPlugin) {       
         // input
         this.cursors = input.keyboard.createCursorKeys();
-        this.moveKeyLeft = this.currentScene.input.keyboard.addKey(
-        Phaser.Input.Keyboard.KeyCodes.A
-        );
-        this.moveKeyRight = input.keyboard.addKey(
-        Phaser.Input.Keyboard.KeyCodes.D
-        );
-        this.shootingKey = input.keyboard.addKey(
-        Phaser.Input.Keyboard.KeyCodes.CTRL
-        );
-        this.jumpingKey = input.keyboard.addKey(
-        Phaser.Input.Keyboard.KeyCodes.SPACE
-        );
+        this.moveKeyLeft = this.currentScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        this.moveKeyRight = input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        this.shootingKey = input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);
+        this.jumpingKey = input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
 
     processinput(): void {
@@ -152,7 +144,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.isDucking = false;
         this.body.setVelocityX(0);
         if(this.body.onFloor())
-        {
+        {            
             this.anims.play('idle', true);
         }
         else

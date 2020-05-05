@@ -44,7 +44,7 @@ export class Menu {
         {
             fontFamily: 'KenneyRocketSquare',
             fontSize: 96,
-            align: 'right',            
+            align: 'center',            
             color:"rgb(255,255,255)",
         });
         this.title.setStroke('rgb(0,0,0)', 16);
@@ -54,13 +54,12 @@ export class Menu {
         this.footer = scene.add.text(this.footerStartX, this.footerStartY, text,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: 48,
-            align: 'right',            
+            fontSize: 32,
+            align: 'center',            
             color:"rgb(255,255,255)",
         });
         this.footer.setStroke('rgb(0,0,0)', 16);
     }
-
 
     setMarker(scene: Phaser.Scene, text: string) {
         this.marker = scene.add.text(this.menuStartX + this.markerOffsetX(), this.menuStartY, text,
