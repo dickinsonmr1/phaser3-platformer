@@ -6,14 +6,14 @@ import { Player } from "../player";
 export class World {
     map: Phaser.Tilemaps.Tilemap;
     
-    layer01: Phaser.Tilemaps.StaticTilemapLayer;
-    layer03: Phaser.Tilemaps.StaticTilemapLayer;
-    layer03A: Phaser.Tilemaps.StaticTilemapLayer;
-    layer04: Phaser.Tilemaps.StaticTilemapLayer;
-    layer05: Phaser.Tilemaps.DynamicTilemapLayer;
-    layer06: Phaser.Tilemaps.StaticTilemapLayer;
-    layer07: Phaser.Tilemaps.DynamicTilemapLayer;
-    layer02: Phaser.Tilemaps.DynamicTilemapLayer;
+    private layer01: Phaser.Tilemaps.StaticTilemapLayer;
+    private layer03: Phaser.Tilemaps.StaticTilemapLayer;
+    private layer03A: Phaser.Tilemaps.StaticTilemapLayer;
+    private layer04: Phaser.Tilemaps.StaticTilemapLayer;
+    private layer05: Phaser.Tilemaps.DynamicTilemapLayer;
+    private layer06: Phaser.Tilemaps.StaticTilemapLayer;
+    private layer07: Phaser.Tilemaps.DynamicTilemapLayer;
+    private layer02: Phaser.Tilemaps.DynamicTilemapLayer;
     isWorldLoaded: boolean;
     sky: Phaser.GameObjects.TileSprite;
 
@@ -50,9 +50,6 @@ export class World {
         var enemiesTileSet = this.map.addTilesetImage('spritesheet_enemies_64x64', 'enemyTiles');
         var requestTileSet = this.map.addTilesetImage('platformer-requests-sheet_64x64', 'platformerRequestTiles');
         var industrialTileSet = this.map.addTilesetImage('platformerPack_industrial_tilesheet_64x64', 'industrialTiles');
-        //var playerTileSet = this.scene.load.atlasXML('playerSprites', 'assets/sprites/player/spritesheet_players.png', 'assets/sprites/player/spritesheet_players.xml');
-
-        //this.scene.add.image(0, 0, 'playerSprites', 'alienBlue_front.png');
 
         var tileSets = [tileSet, itemsTileSet, groundTileSet, enemiesTileSet, requestTileSet, industrialTileSet];
         
@@ -63,11 +60,12 @@ export class World {
         // non-passable blocks layer
         this.layer02 = this.map.createDynamicLayer('layer02-nonpassable', tileSets, 0, 0);
         this.layer02.alpha = 1.0;
+        this.scene.physics.add.collider(player, this.layer02);
         this.layer02.setCollisionByExclusion([-1],true);//, Constants.tileLockBlue]);
         this.layer02.setTileIndexCallback(Constants.tileLockBlue, this.scene.unlockDoor, this.scene);
 
 
-        this.scene.physics.add.collider(player, this.layer02);
+        
 
         /*
         // set bounds so the camera won't go outside the game world
@@ -168,7 +166,6 @@ export class World {
             }
         });
       
-        this.scene.physics.add.collider(player, this.layer02);
         this.scene.physics.add.collider(player, this.layer07);
         this.scene.physics.add.collider(player, this.scene.enemies, this.scene.playerTouchingEnemiesHandler);
         this.scene.physics.add.collider(player, this.scene.springs, this.scene.playerTouchingSpringHandler);
@@ -179,14 +176,26 @@ export class World {
         })
 
         this.scene.physics.add.collider(this.scene.enemies, player.bullets, this.scene.bulletTouchingEnemyHandler);
-        this.scene.physics.add.collider(player.bullets, this.layer02, this.scene.bulletTouchingImpassableLayerHandler);                
-        
+        this.scene.physics.add.collider(player.bullets, this.layer02, this.scene.bulletTouchingImpassableLayerHandler);                        
+    }
+
+    private addColliderWithDynamicLayer(player: Player, layer: Phaser.Tilemaps.DynamicTilemapLayer) {
+        this.scene.physics.add.collider(player, layer);
+    }
+
+    private addColliderWithStaticLayer(player: Player, layer: Phaser.Tilemaps.StaticTilemapLayer) {
+        this.scene.physics.add.collider(player, layer);
     }
 
     updateSky(camera: Phaser.Cameras.Scene2D.Camera): void {
         this.sky.setX(0);
         this.sky.setY(768);
         this.sky.setTilePosition(-(camera.scrollX * 0.25), -(camera.scrollY * 0.05));
+    }
+
+    collectGem (tileX: number, tileY: number): void
+    {
+        this.layer05.removeTileAt(tileX, tileY);
     }
 
     collectKey(tileX: number, tileY: number): void {

@@ -41,6 +41,7 @@ export class MainScene extends Phaser.Scene {
     shootKey2: Phaser.Input.Keyboard.Key;
     pauseKey: Phaser.Input.Keyboard.Key;
     moveWaterKey: Phaser.Input.Keyboard.Key;
+    jumpKey: Phaser.Input.Keyboard.Key;
 
     playerBullets: Phaser.GameObjects.Group;
 
@@ -77,7 +78,6 @@ export class MainScene extends Phaser.Scene {
         this.load.atlasXML('playerSprites', './assets/sprites/player/spritesheet_players.png', './assets/sprites/player/spritesheet_players.xml');
         this.load.atlasXML('alienShipSprites', './assets/sprites/ships/spritesheet_spaceships.png', './assets/sprites/ships/spritesheet_spaceships.xml');
         this.load.atlasXML('alienShipLaserSprites', './assets/sprites/ships/spritesheet_lasers.png', './assets/sprites/ships/spritesheet_lasers.xml');
-        //this.load.atlasXML('hudSprites', './assets/sprites/HUD/spritesheet_hud.png', './assets/sprites/HUD/spritesheet_hud.xml');
 
         // initial placeholders for animated objects
         this.load.image('ghost', './assets/sprites/enemies/ghost.png');
@@ -96,7 +96,6 @@ export class MainScene extends Phaser.Scene {
         // tilemap for level building
         //this.load.tilemapTiledJSON('level1', './assets/tilemaps/maps/world-00-overworld.json');
         this.load.tilemapTiledJSON('level1', './assets/tilemaps/maps/world-01-03.json');
-        //this.game.load.tilemap('level1', './assets/tilemaps/maps/world-00-overworld.json', null, Phaser.Tilemap.TILED_JSON);
         this.load.image('tiles', './assets/tilemaps/tiles/spritesheet_tiles_64x64.png');
         this.load.image('items', './assets/tilemaps/tiles/spritesheet_items_64x64.png');
         this.load.image('ground', './assets/tilemaps/tiles/spritesheet_ground_64x64.png');
@@ -137,61 +136,15 @@ export class MainScene extends Phaser.Scene {
         this.shootKey2 = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
         this.pauseKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         this.moveWaterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
+        this.jumpKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setBackgroundColor('#ccccff');
-
-        //var particles = this.add.particles('playerGunBullet');
-
-        /*
-        var source = {
-            contains: function (x, y)
-            {
-                this.enemies.body.hitTest(x, y);
-
-                return
-            }
-        };
-        */
-
-        /*
-        this.emitter = particles.createEmitter({
-            x: 600,
-            y: 100,
-            angle: { min: 180, max: 180 },
-            speed: 500,
-            gravityY: 0,
-            lifespan: 1000,
-            maxParticles: 10,
-            alpha: 0.75
-        });
-        */
-
-        /*
-        var config = {
-            type: 'onEnter',  // 'onEnter', or 'onLeave'
-            source: source      // Geom like Circle or Rect that supports a 'contains' function
-        };
-        this.emitter.setDeathZone(config);
-        */
-        //this.emitter.setBlendMode('SCREEN');
-
-        //this.scene.launch("HudScene");
-        //this.scene.bringToTop('HudScene');
     }
-
-    //createPlayer(physics: Phaser.Physics.Arcade.ArcadePhysics, input: Phaser.Input.InputPlugin, anims: Phaser.Animations.AnimationManager): Player {
-        //return new Player(this);//physics, input, anims);
-        ////return new Player({scene: this, x: 64, y: 64, key: 'playerSprites', frame: 'alienBlue_front.png'});
-    //}
 
     update(): void {
 
         this.world.updateSky(this.cameras.main);
-
-        //this.world.sky.setX(0);
-        //this.world.sky.setY(768);
-        //this.world.sky.setTilePosition(-(this.cameras.main.scrollX * 0.25), -(this.cameras.main.scrollY * 0.05));
 
         if(this.shootKey.isDown) {
             this.player.tryFireBullet(this.sys.game.loop.time, this.sound);
@@ -233,24 +186,12 @@ export class MainScene extends Phaser.Scene {
         }
 
         // Jumping
-        if ((this.cursors.space.isDown || this.cursors.up.isDown))
+        if ((this.jumpKey.isDown || this.cursors.up.isDown))
         {
             this.player.tryJump(this.sound);
         }      
 
         this.player.update();
-        //this.player.playerGun.setSize(64, 64).setOffset(100, 100);
-
-        //var hudScene = this.scene.get('HudScene');
-        //hudScene.setHealth(this.player.health);
-        /*
-        this.emitter.setPosition(this.player.x + 20, this.player.y + 200);
-        if(this.player.flipX)
-            this.emitter.setAngle(180);
-        else
-            this.emitter.setAngle(0);
-        */
-
         this.updateExpiringText();
     }
 
@@ -264,7 +205,7 @@ export class MainScene extends Phaser.Scene {
 
     collectGem (sprite, tile): boolean
     {
-        this.world.layer05. removeTileAt(tile.x, tile.y);
+        this.world.collectGem(tile.x, tile.y);
         this.sound.play("gemSound");
         this.events.emit("gemCollected", this.player.gemsCollected++);
 
@@ -295,6 +236,7 @@ export class MainScene extends Phaser.Scene {
         }
         return false;
     }
+
     playerTouchingSpringHandler(player, springs): void {
         player.tryBounce(player.scene.game.loop.time, player.currentScene.sound);
     }
@@ -311,9 +253,6 @@ export class MainScene extends Phaser.Scene {
         enemy.currentScene.sound.play("enemyDeathSound");
         var damage = 100;
 
-        //const spring = enemy.currentScene.expiringMessagesGroup.create(enemy.x, enemy.y, "sprung");
-        //this.physics.world.enable(spring);
-
         const emitText = enemy.currentScene.add.text(enemy.x, enemy.y, damage.toString(),
         {
             fontFamily: 'KenneyRocketSquare',
@@ -327,17 +266,6 @@ export class MainScene extends Phaser.Scene {
         enemy.currentScene.physics.world.enable(emitText);
         emitText.body.alpha = 0.6;
         enemy.currentScene.expiringMessagesGroup.add(emitText);
-
-        //enemy.currentScene.events.emit("enemyDamage", );
-
-        //if (!this.playerBox.isInSpaceShip && !this.playerBox.isTouchingSpring) {
-            //if(springSound.)
-            //if (tile.alpha > 0) {
-            //player.body.velocity.y = -650;
-            //enemy.currentScene.sound.play("hurtSound");
-            //this.sound.play("laserSound");
-            //this.playerBox.isTouchingSpring = true;
-        //}
     }
 
     bulletTouchingImpassableLayerHandler(bullet, layer): void {
@@ -346,11 +274,6 @@ export class MainScene extends Phaser.Scene {
   
     bulletIntervalElapsed = (now, time) =>{
         return now > time;
-    }
-
-    //  Called if the bullet goes out of the screen
-    resetBullet(bullet): void {
-        //bullet.kill();
     }
     
     updateExpiringText(): void {
@@ -366,49 +289,3 @@ export class MainScene extends Phaser.Scene {
         });
     }
 }
-
- /*
-    playerEnteringSpaceshipCollisionHandler(playerSpaceShip, player): void {
-        if (player.renderable) {
-            
-            this.playerBox.isInSpaceShip = true;
-            //particleBurst();
-            this.emitter.start(false, 1000, 100, 0);
-        }
-    }
-
-    playerTouchingSpringHandler(player, springs): void {
-
-        if (!this.playerBox.isInSpaceShip && !this.playerBox.isTouchingSpring) {
-            //if(springSound.)
-            //if (tile.alpha > 0) {
-            player.body.velocity.y = -650;
-            this.springSound.play();
-            this.playerBox.isTouchingSpring = true;
-        }
-    }
-
-    playerTouchingEnemiesHandler(player, enemies): void {
-
-        if (!this.playerBox.isInSpaceShip && player.playerBox.hurtTime == 0) {
-            this.hurtSound.play();
-            player.playerBox.hurtTime = 60;
-        }
-    }
-*/
-   
-/*
-    playerExitingSpaceship(player, playerSpaceShip, playerBox): void {
-        playerBox.isInSpaceShip = false;
-        player.body.velocity.y = -400;
-        player.body.x = playerSpaceShip.body.x +50;
-        player.renderable = true;
-        playerSpaceShip.body.velocity.x = 0;
-        playerSpaceShip.body.velocity.y = 0;
-        playerSpaceShip.frameName = "shipBeige.png"; //players[selectedPlayerIndex] + "_stand.png";
-
-        this.emitter.on = false;
-    }
-    */
-
-  
