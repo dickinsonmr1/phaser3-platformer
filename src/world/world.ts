@@ -182,4 +182,18 @@ export class World {
         this.scene.physics.add.collider(player.bullets, this.layer02, this.scene.bulletTouchingImpassableLayerHandler);                
         
     }
+
+    updateSky(camera: Phaser.Cameras.Scene2D.Camera): void {
+        this.sky.setX(0);
+        this.sky.setY(768);
+        this.sky.setTilePosition(-(camera.scrollX * 0.25), -(camera.scrollY * 0.05));
+    }
+
+    collectKey(tileX: number, tileY: number): void {
+        this.layer05.removeTileAt(tileX, tileY);
+    }
+
+    unlockDoor(tileX: number, tileY: number): void {
+        this.layer02.removeTileAt(tileX, tileY);
+    }
 }

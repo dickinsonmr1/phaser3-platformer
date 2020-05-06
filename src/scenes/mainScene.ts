@@ -28,7 +28,6 @@ export class MainScene extends Phaser.Scene {
     playerSpaceShip: Phaser.GameObjects.Sprite;
     //playerBox: PlayerBox;
 
-    enemy;
     enemies : Phaser.GameObjects.Group;
     enemiesPhysics: Phaser.GameObjects.Group;
     enemiesNonGravity: Phaser.GameObjects.Group;
@@ -119,53 +118,18 @@ export class MainScene extends Phaser.Scene {
         })
 
         this.springs = this.add.group();
-
-        //this.createPlayer();
-
-        this.anims.create({
-            key: 'walk',
-            frames: this.anims.generateFrameNames('playerSprites', { prefix: 'alienBlue_walk', start: 1, end: 2, zeroPad: 1, suffix: '.png' }),
-            frameRate: 10,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'swim',
-            frames: this.anims.generateFrameNames('playerSprites', { prefix: 'alienBlue_swim', start: 1, end: 2, zeroPad: 1, suffix: '.png' }),
-            frameRate: 10,
-            repeat: -1
-        });
-        // idle with only one frame, so repeat is not neaded
-        this.anims.create({
-            key: 'idle',
-            frames: [{key: 'playerSprites', frame: 'alienBlue_stand.png'}],
-            frameRate: 10,
-        });
-
-        this.anims.create({
-            key: 'jump',
-            frames: [{key: 'playerSprites', frame: 'alienBlue_jump.png'}],
-            frameRate: 10,
-        });
-
-        this.anims.create({
-            key: 'duck',
-            frames: [{key: 'playerSprites', frame: 'alienBlue_duck.png'}],
-            frameRate: 10,
-        });
-
+        
         this.player = new Player({
             scene: this,
             x: 20,
             y: 600,
             key: "player2"
             });        
+        this.player.init(this.anims);
 
         this.world = new World(this);
         this.world.createWorld('level1', this.player);
-        //this.world =  this.createWorld('level1');
-
-        //cursors = this.input.keyboard.createCursorKeys();
+        
         this.cursors = this.input.keyboard.createCursorKeys();
         this.zoomInKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
         this.zoomOutKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
@@ -216,252 +180,6 @@ export class MainScene extends Phaser.Scene {
         //this.scene.bringToTop('HudScene');
     }
 
-    createWorld(worldName): World {
-        // using the Tiled map editor, here is the order of the layers from back to front:
-        
-        // layer00-image (not currently used)
-        // layer01-background-passable
-        // layer02-nonpassable        
-        // (player spaceship)
-        // (player)
-        // layer07-enemies 
-        // layer05-collectibles
-        // layer03-foreground-passable-semitransparent
-            // like water... one idea is to make this automatically move
-        // layer06-gameobjects        
-        // layer04-foreground-passable-opaque
-        
-        // TODO: tilemaps (https://medium.com/@michaelwesthadley/modular-game-worlds-in-phaser-3-tilemaps-1-958fc7e6bbd6)
-        // 
-        var world = new World(this);
-        world.createWorld('level1', this.player);
-
-        world.sky = this.skySprite;
-
-        world.map = this.add.tilemap(worldName);
-        //map.addTilesetImage('sky', 'backgroundImageLayer');
-        var tileSet = world.map.addTilesetImage('spritesheet_tiles_64x64', 'tiles');
-        var itemsTileSet = world.map.addTilesetImage('spritesheet_items_64x64', 'items');
-        var groundTileSet = world.map.addTilesetImage('spritesheet_ground_64x64', 'ground');
-        var enemiesTileSet = world.map.addTilesetImage('spritesheet_enemies_64x64', 'enemyTiles');
-        var requestTileSet = world.map.addTilesetImage('platformer-requests-sheet_64x64', 'platformerRequestTiles');
-        var industrialTileSet = world.map.addTilesetImage('platformerPack_industrial_tilesheet_64x64', 'industrialTiles');
-        var playerTileSet = this.load.atlasXML('playerSprites', 'assets/sprites/player/spritesheet_players.png', 'assets/sprites/player/spritesheet_players.xml');
-
-        this.add.image(0, 0, 'playerSprites', 'alienBlue_front.png');
-
-        var tileSets = [tileSet, itemsTileSet, groundTileSet, enemiesTileSet, requestTileSet, industrialTileSet];
-        
-            // background layer
-        //var groundTileSet = world.map.addTilesetImage('spritesheet_ground_64x64', 'ground');
-        world.layer01 = world.map.createStaticLayer('layer01-background-passable', tileSets, 0, 0, );
-        world.layer01.alpha = 1.0;
-        //world.layer01.resizeWorld();f
-
-        // non-passable blocks layer
-        world.layer02 = world.map.createDynamicLayer('layer02-nonpassable', tileSets, 0, 0);
-        world.layer02.alpha = 1.0;
-        //world.map.setCollisionBetween(0, 2000, true, true, world.layer02.data);
-        world.layer02.setCollisionByExclusion([-1],true);//, Constants.tileLockBlue]);
-        //world.layer02.set
-        world.layer02.setTileIndexCallback(Constants.tileLockBlue, this.unlockDoor, this);
-
-        this.anims.create({
-            key: 'walk',
-            frames: this.anims.generateFrameNames('playerSprites', { prefix: 'alienBlue_walk', start: 1, end: 2, zeroPad: 1, suffix: '.png' }),
-            frameRate: 10,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'swim',
-            frames: this.anims.generateFrameNames('playerSprites', { prefix: 'alienBlue_swim', start: 1, end: 2, zeroPad: 1, suffix: '.png' }),
-            frameRate: 10,
-            repeat: -1
-        });
-        // idle with only one frame, so repeat is not neaded
-        this.anims.create({
-            key: 'idle',
-            frames: [{key: 'playerSprites', frame: 'alienBlue_stand.png'}],
-            frameRate: 10,
-        });
-
-        this.anims.create({
-            key: 'jump',
-            frames: [{key: 'playerSprites', frame: 'alienBlue_jump.png'}],
-            frameRate: 10,
-        });
-
-        this.anims.create({
-            key: 'duck',
-            frames: [{key: 'playerSprites', frame: 'alienBlue_duck.png'}],
-            frameRate: 10,
-        });
-
-        this.player = new Player({
-            scene: this,
-            x: 20,
-            y: 600,
-            key: "player2"
-            });        
-        //this.player
-        //this.player.playerGun = this.add.image(64, 64, 'playerGun', 'playerGun');
-        //this.playerBox.playerGun.anchor.setTo(0.5, 0.5);
-            // small fix to our player images, we resize the physics body object slightly
-        //this.player2.body.setSize(this.player2.width, this.player2.height-8);
-
-
-        this.physics.add.collider(this.player, world.layer02);
-
-        /*
-        // set bounds so the camera won't go outside the game world
-        this.cameras.main.setBounds(0, 0, 1000,1000 );
-        // make the camera follow the player
-        this.cameras.main.startFollow(this.player.sprite);
-        
-        // set background color, so the sky is not black    
-        this.cameras.main.setBackgroundColor('#ccccff'); 
-        */
-
-            /*
-            //map.setCollisionBetween(0, 133, true, layer02, true);
-            world.map.setCollisionBetween(0, 2000, true, world.layer02, true);
-            //map.setCollisionBetween(158, 400, true, layer02, true);
-
-            world.layer02.resizeWorld();
-            world.layer02.debug = false;
-            //map.setCollision();
-            */
-
-            //  Un-comment this on to see the collision tiles
-            //world.layer01.debug = true;
-            //world.layer02.debug = true;
-
-        //---------------------------------------------------------------------------------------------------
-        // foreground semi-transparent layer (water, lava, clouds, etc.)
-        //---------------------------------------------------------------------------------------------------
-        world.layer03 = world.map.createStaticLayer('layer03-foreground-passable-semitransparent', tileSets, 0, 0);
-        world.layer03.alpha = 0.5;
-        this.physics.add.overlap(this.player, world.layer03);
-        world.layer03.setTileIndexCallback(Constants.tileWater, this.inWater, this);
-        world.layer03.setTileIndexCallback(Constants.tileWaterTop, this.inWater, this);
-        
-        //---------------------------------------------------------------------------------------------------
-        // FOREGROUND PASSABLE OPAQUE LAYER (front wall of a cave, plant, etc.)
-        //---------------------------------------------------------------------------------------------------
-        world.layer04 = world.map.createStaticLayer('layer04-foreground-passable-opaque', tileSets, 0, 0);
-        world.layer04.alpha = 1.0;
-
-        //---------------------------------------------------------------------------------------------------
-        // COLLECTIBLES
-        //---------------------------------------------------------------------------------------------------
-        world.layer05 = world.map.createDynamicLayer('layer05-collectibles', tileSets, 0, 0);
-        world.layer05.alpha = 1.0;//0.75;
-
-        this.physics.add.overlap(this.player, world.layer05);
-        world.layer05.setTileIndexCallback(Constants.tileKeyGemRed, this.collectGem, this);
-        world.layer05.setTileIndexCallback(Constants.tileKeyGemGreen, this.collectGem, this);
-        world.layer05.setTileIndexCallback(Constants.tileKeyGemYellow, this.collectGem, this);
-        world.layer05.setTileIndexCallback(Constants.tileKeyGemBlue, this.collectGem, this);
-        world.layer05.setTileIndexCallback(Constants.tileKeyBlueKey, this.collectKey, this);        
-
-        world.layer06 = world.map.createStaticLayer('layer06-gameobjects', tileSets, 0, 0);
-        world.layer06.alpha = 0.0;
-
-        world.layer06.forEachTile(tile => {
-            if(tile.index == Constants.tileKeySpring)
-            {
-                const x = tile.getCenterX();
-                const y = tile.getCenterY();
-                const spring = this.springs.create(x, y, "sprung");
-                this.physics.world.enable(spring);   
-                spring.body.moves = false;
-                spring.body.immovable = true;
-
-                this.add.existing(spring);
-                //world.layer06.removeTileAt(tile.x, tile.y);
-            }
-        })
-
-        /*
-        this.springs.runChildUpdate(function (item) {        
-            item.enableBody = true;
-            item.immovable = true;
-            item.body.moves = false;
-            item.scale.setTo(0.5, 0.5);
-            item.anchor.setTo(0, 0);
-        }, this);
-        */
-
-        var allEnemyTypes = [297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371];
-        //---------------------------------------------------------------------------------------------------
-        // ENEMIES
-        //---------------------------------------------------------------------------------------------------
-        world.layer07 = world.map.createDynamicLayer('layer07-enemies', tileSets, 0, 0);
-        world.layer07.alpha = 0.1;
-        world.layer07.forEachTile(tile => {
-            if(allEnemyTypes.includes(tile.index)) {
-                const x = tile.getCenterX();
-                const y = tile.getCenterY();
-                const enemy = this.enemies.create(x, y, "ghost");
-                enemy.currentScene = this;
-                this.physics.world.enable(enemy);   
-                this.add.existing(enemy);
-
-                world.layer07.removeTileAt(tile.x, tile.y);
-            }
-        });
-      
-        this.physics.add.collider(this.player, world.layer02);
-        this.physics.add.collider(this.player, world.layer07);
-        this.physics.add.collider(this.player, this.enemies, this.playerTouchingEnemiesHandler);
-        this.physics.add.collider(this.player, this.springs, this.playerTouchingSpringHandler);
-        this.physics.add.collider(this.enemies, world.layer02);
-
-        this.player.bullets = this.physics.add.group({
-            allowGravity: false
-        })
-
-        this.physics.add.collider(this.enemies, this.player.bullets, this.bulletTouchingEnemyHandler);
-        this.physics.add.collider(this.player.bullets, world.layer02, this.bulletTouchingImpassableLayerHandler);
-                
-        //this.physics.world.setBoundsCollision(true, true, true, true);
-        //world.layer07.createFromTiles([297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371], null, this.make.sprite(), this, this.cameras.main);//, this.enemyPhysics);
-        //world.map.createFromTiles([324], null, 'piranha', 'layer07-enemies', enemiesNonGravity);//, this.enemyNonGravity);
-
-        /*
-        world.map.createFromTiles([297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371], null, 'ghost', 'layer07-enemies', enemiesPhysics);//, this.enemyPhysics);
-
-        world.map.createFromTiles([324], null, 'piranha', 'layer07-enemies', enemiesNonGravity);//, this.enemyNonGravity);
-
-        world.layer07.resizeWorld();
-
-        game.physics.enable(enemiesNonGravity);
-        enemiesNonGravity.forEach(function (enemy) {
-            enemy.enemyType = "nonGravity";
-            enemy.movementTime = 0;
-
-            enemy.enableBody = true;
-            enemy.body.allowGravity = false;
-            enemy.body.velocity.y = 150;
-            enemy.body.collideWorldBounds = false;
-            enemy.isFacingRight = true;
-        }, this);
-        enemies.add(enemiesNonGravity);
-
-        game.physics.enable(enemiesPhysics);
-        enemiesPhysics.forEach(function (enemy) {
-            enemy.enemyType = "physics";
-            enemy.enableBody = true;
-            enemy.body.collideWorldBounds = true;
-            enemy.isFacingRight = true;
-        }, this);
-        enemies.add(enemiesPhysics);
-        */
-        
-        return world;
-    }
-
     //createPlayer(physics: Phaser.Physics.Arcade.ArcadePhysics, input: Phaser.Input.InputPlugin, anims: Phaser.Animations.AnimationManager): Player {
         //return new Player(this);//physics, input, anims);
         ////return new Player({scene: this, x: 64, y: 64, key: 'playerSprites', frame: 'alienBlue_front.png'});
@@ -469,9 +187,11 @@ export class MainScene extends Phaser.Scene {
 
     update(): void {
 
-        this.world.sky.setX(0);
-        this.world.sky.setY(768);
-        this.world.sky.setTilePosition(-(this.cameras.main.scrollX * 0.25), -(this.cameras.main.scrollY * 0.05));
+        this.world.updateSky(this.cameras.main);
+
+        //this.world.sky.setX(0);
+        //this.world.sky.setY(768);
+        //this.world.sky.setTilePosition(-(this.cameras.main.scrollX * 0.25), -(this.cameras.main.scrollY * 0.05));
 
         if(this.shootKey.isDown) {
             this.player.tryFireBullet(this.sys.game.loop.time, this.sound);
@@ -561,7 +281,7 @@ export class MainScene extends Phaser.Scene {
     collectKey (sprite, tile): boolean
     {
         this.player.hasBlueKey = true;
-        this.world.layer05.removeTileAt(tile.x, tile.y);
+        this.world.collectKey(tile.x, tile.y);
         this.sound.play("keySound");
 
         return false;
@@ -570,7 +290,7 @@ export class MainScene extends Phaser.Scene {
     unlockDoor (player: Player, tile): boolean
     {
         if(player.hasBlueKey) {
-            this.world.layer02.removeTileAt(tile.x, tile.y);
+            this.world.unlockDoor(tile.x, tile.y);
             this.sound.play("keySound");
         }
         return false;
