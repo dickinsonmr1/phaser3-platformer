@@ -14,7 +14,7 @@ import { World } from "../world/world";
 
 export class MainScene extends Phaser.Scene {
   private phaserSprite: Phaser.GameObjects.Sprite;
-  private skySprite: Phaser.GameObjects.TileSprite;
+  public skySprite: Phaser.GameObjects.TileSprite;
 
     world: World;    
     emitter: Phaser.GameObjects.Particles.ParticleEmitter;
@@ -95,6 +95,7 @@ export class MainScene extends Phaser.Scene {
 
     loadTileMaps(): void {
         // tilemap for level building
+        //this.load.tilemapTiledJSON('level1', './assets/tilemaps/maps/world-00-overworld.json');
         this.load.tilemapTiledJSON('level1', './assets/tilemaps/maps/world-01-03.json');
         //this.game.load.tilemap('level1', './assets/tilemaps/maps/world-00-overworld.json', null, Phaser.Tilemap.TILED_JSON);
         this.load.image('tiles', './assets/tilemaps/tiles/spritesheet_tiles_64x64.png');
@@ -121,7 +122,48 @@ export class MainScene extends Phaser.Scene {
 
         //this.createPlayer();
 
-        this.world = this.createWorld('level1');
+        this.anims.create({
+            key: 'walk',
+            frames: this.anims.generateFrameNames('playerSprites', { prefix: 'alienBlue_walk', start: 1, end: 2, zeroPad: 1, suffix: '.png' }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'swim',
+            frames: this.anims.generateFrameNames('playerSprites', { prefix: 'alienBlue_swim', start: 1, end: 2, zeroPad: 1, suffix: '.png' }),
+            frameRate: 10,
+            repeat: -1
+        });
+        // idle with only one frame, so repeat is not neaded
+        this.anims.create({
+            key: 'idle',
+            frames: [{key: 'playerSprites', frame: 'alienBlue_stand.png'}],
+            frameRate: 10,
+        });
+
+        this.anims.create({
+            key: 'jump',
+            frames: [{key: 'playerSprites', frame: 'alienBlue_jump.png'}],
+            frameRate: 10,
+        });
+
+        this.anims.create({
+            key: 'duck',
+            frames: [{key: 'playerSprites', frame: 'alienBlue_duck.png'}],
+            frameRate: 10,
+        });
+
+        this.player = new Player({
+            scene: this,
+            x: 20,
+            y: 600,
+            key: "player2"
+            });        
+
+        this.world = new World(this);
+        this.world.createWorld('level1', this.player);
+        //this.world =  this.createWorld('level1');
 
         //cursors = this.input.keyboard.createCursorKeys();
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -191,7 +233,8 @@ export class MainScene extends Phaser.Scene {
         
         // TODO: tilemaps (https://medium.com/@michaelwesthadley/modular-game-worlds-in-phaser-3-tilemaps-1-958fc7e6bbd6)
         // 
-        var world = new World();
+        var world = new World(this);
+        world.createWorld('level1', this.player);
 
         world.sky = this.skySprite;
 
