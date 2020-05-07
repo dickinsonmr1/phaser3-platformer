@@ -52,6 +52,7 @@
     update(): void {
         if(Phaser.Input.Keyboard.JustDown(this.selectKey) && this.menu.selectedIndex == 0) {
             this.input.keyboard.resetKeys();
+            this.scene.sleep('TitleScene');
             this.scene.start('MainScene');
             this.scene.start('HudScene');
         }
@@ -64,4 +65,4 @@
             this.menu.selectNextItem();
         }
     }
- }
+}

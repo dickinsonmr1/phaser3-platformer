@@ -178,12 +178,14 @@ export class MainScene extends Phaser.Scene {
             this.player.stand();
         }
         if(Phaser.Input.Keyboard.JustDown(this.pauseKey)) {
-            //this.scene.pause('MainScene');
             this.input.keyboard.resetKeys();
+
+            this.scene.pause('MainScene');            
             this.scene.pause('HudScene');
             this.scene.setVisible(false, "HudScene");
-            this.scene.switch("PauseScene");
-            //this.scene.resume
+
+            this.scene.run("PauseScene");
+            this.scene.bringToTop("PauseScene")
         }
 
         // Jumping

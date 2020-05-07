@@ -2,6 +2,8 @@ export class Menu {
     title: Phaser.GameObjects.Text;
     footer: Phaser.GameObjects.Text;
     marker: Phaser.GameObjects.Text;    
+    subItemMarkerLeft: Phaser.GameObjects.Text;        
+    subItemMarkerRight: Phaser.GameObjects.Text;    
     items: Array<Phaser.GameObjects.Text>;
     selectedIndex: integer;
 
@@ -10,6 +12,9 @@ export class Menu {
 
     titleOffsetX(): number {return -100;}
     titleOffsetY(): number {return -300;}
+
+    highlightedColor(): string {return "rgb(255,255,255)"};
+    nonHighlightedColor(): string {return "rgb(150,150,150)"};
 
     footerStartX: number;
     footerStartY: number;
@@ -37,13 +42,14 @@ export class Menu {
                 fontFamily: 'KenneyRocketSquare',
                 fontSize: 64,
                 align: 'right',            
-                color:"rgb(255,255,255)",
+                color: this.nonHighlightedColor(),
             }});
         temp.setStroke('rgb(0,0,0)', 16);
 
         scene.add.existing(temp);
-
         this.items.push(temp);
+
+        this.refreshColorsAndMarker();        
     }
 
     addMenuComplexItem(scene: Phaser.Scene, text: string, subItems: Array<string>) {
@@ -56,14 +62,15 @@ export class Menu {
                 fontFamily: 'KenneyRocketSquare',
                 fontSize: 64,
                 align: 'right',            
-                color:"rgb(255,255,255)",
+                color: this.nonHighlightedColor(),
             },
             subItems});
         temp.setStroke('rgb(0,0,0)', 16);
 
         scene.add.existing(temp);
-
         this.items.push(temp);
+
+        this.refreshColorsAndMarker();        
     }
 
     setTitle(scene: Phaser.Scene, text: string) {
@@ -72,7 +79,7 @@ export class Menu {
             fontFamily: 'KenneyRocketSquare',
             fontSize: 96,
             align: 'center',            
-            color:"rgb(255,255,255)",
+            color: "rgb(255,255,255)",
         });
         this.title.setStroke('rgb(0,0,0)', 16);
     }
@@ -97,27 +104,82 @@ export class Menu {
             color:"rgb(255,255,255)",
         });
         this.marker.setStroke('rgb(0,0,0)', 16);  
+
+        /*
+        this.subItemMarkerLeft = scene.add.text(this.menuStartX + this.markerOffsetX(), this.menuStartY, "<<",
+        {
+            fontFamily: 'KenneyRocketSquare',
+            fontSize: 64,
+            align: 'right',            
+            color:"rgb(255,255,255)",
+        });
+        this.subItemMarkerLeft.setStroke('rgb(0,0,0)', 16);  
+
+        this.subItemMarkerRight = scene.add.text(this.menuStartX + this.markerOffsetX(), this.menuStartY, "<<",
+        {
+            fontFamily: 'KenneyRocketSquare',
+            fontSize: 64,
+            align: 'right',            
+            color:"rgb(255,255,255)",
+        });
+        this.subItemMarkerLeft.setStroke('rgb(0,0,0)', 16);  
+        */
+    }
+
+    private refreshColorsAndMarker() {
+        for(var i = 0; i < this.items.length; i++) {
+            if(i == this.selectedIndex) {
+                this.items[i].setColor(this.highlightedColor());
+            }
+            else {
+                this.items[i].setColor(this.nonHighlightedColor());
+            }
+        }     
+
+        this.marker.setY(this.menuStartY + this.selectedIndex * this.menuItemDistanceY());   
+
+        /*
+        this.subItemMarkerLeft.setY(this.menuStartY + this.selectedIndex * this.menuItemDistanceY());   
+        this.subItemMarkerRight.setY(this.menuStartY + this.selectedIndex * this.menuItemDistanceY());   
+        this.subItemMarkerRight.setY(this.menuStartY + this.selectedIndex * this.menuItemDistanceY());   
+
+        var temp = this.items[i];
+        if(temp instanceof ComplexMenuItem)
+        {
+            this.marker.setVisible(false);
+            this.subItemMarkerLeft.setVisible(true);
+            this.subItemMarkerRight.setVisible(true);
+        } 
+        else {
+            this.marker.setVisible(true);
+            this.subItemMarkerLeft.setVisible(false);
+            this.subItemMarkerRight.setVisible(false);
+        }
+        */
     }
 
     selectNextItem() {
-        if(this.selectedIndex < this.items.length - 1)
+        if(this.selectedIndex < this.items.length - 1) {
             this.selectedIndex++;        
-
-        this.marker.setY(this.menuStartY + this.selectedIndex * this.menuItemDistanceY())
+        }
+            
+        this.refreshColorsAndMarker();        
     }
 
     selectPreviousItem() {
-        if(this.selectedIndex > 0)
+        if(this.selectedIndex > 0) {
+            this.items[this.selectedIndex].setColor(this.nonHighlightedColor());
             this.selectedIndex--;        
+        }
 
-        this.marker.setY(this.menuStartY + this.selectedIndex * this.menuItemDistanceY())
+        this.refreshColorsAndMarker();        
     }
 
     trySelectNextSubItem() {
        var temp = this.items[this.selectedIndex];
        if(temp instanceof ComplexMenuItem)
        {
-            var item = <ComplexMenuItem>this.items[this.selectedIndex]
+            var item = <ComplexMenuItem>this.items[this.selectedIndex];
             item.selectNextItem();
        }       
     }
@@ -126,7 +188,7 @@ export class Menu {
         var temp = this.items[this.selectedIndex];
         if(temp instanceof ComplexMenuItem)
         {
-             var item = <ComplexMenuItem>this.items[this.selectedIndex]
+             var item = <ComplexMenuItem>this.items[this.selectedIndex];
              item.selectPreviousItem();
         }   
      }
