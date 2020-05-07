@@ -21,6 +21,8 @@
     selectKey: Phaser.Input.Keyboard.Key;
     cursorUp: Phaser.Input.Keyboard.Key;
     cursorDown: Phaser.Input.Keyboard.Key;
+    cursorLeft: Phaser.Input.Keyboard.Key;
+    cursorRight: Phaser.Input.Keyboard.Key;
 
     constructor() {
         super({
@@ -38,13 +40,16 @@
         this.selectKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         this.cursorDown = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         this.cursorUp = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+        this.cursorLeft = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        this.cursorRight = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
         
         this.menu = new Menu(this);
 
         this.menu.setTitle(this, "Game Paused");
         this.menu.setMarker(this, ">>");
         this.menu.addMenuItem(this, "Resume");
-        this.menu.addMenuItem(this, "Toggle Sound - On");
+        //this.menu.addMenuItem(this, "Toggle Sound - On");
+        this.menu.addMenuComplexItem(this, "Toggle Sound", ['On', 'Off']);
         this.menu.addMenuItem(this, "Exit to Title");     
         
         this.scene.bringToTop;
@@ -60,17 +65,14 @@
             if(this.menu.selectedIndex == 0) {
                this.returnToGame();
             }
+            else if(this.menu.selectedIndex == 1) {
+                this.menu.trySelectNextSubItem();
+            }
             else if(this.menu.selectedIndex == 2) {
                 this.endGameAndReturnToTitleMenu();
             }
         }
          
-        if(Phaser.Input.Keyboard.JustDown(this.selectKey) && this.menu.selectedIndex == 2) {
-            this.scene.stop('MainScene');
-            this.scene.stop('HudScene');
-            this.scene.switch('TitleScene');
-        }
-
         if(Phaser.Input.Keyboard.JustDown(this.cursorUp)) {
             this.menu.selectPreviousItem();
         }
@@ -79,6 +81,13 @@
             this.menu.selectNextItem();
         }
 
+        if(Phaser.Input.Keyboard.JustDown(this.cursorLeft)) {
+            this.menu.trySelectPreviousSubItem();
+        }
+
+        if(Phaser.Input.Keyboard.JustDown(this.cursorRight)) {
+            this.menu.trySelectNextSubItem();
+        }
     }
 
     returnToGame(): void {        
@@ -93,6 +102,3 @@
     }   
  }
 
- export class MenuItem {
-    item: Phaser.GameObjects.Text;
- }
