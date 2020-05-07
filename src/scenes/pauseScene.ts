@@ -91,14 +91,15 @@
     }
 
     returnToGame(): void {        
+        this.input.keyboard.resetKeys();
         this.scene.switch('MainScene');            
         this.scene.setVisible(true, 'HudScene');
     }   
 
-    endGameAndReturnToTitleMenu(): void {        
+    endGameAndReturnToTitleMenu(): void {
+        this.input.keyboard.resetKeys();        
         this.scene.remove('MainScene');
         this.scene.remove('HudScene');
         this.scene.switch('TitleScene');        
     }   
  }
-

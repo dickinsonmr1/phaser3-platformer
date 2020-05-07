@@ -179,6 +179,7 @@ export class MainScene extends Phaser.Scene {
         }
         if(Phaser.Input.Keyboard.JustDown(this.pauseKey)) {
             //this.scene.pause('MainScene');
+            this.input.keyboard.resetKeys();
             this.scene.pause('HudScene');
             this.scene.setVisible(false, "HudScene");
             this.scene.switch("PauseScene");
