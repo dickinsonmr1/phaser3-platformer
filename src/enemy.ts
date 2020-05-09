@@ -5,13 +5,9 @@
  */
 import { Constants } from "./constants";
 import "phaser";
+import { Scene } from "phaser";
 
 export class Enemy extends Phaser.GameObjects.Sprite {
-    //public sprite: Phaser.Physics.Arcade.Sprite;
-    private currentScene: Phaser.Scene;
-
-    private playerPrefixes = ['alienBeige', 'alienBlue', 'alienGreen', 'alienPink', 'alienYellow'];
-
     public hurtTime: number;
     public health: number;
 
@@ -22,10 +18,12 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     constructor(params) {
         super(params.scene, params.x, params.y, params.key, params.frame);
 
-        this.currentScene = params.scene;               
-
-        this.currentScene.physics.world.enable(this);
+        this.scene.physics.world.enable(this);
     } 
+    
+    public getScene(): Scene {
+        return this.scene;
+    }
 
     public init(idleAnim: string, walkAnim: string, deadAnim: string): void {
         

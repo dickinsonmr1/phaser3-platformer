@@ -8,12 +8,12 @@
 
 import "phaser";
 import { Player } from "../player";
+import { Enemy } from "../enemy";
 import { Constants } from "../constants";
 import { Bullet } from "../bullet";
 import { World } from "../world/world";
 
 export class MainScene extends Phaser.Scene {
-  private phaserSprite: Phaser.GameObjects.Sprite;
   public skySprite: Phaser.GameObjects.TileSprite;
 
     world: World;    
@@ -311,8 +311,8 @@ export class MainScene extends Phaser.Scene {
         return false;
     }
 
-    playerTouchingSpringHandler(player, springs): void {
-        player.tryBounce(player.scene.game.loop.time, player.currentScene.sound);
+    playerTouchingSpringHandler(player: Player, springs): void {
+        player.tryBounce(player.getScene().game.loop.time, player.getScene().sound);
     }
 
     playerTouchingEnemiesHandler(player: Player, enemies): void
@@ -321,24 +321,15 @@ export class MainScene extends Phaser.Scene {
         player.tryDamage();
     }
 
-    bulletTouchingEnemyHandler(enemy, bullet: Bullet): void {
+    bulletTouchingEnemyHandler(enemy: Enemy, bullet: Bullet): void {
         
-        enemy.currentScene.sound.play("enemyDeathSound");
+        var scene = <MainScene>enemy.getScene();
+
         var damage = 100;
 
-        const emitText = enemy.currentScene.add.text(enemy.x, enemy.y, damage.toString(),
-        {
-            fontFamily: 'KenneyRocketSquare',
-            fontSize: 24,
-            align: 'right',            
-            color:"rgb(255,255,255)",
-        });
-        emitText.setAlpha(0.75);
-        emitText.setStroke('rgb(0,0,0)', 4);
-
-        enemy.currentScene.physics.world.enable(emitText);
-        emitText.body.alpha = 0.6;
-        enemy.currentScene.expiringMessagesGroup.add(emitText);
+        scene.sound.play("enemyDeathSound");
+       
+        scene.addExpiringText(scene, enemy.x, enemy.y, damage.toString())
 
         bullet.destroy();
         enemy.destroy();
@@ -350,6 +341,25 @@ export class MainScene extends Phaser.Scene {
   
     bulletIntervalElapsed = (now, time) =>{
         return now > time;
+    }
+
+    private addExpiringText(scene: MainScene, x: number, y: number, text: string, ) {
+              
+        var emitText = scene.add.text(x, y, text,
+        {
+            fontFamily: 'KenneyRocketSquare',
+            fontSize: 24,
+            align: 'right',            
+            color:"rgb(255,255,255)",
+        });
+        emitText.setAlpha(0.75);
+        emitText.setStroke('rgb(0,0,0)', 4);
+
+        scene.physics.world.enable(emitText);
+
+        emitText.body.alpha = 0.6;
+        
+        scene.expiringMessagesGroup.add(emitText);
     }
     
     updateExpiringText(): void {

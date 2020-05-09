@@ -5,12 +5,12 @@
  */
 import { Constants } from "./constants";
 import "phaser";
+import { Scene } from "phaser";
 
 // TODO: fix and move implementation here once basic player functionality is working in main scene
 export class Player extends Phaser.GameObjects.Sprite {
     //public sprite: Phaser.Physics.Arcade.Sprite;
     public playerGun: any;//Phaser.Physics.Arcade.Image;
-    private currentScene: Phaser.Scene;
 
     private cursors: Phaser.Input.Keyboard.CursorKeys;
     //private anims: Phaser.Animations.AnimationManager;
@@ -37,10 +37,12 @@ export class Player extends Phaser.GameObjects.Sprite {
     public isTouchingSpring: boolean;
     public springTime: number;
 
+    public getScene(): Scene {
+        return this.scene;
+    }
+
     constructor(params) {
         super(params.scene, params.x, params.y, params.key, params.frame);
-
-        this.currentScene = params.scene;               
     } 
 
     public init(): void {
@@ -50,7 +52,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.width = 128;
         this.height = 256;
         
-        this.currentScene.physics.world.enable(this);
+        this.scene.physics.world.enable(this);
 
         this.displayWidth = 64;
         this.displayHeight = 128;                   
@@ -66,7 +68,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
         this.setScale(0.75, 0.75);
 
-        this.currentScene.add.existing(this);
+        this.scene.add.existing(this);
     
         this.hasBlueKey = false;
         this.isInWater = false;
@@ -79,7 +81,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.springTime = 0;
         this.isDucking = false;
 
-        this.playerGun = this.currentScene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, 'playerGun')        
+        this.playerGun = this.scene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, 'playerGun')        
         //this.bullets = this.currentScene.add.group();
         
         //this.createAnims(anims);
@@ -90,7 +92,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     private initImage(input: Phaser.Input.InputPlugin) {       
         // input
         this.cursors = input.keyboard.createCursorKeys();
-        this.moveKeyLeft = this.currentScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+        this.moveKeyLeft = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.moveKeyRight = input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         this.shootingKey = input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);
         this.jumpingKey = input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -204,8 +206,8 @@ export class Player extends Phaser.GameObjects.Sprite {
         if(this.hurtTime == 0) {
             if(this.health > 0) {
                 this.health--;
-                this.currentScene.events.emit("playerHealthUpdated", this.health);
-                this.currentScene.sound.play("hurtSound");
+                this.scene.events.emit("playerHealthUpdated", this.health);
+                this.scene.sound.play("hurtSound");
                 this.hurtTime = 60;
             }
         }
