@@ -1,0 +1,152 @@
+/**
+ * @author       Mark Dickinson
+ * @copyright    2019 Mark Dickinson
+ * @license      none
+ */
+import { Constants } from "./constants";
+import "phaser";
+
+export class Enemy extends Phaser.GameObjects.Sprite {
+    //public sprite: Phaser.Physics.Arcade.Sprite;
+    private currentScene: Phaser.Scene;
+
+    private playerPrefixes = ['alienBeige', 'alienBlue', 'alienGreen', 'alienPink', 'alienYellow'];
+
+    public hurtTime: number;
+    public health: number;
+
+    private idleAnim: string;
+    private walkAnim: string;
+    private deadAnim: string;
+
+    constructor(params) {
+        super(params.scene, params.x, params.y, params.key, params.frame);
+
+        this.currentScene = params.scene;               
+
+        this.currentScene.physics.world.enable(this);
+    } 
+
+    public init(idleAnim: string, walkAnim: string, deadAnim: string): void {
+        
+        this.idleAnim = idleAnim;
+        this.walkAnim = walkAnim;
+        this.deadAnim = deadAnim;
+
+        //this. public static get enemyOffsetY(): number {return 10;}
+        this.setScale(1.5, 1.5);
+
+        this.body
+            //.setSize(64, 128)
+            .setOffset(0, Constants.enemyOffsetY);    
+
+        this.setFlipX(true);
+        /*
+
+
+        // physics
+        this.width = 128;
+        this.height = 256;
+        
+        this.currentScene.physics.world.enable(this);
+
+        this.displayWidth = 64;
+        this.displayHeight = 128;                   
+
+        /*
+        this.body.maxVelocity.x = 500;
+        this.body.maxVelocity.y = 500;
+        this.body
+            .setSize(64, 128)
+            .setOffset(Constants.playerOffsetX, Constants.playerOffsetY);    
+
+        this.displayOriginX = 0.5;
+        this.displayOriginY = 0.5;
+
+        
+
+        this.currentScene.add.existing(this);
+        */
+    
+        this.hurtTime = 0;
+        this.health = 8;
+        //this.anims = anims;
+        //this.createAnims(anims);
+
+        return;        
+    }
+
+    private createAnims(anims) {
+        
+        /*
+        anims.create({
+            key: 'walk',
+            frames: anims.generateFrameNames('playerSenemySpritesprites', { prefix: 'alienBlue_walk', start: 1, end: 2, zeroPad: 1, suffix: '.png' }),
+            frameRate: 10,
+            repeat: -1
+        });
+        */
+
+      
+      
+    }
+
+    idle(): void {
+        if(this.scene != undefined) {
+            this.anims.play(this.idleAnim, true);
+        }
+    }
+
+    
+    moveLeft(): void {
+        if(this.scene != undefined) {
+            this.body.setVelocityX(-300);            
+            this.anims.play(this.walkAnim, true);
+            this.flipX = true;
+        }
+    }
+
+    moveRight(): void {        
+        if(this.scene != undefined) {
+            this.body.setVelocityX(300);            
+            this.anims.play(this.walkAnim, true);
+            this.flipX = true;
+        }
+    }
+
+    /*
+    tryJump(sound): void {
+        if(this.body.onFloor()) {
+            this.body.setVelocityY(-400);
+            this.anims.play('jump', true);
+            sound.play("jumpSound");
+        }
+    }
+
+    tryDamage(): void {
+
+        if(this.hurtTime == 0) {
+            if(this.health > 0) {
+                this.health--;
+                this.currentScene.events.emit("playerHealthUpdated", this.health);
+                this.currentScene.sound.play("hurtSound");
+                this.hurtTime = 60;
+            }
+        }
+    }
+    */
+    
+  
+    update(playerX: number, playerY: number): void {
+
+        this.idle();
+
+        if(this.hurtTime > 0) {
+            this.hurtTime--;
+            if(this.hurtTime > 30)
+                this.setAlpha(0.5);
+            else
+                this.setAlpha(1);
+        }    
+    }
+}

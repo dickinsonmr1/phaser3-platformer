@@ -20,7 +20,6 @@ export class MainScene extends Phaser.Scene {
     emitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
     // player selection
-    playerPrefixes = ['alienBeige', 'alienBlue', 'alienGreen', 'alienPink', 'alienYellow'];
     selectedPlayerIndex = 0;
     
     // player stuff
@@ -28,9 +27,9 @@ export class MainScene extends Phaser.Scene {
     playerSpaceShip: Phaser.GameObjects.Sprite;
     //playerBox: PlayerBox;
 
-    enemies : Phaser.GameObjects.Group;
-    enemiesPhysics: Phaser.GameObjects.Group;
-    enemiesNonGravity: Phaser.GameObjects.Group;
+    enemies : Array<Phaser.GameObjects.Sprite>;
+    enemiesPhysics: Array<Phaser.GameObjects.Sprite>;
+    enemiesNonGravity: Array<Phaser.GameObjects.Sprite>;
 
     springs: Phaser.GameObjects.Group;
 
@@ -74,7 +73,8 @@ export class MainScene extends Phaser.Scene {
     loadSprites(): void {
         // spritesheets for game objects (not in the game map)
         this.load.atlasXML('enemySprites', './assets/sprites/enemies/enemies.png', './assets/sprites/enemies/enemies.xml');
-        this.load.atlasXML('tileObjectSprites', './assets/sprites/objects/spritesheet_complete.png', './assets/sprites/objects/spritesheet_complete.xml');
+        this.load.atlasXML('enemySprites2', './assets/sprites/enemies/spritesheet_enemies.png', './assets/sprites/enemies/spritesheet_enemies.xml');
+        this.load.atlasXML('completeSprites', './assets/sprites/objects/spritesheet_complete.png', './assets/sprites/objects/spritesheet_complete.xml');
         this.load.atlasXML('playerSprites', './assets/sprites/player/spritesheet_players.png', './assets/sprites/player/spritesheet_players.xml');
         this.load.atlasXML('alienShipSprites', './assets/sprites/ships/spritesheet_spaceships.png', './assets/sprites/ships/spritesheet_spaceships.xml');
         this.load.atlasXML('alienShipLaserSprites', './assets/sprites/ships/spritesheet_lasers.png', './assets/sprites/ships/spritesheet_lasers.xml');
@@ -90,6 +90,7 @@ export class MainScene extends Phaser.Scene {
 
         this.load.image('logo', './assets/sample/phaser.png');
         this.load.image('sky', './assets/sample/colored_grass.png');
+
     }
 
     loadTileMaps(): void {
@@ -104,12 +105,78 @@ export class MainScene extends Phaser.Scene {
         this.load.image('enemyTiles', './assets/tilemaps/tiles/spritesheet_enemies_64x64.png');
     }
 
+    createAnims(anims) {
+        
+        // player
+        anims.create({
+            key: 'walk',
+            frames: anims.generateFrameNames('playerSprites', { prefix: 'alienBlue_walk', start: 1, end: 2, zeroPad: 1, suffix: '.png' }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        anims.create({
+            key: 'swim',
+            frames: anims.generateFrameNames('playerSprites', { prefix: 'alienBlue_swim', start: 1, end: 2, zeroPad: 1, suffix: '.png' }),
+            frameRate: 10,
+            repeat: -1
+        });
+        // idle with only one frame, so repeat is not neaded
+        anims.create({
+            key: 'idle',
+            frames: [{key: 'playerSprites', frame: 'alienBlue_stand.png'}],
+            frameRate: 10,
+        });
+
+        anims.create({
+            key: 'jump',
+            frames: [{key: 'playerSprites', frame: 'alienBlue_jump.png'}],
+            frameRate: 10,
+        });
+
+        anims.create({
+            key: 'duck',
+            frames: [{key: 'playerSprites', frame: 'alienBlue_duck.png'}],
+            frameRate: 10,
+        });
+
+
+        // enemy
+        anims.create({
+            key: 'enemyIdle',
+            frames: [{key: 'enemySprites2', frame: 'enemyWalking_1.png', }],
+            frameRate: 10,
+        });
+
+        
+        anims.create({
+            key: 'enemyWalk',
+            frames:
+            [
+                {key: 'enemySprites2', frame: 'enemyWalking_1.png'},
+                {key: 'enemySprites2', frame: 'enemyWalking_2.png'},
+                {key: 'enemySprites2', frame: 'enemyWalking_3.png'},
+                {key: 'enemySprites2', frame: 'enemyWalking_4.png'}
+            ],
+            frameRate: 5,
+            repeat: -1
+        });
+
+        anims.create({
+            key: 'enemyDead',
+            frames: [{key: 'enemySprites2', frame: 'enemyWalking_1.png'}],
+            frameRate: 10,
+        });
+    }
+
     create(): void {    
+
+        this.createAnims(this.anims);
         this.skySprite = this.add.tileSprite(0, 0, 20480, 1024, 'sky');            
         
-        this.enemies = this.add.group();
-        this.enemiesPhysics = this.add.group();  // removed 324
-        this.enemiesNonGravity = this.add.group();
+        this.enemies = new Array<Phaser.GameObjects.Sprite>();
+        this.enemiesPhysics = Array<Phaser.GameObjects.Sprite>();  // removed 324
+        this.enemiesNonGravity = Array<Phaser.GameObjects.Sprite>();
 
         this.expiringMessagesGroup = this.physics.add.group({
             allowGravity: false,
@@ -124,7 +191,7 @@ export class MainScene extends Phaser.Scene {
             y: 600,
             key: "player2"
             });        
-        this.player.init(this.anims);
+        this.player.init();
 
         this.world = new World(this);
         this.world.createWorld('level1', this.player);
@@ -196,6 +263,10 @@ export class MainScene extends Phaser.Scene {
 
         this.player.update();
         this.updateExpiringText();
+
+        this.enemies.forEach(enemy => {
+            enemy.update();
+        });
     }
 
     updatePhysics(): void {
@@ -251,8 +322,7 @@ export class MainScene extends Phaser.Scene {
     }
 
     bulletTouchingEnemyHandler(enemy, bullet: Bullet): void {
-        bullet.destroy();
-        enemy.destroy();
+        
         enemy.currentScene.sound.play("enemyDeathSound");
         var damage = 100;
 
@@ -269,6 +339,9 @@ export class MainScene extends Phaser.Scene {
         enemy.currentScene.physics.world.enable(emitText);
         emitText.body.alpha = 0.6;
         enemy.currentScene.expiringMessagesGroup.add(emitText);
+
+        bullet.destroy();
+        enemy.destroy();
     }
 
     bulletTouchingImpassableLayerHandler(bullet, layer): void {

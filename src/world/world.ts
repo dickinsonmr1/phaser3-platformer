@@ -2,6 +2,7 @@ import { Constants } from "../constants";
 import "phaser";
 import { MainScene } from "../scenes/mainScene";
 import { Player } from "../player";
+import { Enemy } from "../enemy";
 
 export class World {
     map: Phaser.Tilemaps.Tilemap;
@@ -155,12 +156,21 @@ export class World {
         this.layer07.alpha = 0.1;
         this.layer07.forEachTile(tile => {
             if(allEnemyTypes.includes(tile.index)) {
-                const x = tile.getCenterX();
-                const y = tile.getCenterY();
-                const enemy = this.scene.enemies.create(x, y, "ghost");
-                enemy.currentScene = this.scene;
+                var x = tile.getCenterX();
+                var y = tile.getCenterY();
+
+                var enemy = new Enemy({
+                    scene: this.scene,
+                    x: x,
+                    y: y,
+                    key: "slimeGreen_squashed"
+                    });        
+                enemy.init("enemyIdle", "enemyWalk", "enemyDead");
+                //this.scene.enemies.create(x, y, "ghost");
+                //enemy.currentScene = this.scene;
                 this.scene.physics.world.enable(enemy);   
                 this.scene.add.existing(enemy);
+                this.scene.enemies.push(enemy);
 
                 this.layer07.removeTileAt(tile.x, tile.y);
             }

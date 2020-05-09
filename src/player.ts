@@ -8,7 +8,7 @@ import "phaser";
 
 // TODO: fix and move implementation here once basic player functionality is working in main scene
 export class Player extends Phaser.GameObjects.Sprite {
-    public sprite: Phaser.Physics.Arcade.Sprite;
+    //public sprite: Phaser.Physics.Arcade.Sprite;
     public playerGun: any;//Phaser.Physics.Arcade.Image;
     private currentScene: Phaser.Scene;
 
@@ -43,7 +43,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.currentScene = params.scene;               
     } 
 
-    public init(anims): void {
+    public init(): void {
         this.setFlipX(false);
 
         // physics
@@ -82,45 +82,9 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.playerGun = this.currentScene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, 'playerGun')        
         //this.bullets = this.currentScene.add.group();
         
-        this.createAnims(anims);
+        //this.createAnims(anims);
 
         return;        
-    }
-
-    private createAnims(anims) {
-          
-        anims.create({
-            key: 'walk',
-            frames: anims.generateFrameNames('playerSprites', { prefix: 'alienBlue_walk', start: 1, end: 2, zeroPad: 1, suffix: '.png' }),
-            frameRate: 10,
-            repeat: -1
-        });
-
-        anims.create({
-            key: 'swim',
-            frames: anims.generateFrameNames('playerSprites', { prefix: 'alienBlue_swim', start: 1, end: 2, zeroPad: 1, suffix: '.png' }),
-            frameRate: 10,
-            repeat: -1
-        });
-        // idle with only one frame, so repeat is not neaded
-        anims.create({
-            key: 'idle',
-            frames: [{key: 'playerSprites', frame: 'alienBlue_stand.png'}],
-            frameRate: 10,
-        });
-
-        anims.create({
-            key: 'jump',
-            frames: [{key: 'playerSprites', frame: 'alienBlue_jump.png'}],
-            frameRate: 10,
-        });
-
-        anims.create({
-            key: 'duck',
-            frames: [{key: 'playerSprites', frame: 'alienBlue_duck.png'}],
-            frameRate: 10,
-        });
-      
     }
 
     private initImage(input: Phaser.Input.InputPlugin) {       
