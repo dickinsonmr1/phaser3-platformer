@@ -180,6 +180,7 @@ export class World {
         this.scene.physics.add.collider(player, this.scene.enemies, this.scene.playerTouchingEnemiesHandler);
         this.scene.physics.add.collider(player, this.scene.springs, this.scene.playerTouchingSpringHandler);
         this.scene.physics.add.collider(this.scene.enemies, this.layer02);
+        this.scene.physics.add.collider(this.scene.enemies, this.scene.enemies, this.scene.enemyTouchingEnemyHandler);
 
         player.bullets = this.scene.physics.add.group({
             allowGravity: false

@@ -155,8 +155,8 @@ export class MainScene extends Phaser.Scene {
             [
                 {key: 'enemySprites2', frame: 'enemyWalking_1.png'},
                 {key: 'enemySprites2', frame: 'enemyWalking_2.png'},
-                {key: 'enemySprites2', frame: 'enemyWalking_3.png'},
-                {key: 'enemySprites2', frame: 'enemyWalking_4.png'}
+                //{key: 'enemySprites2', frame: 'enemyWalking_3.png'},
+                //{key: 'enemySprites2', frame: 'enemyWalking_4.png'}
             ],
             frameRate: 5,
             repeat: -1
@@ -265,7 +265,7 @@ export class MainScene extends Phaser.Scene {
         this.updateExpiringText();
 
         this.enemies.forEach(enemy => {
-            enemy.update();
+            enemy.update(this.player.x, this.player.y);
         });
     }
 
@@ -319,6 +319,34 @@ export class MainScene extends Phaser.Scene {
     {
         console.log(this);
         player.tryDamage();
+    }
+
+    enemyTouchingEnemyHandler(enemy1: Enemy, enemy2: Enemy): void {
+
+        var body1 = <Phaser.Physics.Arcade.Body>enemy1.body;
+        var body2 = <Phaser.Physics.Arcade.Body>enemy2.body;
+
+        if(body1.x < body2.x && body1.velocity.x > 0) {
+            body1.velocity.x = 0;
+            enemy1.idleTime = 20;
+        }
+        else if(body1.x > body2.x && body1.velocity.x < 0) {
+            body1.velocity.x = 0;
+            enemy1.idleTime = 20;
+        }            
+        else if(body1.x > body2.x && body2.velocity.x > 0) {
+            body2.velocity.x = 0;
+            enemy2.idleTime = 20;
+        }            
+        else if(body1.x < body2.x && body2.velocity.x < 0) {
+            body2.velocity.x = 0;
+            enemy2.idleTime = 20;
+        }            
+
+        //console.log("Enemy1.x: " + enemy.x);
+        //console.log("Enemy2.x: " + enemy2.x);
+        enemy1.idle();
+        enemy2.idle();
     }
 
     bulletTouchingEnemyHandler(enemy: Enemy, bullet: Bullet): void {

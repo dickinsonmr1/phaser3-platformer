@@ -3,6 +3,9 @@
  * @copyright    2019 Mark Dickinson
  * @license      none
  */
+
+ 
+ /// <reference path="phaser.d.ts"/>
 import { Constants } from "./constants";
 import "phaser";
 import { Scene } from "phaser";
@@ -14,6 +17,8 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     private idleAnim: string;
     private walkAnim: string;
     private deadAnim: string;
+
+    public idleTime: number;
 
     constructor(params) {
         super(params.scene, params.x, params.y, params.key, params.frame);
@@ -67,6 +72,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         */
     
         this.hurtTime = 0;
+        this.idleTime = 0;
         this.health = 8;
         //this.anims = anims;
         //this.createAnims(anims);
@@ -91,6 +97,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
     idle(): void {
         if(this.scene != undefined) {
+            this.body.setVelocityX(0);            
             this.anims.play(this.idleAnim, true);
         }
     }
@@ -98,17 +105,21 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     
     moveLeft(): void {
         if(this.scene != undefined) {
-            this.body.setVelocityX(-300);            
-            this.anims.play(this.walkAnim, true);
-            this.flipX = true;
+            if(this.body.onFloor()) {
+                this.body.setVelocityX(-150);            
+                this.anims.play(this.walkAnim, true);
+                this.flipX = true;
+            }
         }
     }
 
     moveRight(): void {        
         if(this.scene != undefined) {
-            this.body.setVelocityX(300);            
-            this.anims.play(this.walkAnim, true);
-            this.flipX = true;
+            if(this.body.onFloor()) {
+                this.body.setVelocityX(150);            
+                this.anims.play(this.walkAnim, true);
+                this.flipX = false;
+            }
         }
     }
 
@@ -136,8 +147,31 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     
   
     update(playerX: number, playerY: number): void {
-
-        this.idle();
+        if(this.scene != undefined) {
+            if(this.idleTime == 0)
+            {
+                var body = <Phaser.Physics.Arcade.Body>this.body;
+                if(playerX < this.x) {
+                    if(!body.onWall())
+                        this.moveLeft();
+                    else
+                    {
+                        this.idle();
+                    }
+                }
+                else if (playerX > this.x) {
+                    if(!body.onWall())
+                        this.moveRight();
+                    else
+                    {
+                        this.idle();
+                    }
+                }
+                else {
+                    this.idle();
+                }      
+            }
+        }
 
         if(this.hurtTime > 0) {
             this.hurtTime--;
@@ -145,6 +179,10 @@ export class Enemy extends Phaser.GameObjects.Sprite {
                 this.setAlpha(0.5);
             else
                 this.setAlpha(1);
+        }    
+
+        if(this.idleTime > 0) {
+            this.idleTime--;
         }    
     }
 }
