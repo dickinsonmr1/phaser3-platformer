@@ -3,6 +3,7 @@ import "phaser";
 import { MainScene } from "../scenes/mainScene";
 import { Player } from "../player";
 import { Enemy } from "../enemy";
+import { Spring } from "../spring";
 
 export class World {
     map: Phaser.Tilemaps.Tilemap;
@@ -128,13 +129,17 @@ export class World {
             {
                 const x = tile.getCenterX();
                 const y = tile.getCenterY();
-                const spring = this.scene.springs.create(x, y, "sprung");
-                this.scene.physics.world.enable(spring);   
-                spring.body.moves = false;
-                spring.body.immovable = true;
 
-                this.scene.add.existing(spring);
-                //world.layer06.removeTileAt(tile.x, tile.y);
+                var spring = new Spring({
+                    scene: this.scene,
+                    x: x,
+                    y: y,
+                    key: "springLoaded"
+                    });        
+                spring.init("spring0", "spring1");
+                this.scene.springs.push(spring);
+
+                //this.layer06.removeTileAt(tile.x, tile.y);
             }
         })
 
@@ -163,13 +168,9 @@ export class World {
                     scene: this.scene,
                     x: x,
                     y: y,
-                    key: "slimeGreen_squashed"
+                    key: "enemyIdle"
                     });        
                 enemy.init("enemyIdle", "enemyWalk", "enemyDead");
-                //this.scene.enemies.create(x, y, "ghost");
-                //enemy.currentScene = this.scene;
-                this.scene.physics.world.enable(enemy);   
-                this.scene.add.existing(enemy);
                 this.scene.enemies.push(enemy);
 
                 this.layer07.removeTileAt(tile.x, tile.y);
@@ -179,6 +180,7 @@ export class World {
         this.scene.physics.add.collider(player, this.layer07);
         this.scene.physics.add.collider(player, this.scene.enemies, this.scene.playerTouchingEnemiesHandler);
         this.scene.physics.add.collider(player, this.scene.springs, this.scene.playerTouchingSpringHandler);
+        this.scene.physics.add.collider(this.scene.enemies, this.scene.springs, this.scene.enemyTouchingSpringHandler);
         this.scene.physics.add.collider(this.scene.enemies, this.layer02);
         this.scene.physics.add.collider(this.scene.enemies, this.scene.enemies, this.scene.enemyTouchingEnemyHandler);
 

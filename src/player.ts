@@ -176,17 +176,19 @@ export class Player extends Phaser.GameObjects.Sprite {
         }
     }
 
-    tryBounce(gameTime: number, sound) {
-        if (gameTime > this.springTime) { //} && !this.body.onFloor()) {
-            //if (!this.playerBox.isInSpaceShip && !this.playerBox.isTouchingSpring) {
-            //if (!player.isTouchingSpring) {
-                //if(springSound.)
-                //if (tile.alpha > 0) {
+    tryBounce() {
+        var gameTime = this.scene.game.loop.time;
+        //if (gameTime > this.springTime) { //} && !this.body.onFloor()) {
+            if(this.body.onFloor()) {
+                //if (!this.playerBox.isInSpaceShip && !this.playerBox.isTouchingSpring) {
+                    //if (!player.isTouchingSpring) {
+                        //if(springSound.)
+                        //if (tile.alpha > 0) {
                 this.body.velocity.y = -650;
-                sound.play("springSound");
-    
+
                 this.springTime = gameTime + 1000;
-            }
+            }        
+        //}
     }
 
     private createBullet() : void {

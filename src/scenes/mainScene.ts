@@ -9,6 +9,7 @@
 import "phaser";
 import { Player } from "../player";
 import { Enemy } from "../enemy";
+import { Spring } from "../spring";
 import { Constants } from "../constants";
 import { Bullet } from "../bullet";
 import { World } from "../world/world";
@@ -27,11 +28,11 @@ export class MainScene extends Phaser.Scene {
     playerSpaceShip: Phaser.GameObjects.Sprite;
     //playerBox: PlayerBox;
 
-    enemies : Array<Phaser.GameObjects.Sprite>;
+    enemies: Array<Phaser.GameObjects.Sprite>;
     enemiesPhysics: Array<Phaser.GameObjects.Sprite>;
     enemiesNonGravity: Array<Phaser.GameObjects.Sprite>;
 
-    springs: Phaser.GameObjects.Group;
+    springs: Array<Phaser.GameObjects.Sprite>;
 
     cursors: Phaser.Input.Keyboard.CursorKeys;              
     zoomInKey: Phaser.Input.Keyboard.Key;
@@ -167,6 +168,18 @@ export class MainScene extends Phaser.Scene {
             frames: [{key: 'enemySprites2', frame: 'enemyWalking_1.png'}],
             frameRate: 10,
         });
+
+        anims.create({
+            key: 'spring0',
+            frames: [{key: 'completeSprites', frame: 'spring0.png'}],
+            frameRate: 10,
+        });
+
+        anims.create({
+            key: 'spring1',
+            frames: [{key: 'completeSprites', frame: 'spring1.png'}],
+            frameRate: 10,
+        });
     }
 
     create(): void {    
@@ -183,7 +196,7 @@ export class MainScene extends Phaser.Scene {
             velocityY: 100
         })
 
-        this.springs = this.add.group();
+        this.springs = new Array<Phaser.GameObjects.Sprite>();
         
         this.player = new Player({
             scene: this,
@@ -267,6 +280,11 @@ export class MainScene extends Phaser.Scene {
         this.enemies.forEach(enemy => {
             enemy.update(this.player.x, this.player.y);
         });
+
+        this.springs.forEach(spring => 
+        {
+            spring.update();
+        });
     }
 
     updatePhysics(): void {
@@ -311,8 +329,14 @@ export class MainScene extends Phaser.Scene {
         return false;
     }
 
-    playerTouchingSpringHandler(player: Player, springs): void {
-        player.tryBounce(player.getScene().game.loop.time, player.getScene().sound);
+    playerTouchingSpringHandler(player: Player, spring: Spring): void {
+        spring.tryBounce(player.getScene().sound);
+        player.tryBounce();       
+    }
+
+    enemyTouchingSpringHandler(enemy: Enemy, spring: Spring): void {
+        spring.tryBounce(enemy.getScene().sound);
+        enemy.tryBounce();        
     }
 
     playerTouchingEnemiesHandler(player: Player, enemies): void

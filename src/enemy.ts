@@ -12,6 +12,7 @@ import { Scene } from "phaser";
 
 export class Enemy extends Phaser.GameObjects.Sprite {
     public hurtTime: number;
+    public springTime: number;
     public health: number;
 
     private idleAnim: string;
@@ -31,68 +32,41 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     }
 
     public init(idleAnim: string, walkAnim: string, deadAnim: string): void {
-        
+
+        this.setFlipX(true);
+
         this.idleAnim = idleAnim;
         this.walkAnim = walkAnim;
         this.deadAnim = deadAnim;
-
-        //this. public static get enemyOffsetY(): number {return 10;}
-        this.setScale(1.5, 1.5);
-
-        this.body
-            //.setSize(64, 128)
-            .setOffset(0, Constants.enemyOffsetY);    
-
-        this.setFlipX(true);
-        /*
-
-
-        // physics
-        this.width = 128;
-        this.height = 256;
         
-        this.currentScene.physics.world.enable(this);
+        this.width = 64;
+        this.height = 64;
+
+        this.scene.physics.world.enable(this);   
 
         this.displayWidth = 64;
-        this.displayHeight = 128;                   
+        this.displayHeight = 64;            
 
-        /*
-        this.body.maxVelocity.x = 500;
-        this.body.maxVelocity.y = 500;
-        this.body
-            .setSize(64, 128)
-            .setOffset(Constants.playerOffsetX, Constants.playerOffsetY);    
-
+        //this.body
+            //.setSize(64, 128)
+            //.setOffset
+            //.setOffset(0, Constants.enemyOffsetY);    
+              
         this.displayOriginX = 0.5;
         this.displayOriginY = 0.5;
 
+        this.setScale(1.5, 1.5);
         
+        this.scene.add.existing(this);
 
-        this.currentScene.add.existing(this);
-        */
-    
         this.hurtTime = 0;
         this.idleTime = 0;
         this.health = 8;
-        //this.anims = anims;
-        //this.createAnims(anims);
+        this.springTime = 0;
+
+        this.anims.play(this.idleAnim, true);
 
         return;        
-    }
-
-    private createAnims(anims) {
-        
-        /*
-        anims.create({
-            key: 'walk',
-            frames: anims.generateFrameNames('playerSenemySpritesprites', { prefix: 'alienBlue_walk', start: 1, end: 2, zeroPad: 1, suffix: '.png' }),
-            frameRate: 10,
-            repeat: -1
-        });
-        */
-
-      
-      
     }
 
     idle(): void {
@@ -101,7 +75,6 @@ export class Enemy extends Phaser.GameObjects.Sprite {
             this.anims.play(this.idleAnim, true);
         }
     }
-
     
     moveLeft(): void {
         if(this.scene != undefined) {
@@ -122,6 +95,26 @@ export class Enemy extends Phaser.GameObjects.Sprite {
             }
         }
     }
+
+    tryBounce() {
+
+        
+        //var gameTime = this.scene.game.loop.time;
+        //if (gameTime > this.springTime) { //} && !this.body.onFloor()) {
+            var body = <Phaser.Physics.Arcade.Body>this.body;
+            if(body.onFloor()) {
+                //if (!this.playerBox.isInSpaceShip && !this.playerBox.isTouchingSpring) {
+                    //if (!player.isTouchingSpring) {
+                        //if(springSound.)
+                        //if (tile.alpha > 0) {
+                body.setVelocityY(-650);
+                //sound.play("springSound");
+
+                //this.springTime = gameTime + 1000;
+            }        
+        //}
+    }
+
 
     /*
     tryJump(sound): void {
@@ -171,18 +164,19 @@ export class Enemy extends Phaser.GameObjects.Sprite {
                     this.idle();
                 }      
             }
+
+            if(this.hurtTime > 0) {
+                this.hurtTime--;
+                if(this.hurtTime > 30)
+                    this.setAlpha(0.5);
+                else
+                    this.setAlpha(1);
+            }    
+
+            if(this.idleTime > 0) {
+                this.idleTime--;
+            }    
+
         }
-
-        if(this.hurtTime > 0) {
-            this.hurtTime--;
-            if(this.hurtTime > 30)
-                this.setAlpha(0.5);
-            else
-                this.setAlpha(1);
-        }    
-
-        if(this.idleTime > 0) {
-            this.idleTime--;
-        }    
     }
 }
