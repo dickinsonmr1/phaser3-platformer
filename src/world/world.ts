@@ -168,7 +168,8 @@ export class World {
                     scene: this.scene,
                     x: x,
                     y: y,
-                    key: "enemyIdle"
+                    key: "enemyIdle",
+                    drawScale: 1.5
                     });        
                 enemy.init("enemyIdle", "enemyWalk", "enemyDead");
                 this.scene.enemies.push(enemy);

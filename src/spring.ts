@@ -31,10 +31,7 @@
          
         this.loadedAnim = loadedAnim;
         this.sprungAnim = sprungAnim;
-
-        //this. public static get enemyOffsetY(): number {return 10;}
-        
-                
+     
         this.width = 64;
         this.height = 64;
 
@@ -49,10 +46,10 @@
         this.displayWidth = 64;
         this.displayHeight = 64;            
 
-        this.body.setOffset(0, 1);    
+        this.body.setOffset(0, -1);    
               
         this.displayOriginX = 0.5;
-        this.displayOriginY = 0.5;
+        this.displayOriginY = 1;
 
         this.setScale(0.5, 0.5);
         

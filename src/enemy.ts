@@ -18,12 +18,14 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     private idleAnim: string;
     private walkAnim: string;
     private deadAnim: string;
+    private drawScale: number;
 
     public idleTime: number;
 
     constructor(params) {
         super(params.scene, params.x, params.y, params.key, params.frame);
 
+        this.drawScale = params.drawScale;
         this.scene.physics.world.enable(this);
     } 
     
@@ -47,15 +49,15 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.displayWidth = 64;
         this.displayHeight = 64;            
 
-        //this.body
+        this.body
             //.setSize(64, 128)
             //.setOffset
-            //.setOffset(0, Constants.enemyOffsetY);    
+            .setOffset(0, Constants.enemyOffsetY);    
               
         this.displayOriginX = 0.5;
         this.displayOriginY = 0.5;
 
-        this.setScale(1.5, 1.5);
+        this.setScale(this.drawScale, this.drawScale);
         
         this.scene.add.existing(this);
 
@@ -96,13 +98,20 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         }
     }
 
-    tryBounce() {
+    tryDamage(damage: number) {
+        this.health -= damage;
+        this.hurtTime = 60;
 
-        
+        if(this.health <= 0) {
+           this.destroy();
+        }
+    }
+
+    tryBounce() {        
         //var gameTime = this.scene.game.loop.time;
         //if (gameTime > this.springTime) { //} && !this.body.onFloor()) {
             var body = <Phaser.Physics.Arcade.Body>this.body;
-            if(body.onFloor()) {
+            //if(body.onFloor()) {
                 //if (!this.playerBox.isInSpaceShip && !this.playerBox.isTouchingSpring) {
                     //if (!player.isTouchingSpring) {
                         //if(springSound.)
@@ -111,7 +120,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
                 //sound.play("springSound");
 
                 //this.springTime = gameTime + 1000;
-            }        
+            //}        
         //}
     }
 

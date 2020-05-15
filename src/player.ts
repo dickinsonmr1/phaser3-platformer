@@ -106,14 +106,14 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.body.setVelocityX(-300); // move left
             
             if(this.isInWater) {
-                this.anims.play('swim', true);
+                this.anims.play('player-swim', true);
             }
             else {
                 if(this.body.onFloor()) {         
-                    this.anims.play('walk', true);
+                    this.anims.play('player-walk', true);
                 }
                 else {
-                    this.anims.play('jump', true);
+                    this.anims.play('player-jump', true);
                 }
             }
             
@@ -124,14 +124,14 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.body.setVelocityX(300); // move right
 
         if(this.isInWater) {
-            this.anims.play('swim', true);
+            this.anims.play('player-swim', true);
         }
         else {
             if(this.body.onFloor()) {
-                this.anims.play('walk', true);
+                this.anims.play('player-walk', true);
             }
             else {
-                this.anims.play('jump', true);
+                this.anims.play('player-jump', true);
             }
         }
 
@@ -141,7 +141,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     duck(): void {
         if(this.body.onFloor())
         {
-            this.anims.play('duck', true);
+            this.anims.play('player-duck', true);
             this.isDucking = true;
         }
     }
@@ -151,18 +151,18 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.body.setVelocityX(0);
         if(this.body.onFloor())
         {            
-            this.anims.play('idle', true);
+            this.anims.play('player-idle', true);
         }
         else
         {
-            this.anims.play('jump', true);
+            this.anims.play('player-jump', true);
         }
     }
 
     tryJump(sound): void {
         if(this.body.onFloor()) {
             this.body.setVelocityY(-400);
-            this.anims.play('jump', true);
+            this.anims.play('player-jump', true);
             sound.play("jumpSound");
         }
     }

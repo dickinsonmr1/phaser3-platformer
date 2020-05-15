@@ -110,33 +110,33 @@ export class MainScene extends Phaser.Scene {
         
         // player
         anims.create({
-            key: 'walk',
+            key: 'player-walk',
             frames: anims.generateFrameNames('playerSprites', { prefix: 'alienBlue_walk', start: 1, end: 2, zeroPad: 1, suffix: '.png' }),
             frameRate: 10,
             repeat: -1
         });
 
         anims.create({
-            key: 'swim',
+            key: 'player-swim',
             frames: anims.generateFrameNames('playerSprites', { prefix: 'alienBlue_swim', start: 1, end: 2, zeroPad: 1, suffix: '.png' }),
             frameRate: 10,
             repeat: -1
         });
         // idle with only one frame, so repeat is not neaded
         anims.create({
-            key: 'idle',
+            key: 'player-idle',
             frames: [{key: 'playerSprites', frame: 'alienBlue_stand.png'}],
             frameRate: 10,
         });
 
         anims.create({
-            key: 'jump',
+            key: 'player-jump',
             frames: [{key: 'playerSprites', frame: 'alienBlue_jump.png'}],
             frameRate: 10,
         });
 
         anims.create({
-            key: 'duck',
+            key: 'player-duck',
             frames: [{key: 'playerSprites', frame: 'alienBlue_duck.png'}],
             frameRate: 10,
         });
@@ -156,6 +156,8 @@ export class MainScene extends Phaser.Scene {
             [
                 {key: 'enemySprites2', frame: 'enemyWalking_1.png'},
                 {key: 'enemySprites2', frame: 'enemyWalking_2.png'},
+                //{key: 'completeSprites', frame: 'slimeBlue.png'},
+                //{key: 'completeSprites', frame: 'slimeBlue_move.png'},
                 //{key: 'enemySprites2', frame: 'enemyWalking_3.png'},
                 //{key: 'enemySprites2', frame: 'enemyWalking_4.png'}
             ],
@@ -339,7 +341,7 @@ export class MainScene extends Phaser.Scene {
         enemy.tryBounce();        
     }
 
-    playerTouchingEnemiesHandler(player: Player, enemies): void
+    playerTouchingEnemiesHandler(player: Player, enemy: Enemy): void
     {
         console.log(this);
         player.tryDamage();
@@ -384,7 +386,8 @@ export class MainScene extends Phaser.Scene {
         scene.addExpiringText(scene, enemy.x, enemy.y, damage.toString())
 
         bullet.destroy();
-        enemy.destroy();
+        //enemy.destroy();
+        enemy.tryDamage(4);
     }
 
     bulletTouchingImpassableLayerHandler(bullet, layer): void {
