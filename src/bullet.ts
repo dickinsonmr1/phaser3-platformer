@@ -9,6 +9,7 @@ export class Bullet extends Phaser.GameObjects.Sprite {
     public xSpeed: number;
     public ySpeed: number;
     public currentScene: Phaser.Scene;
+    public damage: number;
 
     constructor(params)
     {
@@ -20,6 +21,7 @@ export class Bullet extends Phaser.GameObjects.Sprite {
         this.direction = 0;
         this.xSpeed = 0;
         this.ySpeed = 0;
+        this.damage = 4;
         //this.setSize(12, 12, true);
 
         this.currentScene = params.scene;

@@ -14,7 +14,9 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     public hurtTime: number;
     public springTime: number;
     public health: number;
-
+    
+    private drawOffsetY: number;
+    private defaultFacingRight: boolean;
     private idleAnim: string;
     private walkAnim: string;
     private deadAnim: string;
@@ -27,6 +29,8 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
         this.drawScale = params.drawScale;
         this.scene.physics.world.enable(this);
+        this.drawOffsetY = params.drawOffsetY;
+        this.defaultFacingRight = params.defaultFacingRight;
     } 
     
     public getScene(): Scene {
@@ -35,7 +39,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
     public init(idleAnim: string, walkAnim: string, deadAnim: string): void {
 
-        this.setFlipX(true);
+        this.setFlipX(this.defaultFacingRight);
 
         this.idleAnim = idleAnim;
         this.walkAnim = walkAnim;
@@ -52,7 +56,9 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.body
             //.setSize(64, 128)
             //.setOffset
-            .setOffset(0, Constants.enemyOffsetY);    
+            .setOffset(0, this.drawOffsetY);    
+
+        this.body.debugBodyColor = 0xadfefe;
               
         this.displayOriginX = 0.5;
         this.displayOriginY = 0.5;
@@ -83,7 +89,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
             if(this.body.onFloor()) {
                 this.body.setVelocityX(-150);            
                 this.anims.play(this.walkAnim, true);
-                this.flipX = true;
+                this.flipX = !this.defaultFacingRight;
             }
         }
     }
@@ -93,7 +99,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
             if(this.body.onFloor()) {
                 this.body.setVelocityX(150);            
                 this.anims.play(this.walkAnim, true);
-                this.flipX = false;
+                this.flipX = this.defaultFacingRight;
             }
         }
     }
@@ -103,7 +109,8 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.hurtTime = 60;
 
         if(this.health <= 0) {
-           this.destroy();
+            this.scene.sound.play("enemyDeathSound");
+            this.destroy();       
         }
     }
 

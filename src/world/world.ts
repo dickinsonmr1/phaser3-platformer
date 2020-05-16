@@ -164,14 +164,29 @@ export class World {
                 var x = tile.getCenterX();
                 var y = tile.getCenterY();
 
+                /*
                 var enemy = new Enemy({
                     scene: this.scene,
                     x: x,
                     y: y,
-                    key: "enemyIdle",
-                    drawScale: 1.5
+                    key: "enemy02-Idle",
+                    drawScale: 0.5,
+                    enemyOffsetY: -30,
+                    defaultFacingRight: true,
                     });        
-                enemy.init("enemyIdle", "enemyWalk", "enemyDead");
+                enemy.init("enemy02-Idle", "enemy02-Walk", "enemy02-Dead");
+                */
+
+                var enemy = new Enemy({
+                    scene: this.scene,
+                    x: x,
+                    y: y,
+                    key: "enemy01-Idle",
+                    drawScale: 1.5,
+                    enemyOffsetY: -50,
+                    defaultFacingRight: false,
+                    });        
+                enemy.init("enemy01-Idle", "enemy01-Walk", "enemy01-Dead");
                 this.scene.enemies.push(enemy);
 
                 this.layer07.removeTileAt(tile.x, tile.y);

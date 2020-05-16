@@ -42,6 +42,7 @@ export class MainScene extends Phaser.Scene {
     pauseKey: Phaser.Input.Keyboard.Key;
     moveWaterKey: Phaser.Input.Keyboard.Key;
     jumpKey: Phaser.Input.Keyboard.Key;
+    debugKey: Phaser.Input.Keyboard.Key;
 
     playerBullets: Phaser.GameObjects.Group;
 
@@ -66,9 +67,10 @@ export class MainScene extends Phaser.Scene {
         this.load.audio('gemSound', './assets/audio/coin.wav');
         this.load.audio('keySound', './assets/audio/key.wav');
         this.load.audio('springSound', './assets/audio/spring.wav');
-        this.load.audio('laserSound', './assets/audio/laser5.ogg');
+        this.load.audio('laserSound', './assets/audio/laser2.ogg');
         this.load.audio('hurtSound', './assets/audio/hurt.wav');
-        this.load.audio('enemyDeathSound', './assets/audio/lowRandom.ogg');
+        this.load.audio('enemyHurtSound', './assets/audio/lowRandom.ogg');
+        this.load.audio('enemyDeathSound', '/assets/audio/hit3.ogg');        
     }
 
     loadSprites(): void {
@@ -142,16 +144,15 @@ export class MainScene extends Phaser.Scene {
         });
 
 
-        // enemy
+        // enemies
         anims.create({
-            key: 'enemyIdle',
+            key: 'enemy01-Idle',
             frames: [{key: 'enemySprites2', frame: 'enemyWalking_1.png', }],
             frameRate: 10,
         });
-
         
         anims.create({
-            key: 'enemyWalk',
+            key: 'enemy01-Walk',
             frames:
             [
                 {key: 'enemySprites2', frame: 'enemyWalking_1.png'},
@@ -165,12 +166,39 @@ export class MainScene extends Phaser.Scene {
             repeat: -1
         });
 
+        
         anims.create({
-            key: 'enemyDead',
+            key: 'enemy01-Dead',
             frames: [{key: 'enemySprites2', frame: 'enemyWalking_1.png'}],
             frameRate: 10,
         });
 
+
+        // enemies
+        anims.create({
+            key: 'enemy02-Idle',
+            frames: [{key: 'completeSprites', frame: 'slimeBlue.png', }],
+            frameRate: 10,
+        });
+        
+        anims.create({
+            key: 'enemy02-Walk',
+            frames:
+            [
+                {key: 'completeSprites', frame: 'slimeBlue.png'},
+                {key: 'completeSprites', frame: 'slimeBlue_move.png'},                
+            ],
+            frameRate: 5,
+            repeat: -1
+        });
+
+        anims.create({
+            key: 'enemy02-Dead',
+            frames: [{key: 'completeSprites', frame: 'slimeBlue_dead.png'}],
+            frameRate: 10,
+        });
+
+        // springs
         anims.create({
             key: 'spring0',
             frames: [{key: 'completeSprites', frame: 'spring0.png'}],
@@ -220,6 +248,8 @@ export class MainScene extends Phaser.Scene {
         this.moveWaterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
         this.jumpKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
+        this.debugKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F2);
+
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setBackgroundColor('#ccccff');
     }
@@ -235,6 +265,10 @@ export class MainScene extends Phaser.Scene {
         if(this.shootKey2.isDown) {
             this.events.emit("playerHurt");
         }
+
+        //if(Phaser.Input.Keyboard.JustDown(this.debugKey) {
+            //this.physics.config.Arcade.debug = false;
+        //}
 
         if(this.zoomInKey.isDown) {
             this.cameras.main.zoom -= 0.01;
@@ -381,13 +415,12 @@ export class MainScene extends Phaser.Scene {
 
         var damage = 100;
 
-        scene.sound.play("enemyDeathSound");
+        scene.sound.play("enemyHurtSound");
        
         scene.addExpiringText(scene, enemy.x, enemy.y, damage.toString())
 
+        enemy.tryDamage(4);//bullet.damage);
         bullet.destroy();
-        //enemy.destroy();
-        enemy.tryDamage(4);
     }
 
     bulletTouchingImpassableLayerHandler(bullet, layer): void {

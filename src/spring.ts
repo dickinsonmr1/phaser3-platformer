@@ -34,25 +34,28 @@
      
         this.width = 64;
         this.height = 64;
-
+ 
         this.scene.physics.world.enable(this);   
 
         this.displayWidth = 64;
         this.displayHeight = 64;     
 
+        
+        //this.displayWidth = 128;
+        //this.displayHeight = 128;            
+
+        //this.body.setOffset(0, -1);    
+              
+        //this.displayOriginX = 0.5;
+        //this.displayOriginY = 0.5;
+
+        
+
         this.body.moves = false;
         this.body.immovable = true;
         
-        this.displayWidth = 64;
-        this.displayHeight = 64;            
+        this.setScale(1, 1);
 
-        this.body.setOffset(0, -1);    
-              
-        this.displayOriginX = 0.5;
-        this.displayOriginY = 1;
-
-        this.setScale(0.5, 0.5);
-        
         this.scene.add.existing(this);
 
         //this.body.setSize(64, 32);            
