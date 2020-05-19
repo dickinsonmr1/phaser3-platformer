@@ -22,6 +22,14 @@ export class Player extends Phaser.GameObjects.Sprite {
     private shootingKey: Phaser.Input.Keyboard.Key;
     private jumpingKey: Phaser.Input.Keyboard.Key;
 
+    private static get playerGunOffsetXFacingLeft(): number {return 0;}
+    private static get playerGunOffsetY(): number {return 155;}
+    private static get playerGunOffsetXFacingRight(): number {return 90;}  
+
+    private static get playerJumpVelocityY(): number {return 450;}  
+    private static get playerRunVelocityX(): number {return 400;}  
+    private static get playerBulletVelocityX(): number {return 700;}  
+
     // game objects
     public bullets: Phaser.GameObjects.Group;
     public lastUsedBulletIndex: number;
@@ -109,7 +117,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     moveLeft(): void {
 
         var body = <Phaser.Physics.Arcade.Body>this.body;
-        body.setVelocityX(-300); // move left
+        body.setVelocityX(-Player.playerRunVelocityX); // move left
             
             if(this.isInWater) {
                 this.anims.play('player-swim', true);
@@ -128,7 +136,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     moveRight(): void {
         var body = <Phaser.Physics.Arcade.Body>this.body;
-        body.setVelocityX(300); // move right
+        body.setVelocityX(Player.playerRunVelocityX); // move right
 
         if(this.isInWater) {
             this.anims.play('player-swim', true);
@@ -171,7 +179,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     tryJump(sound): void {
         var body = <Phaser.Physics.Arcade.Body>this.body;
         if(body.onFloor()) {
-            body.setVelocityY(-400);
+            body.setVelocityY(-Player.playerJumpVelocityY);
             this.anims.play('player-jump', true);
             sound.play("jumpSound");
         }
@@ -190,7 +198,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         var gameTime = this.scene.game.loop.time;
         var body = <Phaser.Physics.Arcade.Body>this.body;
         //if (gameTime > this.springTime) { //} && !this.body.onFloor()) {
-            if(body.onFloor()) {
+            //if(body.onFloor()) {
                 //if (!this.playerBox.isInSpaceShip && !this.playerBox.isTouchingSpring) {
                     //if (!player.isTouchingSpring) {
                         //if(springSound.)
@@ -198,7 +206,7 @@ export class Player extends Phaser.GameObjects.Sprite {
                 body.velocity.y = -650;
 
                 this.springTime = gameTime + 1000;
-            }        
+            //}        
         //}
     }
 
@@ -206,10 +214,14 @@ export class Player extends Phaser.GameObjects.Sprite {
 
         var body = <Phaser.Physics.Arcade.Body>this.body;
         if (this.flipX) {
-            this.bullets.create(body.x, body.y + this.getBulletOffsetY(), "playerGunBullet").body.setVelocityX(-600).setVelocityY(0);
+            this.bullets
+                .create(body.x, body.y + this.getBulletOffsetY(), "playerGunBullet")
+                .body.setVelocityX(-Player.playerBulletVelocityX).setVelocityY(0);
         }
         else {
-            this.bullets.create(body.x + 66, body.y + this.getBulletOffsetY(), "playerGunBullet").body.setVelocityX(600).setVelocityY(0);
+            this.bullets
+                .create(body.x + 66, body.y + this.getBulletOffsetY(), "playerGunBullet")
+                .body.setVelocityX(Player.playerBulletVelocityX).setVelocityY(0);
         }
     }
 
@@ -229,7 +241,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     getGunOffsetY() : number {
-        var offsetY = Constants.playerGunOffsetY;
+        var offsetY = Player.playerGunOffsetY;
         if(this.isDucking) {
             offsetY += Constants.playerDuckingGunOffsetY;
         }
@@ -238,7 +250,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     getBulletOffsetY() : number {
-        var offsetY = 45;
+        var offsetY = 60;
         if(this.isDucking) {
             offsetY += Constants.playerDuckingGunOffsetY;
         }
@@ -259,11 +271,11 @@ export class Player extends Phaser.GameObjects.Sprite {
        
         if(this.flipX) {
             this.playerGun.setFlipX(true);          
-            this.playerGun.setPosition(this.x + Constants.playerGunOffsetXFacingLeft, this.y + this.getGunOffsetY());//.setOffset(32, 128);
+            this.playerGun.setPosition(this.x + Player.playerGunOffsetXFacingLeft, this.y + this.getGunOffsetY());//.setOffset(32, 128);
         }       
         else {
             this.playerGun.setFlipX(false);
-            this.playerGun.setPosition(this.x + Constants.playerGunOffsetXFacingRight, this.y + this.getGunOffsetY());//.setOffset(32, 128);
+            this.playerGun.setPosition(this.x + Player.playerGunOffsetXFacingRight, this.y + this.getGunOffsetY());//.setOffset(32, 128);
         }        
     }
 }

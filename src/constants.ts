@@ -17,9 +17,7 @@ export class Constants {
     public static get enemyDrawScale(): number {return 1;}
     public static get playerOffsetX(): number {return 32;}
     public static get playerOffsetY(): number {return 128;}
-    public static get playerGunOffsetXFacingLeft(): number {return 0;}
-    public static get playerGunOffsetY(): number {return 145;}
-    public static get playerGunOffsetXFacingRight(): number {return 86;}  
+
     public static get playerDuckingGunOffsetY(): number {return 24;}
     public static get enemyOffsetY(): number {return 10;}
 }

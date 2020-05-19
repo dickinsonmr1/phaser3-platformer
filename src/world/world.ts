@@ -16,7 +16,7 @@ export class World {
     private layer03A: Phaser.Tilemaps.StaticTilemapLayer;
     private layer04: Phaser.Tilemaps.StaticTilemapLayer;
     private layer05: Phaser.Tilemaps.DynamicTilemapLayer;
-    private layer06: Phaser.Tilemaps.StaticTilemapLayer;
+    private layer06: Phaser.Tilemaps.DynamicTilemapLayer;
     private layer07: Phaser.Tilemaps.DynamicTilemapLayer;
     private layer02: Phaser.Tilemaps.DynamicTilemapLayer;
     isWorldLoaded: boolean;
@@ -124,7 +124,7 @@ export class World {
         this.layer05.setTileIndexCallback(Constants.tileKeyGemBlue, this.scene.collectGem, this.scene);
         this.layer05.setTileIndexCallback(Constants.tileKeyBlueKey, this.scene.collectKey, this.scene);        
 
-        this.layer06 = this.map.createStaticLayer('layer06-gameobjects', tileSets, 0, 0);
+        this.layer06 = this.map.createDynamicLayer('layer06-gameobjects', tileSets, 0, 0);
         this.layer06.alpha = 0.0;
 
         this.layer06.forEachTile(tile => {
@@ -142,7 +142,7 @@ export class World {
                 spring.init("spring0", "spring1");
                 this.scene.springs.push(spring);
 
-                //this.layer06.removeTileAt(tile.x, tile.y);
+                this.layer06.removeTileAt(tile.x, tile.y);
             }
         })
 

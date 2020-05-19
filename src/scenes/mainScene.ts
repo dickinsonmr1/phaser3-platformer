@@ -388,25 +388,23 @@ export class MainScene extends Phaser.Scene {
 
         if(body1.x < body2.x && body1.velocity.x > 0) {
             body1.velocity.x = 0;
-            enemy1.idleTime = 20;
+            enemy1.idle();
         }
         else if(body1.x > body2.x && body1.velocity.x < 0) {
             body1.velocity.x = 0;
-            enemy1.idleTime = 20;
+            enemy1.idle();
         }            
         else if(body1.x > body2.x && body2.velocity.x > 0) {
             body2.velocity.x = 0;
-            enemy2.idleTime = 20;
+            enemy2.idle();
         }            
         else if(body1.x < body2.x && body2.velocity.x < 0) {
             body2.velocity.x = 0;
-            enemy2.idleTime = 20;
+            enemy2.idle();
         }            
 
         //console.log("Enemy1.x: " + enemy.x);
         //console.log("Enemy2.x: " + enemy2.x);
-        enemy1.idle();
-        enemy2.idle();
     }
 
     bulletTouchingEnemyHandler(enemy: Enemy, bullet: Bullet): void {

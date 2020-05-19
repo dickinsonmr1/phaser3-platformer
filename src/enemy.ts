@@ -84,6 +84,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
             var body = <Phaser.Physics.Arcade.Body>this.body;
             body.setVelocityX(0);            
             this.anims.play(this.idleAnim, true);
+            this.idleTime = 60;
         }
     }
     
