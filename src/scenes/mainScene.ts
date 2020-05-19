@@ -34,7 +34,7 @@ export class MainScene extends Phaser.Scene {
 
     springs: Array<Phaser.GameObjects.Sprite>;
 
-    cursors: Phaser.Input.Keyboard.CursorKeys;              
+    cursors: Phaser.Types.Input.Keyboard.CursorKeys;              
     zoomInKey: Phaser.Input.Keyboard.Key;
     zoomOutKey: Phaser.Input.Keyboard.Key;
     shootKey: Phaser.Input.Keyboard.Key;
@@ -445,7 +445,7 @@ export class MainScene extends Phaser.Scene {
 
         scene.physics.world.enable(emitText);
 
-        emitText.body.alpha = 0.6;
+        emitText.alpha = 0.6;
         
         scene.expiringMessagesGroup.add(emitText);
     }
@@ -454,11 +454,14 @@ export class MainScene extends Phaser.Scene {
         this.expiringMessagesGroup.getChildren().forEach(x => {
 
             var message = <Phaser.GameObjects.Text> x;
-            message.setAlpha(message.body.alpha);
-            message.body.setVelocityY(-200);
-            message.body.alpha -= 0.02;
+            message.setAlpha(message.alpha);
 
-            if(message.body.alpha <= 0)
+            var body = <Phaser.Physics.Arcade.Body>x.body;
+
+            body.setVelocity(0, -200);
+            message.alpha -= 0.02;
+
+            if(message.alpha <= 0)
                 message.destroy();
         });
     }

@@ -1,3 +1,6 @@
+
+/// <reference path="../phaser.d.ts"/>
+
 import { Constants } from "../constants";
 import "phaser";
 import { MainScene } from "../scenes/mainScene";
@@ -182,8 +185,8 @@ export class World {
                     x: x,
                     y: y,
                     key: "enemy01-Idle",
-                    drawScale: 1.5,
-                    enemyOffsetY: -50,
+                    drawScale: 2,
+                    enemyOffsetY: 10,
                     defaultFacingRight: false,
                     });        
                 enemy.init("enemy01-Idle", "enemy01-Walk", "enemy01-Dead");

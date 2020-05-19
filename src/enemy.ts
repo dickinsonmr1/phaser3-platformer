@@ -4,8 +4,8 @@
  * @license      none
  */
 
- 
  /// <reference path="phaser.d.ts"/>
+
 import { Constants } from "./constants";
 import "phaser";
 import { Scene } from "phaser";
@@ -29,7 +29,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
         this.drawScale = params.drawScale;
         this.scene.physics.world.enable(this);
-        this.drawOffsetY = params.drawOffsetY;
+        this.drawOffsetY = params.enemyOffsetY;
         this.defaultFacingRight = params.defaultFacingRight;
     } 
     
@@ -45,20 +45,22 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.walkAnim = walkAnim;
         this.deadAnim = deadAnim;
         
-        this.width = 64;
-        this.height = 64;
+        //this.width = 64;
+        //this.height = 64;
 
         this.scene.physics.world.enable(this);   
 
-        this.displayWidth = 64;
-        this.displayHeight = 64;            
+        //this.displayWidth = 64;
+        //this.displayHeight = 64;            
 
-        this.body
+        var body = <Phaser.Physics.Arcade.Body>this.body;
+
+        body
             //.setSize(64, 128)
             //.setOffset
             .setOffset(0, this.drawOffsetY);    
 
-        this.body.debugBodyColor = 0xadfefe;
+        //this.body.debugBodyColor = 0xadfefe;
               
         this.displayOriginX = 0.5;
         this.displayOriginY = 0.5;
@@ -79,15 +81,18 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
     idle(): void {
         if(this.scene != undefined) {
-            this.body.setVelocityX(0);            
+            var body = <Phaser.Physics.Arcade.Body>this.body;
+            body.setVelocityX(0);            
             this.anims.play(this.idleAnim, true);
         }
     }
     
     moveLeft(): void {
         if(this.scene != undefined) {
-            if(this.body.onFloor()) {
-                this.body.setVelocityX(-150);            
+            var body = <Phaser.Physics.Arcade.Body>this.body;
+            if(body.onFloor()) {
+                var body = <Phaser.Physics.Arcade.Body>this.body;
+                body.setVelocityX(-150);            
                 this.anims.play(this.walkAnim, true);
                 this.flipX = !this.defaultFacingRight;
             }
@@ -96,8 +101,10 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
     moveRight(): void {        
         if(this.scene != undefined) {
-            if(this.body.onFloor()) {
-                this.body.setVelocityX(150);            
+            var body = <Phaser.Physics.Arcade.Body>this.body;
+            if(body.onFloor()) {
+                var body = <Phaser.Physics.Arcade.Body>this.body;
+                body.setVelocityX(150);            
                 this.anims.play(this.walkAnim, true);
                 this.flipX = this.defaultFacingRight;
             }

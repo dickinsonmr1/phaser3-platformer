@@ -32,34 +32,20 @@
         this.loadedAnim = loadedAnim;
         this.sprungAnim = sprungAnim;
      
-        this.width = 64;
-        this.height = 64;
+        this.width = 128;
+        this.height = 128;
  
         this.scene.physics.world.enable(this);   
 
-        this.displayWidth = 64;
-        this.displayHeight = 64;     
+        var body = <Phaser.Physics.Arcade.Body>this.body;
 
+        body.setSize(128, 128);     
+        body.moves = false;
         
-        //this.displayWidth = 128;
-        //this.displayHeight = 128;            
-
-        //this.body.setOffset(0, -1);    
-              
-        //this.displayOriginX = 0.5;
-        //this.displayOriginY = 0.5;
-
-        
-
-        this.body.moves = false;
-        this.body.immovable = true;
-        
-        this.setScale(1, 1);
+        this.setScale(0.5, 0.5);
 
         this.scene.add.existing(this);
-
-        //this.body.setSize(64, 32);            
-    
+            
         this.bounceTime = 0;
         this.anims.play(this.loadedAnim, true);
  

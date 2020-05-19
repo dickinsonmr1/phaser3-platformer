@@ -13,7 +13,7 @@ import { HudScene } from "./scenes/hudScene";
 import { PauseScene } from "./scenes/pauseScene";
 
 // main game configuration
-const config: GameConfig = {
+var config: Phaser.Types.Core.GameConfig = {
   width: 1920,
   height: 1080,
   type: Phaser.AUTO,
@@ -37,7 +37,7 @@ const config: GameConfig = {
 
 // game class
 export class Game extends Phaser.Game {
-  constructor(config: GameConfig) {
+  constructor(config: Phaser.Types.Core.GameConfig) {
     super(config);
   }
 }

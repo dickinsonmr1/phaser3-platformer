@@ -3,6 +3,8 @@
  * @copyright    2019 Mark Dickinson
  * @license      none
  */
+
+ /// <reference path="phaser.d.ts"/>
 import { Constants } from "./constants";
 import "phaser";
 import { Scene } from "phaser";
@@ -12,7 +14,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     //public sprite: Phaser.Physics.Arcade.Sprite;
     public playerGun: any;//Phaser.Physics.Arcade.Image;
 
-    private cursors: Phaser.Input.Keyboard.CursorKeys;
+    private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
     //private anims: Phaser.Animations.AnimationManager;
 
     private moveKeyLeft: Phaser.Input.Keyboard.Key;
@@ -57,9 +59,11 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.displayWidth = 64;
         this.displayHeight = 128;                   
 
-        this.body.maxVelocity.x = 500;
-        this.body.maxVelocity.y = 500;
-        this.body
+        var body = <Phaser.Physics.Arcade.Body>this.body;
+
+        body.maxVelocity.x = 500;
+        body.maxVelocity.y = 500;
+        body
             .setSize(64, 128)
             .setOffset(Constants.playerOffsetX, Constants.playerOffsetY);    
 
@@ -103,13 +107,15 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     moveLeft(): void {
-        this.body.setVelocityX(-300); // move left
+
+        var body = <Phaser.Physics.Arcade.Body>this.body;
+        body.setVelocityX(-300); // move left
             
             if(this.isInWater) {
                 this.anims.play('player-swim', true);
             }
             else {
-                if(this.body.onFloor()) {         
+                if(body.onFloor()) {         
                     this.anims.play('player-walk', true);
                 }
                 else {
@@ -121,13 +127,14 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     moveRight(): void {
-        this.body.setVelocityX(300); // move right
+        var body = <Phaser.Physics.Arcade.Body>this.body;
+        body.setVelocityX(300); // move right
 
         if(this.isInWater) {
             this.anims.play('player-swim', true);
         }
         else {
-            if(this.body.onFloor()) {
+            if(body.onFloor()) {
                 this.anims.play('player-walk', true);
             }
             else {
@@ -139,7 +146,8 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     duck(): void {
-        if(this.body.onFloor())
+        var body = <Phaser.Physics.Arcade.Body>this.body;
+        if(body.onFloor())
         {
             this.anims.play('player-duck', true);
             this.isDucking = true;
@@ -148,8 +156,9 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     stand(): void {
         this.isDucking = false;
-        this.body.setVelocityX(0);
-        if(this.body.onFloor())
+        var body = <Phaser.Physics.Arcade.Body>this.body;
+        body.setVelocityX(0);
+        if(body.onFloor())
         {            
             this.anims.play('player-idle', true);
         }
@@ -160,8 +169,9 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     tryJump(sound): void {
-        if(this.body.onFloor()) {
-            this.body.setVelocityY(-400);
+        var body = <Phaser.Physics.Arcade.Body>this.body;
+        if(body.onFloor()) {
+            body.setVelocityY(-400);
             this.anims.play('player-jump', true);
             sound.play("jumpSound");
         }
@@ -178,13 +188,14 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     tryBounce() {
         var gameTime = this.scene.game.loop.time;
+        var body = <Phaser.Physics.Arcade.Body>this.body;
         //if (gameTime > this.springTime) { //} && !this.body.onFloor()) {
-            if(this.body.onFloor()) {
+            if(body.onFloor()) {
                 //if (!this.playerBox.isInSpaceShip && !this.playerBox.isTouchingSpring) {
                     //if (!player.isTouchingSpring) {
                         //if(springSound.)
                         //if (tile.alpha > 0) {
-                this.body.velocity.y = -650;
+                body.velocity.y = -650;
 
                 this.springTime = gameTime + 1000;
             }        
@@ -192,11 +203,13 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     private createBullet() : void {
+
+        var body = <Phaser.Physics.Arcade.Body>this.body;
         if (this.flipX) {
-            this.bullets.create(this.body.x, this.body.y + this.getBulletOffsetY(), "playerGunBullet").body.setVelocityX(-600).setVelocityY(0);
+            this.bullets.create(body.x, body.y + this.getBulletOffsetY(), "playerGunBullet").body.setVelocityX(-600).setVelocityY(0);
         }
         else {
-            this.bullets.create(this.body.x + 66, this.body.y + this.getBulletOffsetY(), "playerGunBullet").body.setVelocityX(600).setVelocityY(0);
+            this.bullets.create(body.x + 66, body.y + this.getBulletOffsetY(), "playerGunBullet").body.setVelocityX(600).setVelocityY(0);
         }
     }
 
