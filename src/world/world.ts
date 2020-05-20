@@ -30,7 +30,9 @@ export class World {
         this.scene = scene;
     }
 
-
+    getRandomInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
+    }
 
     createWorld(worldName: string, skyName: string, backgroundColor: string, player: Player): void {
         // using the Tiled map editor, here is the order of the layers from back to front:
@@ -103,6 +105,7 @@ export class World {
         this.layer05.setTileIndexCallback(Constants.tileKeyGemYellow, this.scene.collectGem, this.scene);
         this.layer05.setTileIndexCallback(Constants.tileKeyGemBlue, this.scene.collectGem, this.scene);
         this.layer05.setTileIndexCallback(Constants.tileKeyBlueKey, this.scene.collectKey, this.scene);        
+        this.layer05.setTileIndexCallback(Constants.tileKeyBattery, this.scene.collectBattery, this.scene);    
 
         this.layer06 = this.map.createDynamicLayer('layer06-gameobjects', tileSets, 0, 0);
         this.layer06.alpha = 0.0;
@@ -110,6 +113,24 @@ export class World {
         this.layer06.forEachTile(tile => {
             if(tile.index == Constants.tileKeySpring)
             {
+                const x = tile.getCenterX();
+                const y = tile.getCenterY();
+
+                var spring = new Spring({
+                    scene: this.scene,
+                    x: x,
+                    y: y,
+                    key: "springLoaded"
+                    });        
+                spring.init("spring0", "spring1");
+                this.scene.springs.push(spring);
+
+                this.layer06.removeTileAt(tile.x, tile.y);
+            }
+
+            if(tile.index == Constants.tileOpenDoor)
+            {
+                // TODO: add door
                 const x = tile.getCenterX();
                 const y = tile.getCenterY();
 
@@ -137,30 +158,52 @@ export class World {
                 var x = tile.getCenterX();
                 var y = tile.getCenterY();
 
-                /*
-                var enemy = new Enemy({
-                    scene: this.scene,
-                    x: x,
-                    y: y,
-                    key: "enemy02-Idle",
-                    drawScale: 0.5,
-                    enemyOffsetY: -30,
-                    defaultFacingRight: true,
-                    });        
-                enemy.init("enemy02-Idle", "enemy02-Walk", "enemy02-Dead");
-                */
+                var randomNumber = this.getRandomInt(2);
 
-                var enemy = new Enemy({
-                    scene: this.scene,
-                    x: x,
-                    y: y - 50,
-                    key: "enemy01-Idle",
-                    drawScale: 2,
-                    enemyOffsetY: 10,
-                    defaultFacingRight: false,
-                    });        
-                enemy.init("enemy01-Idle", "enemy01-Walk", "enemy01-Dead");
-                this.scene.enemies.push(enemy);
+                switch(randomNumber)
+                {
+                    case 0:
+                        var enemy = new Enemy({
+                            scene: this.scene,
+                            x: x,
+                            y: y - 50,
+                            key: "enemy01-Idle",
+                            drawScale: 2,
+                            enemyOffsetY: 10,
+                            defaultFacingRight: false,
+                            });        
+                        enemy.init("enemy01-Idle", "enemy01-Walk", "enemy01-Dead");
+                        this.scene.enemies.push(enemy);
+                        break;
+                        
+                    case 555:
+                        var enemy = new Enemy({
+                            scene: this.scene,
+                            x: x,
+                            y: y,
+                            key: "enemy02-Idle",
+                            drawScale: 0.5,
+                            enemyOffsetY: -30,
+                            defaultFacingRight: true,
+                            });        
+                        enemy.init("enemy02-Idle", "enemy02-Walk", "enemy02-Dead");
+                        this.scene.enemies.push(enemy);
+                        break;
+
+                    case 1:                                
+                        var enemy = new Enemy({
+                            scene: this.scene,
+                            x: x,
+                            y: y - 50,
+                            key: "enemy03-Idle",
+                            drawScale: 2,
+                            enemyOffsetY: 10,
+                            defaultFacingRight: false,
+                            });        
+                        enemy.init("enemy03-Idle", "enemy03-Walk", "enemy03-Dead");
+                        this.scene.enemies.push(enemy);
+                        break;
+                }
 
                 this.layer07.removeTileAt(tile.x, tile.y);
             }

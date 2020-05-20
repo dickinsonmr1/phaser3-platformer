@@ -72,12 +72,15 @@ export class MainScene extends Phaser.Scene {
         this.load.audio('hurtSound', './assets/audio/hurt.wav');
         this.load.audio('enemyHurtSound', './assets/audio/lowRandom.ogg');
         this.load.audio('enemyDeathSound', '/assets/audio/hit3.ogg');        
+        this.load.audio('batterySound', '/assets/audio/upgrade3.ogg');        
     }    
 
     private loadSprites(): void {
         // spritesheets for game objects (not in the game map)
         this.load.atlasXML('enemySprites', './assets/sprites/enemies/enemies.png', './assets/sprites/enemies/enemies.xml');
         this.load.atlasXML('enemySprites2', './assets/sprites/enemies/spritesheet_enemies.png', './assets/sprites/enemies/spritesheet_enemies.xml');
+        this.load.atlasXML('enemySprites3', './assets/sprites/enemies/spritesheet_abstract_enemies.png', './assets/sprites/enemies/spritesheet_abstract_enemies.xml');
+
         this.load.atlasXML('completeSprites', './assets/sprites/objects/spritesheet_complete.png', './assets/sprites/objects/spritesheet_complete.xml');
         this.load.atlasXML('playerSprites', './assets/sprites/player/spritesheet_players.png', './assets/sprites/player/spritesheet_players.xml');
         this.load.atlasXML('alienShipSprites', './assets/sprites/ships/spritesheet_spaceships.png', './assets/sprites/ships/spritesheet_spaceships.xml');
@@ -193,7 +196,7 @@ export class MainScene extends Phaser.Scene {
                 {key: 'completeSprites', frame: 'slimeBlue.png'},
                 {key: 'completeSprites', frame: 'slimeBlue_move.png'},                
             ],
-            frameRate: 5,
+            frameRate: 20,
             repeat: -1
         });
 
@@ -202,6 +205,40 @@ export class MainScene extends Phaser.Scene {
             frames: [{key: 'completeSprites', frame: 'slimeBlue_dead.png'}],
             frameRate: 10,
         });
+
+        // enemies
+        anims.create({
+            key: 'enemy03-Idle',
+            frames: [{key: 'enemySprites3', frame: 'playerRed_stand.png', }],
+            frameRate: 10,
+        });
+        
+        anims.create({
+            key: 'enemy03-Walk',
+            frames:
+            [
+                {key: 'enemySprites3', frame: 'playerRed_walk1.png'},
+                {key: 'enemySprites3', frame: 'playerRed_walk2.png'},
+                {key: 'enemySprites3', frame: 'playerRed_walk3.png'},
+                {key: 'enemySprites3', frame: 'playerRed_walk2.png'},
+                //{key: 'enemySprites3', frame: 'playerRed_walk4.png'},
+                //{key: 'enemySprites3', frame: 'playerRed_walk5.png'},
+                //{key: 'completeSprites', frame: 'slimeBlue.png'},
+                //{key: 'completeSprites', frame: 'slimeBlue_move.png'},
+                //{key: 'enemySprites2', frame: 'enemyWalking_3.png'},
+                //{key: 'enemySprites2', frame: 'enemyWalking_4.png'}
+            ],
+            frameRate: 20,
+            repeat: -1
+        });
+        
+        anims.create({
+            key: 'enemy03-Dead',
+            frames: [{key: 'enemySprites3', frame: 'playerRed_dead.png'}],
+            frameRate: 10,
+        });
+
+
 
         // springs
         anims.create({
@@ -344,6 +381,16 @@ export class MainScene extends Phaser.Scene {
 
         return false;
     }
+
+    collectBattery (sprite, tile): boolean
+    {
+        this.world.collectGem(tile.x, tile.y);
+        this.sound.play("batterySound");
+        //this.events.emit("gemCollected", this.player.gemsCollected++);
+
+        return false;
+    }
+
 
     inWater (player: Player, tile): boolean
     {
