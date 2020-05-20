@@ -15,7 +15,8 @@ import { Bullet } from "../bullet";
 import { World } from "../world/world";
 
 export class MainScene extends Phaser.Scene {
-  public skySprite: Phaser.GameObjects.TileSprite;
+  
+    public skySprite: Phaser.GameObjects.TileSprite;
 
     world: World;    
     emitter: Phaser.GameObjects.Particles.ParticleEmitter;
@@ -62,7 +63,7 @@ export class MainScene extends Phaser.Scene {
         this.loadTileMaps();   
     }
 
-    loadAudio(): void {
+    private loadAudio(): void {
         this.load.audio('jumpSound', './assets/audio/jump.wav');
         this.load.audio('gemSound', './assets/audio/coin.wav');
         this.load.audio('keySound', './assets/audio/key.wav');
@@ -71,9 +72,9 @@ export class MainScene extends Phaser.Scene {
         this.load.audio('hurtSound', './assets/audio/hurt.wav');
         this.load.audio('enemyHurtSound', './assets/audio/lowRandom.ogg');
         this.load.audio('enemyDeathSound', '/assets/audio/hit3.ogg');        
-    }
+    }    
 
-    loadSprites(): void {
+    private loadSprites(): void {
         // spritesheets for game objects (not in the game map)
         this.load.atlasXML('enemySprites', './assets/sprites/enemies/enemies.png', './assets/sprites/enemies/enemies.xml');
         this.load.atlasXML('enemySprites2', './assets/sprites/enemies/spritesheet_enemies.png', './assets/sprites/enemies/spritesheet_enemies.xml');
@@ -83,23 +84,27 @@ export class MainScene extends Phaser.Scene {
         this.load.atlasXML('alienShipLaserSprites', './assets/sprites/ships/spritesheet_lasers.png', './assets/sprites/ships/spritesheet_lasers.xml');
 
         // initial placeholders for animated objects
-        this.load.image('ghost', './assets/sprites/enemies/ghost.png');
-        this.load.image('piranha', './assets/sprites/enemies/piranha.png');
-        this.load.image('sprung', './assets/sprites/objects/sprung64.png');
-        this.load.image('engineExhaust', './assets/sprites/ships/laserblue3.png');
+        //this.load.image('ghost', './assets/sprites/enemies/ghost.png');
+        //this.load.image('piranha', './assets/sprites/enemies/piranha.png');
+        //this.load.image('sprung', './assets/sprites/objects/sprung64.png');
+        //this.load.image('engineExhaust', './assets/sprites/ships/laserblue3.png');
 
         this.load.image('playerGun', './assets/sprites/player/raygunPurpleBig.png');
         this.load.image('playerGunBullet', './assets/sprites/player/laserPurpleDot15x15.png');
 
-        this.load.image('logo', './assets/sample/phaser.png');
-        this.load.image('sky', './assets/sample/colored_grass.png');
-
+        //this.load.image('logo', './assets/sample/phaser.png');
+        //this.load.image('sky', './assets/sample/colored_grass.png');
+        this.load.image('world-01-03-sky', './assets/sprites/backgrounds/blue_grass.png');
+        this.load.image('world-02-01-sky', './assets/sprites/backgrounds/backgroundCastles.png');
+        
     }
 
-    loadTileMaps(): void {
+    private loadTileMaps(): void {
         // tilemap for level building
         //this.load.tilemapTiledJSON('level1', './assets/tilemaps/maps/world-00-overworld.json');
-        this.load.tilemapTiledJSON('level1', './assets/tilemaps/maps/world-01-03.json');
+        //this.load.tilemapTiledJSON('world-01-03', './assets/tilemaps/maps/world-01-03.json');
+        this.load.tilemapTiledJSON('world-02-01', './assets/tilemaps/maps/world-02-01.json');
+
         this.load.image('tiles', './assets/tilemaps/tiles/spritesheet_tiles_64x64.png');
         this.load.image('items', './assets/tilemaps/tiles/spritesheet_items_64x64.png');
         this.load.image('ground', './assets/tilemaps/tiles/spritesheet_ground_64x64.png');
@@ -108,7 +113,7 @@ export class MainScene extends Phaser.Scene {
         this.load.image('enemyTiles', './assets/tilemaps/tiles/spritesheet_enemies_64x64.png');
     }
 
-    createAnims(anims) {
+    private createAnims(anims) {
         
         // player
         anims.create({
@@ -215,7 +220,7 @@ export class MainScene extends Phaser.Scene {
     create(): void {    
 
         this.createAnims(this.anims);
-        this.skySprite = this.add.tileSprite(0, 0, 20480, 1024, 'sky');            
+        this.skySprite = this.add.tileSprite(0, 0, 20480, 1024, 'world-02-01-sky');            
         
         this.enemies = new Array<Phaser.GameObjects.Sprite>();
         this.enemiesPhysics = Array<Phaser.GameObjects.Sprite>();  // removed 324
@@ -236,8 +241,9 @@ export class MainScene extends Phaser.Scene {
             });        
         this.player.init();
 
+        var color = '#CFEFFC';
         this.world = new World(this);
-        this.world.createWorld('level1', this.player);
+        this.world.createWorld('world-02-01', 'sky', '#CFEFFC', this.player);
         
         this.cursors = this.input.keyboard.createCursorKeys();
         this.zoomInKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
@@ -251,7 +257,7 @@ export class MainScene extends Phaser.Scene {
         this.debugKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F2);
 
         this.cameras.main.startFollow(this.player);
-        this.cameras.main.setBackgroundColor('#ccccff');
+        this.cameras.main.setBackgroundColor(this.world.backgroundColor);
     }
 
     update(): void {
@@ -304,7 +310,6 @@ export class MainScene extends Phaser.Scene {
             this.scene.bringToTop("PauseScene")
         }
 
-        // Jumping
         if ((this.jumpKey.isDown || this.cursors.up.isDown))
         {
             this.player.tryJump(this.sound);

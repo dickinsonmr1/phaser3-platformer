@@ -16,9 +16,11 @@ export class World {
     private layer03A: Phaser.Tilemaps.StaticTilemapLayer;
     private layer04: Phaser.Tilemaps.StaticTilemapLayer;
     private layer05: Phaser.Tilemaps.DynamicTilemapLayer;
-    private layer06: Phaser.Tilemaps.DynamicTilemapLayer;
+    private layer06: Phaser.Tilemaps.DynamicTilemapLayer ;
     private layer07: Phaser.Tilemaps.DynamicTilemapLayer;
     private layer02: Phaser.Tilemaps.DynamicTilemapLayer;
+    public backgroundColor: string;
+
     isWorldLoaded: boolean;
     sky: Phaser.GameObjects.TileSprite;
 
@@ -28,7 +30,9 @@ export class World {
         this.scene = scene;
     }
 
-    createWorld(worldName, player: Player): void {
+
+
+    createWorld(worldName: string, skyName: string, backgroundColor: string, player: Player): void {
         // using the Tiled map editor, here is the order of the layers from back to front:
         
         // layer00-image (not currently used)
@@ -46,6 +50,9 @@ export class World {
         // TODO: tilemaps (https://medium.com/@michaelwesthadley/modular-game-worlds-in-phaser-3-tilemaps-1-958fc7e6bbd6)
         // 
         this.sky = this.scene.skySprite;
+        this.backgroundColor = backgroundColor
+        //this.sky = this.scene.add.tileSprite(0, 0, 20480, 1024, skyName);
+        //this.sky.setDepth();   //this.scene.skySprite;
 
         this.map = this.scene.add.tilemap(worldName);
         //map.addTilesetImage('sky', 'backgroundImageLayer');
@@ -68,34 +75,7 @@ export class World {
         this.scene.physics.add.collider(player, this.layer02);
         this.layer02.setCollisionByExclusion([-1],true);//, Constants.tileLockBlue]);
         this.layer02.setTileIndexCallback(Constants.tileLockBlue, this.scene.unlockDoor, this.scene);
-
-
-        
-
-        /*
-        // set bounds so the camera won't go outside the game world
-        this.cameras.main.setBounds(0, 0, 1000,1000 );
-        // make the camera follow the player
-        this.cameras.main.startFollow(this.player.sprite);
-        
-        // set background color, so the sky is not black    
-        this.cameras.main.setBackgroundColor('#ccccff'); 
-        */
-
-            /*
-            //map.setCollisionBetween(0, 133, true, layer02, true);
-            world.map.setCollisionBetween(0, 2000, true, world.layer02, true);
-            //map.setCollisionBetween(158, 400, true, layer02, true);
-
-            world.layer02.resizeWorld();
-            world.layer02.debug = false;
-            //map.setCollision();
-            */
-
-            //  Un-comment this on to see the collision tiles
-            //world.layer01.debug = true;
-            //world.layer02.debug = true;
-
+   
         //---------------------------------------------------------------------------------------------------
         // foreground semi-transparent layer (water, lava, clouds, etc.)
         //---------------------------------------------------------------------------------------------------
@@ -146,16 +126,6 @@ export class World {
             }
         })
 
-        /*
-        this.springs.runChildUpdate(function (item) {        
-            item.enableBody = true;
-            item.immovable = true;
-            item.body.moves = false;
-            item.scale.setTo(0.5, 0.5);
-            item.anchor.setTo(0, 0);
-        }, this);
-        */
-
         var allEnemyTypes = [297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371];
         //---------------------------------------------------------------------------------------------------
         // ENEMIES
@@ -183,7 +153,7 @@ export class World {
                 var enemy = new Enemy({
                     scene: this.scene,
                     x: x,
-                    y: y,
+                    y: y - 50,
                     key: "enemy01-Idle",
                     drawScale: 2,
                     enemyOffsetY: 10,
@@ -202,6 +172,16 @@ export class World {
         this.scene.physics.add.collider(this.scene.enemies, this.scene.springs, this.scene.enemyTouchingSpringHandler);
         this.scene.physics.add.collider(this.scene.enemies, this.layer02);
         this.scene.physics.add.collider(this.scene.enemies, this.scene.enemies, this.scene.enemyTouchingEnemyHandler);
+
+        
+        this.layer01.setDepth(1);
+        this.layer02.setDepth(2);
+        player.setDepth(3)
+        this.layer07.setDepth(4);
+        this.layer05.setDepth(5);
+        this.layer03.setDepth(6);
+        this.layer06.setDepth(7);
+        this.layer04.setDepth(8);
 
         player.bullets = this.scene.physics.add.group({
             allowGravity: false
