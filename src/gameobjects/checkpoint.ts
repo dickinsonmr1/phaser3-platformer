@@ -35,7 +35,7 @@
         this.width = 128;
         this.height = 128;
  
-        this.scene.physics.world.enable(this);   
+        this.scene.physics.world.enable(this, 0);   
 
         var body = <Phaser.Physics.Arcade.Body>this.body;
 

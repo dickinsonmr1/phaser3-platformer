@@ -8,6 +8,7 @@
 
 import "phaser";
 import { Player } from "../player";
+import { HudScene } from "./hudScene";
 import { Enemy } from "../enemy";
 import { Spring } from "../gameobjects/spring";
 import { Checkpoint } from "../gameobjects/checkpoint";
@@ -320,6 +321,15 @@ export class MainScene extends Phaser.Scene {
 
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setBackgroundColor(this.world.backgroundColor);
+
+        //let hudScene = <HudScene>this.scene.get('HudScene');
+        //hudScene.setText("Objective: repair ship");
+
+        //this.events.once("infoTextEmitted", hudScene.setInfoText, this);
+        //this.time.addEvent({delay: 1000, callback: hudScene.displayExpiringInfoText, callbackScope: this });
+        //this.events.emit("infoTextEmitted", "Objective: repair ship");
+
+        this.events.emit("infoTextEmitted", "Objective: repair ship");
     }
 
     update(): void {

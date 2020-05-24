@@ -181,7 +181,8 @@ export class World {
                 Constants.tileBlueFlagDown,
                 Constants.tileRedFlagDown
             ],
-            this.scene.activateCheckpoint, this.scene);
+            this.scene.activateCheckpoint,
+            this.scene);
 
         var allEnemyTypes = [297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371];
         //---------------------------------------------------------------------------------------------------

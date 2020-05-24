@@ -80,6 +80,15 @@
         });
         this.hudComponent.gemCountText.setStroke('rgb(0,0,0)', 16);
 
+        this.hudComponent.infoText = this.add.text(300, 300, 'test',
+        {
+            fontFamily: 'KenneyRocketSquare',
+            fontSize: 64,
+            align: 'center',            
+            color:"rgb(255,255,255)",
+        });
+        this.hudComponent.infoText.setStroke('rgb(0,0,0)', 16);
+
         //  Grab a reference to the Game Scene
         let ourGame = this.scene.get('MainScene');
 
@@ -102,6 +111,10 @@
             this.emitExpiringText(x, y, damage);
         }, this);
         
+        //  Listen for events from it
+        ourGame.events.on('infoTextEmitted', function (text) {
+            this.setInfoText(text);
+        }, this);
 
         this.setHealth(8);
         
@@ -109,7 +122,11 @@
     }
 
     update(): void {
-        
+        if(this.hudComponent.infoTextAlpha > 0) {
+
+            this.hudComponent.infoTextAlpha -= 0.01;
+            this.hudComponent.infoText.setAlpha(this.hudComponent.infoTextAlpha);
+        }        
     }
 
     setHealth(health: number): void {        
@@ -133,6 +150,22 @@
         //this.hudComponent.gemCountOutlineText.setText(gemCount.toString());
     }
 
+    setText(text: string): void {
+        this.hudComponent.infoText.setText(text);
+    }
+
+    displayExpiringInfoText(): void {
+        this.hudComponent.infoTextAlpha = 1;
+        this.hudComponent.infoText.setAlpha(this.hudComponent.infoTextAlpha);
+    }
+
+    setInfoText(text: string): void {
+        this.hudComponent.infoText.setText(text);
+        this.hudComponent.infoTextAlpha = 1;
+
+        this.hudComponent.infoText.setAlpha(this.hudComponent.infoTextAlpha);
+        //this.hudComponent.gemCountOutlineText.setText(gemCount.toString());
+    }
    
 }
 
@@ -167,4 +200,6 @@ export class HUDComponent {
     number8: Phaser.GameObjects.Image;
     number9: Phaser.GameObjects.Image;
     gemCountText: Phaser.GameObjects.Text;
+    infoText: Phaser.GameObjects.Text;
+    infoTextAlpha: number;
 }
