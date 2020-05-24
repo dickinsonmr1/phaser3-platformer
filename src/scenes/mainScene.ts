@@ -9,7 +9,8 @@
 import "phaser";
 import { Player } from "../player";
 import { Enemy } from "../enemy";
-import { Spring } from "../spring";
+import { Spring } from "../gameobjects/spring";
+import { Checkpoint } from "../gameobjects/checkpoint";
 import { Constants } from "../constants";
 import { Bullet } from "../bullet";
 import { World } from "../world/world";
@@ -34,6 +35,7 @@ export class MainScene extends Phaser.Scene {
     enemiesNonGravity: Array<Phaser.GameObjects.Sprite>;
 
     springs: Array<Phaser.GameObjects.Sprite>;
+    flags: Array<Phaser.GameObjects.Sprite>;
 
     cursors: Phaser.Types.Input.Keyboard.CursorKeys;              
     zoomInKey: Phaser.Input.Keyboard.Key;
@@ -252,6 +254,24 @@ export class MainScene extends Phaser.Scene {
             frames: [{key: 'completeSprites', frame: 'spring1.png'}],
             frameRate: 10,
         });
+
+        
+        // springs
+        anims.create({
+            key: 'flagGreenIdle',
+            frames: [{key: 'completeSprites', frame: 'flagGreen_down.png'}],
+            frameRate: 10,
+        });
+
+        anims.create({
+            key: 'flagGreenWave',
+            frames: [
+                {key: 'completeSprites', frame: 'flagGreen1.png'},
+                {key: 'completeSprites', frame: 'flagGreen2.png'}
+            ],
+            frameRate: 2,
+            repeat: -1
+        });
     }
 
     create(): void {    
@@ -269,6 +289,7 @@ export class MainScene extends Phaser.Scene {
         })
 
         this.springs = new Array<Phaser.GameObjects.Sprite>();
+        this.flags = new Array<Phaser.GameObjects.Sprite>();
         
         this.player = new Player({
             scene: this,
@@ -391,6 +412,15 @@ export class MainScene extends Phaser.Scene {
         return false;
     }
 
+    activateCheckpoint (sprite, tile): boolean
+    {
+        this.world.collectGem(tile.x, tile.y);
+        this.sound.play("gemSound");
+        this.events.emit("gemCollected", this.player.gemsCollected++);
+
+        return false;
+    }
+
 
     inWater (player: Player, tile): boolean
     {
@@ -421,6 +451,12 @@ export class MainScene extends Phaser.Scene {
         spring.tryBounce(player.getScene().sound);
         player.tryBounce();       
     }
+
+    playerTouchingCheckpointHandler(player: Player, flag: Checkpoint): void {
+        flag.activate(player.getScene().sound);
+        //player.tryBounce();       
+    }
+
 
     enemyTouchingSpringHandler(enemy: Enemy, spring: Spring): void {
         spring.tryBounce(enemy.getScene().sound);

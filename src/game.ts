@@ -20,6 +20,9 @@ var config: Phaser.Types.Core.GameConfig = {
   parent: "game",  
   input: { keyboard: true},
   scene: [ TitleScene, PauseScene, MainScene, HudScene ],
+  audio: {
+    noAudio: true
+  },
   physics: {
     default: "arcade",
     arcade: {

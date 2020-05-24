@@ -6,7 +6,8 @@ import "phaser";
 import { MainScene } from "../scenes/mainScene";
 import { Player } from "../player";
 import { Enemy } from "../enemy";
-import { Spring } from "../spring";
+import { Spring } from "../gameobjects/spring";
+import { Checkpoint } from "../gameobjects/checkpoint";
 
 export class World {
     map: Phaser.Tilemaps.Tilemap;
@@ -100,12 +101,20 @@ export class World {
         this.layer05.alpha = 1.0;//0.75;
 
         this.scene.physics.add.overlap(player, this.layer05);
-        this.layer05.setTileIndexCallback(Constants.tileKeyGemRed, this.scene.collectGem, this.scene);
-        this.layer05.setTileIndexCallback(Constants.tileKeyGemGreen, this.scene.collectGem, this.scene);
-        this.layer05.setTileIndexCallback(Constants.tileKeyGemYellow, this.scene.collectGem, this.scene);
-        this.layer05.setTileIndexCallback(Constants.tileKeyGemBlue, this.scene.collectGem, this.scene);
+        this.layer05.setTileIndexCallback(
+            [
+                Constants.tileKeyGemRed,
+                Constants.tileKeyGemGreen,
+                Constants.tileKeyGemYellow,
+                Constants.tileKeyGemBlue
+            ],
+            this.scene.collectGem, this.scene);
+
         this.layer05.setTileIndexCallback(Constants.tileKeyBlueKey, this.scene.collectKey, this.scene);        
         this.layer05.setTileIndexCallback(Constants.tileKeyBattery, this.scene.collectBattery, this.scene);    
+
+
+        //open door 236
 
         this.layer06 = this.map.createDynamicLayer('layer06-gameobjects', tileSets, 0, 0);
         this.layer06.alpha = 0.0;
@@ -134,7 +143,7 @@ export class World {
                 const x = tile.getCenterX();
                 const y = tile.getCenterY();
 
-                var spring = new Spring({
+                let spring = new Spring({
                     scene: this.scene,
                     x: x,
                     y: y,
@@ -145,7 +154,34 @@ export class World {
 
                 this.layer06.removeTileAt(tile.x, tile.y);
             }
+
+            if(tile.index == Constants.tileGreenFlagDown)
+            {
+                // TODO: add door
+                const x = tile.getCenterX();
+                const y = tile.getCenterY();
+
+                let flag = new Checkpoint({
+                    scene: this.scene,
+                    x: x,
+                    y: y,
+                    key: "flagGreenIdle"
+                    });        
+                    flag.init("flagGreenIdle", "flagGreenWave");
+                this.scene.flags.push(flag);
+
+                this.layer06.removeTileAt(tile.x, tile.y);
+            }
         })
+
+        this.layer05.setTileIndexCallback(
+            [
+                Constants.tileYellowFlagDown,
+                Constants.tileGreenFlagDown,
+                Constants.tileBlueFlagDown,
+                Constants.tileRedFlagDown
+            ],
+            this.scene.activateCheckpoint, this.scene);
 
         var allEnemyTypes = [297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371];
         //---------------------------------------------------------------------------------------------------
@@ -212,6 +248,7 @@ export class World {
         this.scene.physics.add.collider(player, this.layer07);
         this.scene.physics.add.collider(player, this.scene.enemies, this.scene.playerTouchingEnemiesHandler);
         this.scene.physics.add.collider(player, this.scene.springs, this.scene.playerTouchingSpringHandler);
+        this.scene.physics.add.collider(player, this.scene.flags, this.scene.playerTouchingCheckpointHandler);
         this.scene.physics.add.collider(this.scene.enemies, this.scene.springs, this.scene.enemyTouchingSpringHandler);
         this.scene.physics.add.collider(this.scene.enemies, this.layer02);
         this.scene.physics.add.collider(this.scene.enemies, this.scene.enemies, this.scene.enemyTouchingEnemyHandler);
