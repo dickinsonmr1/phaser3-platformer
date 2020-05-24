@@ -59,6 +59,10 @@ export class MainScene extends Phaser.Scene {
     });
     }
 
+    init(data): void {
+        console.log(data.id);
+    }
+
     preload(): void {
         this.loadAudio();
         this.loadSprites();

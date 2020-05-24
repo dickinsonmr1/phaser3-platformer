@@ -9,7 +9,7 @@
  import "phaser";
  import { Menu } from "./menu";
  
- export class TitleScene extends Phaser.Scene {
+ export class LevelSelectScene extends Phaser.Scene {
 
     menu: Menu;
 
@@ -20,7 +20,7 @@
 
     constructor() {
         super({
-            key: "TitleScene"
+            key: "LevelSelectScene"
         });
     }
         
@@ -41,11 +41,11 @@
        
         this.menu = new Menu(this);
 
-        this.menu.setTitle(this, "Galactic Gem Collector");
+        this.menu.setTitle(this, "Level Select");
         this.menu.setMarker(this, ">>");
-        this.menu.addMenuItem(this, "Start Game");
-        this.menu.addMenuItem(this, "Continue Game");
-        this.menu.addMenuItem(this, "Exit");
+        this.menu.addMenuItem(this, "World 01-01");
+        this.menu.addMenuItem(this, "World 02-01");
+        this.menu.addMenuItem(this, "Exit to Title");
         this.menu.setFooter(this, "©2020 by Mark Dickinson  //  Powered by Phaser 3");
     }
 
@@ -53,11 +53,17 @@
         if(Phaser.Input.Keyboard.JustDown(this.selectKey))  {
             if(this.menu.selectedIndex == 0) {
                 this.input.keyboard.resetKeys();
-                this.scene.sleep('TitleScene');
-                this.scene.start('MainScene');
+                this.scene.sleep('LevelSelectScene');
+                this.scene.start('MainScene', {id: 0});
                 this.scene.start('HudScene');
             }
-            else if(this.menu.selectedIndex == 1) {
+            if(this.menu.selectedIndex == 1) {
+                this.input.keyboard.resetKeys();
+                this.scene.sleep('LevelSelectScene');
+                this.scene.start('MainScene', {id: 1});
+                this.scene.start('HudScene');
+            }
+            else if(this.menu.selectedIndex == 2) {
                 this.input.keyboard.resetKeys();
                 this.scene.sleep('TitleScene');
                 this.scene.start('LevelSelectScene');
