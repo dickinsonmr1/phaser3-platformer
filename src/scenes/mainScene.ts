@@ -105,8 +105,7 @@ export class MainScene extends Phaser.Scene {
         //this.load.image('logo', './assets/sample/phaser.png');
         //this.load.image('sky', './assets/sample/colored_grass.png');
         this.load.image('world-01-03-sky', './assets/sprites/backgrounds/blue_grass.png');
-        this.load.image('world-02-01-sky', './assets/sprites/backgrounds/backgroundCastles.png');
-        
+        this.load.image('world-02-01-sky', './assets/sprites/backgrounds/backgroundCastles.png');        
     }
 
     private loadTileMaps(): void {
@@ -121,6 +120,7 @@ export class MainScene extends Phaser.Scene {
         this.load.image('platformerRequestTiles', './assets/tilemaps/tiles/platformer-requests-sheet_64x64.png');
         this.load.image('industrialTiles', './assets/tilemaps/tiles/platformerPack_industrial_tilesheet_64x64.png');
         this.load.image('enemyTiles', './assets/tilemaps/tiles/spritesheet_enemies_64x64.png');
+        this.load.image('abstractTiles', './assets/tilemaps/tiles/abstract_tilesheet_complete_64x64.png');
     }
 
     private createAnims(anims) {

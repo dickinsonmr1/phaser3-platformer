@@ -65,11 +65,12 @@ export class World {
         var enemiesTileSet = this.map.addTilesetImage('spritesheet_enemies_64x64', 'enemyTiles');
         var requestTileSet = this.map.addTilesetImage('platformer-requests-sheet_64x64', 'platformerRequestTiles');
         var industrialTileSet = this.map.addTilesetImage('platformerPack_industrial_tilesheet_64x64', 'industrialTiles');
+        var abstractTileSet = this.map.addTilesetImage('abstract_tilesheet_complete_64x64', 'abstractTiles');
 
-        var tileSets = [tileSet, itemsTileSet, groundTileSet, enemiesTileSet, requestTileSet, industrialTileSet];
+        var tileSets = [tileSet, itemsTileSet, groundTileSet, enemiesTileSet, requestTileSet, industrialTileSet, abstractTileSet];
         
         // background layer
-        this.layer01 = this.map.createStaticLayer('layer01-background-passable', tileSets, 0, 0, );
+        this.layer01 = this.map.createStaticLayer('layer01-background-passable', tileSets, 0, 0);
         this.layer01.alpha = 1.0;
 
         // non-passable blocks layer
