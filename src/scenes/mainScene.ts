@@ -121,6 +121,7 @@ export class MainScene extends Phaser.Scene {
         this.load.image('industrialTiles', './assets/tilemaps/tiles/platformerPack_industrial_tilesheet_64x64.png');
         this.load.image('enemyTiles', './assets/tilemaps/tiles/spritesheet_enemies_64x64.png');
         this.load.image('abstractTiles', './assets/tilemaps/tiles/abstract_tilesheet_complete_64x64.png');
+        this.load.image('simplifiedTiles', './assets/tilemaps/tiles/simplified_64x64.png');
     }
 
     private createAnims(anims) {
