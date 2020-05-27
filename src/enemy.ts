@@ -21,6 +21,8 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     private walkAnim: string;
     private deadAnim: string;
     private drawScale: number;
+    private widthOverride: number;
+    private heightOverride: number;
 
     public idleTime: number;
 
@@ -31,6 +33,8 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.scene.physics.world.enable(this);
         this.drawOffsetY = params.enemyOffsetY;
         this.defaultFacingRight = params.defaultFacingRight;
+        this.widthOverride = params.heightOverride;
+        this.heightOverride = params.widthOverride;
     } 
     
     public getScene(): Scene {
@@ -45,8 +49,11 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.walkAnim = walkAnim;
         this.deadAnim = deadAnim;
         
-        //this.width = 64;
-        //this.height = 64;
+        if(this.widthOverride != undefined)
+            this.width = this.widthOverride;
+
+        if(this.heightOverride != undefined)
+            this.height = this.heightOverride;
 
         this.scene.physics.world.enable(this);   
 
@@ -55,10 +62,10 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
         var body = <Phaser.Physics.Arcade.Body>this.body;
 
-        body
-            //.setSize(64, 128)
-            //.setOffset
-            .setOffset(0, this.drawOffsetY);    
+        if(this.widthOverride != undefined && this.heightOverride != undefined)
+            body.setSize(this.width, this.height)    
+        
+        body.setOffset(0, this.drawOffsetY);    
 
         //this.body.debugBodyColor = 0xadfefe;
               

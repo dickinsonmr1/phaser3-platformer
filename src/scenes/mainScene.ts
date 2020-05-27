@@ -67,7 +67,7 @@ export class MainScene extends Phaser.Scene {
     preload(): void {
         this.loadAudio();
         this.loadSprites();
-        this.loadTileMaps();   
+        this.loadTileMaps();           
     }
 
     private loadAudio(): void {
@@ -179,9 +179,7 @@ export class MainScene extends Phaser.Scene {
             ],
             frameRate: 5,
             repeat: -1
-        });
-
-        
+        });        
         anims.create({
             key: 'enemy01-Dead',
             frames: [{key: 'enemySprites2', frame: 'enemyWalking_1.png'}],
@@ -194,8 +192,7 @@ export class MainScene extends Phaser.Scene {
             key: 'enemy02-Idle',
             frames: [{key: 'completeSprites', frame: 'slimeBlue.png', }],
             frameRate: 10,
-        });
-        
+        });        
         anims.create({
             key: 'enemy02-Walk',
             frames:
@@ -203,10 +200,9 @@ export class MainScene extends Phaser.Scene {
                 {key: 'completeSprites', frame: 'slimeBlue.png'},
                 {key: 'completeSprites', frame: 'slimeBlue_move.png'},                
             ],
-            frameRate: 20,
+            frameRate: 10,
             repeat: -1
         });
-
         anims.create({
             key: 'enemy02-Dead',
             frames: [{key: 'completeSprites', frame: 'slimeBlue_dead.png'}],
@@ -245,8 +241,7 @@ export class MainScene extends Phaser.Scene {
             frameRate: 10,
         });
 
-
-
+       
         // springs
         anims.create({
             key: 'spring0',

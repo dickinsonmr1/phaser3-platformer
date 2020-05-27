@@ -185,7 +185,7 @@ export class World {
             this.scene.activateCheckpoint,
             this.scene);
 
-        var allEnemyTypes = [297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371];
+        var allEnemyTypes = [297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371, 555];
         //---------------------------------------------------------------------------------------------------
         // ENEMIES
         //---------------------------------------------------------------------------------------------------
@@ -196,7 +196,7 @@ export class World {
                 var x = tile.getCenterX();
                 var y = tile.getCenterY();
 
-                var randomNumber = this.getRandomInt(2);
+                var randomNumber = 0;//this.getRandomInt(3);
 
                 switch(randomNumber)
                 {
@@ -214,25 +214,29 @@ export class World {
                         this.scene.enemies.push(enemy);
                         break;
                         
-                    case 555:
+                    case 1:
                         var enemy = new Enemy({
                             scene: this.scene,
                             x: x,
                             y: y,
+                            widthOverride: 128,
+                            heightOverride: 128,
                             key: "enemy02-Idle",
-                            drawScale: 0.5,
-                            enemyOffsetY: -30,
+                            drawScale: 0.75,
+                            enemyOffsetY: -10,
                             defaultFacingRight: true,
                             });        
                         enemy.init("enemy02-Idle", "enemy02-Walk", "enemy02-Dead");
                         this.scene.enemies.push(enemy);
                         break;
 
-                    case 1:                                
+                    case 2:                                
                         var enemy = new Enemy({
                             scene: this.scene,
                             x: x,
                             y: y - 50,
+                            //widthOverride: 128,
+                            //heightOverride: 128,
                             key: "enemy03-Idle",
                             drawScale: 2,
                             enemyOffsetY: 10,
@@ -242,7 +246,6 @@ export class World {
                         this.scene.enemies.push(enemy);
                         break;
                 }
-
                 this.layer07.removeTileAt(tile.x, tile.y);
             }
         });
@@ -254,16 +257,17 @@ export class World {
         this.scene.physics.add.collider(this.scene.enemies, this.scene.springs, this.scene.enemyTouchingSpringHandler);
         this.scene.physics.add.collider(this.scene.enemies, this.layer02);
         this.scene.physics.add.collider(this.scene.enemies, this.scene.enemies, this.scene.enemyTouchingEnemyHandler);
-
         
         this.layer01.setDepth(1);
         this.layer02.setDepth(2);
+        this.scene.enemies.forEach(x => x.setDepth(3));
         player.setDepth(3)
-        this.layer07.setDepth(4);
-        this.layer05.setDepth(5);
-        this.layer03.setDepth(6);
-        this.layer06.setDepth(7);
-        this.layer04.setDepth(8);
+        player.playerGun.setDepth(4)        
+        this.layer07.setDepth(5);
+        this.layer05.setDepth(6);
+        this.layer03.setDepth(7);
+        this.layer06.setDepth(8);
+        this.layer04.setDepth(9);
 
         player.bullets = this.scene.physics.add.group({
             allowGravity: false
