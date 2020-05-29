@@ -64,21 +64,21 @@ export class Player extends Phaser.GameObjects.Sprite {
         
         this.scene.physics.world.enable(this);
 
-        this.displayWidth = 64;
-        this.displayHeight = 128;                   
+        this.displayWidth = 32;
+        this.displayHeight = 64;                   
 
         var body = <Phaser.Physics.Arcade.Body>this.body;
 
         body.maxVelocity.x = 500;
         body.maxVelocity.y = 500;
         body
-            .setSize(64, 128)
+            .setSize(32, 64)
             .setOffset(Constants.playerOffsetX, Constants.playerOffsetY);    
 
         this.displayOriginX = 0.5;
         this.displayOriginY = 0.5;
 
-        this.setScale(0.75, 0.75);
+        this.setScale(0.5, 0.5);
 
         this.scene.add.existing(this);
     

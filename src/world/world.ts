@@ -58,17 +58,10 @@ export class World {
         //this.sky.setDepth();   //this.scene.skySprite;
 
         this.map = this.scene.add.tilemap(worldName);
-        //map.addTilesetImage('sky', 'backgroundImageLayer');
-        var tileSet = this.map.addTilesetImage('spritesheet_tiles_64x64', 'tiles');
-        var itemsTileSet = this.map.addTilesetImage('spritesheet_items_64x64', 'items');
-        var groundTileSet = this.map.addTilesetImage('spritesheet_ground_64x64', 'ground');
-        var enemiesTileSet = this.map.addTilesetImage('spritesheet_enemies_64x64', 'enemyTiles');
-        var requestTileSet = this.map.addTilesetImage('platformer-requests-sheet_64x64', 'platformerRequestTiles');
-        var industrialTileSet = this.map.addTilesetImage('platformerPack_industrial_tilesheet_64x64', 'industrialTiles');
-        var abstractTileSet = this.map.addTilesetImage('abstract_tilesheet_complete_64x64', 'abstractTiles');
-        var simplifiedTileSet = this.map.addTilesetImage('simplified_64x64', 'simplifiedTiles');
+        var compiledTileSet = this.map.addTilesetImage('compiled_64x64', 'compiledTiles');
+        var completeTileSet = this.map.addTilesetImage('complete_64x64', 'completeTiles');
 
-        var tileSets = [tileSet, itemsTileSet, groundTileSet, enemiesTileSet, requestTileSet, industrialTileSet, abstractTileSet, simplifiedTileSet];
+        var tileSets = [compiledTileSet, completeTileSet];
         
         // background layer
         this.layer01 = this.map.createStaticLayer('layer01-background-passable', tileSets, 0, 0);

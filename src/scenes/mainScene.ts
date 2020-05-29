@@ -50,6 +50,8 @@ export class MainScene extends Phaser.Scene {
 
     playerBullets: Phaser.GameObjects.Group;
 
+    worldName: string;
+
     expiringMessagesGroup: Phaser.GameObjects.Group;
      
     constructor() {
@@ -62,6 +64,7 @@ export class MainScene extends Phaser.Scene {
 
     init(data): void {
         console.log(data.id);
+        this.worldName = data.worldName;
     }
 
     preload(): void {
@@ -112,16 +115,10 @@ export class MainScene extends Phaser.Scene {
         // tilemap for level building
         //this.load.tilemapTiledJSON('level1', './assets/tilemaps/maps/world-00-overworld.json');
         //this.load.tilemapTiledJSON('world-01-03', './assets/tilemaps/maps/world-01-03.json');
-        this.load.tilemapTiledJSON('world-02-01', './assets/tilemaps/maps/world-02-01.json');
+        this.load.tilemapTiledJSON(this.worldName, './assets/tilemaps/maps/' + this.worldName + '.json');
 
-        this.load.image('tiles', './assets/tilemaps/tiles/spritesheet_tiles_64x64.png');
-        this.load.image('items', './assets/tilemaps/tiles/spritesheet_items_64x64.png');
-        this.load.image('ground', './assets/tilemaps/tiles/spritesheet_ground_64x64.png');
-        this.load.image('platformerRequestTiles', './assets/tilemaps/tiles/platformer-requests-sheet_64x64.png');
-        this.load.image('industrialTiles', './assets/tilemaps/tiles/platformerPack_industrial_tilesheet_64x64.png');
-        this.load.image('enemyTiles', './assets/tilemaps/tiles/spritesheet_enemies_64x64.png');
-        this.load.image('abstractTiles', './assets/tilemaps/tiles/abstract_tilesheet_complete_64x64.png');
-        this.load.image('simplifiedTiles', './assets/tilemaps/tiles/simplified_64x64.png');
+        this.load.image('completeTiles', './assets/tilemaps/tiles/complete_64x64.png');
+        this.load.image('compiledTiles', './assets/tilemaps/tiles/compiled_64x64.png');
     }
 
     private createAnims(anims) {
@@ -302,7 +299,7 @@ export class MainScene extends Phaser.Scene {
 
         var color = '#CFEFFC';
         this.world = new World(this);
-        this.world.createWorld('world-02-01', 'sky', '#CFEFFC', this.player);
+        this.world.createWorld(this.worldName, 'sky', '#CFEFFC', this.player);
         
         this.cursors = this.input.keyboard.createCursorKeys();
         this.zoomInKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);

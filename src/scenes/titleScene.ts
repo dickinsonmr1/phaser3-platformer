@@ -54,7 +54,7 @@
             if(this.menu.selectedIndex == 0) {
                 this.input.keyboard.resetKeys();
                 this.scene.sleep('TitleScene');
-                this.scene.start('MainScene');
+                this.scene.start('MainScene', { id: 0, worldName: 'world-02-02' });
                 this.scene.start('HudScene');
             }
             else if(this.menu.selectedIndex == 1) {
