@@ -34,6 +34,6 @@ export class Constants {
     public static get playerOffsetX(): number {return 32;}
     public static get playerOffsetY(): number {return 128;}
     
-    public static get playerDuckingGunOffsetY(): number {return 24;}
+    public static get playerDuckingGunOffsetY(): number {return 12;}
     public static get enemyOffsetY(): number {return 10;}
 }

@@ -22,9 +22,9 @@ export class Player extends Phaser.GameObjects.Sprite {
     private shootingKey: Phaser.Input.Keyboard.Key;
     private jumpingKey: Phaser.Input.Keyboard.Key;
 
-    private static get playerGunOffsetXFacingLeft(): number {return 0;}
-    private static get playerGunOffsetY(): number {return 155;}
-    private static get playerGunOffsetXFacingRight(): number {return 90;}  
+    private static get playerGunOffsetXFacingLeft(): number {return -5;}
+    private static get playerGunOffsetY(): number {return 100;}
+    private static get playerGunOffsetXFacingRight(): number {return 70;}  
 
     private static get playerJumpVelocityY(): number {return 450;}  
     private static get playerRunVelocityX(): number {return 400;}  
@@ -64,21 +64,21 @@ export class Player extends Phaser.GameObjects.Sprite {
         
         this.scene.physics.world.enable(this);
 
-        this.displayWidth = 32;
-        this.displayHeight = 64;                   
+        this.displayWidth = 128;
+        this.displayHeight = 256;                   
 
         var body = <Phaser.Physics.Arcade.Body>this.body;
 
         body.maxVelocity.x = 500;
         body.maxVelocity.y = 500;
         body
-            .setSize(32, 64)
+            .setSize(64, 128)
             .setOffset(Constants.playerOffsetX, Constants.playerOffsetY);    
 
         this.displayOriginX = 0.5;
         this.displayOriginY = 0.5;
 
-        this.setScale(0.5, 0.5);
+        this.setScale(Constants.playerDrawScale, Constants.playerDrawScale);
 
         this.scene.add.existing(this);
     
@@ -250,7 +250,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     getBulletOffsetY() : number {
-        var offsetY = 60;
+        var offsetY = 45;
         if(this.isDucking) {
             offsetY += Constants.playerDuckingGunOffsetY;
         }
