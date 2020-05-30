@@ -53,6 +53,7 @@ export class World {
         // TODO: tilemaps (https://medium.com/@michaelwesthadley/modular-game-worlds-in-phaser-3-tilemaps-1-958fc7e6bbd6)
         // 
         this.sky = this.scene.skySprite;
+        this.sky.setScale(2);
         this.backgroundColor = backgroundColor
         //this.sky = this.scene.add.tileSprite(0, 0, 20480, 1024, skyName);
         //this.sky.setDepth();   //this.scene.skySprite;
@@ -61,7 +62,18 @@ export class World {
         var compiledTileSet = this.map.addTilesetImage('compiled_64x64', 'compiledTiles');
         var completeTileSet = this.map.addTilesetImage('complete_64x64', 'completeTiles');
 
+    /*
+        var tileset1 = this.map.addTilesetImage('abstract_64x64', 'abstractTiles');
+        var tileset2 = this.map.addTilesetImage('ground_64x64', 'groundTiles');
+        var tileset3 = this.map.addTilesetImage('industrial_64x64', 'industrialTiles');
+        var tileset4 = this.map.addTilesetImage('items_64x64', 'itemsTiles');
+        var tileset5 = this.map.addTilesetImage('objects_64x64', 'objectsTiles');
+        var tileset6 = this.map.addTilesetImage('requests_64x64', 'requestsTiles');
+        var tileset7 = this.map.addTilesetImage('simplified_64x64', 'simplifiedTiles');
+      */  
+
         var tileSets = [compiledTileSet, completeTileSet];
+        //var tileSets = [tileset1, tileset2, tileset3, tileset4, tileset5, tileset6, tileset7];
         
         // background layer
         this.layer01 = this.map.createStaticLayer('layer01-background-passable', tileSets, 0, 0);
@@ -104,6 +116,15 @@ export class World {
                 Constants.tileKeyGemBlue
             ],
             this.scene.collectGem, this.scene);
+
+        this.layer05.setTileIndexCallback(
+                [
+                    Constants.tileGun1,
+                    Constants.tileGun2,
+                    Constants.tileGun3,
+                    Constants.tileGun4
+                ],
+                this.scene.collectWeapon, this.scene);
 
         this.layer05.setTileIndexCallback(Constants.tileKeyBlueKey, this.scene.collectKey, this.scene);        
         this.layer05.setTileIndexCallback(Constants.tileKeyBattery, this.scene.collectBattery, this.scene);    
@@ -280,8 +301,8 @@ export class World {
     }
 
     updateSky(camera: Phaser.Cameras.Scene2D.Camera): void {
-        this.sky.setX(0);
-        this.sky.setY(768);
+        this.sky.setX(camera.x);
+        this.sky.setY(camera.y);
         this.sky.setTilePosition(-(camera.scrollX * 0.25), -(camera.scrollY * 0.05));
     }
 

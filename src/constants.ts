@@ -1,19 +1,27 @@
 
 export class Constants {
-    public static get tileKeyBlueKey(): number { return 141; }
-    public static get tileKeyGemGreen(): number { return 142; }
-    public static get tileKeyGemRed(): number { return 157; }
-    public static get tileKeyGemYellow(): number { return 134; }
-    public static get tileKeyGemBlue(): number { return 149; }
-    public static get tileKeyBattery(): number { return 597; }
-    public static get tileKeySpring(): number { return 266; }
-    public static get tileLockYellow(): number { return 235; }
-    public static get tileLockRed(): number { return 243; }
-    public static get tileLockGreen(): number { return 251; }
-    public static get tileLockBlue(): number { return 259; }
-    public static get tileWaterTop(): number { return 162; }
-    public static get tileWater(): number { return 170; }
-    public static get tileOpenDoor(): number { return 236; }
+    // 1012, 981, 1076, 1044, 1013, 233, 1898, 1771, 1803, 1835, 1867, 1482, 1514, 1772
+    public static get tileKeyBlueKey(): number { return 1012; }
+    public static get tileKeyGemGreen(): number { return 981; }
+    public static get tileKeyGemRed(): number { return 1076; }
+    public static get tileKeyGemYellow(): number { return 1044; }
+    public static get tileKeyGemBlue(): number { return 1013; }
+    public static get tileKeyBattery(): number { return 233; }
+    public static get tileKeySpring(): number { return 1898; }
+    public static get tileLockYellow(): number { return 1771; }
+    public static get tileLockRed(): number { return 1803; }
+    public static get tileLockGreen(): number { return 1835; }
+    public static get tileLockBlue(): number { return 1867; }
+    public static get tileWaterTop(): number { return 1482; }
+    public static get tileWater(): number { return 1514; }
+    public static get tileOpenDoor(): number { return 1772; }
+
+
+    // 355,356,357,358
+    public static get tileGun1(): number { return 355; }
+    public static get tileGun2(): number { return 356; }
+    public static get tileGun3(): number { return 357; }
+    public static get tileGun4(): number { return 358; }
     
     public static get tileYellowFlagDown(): number { return 129; }
     public static get tileYellowFlagWave1(): number { return 150; }

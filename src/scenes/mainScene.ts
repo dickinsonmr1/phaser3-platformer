@@ -119,6 +119,15 @@ export class MainScene extends Phaser.Scene {
 
         this.load.image('completeTiles', './assets/tilemaps/tiles/complete_64x64.png');
         this.load.image('compiledTiles', './assets/tilemaps/tiles/compiled_64x64.png');
+        /*
+        this.load.image('abstractTiles', './assets/tilemaps/tiles/abstract_64x64.png');
+        this.load.image('groundTiles', './assets/tilemaps/tiles/ground_64x64.png');
+        this.load.image('industrialTiles', './assets/tilemaps/tiles/industrial_64x64.png');
+        this.load.image('itemsTiles', './assets/tilemaps/tiles/items_64x64.png');
+        this.load.image('objectstiles', './assets/tilemaps/tiles/objects_64x64.png');
+        this.load.image('requestsTiles', './assets/tilemaps/tiles/requests_64x64.png');
+        this.load.image('simplifiedTiles', './assets/tilemaps/tiles/simplified_64x64.png');
+        */
     }
 
     private createAnims(anims) {
@@ -418,6 +427,16 @@ export class MainScene extends Phaser.Scene {
 
         return false;
     }
+
+    collectWeapon (sprite, tile): boolean
+    {
+        this.world.collectGem(tile.x, tile.y);
+        this.sound.play("batterySound");
+        //this.events.emit("gemCollected", this.player.gemsCollected++);
+
+        return false;
+    }
+
 
     activateCheckpoint (sprite, tile): boolean
     {
