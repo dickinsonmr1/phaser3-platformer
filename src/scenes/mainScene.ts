@@ -8,6 +8,7 @@
 
 import "phaser";
 import { Player } from "../player";
+import { WeaponType } from "../player";
 import { HudScene } from "./hudScene";
 import { Enemy } from "../enemy";
 import { Spring } from "../gameobjects/spring";
@@ -78,7 +79,10 @@ export class MainScene extends Phaser.Scene {
         this.load.audio('gemSound', './assets/audio/coin.wav');
         this.load.audio('keySound', './assets/audio/key.wav');
         this.load.audio('springSound', './assets/audio/spring.wav');
-        this.load.audio('laserSound', './assets/audio/laser2.ogg');
+        this.load.audio('laser1Sound', './assets/audio/laser5.ogg');
+        this.load.audio('laser2Sound', './assets/audio/laser2.ogg');
+        this.load.audio('laser3Sound', './assets/audio/gameover3.ogg');
+        this.load.audio('laser4Sound', './assets/audio/explosion3.ogg');
         this.load.audio('hurtSound', './assets/audio/hurt.wav');
         this.load.audio('enemyHurtSound', './assets/audio/lowRandom.ogg');
         this.load.audio('enemyDeathSound', '/assets/audio/hit3.ogg');        
@@ -105,7 +109,10 @@ export class MainScene extends Phaser.Scene {
         //this.load.image('engineExhaust', './assets/sprites/ships/laserblue3.png');
 
         this.load.image('playerGun', './assets/sprites/player/raygunPurpleBig.png');
-        this.load.image('playerGunBullet', './assets/sprites/player/laserPurpleDot15x15.png');
+        this.load.image('playerGunLaser1', './assets/sprites/player/laserPurpleDot15x15.png');
+        this.load.image('playerGunLaser2', './assets/sprites/player/laserPurple2.png');
+        this.load.image('playerGunLaser3', './assets/sprites/player/laserGreenBurst.png');
+        this.load.image('playerGunLaser4', './assets/sprites/player/rocket.png');
 
         //this.load.image('logo', './assets/sample/phaser.png');
         //this.load.image('sky', './assets/sample/colored_grass.png');
@@ -425,18 +432,54 @@ export class MainScene extends Phaser.Scene {
     {
         this.world.collectGem(tile.x, tile.y);
         this.sound.play("batterySound");        
-        //this.events.emit("gemCollected", this.player.gemsCollected++);
+
 
         return false;
     }
 
-    collectWeapon (sprite, tile): boolean
+    collectWeapon1 (sprite, tile): boolean
     {
         this.world.collectGem(tile.x, tile.y);
         this.sound.play("batterySound");
 
         var newAmmoCount = 10;
-        this.player.reload(newAmmoCount);
+        this.player.reload(newAmmoCount, WeaponType.Laser1);
+        this.events.emit("weaponCollected", newAmmoCount);
+
+        return false;
+    }
+
+    collectWeapon2 (sprite, tile): boolean
+    {
+        this.world.collectGem(tile.x, tile.y);
+        this.sound.play("batterySound");
+
+        var newAmmoCount = 10;
+        this.player.reload(newAmmoCount, WeaponType.Laser2);
+        this.events.emit("weaponCollected", newAmmoCount);
+
+        return false;
+    }
+
+    collectWeapon3 (sprite, tile): boolean
+    {
+        this.world.collectGem(tile.x, tile.y);
+        this.sound.play("batterySound");
+
+        var newAmmoCount = 15;
+        this.player.reload(newAmmoCount, WeaponType.Laser3);
+        this.events.emit("weaponCollected", newAmmoCount);
+
+        return false;
+    }
+
+    collectWeapon4 (sprite, tile): boolean
+    {
+        this.world.collectGem(tile.x, tile.y);
+        this.sound.play("batterySound");
+
+        var newAmmoCount = 15;
+        this.player.reload(newAmmoCount, WeaponType.Laser4);
         this.events.emit("weaponCollected", newAmmoCount);
 
         return false;

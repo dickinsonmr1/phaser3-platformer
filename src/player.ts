@@ -9,6 +9,13 @@ import { Constants } from "./constants";
 import "phaser";
 import { Scene } from "phaser";
 
+export enum WeaponType {
+    Laser1,
+    Laser2, 
+    Laser3,
+    Laser4
+}
+
 // TODO: fix and move implementation here once basic player functionality is working in main scene
 export class Player extends Phaser.GameObjects.Sprite {
     //public sprite: Phaser.Physics.Arcade.Sprite;
@@ -27,8 +34,76 @@ export class Player extends Phaser.GameObjects.Sprite {
     private static get playerGunOffsetXFacingRight(): number {return 70;}  
 
     private static get playerJumpVelocityY(): number {return 450;}  
-    private static get playerRunVelocityX(): number {return 400;}  
-    private static get playerBulletVelocityX(): number {return 700;}  
+    private static get playerRunVelocityX(): number{return 400;}  
+    private get playerBulletVelocityX(): number
+    {
+        switch(this.currentWeaponType) {
+            case WeaponType.Laser1:
+                return 700;
+            case WeaponType.Laser2:
+                return 900;
+            case WeaponType.Laser3:
+                return 900;
+            case WeaponType.Laser4:
+                return 1000;
+        }
+    }  
+
+    private get currentWeaponBulletName(): string
+    {
+        switch(this.currentWeaponType) {
+            case WeaponType.Laser1:
+                return "playerGunLaser1";
+            case WeaponType.Laser2:
+                return "playerGunLaser2";
+            case WeaponType.Laser3:
+                return "playerGunLaser3";
+            case WeaponType.Laser4:
+                return "playerGunLaser4";
+        }
+    }  
+
+    private get currentWeaponSoundName(): string
+    {
+        switch(this.currentWeaponType) {
+            case WeaponType.Laser1:
+                return "laser1Sound";
+            case WeaponType.Laser2:
+                return "laser2Sound";
+            case WeaponType.Laser3:
+                return "laser3Sound";
+            case WeaponType.Laser4:
+                return "laser4Sound";
+        }
+    }  
+    private static get playerBulletOffsetX(): number {return 66;}  
+    private get playerStandingBulletOffsetY(): number
+    {
+        switch(this.currentWeaponType) {
+            case WeaponType.Laser1:
+                return 45;
+            case WeaponType.Laser2:
+                return 45;
+            case WeaponType.Laser3:
+                return 70;
+            case WeaponType.Laser4:
+                return 45;
+        }
+    }  
+
+    private get bulletTimeInterval(): number
+    {
+        switch(this.currentWeaponType) {
+            case WeaponType.Laser1:
+                return 300;
+            case WeaponType.Laser2:
+                return 200;
+            case WeaponType.Laser3:
+                return 500;
+            case WeaponType.Laser4:
+                return 750;
+        }
+    }  
 
     // game objects
     public bullets: Phaser.GameObjects.Group;
@@ -47,6 +122,8 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     public isTouchingSpring: boolean;
     public springTime: number;
+
+    public currentWeaponType: WeaponType;
 
     public getScene(): Scene {
         return this.scene;
@@ -95,6 +172,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.springTime = 0;
         this.isDucking = false;
 
+        this.currentWeaponType = WeaponType.Laser1;
         this.playerGun = this.scene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, 'playerGun')        
         //this.bullets = this.currentScene.add.group();
         
@@ -187,8 +265,9 @@ export class Player extends Phaser.GameObjects.Sprite {
         }
     }
 
-    reload(ammoCount: number) {
+    reload(ammoCount: number, weaponType: WeaponType) {
         this.ammoCount = ammoCount;
+        this.currentWeaponType = weaponType;
         this.playerGun.alpha = 1.0;
     }
 
@@ -197,13 +276,13 @@ export class Player extends Phaser.GameObjects.Sprite {
 
             if(this.ammoCount > 0 ) {
                 this.createBullet();
-                this.bulletTime = gameTime + 250;
+                this.bulletTime = gameTime + this.bulletTimeInterval;
                 this.ammoCount--;
-                sound.play("laserSound");
+                sound.play(this.currentWeaponSoundName);
                 this.scene.events.emit("weaponFired", this.ammoCount);
 
-                if(this.ammoCount < 3) 
-                    this.scene.sound.play("lowAmmoSound");            
+                //if(this.ammoCount < 3) 
+                    //this.scene.sound.play("lowAmmoSound");            
 
                 if(this.ammoCount == 0) {
                     this.playerGun.alpha = 0.0;
@@ -234,13 +313,14 @@ export class Player extends Phaser.GameObjects.Sprite {
         var body = <Phaser.Physics.Arcade.Body>this.body;
         if (this.flipX) {
             this.bullets
-                .create(body.x, body.y + this.getBulletOffsetY(), "playerGunBullet")
-                .body.setVelocityX(-Player.playerBulletVelocityX).setVelocityY(0);
+                .create(body.x, body.y + this.getBulletOffsetY(), this.currentWeaponBulletName)
+                .setFlipX(true)
+                .body.setVelocityX(-this.playerBulletVelocityX).setVelocityY(0);
         }
         else {
             this.bullets
-                .create(body.x + 66, body.y + this.getBulletOffsetY(), "playerGunBullet")
-                .body.setVelocityX(Player.playerBulletVelocityX).setVelocityY(0);
+                .create(body.x + Player.playerBulletOffsetX, body.y + this.getBulletOffsetY(), this.currentWeaponBulletName)
+                .body.setVelocityX(this.playerBulletVelocityX).setVelocityY(0);
         }
     }
 
@@ -269,7 +349,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     getBulletOffsetY() : number {
-        var offsetY = 45;
+        var offsetY = this.playerStandingBulletOffsetY;
         if(this.isDucking) {
             offsetY += Constants.playerDuckingGunOffsetY;
         }

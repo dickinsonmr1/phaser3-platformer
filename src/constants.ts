@@ -16,13 +16,12 @@ export class Constants {
     public static get tileWater(): number { return 1514; }
     public static get tileOpenDoor(): number { return 1772; }
 
-
-    // 355,356,357,358
-    public static get tileGun1(): number { return 355; }
-    public static get tileGun2(): number { return 356; }
-    public static get tileGun3(): number { return 357; }
-    public static get tileGun4(): number { return 358; }
+    public static get tileGun1(): number { return 357; }
+    public static get tileGun2(): number { return 358; }
+    public static get tileGun3(): number { return 355; }
+    public static get tileGun4(): number { return 356; }    
     
+    // the next block is not updated yet
     public static get tileYellowFlagDown(): number { return 129; }
     public static get tileYellowFlagWave1(): number { return 150; }
     public static get tileYellowFlagWave2(): number { return 155; }
