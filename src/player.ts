@@ -43,6 +43,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     public hurtTime: number;
     public health: number;
     public gemsCollected: number;
+    public ammoCount: number;
 
     public isTouchingSpring: boolean;
     public springTime: number;
@@ -88,6 +89,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.hurtTime = 0;
         this.health = 8;
         this.gemsCollected = 0;
+        this.ammoCount = 5;
         this.bulletTime = 0;
         this.lastUsedBulletIndex = 0;
         this.springTime = 0;
@@ -185,12 +187,29 @@ export class Player extends Phaser.GameObjects.Sprite {
         }
     }
 
+    reload(ammoCount: number) {
+        this.ammoCount = ammoCount;
+        this.playerGun.alpha = 1.0;
+    }
+
     tryFireBullet(gameTime: number, sound): void {
         if (gameTime > this.bulletTime) {
 
-            this.createBullet();
-            this.bulletTime = gameTime + 250;
-            sound.play("laserSound");
+            if(this.ammoCount > 0 ) {
+                this.createBullet();
+                this.bulletTime = gameTime + 250;
+                this.ammoCount--;
+                sound.play("laserSound");
+                this.scene.events.emit("weaponFired", this.ammoCount);
+
+                if(this.ammoCount < 3) 
+                    this.scene.sound.play("lowAmmoSound");            
+
+                if(this.ammoCount == 0) {
+                    this.playerGun.alpha = 0.0;
+                    this.scene.sound.play("noAmmoSound");
+                }
+            }            
         }
     }
 

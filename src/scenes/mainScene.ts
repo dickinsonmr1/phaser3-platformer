@@ -83,6 +83,8 @@ export class MainScene extends Phaser.Scene {
         this.load.audio('enemyHurtSound', './assets/audio/lowRandom.ogg');
         this.load.audio('enemyDeathSound', '/assets/audio/hit3.ogg');        
         this.load.audio('batterySound', '/assets/audio/upgrade3.ogg');        
+        this.load.audio('lowAmmoSound', '/assets/audio/hit4.ogg');       
+        this.load.audio('noAmmoSound', '/assets/audio/fall3.ogg');     
     }    
 
     private loadSprites(): void {
@@ -422,7 +424,7 @@ export class MainScene extends Phaser.Scene {
     collectBattery (sprite, tile): boolean
     {
         this.world.collectGem(tile.x, tile.y);
-        this.sound.play("batterySound");
+        this.sound.play("batterySound");        
         //this.events.emit("gemCollected", this.player.gemsCollected++);
 
         return false;
@@ -432,7 +434,10 @@ export class MainScene extends Phaser.Scene {
     {
         this.world.collectGem(tile.x, tile.y);
         this.sound.play("batterySound");
-        //this.events.emit("gemCollected", this.player.gemsCollected++);
+
+        var newAmmoCount = 10;
+        this.player.reload(newAmmoCount);
+        this.events.emit("weaponCollected", newAmmoCount);
 
         return false;
     }

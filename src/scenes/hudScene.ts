@@ -24,6 +24,8 @@
         
     preload(): void {
         this.load.atlasXML('hudSprites', './assets/sprites/HUD/spritesheet_hud.png', './assets/sprites/HUD/spritesheet_hud.xml');        
+        this.load.atlasXML('uiSpaceSprites', './assets/sprites/HUD/uipackSpace_sheet.png', './assets/sprites/HUD/uipackSpace_sheet.xml');        
+        this.load.image('weaponIcon', './assets/sprites/player/raygunPurpleBig.png');
     }
 
     create(): void {
@@ -80,6 +82,34 @@
         });
         this.hudComponent.gemCountText.setStroke('rgb(0,0,0)', 16);
 
+        this.hudComponent.weapon = this.add.image(800, 200, 'weaponIcon');
+        this.hudComponent.weapon.setScale(2.0, 2.0);
+        this.hudComponent.ammoText = this.add.text(900, 150, '5',
+        {
+            fontFamily: 'KenneyRocketSquare',
+            fontSize: 64,
+            align: 'right',            
+            color:"rgb(255,255,255)",
+        });
+        this.hudComponent.ammoText.setStroke('rgb(0,0,0)', 16);
+
+        //this.hudComponent.healthBarShadowLeft = this.add.image(600, 200, 'uiSpaceSprites', 'barHorizontal_shadow_left.png');
+        //this.hudComponent.healthBarShadowLeft.originX = 0;
+        //this.hudComponent.healthBarShadowLeft.displayWidth = 6;  
+
+        //this.hudComponent.healthBarShadowMid = this.add.image(606, 200, 'uiSpaceSprites', 'barHorizontal_shadow_mid.png');
+        //this.hudComponent.healthBarShadowMid.originX = 0;
+        //this.hudComponent.healthBarShadowMid.displayWidth = 88;        
+        
+        //this.hudComponent.healthBarShadowRight = this.add.image(694, 200, 'uiSpaceSprites', 'barHorizontal_shadow_right.png');
+        //this.hudComponent.healthBarShadowRight.originX = 0;
+        //this.hudComponent.healthBarShadowRight.displayWidth = 6;  
+
+        //this.hudComponent.healthBarLeft = this.add.image(600, 200, 'uiSpaceSprites', 'barHorizontal_red_left.png');
+        //this.hudComponent.healthBarMid = this.add.image(606, 200, 'uiSpaceSprites', 'barHorizontal_red_mid.png');
+        //this.hudComponent.healthBarMid.displayWidth = 88;
+        //this.hudComponent.healthBarRight = this.add.image(694, 200, 'uiSpaceSprites', 'barHorizontal_red_right.png');
+
         this.hudComponent.infoText = this.add.text(300, 300, 'test',
         {
             fontFamily: 'KenneyRocketSquare',
@@ -105,6 +135,14 @@
         //  Listen for events from it
         ourGame.events.on('gemCollected', function (gemCount) {
             this.setGemCount(gemCount);
+        }, this);
+
+        ourGame.events.on('weaponFired', function (playerAmmoCount) {
+            this.setammoCount(playerAmmoCount);
+        }, this);
+
+        ourGame.events.on('weaponCollected', function (ammoCount) {
+            this.setammoCount(ammoCount);
         }, this);
 
         ourGame.events.on('enemyDamage', function (x, y, damage) {
@@ -147,6 +185,16 @@
 
     setGemCount(gemCount: number): void {
         this.hudComponent.gemCountText.setText(gemCount.toString());
+        //this.hudComponent.gemCountOutlineText.setText(gemCount.toString());
+    }
+
+    
+    setammoCount(ammo: number): void {
+        this.hudComponent.ammoText.setText(ammo.toString());
+        if(ammo <= 0)
+            this.hudComponent.ammoText.setColor("rgb(255,50,50)")
+        else
+            this.hudComponent.ammoText.setColor("rgb(255,255,255)")
         //this.hudComponent.gemCountOutlineText.setText(gemCount.toString());
     }
 
@@ -200,6 +248,18 @@ export class HUDComponent {
     number8: Phaser.GameObjects.Image;
     number9: Phaser.GameObjects.Image;
     gemCountText: Phaser.GameObjects.Text;
+    
+    weapon: Phaser.GameObjects.Image;
+    ammoText: Phaser.GameObjects.Text;
+
+    healthBarShadowLeft: Phaser.GameObjects.Image;
+    healthBarShadowMid: Phaser.GameObjects.Image;
+    healthBarShadowRight: Phaser.GameObjects.Image;
+
+    healthBarLeft: Phaser.GameObjects.Image;
+    healthBarMid: Phaser.GameObjects.Image;
+    healthBarRight: Phaser.GameObjects.Image;
+
     infoText: Phaser.GameObjects.Text;
     infoTextAlpha: number;
 }
