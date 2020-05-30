@@ -59,7 +59,7 @@ export class Player extends Phaser.GameObjects.Sprite {
             case WeaponType.Laser3:
                 return "playerGunLaser3";
             case WeaponType.Laser4:
-                return "playerGunLaser4";
+                return "playerRocket2";
         }
     }  
 
@@ -320,7 +320,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         else {
             this.bullets
                 .create(body.x + Player.playerBulletOffsetX, body.y + this.getBulletOffsetY(), this.currentWeaponBulletName)
-                .body.setVelocityX(this.playerBulletVelocityX).setVelocityY(0);
+                .body.setVelocityX(this.playerBulletVelocityX).setVelocityY(0).sets;
         }
     }
 
@@ -375,6 +375,6 @@ export class Player extends Phaser.GameObjects.Sprite {
         else {
             this.playerGun.setFlipX(false);
             this.playerGun.setPosition(this.x + Player.playerGunOffsetXFacingRight, this.y + this.getGunOffsetY());//.setOffset(32, 128);
-        }        
+        }         
     }
 }

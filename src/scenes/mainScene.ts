@@ -113,6 +113,8 @@ export class MainScene extends Phaser.Scene {
         this.load.image('playerGunLaser2', './assets/sprites/player/laserPurple2.png');
         this.load.image('playerGunLaser3', './assets/sprites/player/laserGreenBurst.png');
         this.load.image('playerGunLaser4', './assets/sprites/player/rocket.png');
+        this.load.image('playerRocket1', './assets/sprites/player/rocket_1.png');
+        this.load.image('playerRocket2', './assets/sprites/player/rocket_2_small.png');
 
         //this.load.image('logo', './assets/sample/phaser.png');
         //this.load.image('sky', './assets/sample/colored_grass.png');
