@@ -7,6 +7,7 @@ import { MainScene } from "../scenes/mainScene";
 import { Player } from "../player";
 import { Enemy } from "../enemy";
 import { Spring } from "../gameobjects/spring";
+import { Portal } from "../gameobjects/portal";
 import { Checkpoint } from "../gameobjects/checkpoint";
 
 export class World {
@@ -155,17 +156,17 @@ export class World {
                 const x = tile.getCenterX();
                 const y = tile.getCenterY();
 
-                let spring = new Spring({
+                let portal = new Portal({
                     scene: this.scene,
                     x: x,
                     y: y,
                     key: "springLoaded"
                     });        
-                spring.init("spring0", "spring1");
-                this.scene.springs.push(spring);
+                    portal.init("spring0", "spring1", "world-02-02");
+                this.scene.portals.push(portal);
 
-                this.layer06.removeTileAt(tile.x, tile.y);
-            }
+                //this.layer06.removeTileAt(tile.x, tile.y);
+            }            
 
             if(tile.index == Constants.tileGreenFlagDown)
             {
@@ -186,15 +187,7 @@ export class World {
             }
         })
 
-        this.layer05.setTileIndexCallback(
-            [
-                Constants.tileYellowFlagDown,
-                Constants.tileGreenFlagDown,
-                Constants.tileBlueFlagDown,
-                Constants.tileRedFlagDown
-            ],
-            this.scene.activateCheckpoint,
-            this.scene);
+        this.layer06.setTileIndexCallback(Constants.tileOpenDoor, this.scene.activateDoorIcon, this.scene);
 
         var allEnemyTypes = [297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371, 555];
         //---------------------------------------------------------------------------------------------------
@@ -265,6 +258,7 @@ export class World {
         this.scene.physics.add.collider(player, this.scene.enemies, this.scene.playerTouchingEnemiesHandler);
         this.scene.physics.add.collider(player, this.scene.springs, this.scene.playerTouchingSpringHandler);
         this.scene.physics.add.collider(player, this.scene.flags, this.scene.playerTouchingCheckpointHandler);
+        this.scene.physics.add.collider(player, this.scene.portals, this.scene.playerTouchingPortalHandler);
         this.scene.physics.add.collider(this.scene.enemies, this.scene.springs, this.scene.enemyTouchingSpringHandler);
         this.scene.physics.add.collider(this.scene.enemies, this.layer02);
         this.scene.physics.add.collider(this.scene.enemies, this.scene.enemies, this.scene.enemyTouchingEnemyHandler);

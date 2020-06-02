@@ -12,6 +12,7 @@ import { WeaponType } from "../player";
 import { HudScene } from "./hudScene";
 import { Enemy } from "../enemy";
 import { Spring } from "../gameobjects/spring";
+import { Portal } from "../gameobjects/portal";
 import { Checkpoint } from "../gameobjects/checkpoint";
 import { Constants } from "../constants";
 import { Bullet } from "../bullet";
@@ -38,6 +39,7 @@ export class MainScene extends Phaser.Scene {
 
     springs: Array<Phaser.GameObjects.Sprite>;
     flags: Array<Phaser.GameObjects.Sprite>;
+    portals: Array<Phaser.GameObjects.Sprite>;
 
     cursors: Phaser.Types.Input.Keyboard.CursorKeys;              
     zoomInKey: Phaser.Input.Keyboard.Key;
@@ -115,6 +117,8 @@ export class MainScene extends Phaser.Scene {
         this.load.image('playerGunLaser4', './assets/sprites/player/rocket.png');
         this.load.image('playerRocket1', './assets/sprites/player/rocket_1.png');
         this.load.image('playerRocket2', './assets/sprites/player/rocket_2_small.png');
+
+        this.load.image('buttonX', './assets/sprites/hud/buttonX.png');
 
         //this.load.image('logo', './assets/sample/phaser.png');
         //this.load.image('sky', './assets/sample/colored_grass.png');
@@ -308,6 +312,7 @@ export class MainScene extends Phaser.Scene {
 
         this.springs = new Array<Phaser.GameObjects.Sprite>();
         this.flags = new Array<Phaser.GameObjects.Sprite>();
+        this.portals = new Array<Phaser.GameObjects.Sprite>();
         
         this.player = new Player({
             scene: this,
@@ -411,6 +416,11 @@ export class MainScene extends Phaser.Scene {
         {
             spring.update();
         });
+
+        this.portals.forEach(portal => 
+        {
+            portal.update();
+        });
     }
 
     updatePhysics(): void {
@@ -497,6 +507,16 @@ export class MainScene extends Phaser.Scene {
         return false;
     }
 
+    activateDoorIcon (sprite, tile): boolean
+    {
+        //this.world.collectGem(tile.x, tile.y);
+        this.sound.play("gemSound");
+        //this.events.emit("gemCollected", this.player.gemsCollected++);
+
+        return false;
+    }
+
+
 
     inWater (player: Player, tile): boolean
     {
@@ -533,6 +553,10 @@ export class MainScene extends Phaser.Scene {
         //player.tryBounce();       
     }
 
+    playerTouchingPortalHandler(player: Player, portal: Portal): void {
+        portal.displayButtonIcon()
+        //player.tryBounce();       
+    }
 
     enemyTouchingSpringHandler(enemy: Enemy, spring: Spring): void {
         spring.tryBounce(enemy.getScene().sound);

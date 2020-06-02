@@ -15,7 +15,8 @@ export class Constants {
     public static get tileWaterTop(): number { return 1482; }
     public static get tileWater(): number { return 1514; }
     public static get tileOpenDoor(): number { return 1772; }
-
+    public static get tileDoorTitle(): number { return 217; }
+    
     public static get tileGun1(): number { return 357; }
     public static get tileGun2(): number { return 358; }
     public static get tileGun3(): number { return 355; }
@@ -43,4 +44,6 @@ export class Constants {
     
     public static get playerDuckingGunOffsetY(): number {return 12;}
     public static get enemyOffsetY(): number {return 10;}
+
+    
 }
