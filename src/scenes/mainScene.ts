@@ -437,7 +437,7 @@ export class MainScene extends Phaser.Scene {
         this.sound.play("gemSound");
         this.events.emit("gemCollected", this.player.gemsCollected++);
 
-        return false;
+        return true;
     }
 
     collectBattery (sprite, tile): boolean
@@ -446,7 +446,7 @@ export class MainScene extends Phaser.Scene {
         this.sound.play("batterySound");        
 
 
-        return false;
+        return true;
     }
 
     collectWeapon1 (sprite, tile): boolean
@@ -458,7 +458,7 @@ export class MainScene extends Phaser.Scene {
         this.player.reload(newAmmoCount, WeaponType.Laser1);
         this.events.emit("weaponCollected", newAmmoCount);
 
-        return false;
+        return true;
     }
 
     collectWeapon2 (sprite, tile): boolean
@@ -470,7 +470,7 @@ export class MainScene extends Phaser.Scene {
         this.player.reload(newAmmoCount, WeaponType.Laser2);
         this.events.emit("weaponCollected", newAmmoCount);
 
-        return false;
+        return true;
     }
 
     collectWeapon3 (sprite, tile): boolean
@@ -482,7 +482,7 @@ export class MainScene extends Phaser.Scene {
         this.player.reload(newAmmoCount, WeaponType.Laser3);
         this.events.emit("weaponCollected", newAmmoCount);
 
-        return false;
+        return true;
     }
 
     collectWeapon4 (sprite, tile): boolean
@@ -494,7 +494,7 @@ export class MainScene extends Phaser.Scene {
         this.player.reload(newAmmoCount, WeaponType.Laser4);
         this.events.emit("weaponCollected", newAmmoCount);
 
-        return false;
+        return true;
     }
 
 
@@ -504,7 +504,7 @@ export class MainScene extends Phaser.Scene {
         this.sound.play("gemSound");
         this.events.emit("gemCollected", this.player.gemsCollected++);
 
-        return false;
+        return true;
     }
 
     activateDoorIcon (sprite, tile): boolean
@@ -513,16 +513,14 @@ export class MainScene extends Phaser.Scene {
         this.sound.play("gemSound");
         //this.events.emit("gemCollected", this.player.gemsCollected++);
 
-        return false;
+        return true;
     }
-
-
 
     inWater (player: Player, tile): boolean
     {
         player.isInWater = true;
 
-        return false;
+        return true;
     }
 
     collectKey (sprite, tile): boolean
@@ -531,7 +529,7 @@ export class MainScene extends Phaser.Scene {
         this.world.collectKey(tile.x, tile.y);
         this.sound.play("keySound");
 
-        return false;
+        return true;
     }
      
     unlockDoor (player: Player, tile): boolean
@@ -540,7 +538,7 @@ export class MainScene extends Phaser.Scene {
             this.world.unlockDoor(tile.x, tile.y);
             this.sound.play("keySound");
         }
-        return false;
+        return true;
     }
 
     playerTouchingSpringHandler(player: Player, spring: Spring): void {

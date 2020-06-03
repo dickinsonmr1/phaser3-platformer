@@ -54,7 +54,7 @@ export class World {
         // TODO: tilemaps (https://medium.com/@michaelwesthadley/modular-game-worlds-in-phaser-3-tilemaps-1-958fc7e6bbd6)
         // 
         this.sky = this.scene.skySprite;
-        this.sky.setScale(2);
+        this.sky.setScale(1);
         this.backgroundColor = backgroundColor
         //this.sky = this.scene.add.tileSprite(0, 0, 20480, 1024, skyName);
         //this.sky.setDepth();   //this.scene.skySprite;
@@ -108,6 +108,21 @@ export class World {
         this.layer05 = this.map.createDynamicLayer('layer05-collectibles', tileSets, 0, 0);
         this.layer05.alpha = 1.0;//0.75;
 
+        this.layer05.forEachTile(tile => {
+
+            if(tile.index == Constants.playerBlueSpawnTile)
+            {
+                const x = tile.getCenterX();
+                const y = tile.getCenterY();
+
+               
+                player.x = x;
+                player.y = y;
+
+                //this.layer06.removeTileAt(tile.x, tile.y);
+            }
+        })
+
         this.scene.physics.add.overlap(player, this.layer05);
         this.layer05.setTileIndexCallback(
             [
@@ -133,6 +148,18 @@ export class World {
         this.layer06.alpha = 0.0;
 
         this.layer06.forEachTile(tile => {
+
+            if(tile.index == Constants.playerBlueSpawnTile)
+            {
+                const x = tile.getCenterX();
+                const y = tile.getCenterY();
+
+               
+                player.x = x;
+                player.y = y;
+
+                //this.layer06.removeTileAt(tile.x, tile.y);
+            }
             if(tile.index == Constants.tileKeySpring)
             {
                 const x = tile.getCenterX();
@@ -162,7 +189,7 @@ export class World {
                     y: y,
                     key: "springLoaded"
                     });        
-                    portal.init("spring0", "spring1", "world-02-02");
+                    portal.init("spring0", "spring1", "world-02-02", tile.x, tile.y);
                 this.scene.portals.push(portal);
 
                 //this.layer06.removeTileAt(tile.x, tile.y);
@@ -255,11 +282,11 @@ export class World {
         });
       
         this.scene.physics.add.collider(player, this.layer07);
-        this.scene.physics.add.collider(player, this.scene.enemies, this.scene.playerTouchingEnemiesHandler);
-        this.scene.physics.add.collider(player, this.scene.springs, this.scene.playerTouchingSpringHandler);
-        this.scene.physics.add.collider(player, this.scene.flags, this.scene.playerTouchingCheckpointHandler);
-        this.scene.physics.add.collider(player, this.scene.portals, this.scene.playerTouchingPortalHandler);
-        this.scene.physics.add.collider(this.scene.enemies, this.scene.springs, this.scene.enemyTouchingSpringHandler);
+        this.scene.physics.add.overlap(player, this.scene.enemies, this.scene.playerTouchingEnemiesHandler);
+        this.scene.physics.add.overlap(player, this.scene.springs, this.scene.playerTouchingSpringHandler);
+        this.scene.physics.add.overlap(player, this.scene.flags, this.scene.playerTouchingCheckpointHandler);
+        this.scene.physics.add.overlap(player, this.scene.portals, this.scene.playerTouchingPortalHandler);
+        this.scene.physics.add.overlap(this.scene.enemies, this.scene.springs, this.scene.enemyTouchingSpringHandler);
         this.scene.physics.add.collider(this.scene.enemies, this.layer02);
         this.scene.physics.add.collider(this.scene.enemies, this.scene.enemies, this.scene.enemyTouchingEnemyHandler);
         

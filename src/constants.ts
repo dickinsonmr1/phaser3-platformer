@@ -21,6 +21,12 @@ export class Constants {
     public static get tileGun2(): number { return 358; }
     public static get tileGun3(): number { return 355; }
     public static get tileGun4(): number { return 356; }    
+
+    public static get playerBlueSpawnTile(): number { return 3078; }
+    public static get playerPinkSpawnTile(): number { return 3049; }
+    public static get playerYellowSpawnTile(): number { return 3035; }
+    public static get playerTanSpawnTile(): number { return 3006; }
+    public static get playerGreenSpawnTile(): number { return 2897; }
     
     // the next block is not updated yet
     public static get tileYellowFlagDown(): number { return 129; }

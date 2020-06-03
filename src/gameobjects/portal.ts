@@ -19,12 +19,17 @@
      private idleAnim: string;
      private waveAnim: string;
 
+     private portalText: Phaser.GameObjects.Text;
+
      buttonX: Phaser.GameObjects.Image;
 
      private get GetTextOffsetY(): number { return 110; }
      private get GetIconOffsetY(): number { return 150; }
  
      public idleTime: number;
+
+     public tileX: number;
+     public tileY: number;
  
      constructor(params) {
          super(params.scene, params.x, params.y, params.key, params.frame);
@@ -35,23 +40,31 @@
          return this.scene;
      }
  
-     public init(idleAnim: string, waveAnim: string, destinationName: string): void {
+     public init(idleAnim: string, waveAnim: string, destinationName: string, tileX: number, tileY: number): void {
          
         this.idleAnim = idleAnim;
         this.waveAnim = waveAnim;
         this.destinationName = destinationName;
+        this.tileX = tileX;
+        this.tileY = tileY;
      
         this.width = 128;
         this.height = 128;
  
         this.scene.physics.world.enable(this, 0);   
+        this.setAlpha(0);
 
         var body = <Phaser.Physics.Arcade.Body>this.body;
 
         body.setSize(128, 128);     
+        
+        //this.displayOriginX = 0.5;
+        //this.displayOriginY = 0.5;
+
         body.moves = false;
         
-        this.setScale(0.5, 0.5);
+        this.setOrigin(0.5, 0.5);
+        //this.setScale(0.5, 0.5);
 
         this.scene.add.existing(this);
             
@@ -67,10 +80,12 @@
         });
         text.setAlpha(0.9);
         text.setOrigin(0.5, 0);
-        text.setStroke('rgb(0,0,0)', 4);
+        text.setStroke('rgb(0,0,0)', 4);        
 
+        this.portalText = text;
         this.buttonX = this.scene.add.image(this.x, this.y - this.GetIconOffsetY, 'buttonX');
-        text.setOrigin(0.5, 0);
+
+        this.activated = false;
 
         this.hideButtonIcon(); 
 
@@ -96,22 +111,24 @@
     */
 
     displayButtonIcon(): void {
-        this.activationTime = 60;
+        this.activationTime = 10;
         this.buttonX.setAlpha(0.8);
+        this.portalText.setAlpha(0.9);
     }
 
     hideButtonIcon(): void {
         this.activationTime = 0;
         this.buttonX.setAlpha(0.0);
+        this.portalText.setAlpha(0.0);
     }
 
-    update(): void {
-        if(this.activationTime > 0)
+    preUpdate(time, delta): void {
+        super.preUpdate(time, delta);
+
+        if(this.activationTime > 0) {
             this.activationTime--;
-        else {
-            if(this.activated) {
+            if(this.activationTime == 0)
                 this.hideButtonIcon();
-            }
-        }
+        }        
     }
  }
