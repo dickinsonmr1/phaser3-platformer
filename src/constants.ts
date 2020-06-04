@@ -27,6 +27,20 @@ export class Constants {
     public static get playerYellowSpawnTile(): number { return 3035; }
     public static get playerTanSpawnTile(): number { return 3006; }
     public static get playerGreenSpawnTile(): number { return 2897; }
+
+    public static get portalBlueTile(): number { return 671; }
+    
+    public static get enemy01SpawnTile(): number { return 2967; }
+    public static get enemy02SpawnTile(): number { return 2953; }
+    public static get enemy03SpawnTile(): number { return 2939; }
+    public static get enemy04SpawnTile(): number { return 2925; }
+    public static get enemy05SpawnTile(): number { return 2911; }
+    public static get enemy06SpawnTile(): number { return 2924; }
+    public static get enemy07SpawnTile(): number { return 2910; }
+    public static get enemy08SpawnTile(): number { return 2896; }
+    public static get enemy09SpawnTile(): number { return 3077; }
+    public static get enemy10SpawnTile(): number { return 3063; }
+
     
     // the next block is not updated yet
     public static get tileYellowFlagDown(): number { return 129; }

@@ -90,7 +90,9 @@ export class MainScene extends Phaser.Scene {
         this.load.audio('enemyDeathSound', '/assets/audio/hit3.ogg');        
         this.load.audio('batterySound', '/assets/audio/upgrade3.ogg');        
         this.load.audio('lowAmmoSound', '/assets/audio/hit4.ogg');       
-        this.load.audio('noAmmoSound', '/assets/audio/fall3.ogg');     
+        this.load.audio('noAmmoSound', '/assets/audio/fall3.ogg'); 
+        this.load.audio('portalOpenSound', '/assets/audio/phaseJump3.ogg');      
+        this.load.audio('portalCloseSound', '/assets/audio/phaserDown3.ogg');      
     }    
 
     private loadSprites(): void {
@@ -117,6 +119,8 @@ export class MainScene extends Phaser.Scene {
         this.load.image('playerGunLaser4', './assets/sprites/player/rocket.png');
         this.load.image('playerRocket1', './assets/sprites/player/rocket_1.png');
         this.load.image('playerRocket2', './assets/sprites/player/rocket_2_small.png');
+
+        this.load.image('portalBlue', './assets/sprites/objects/portalBlue.png');
 
         this.load.image('buttonX', './assets/sprites/hud/buttonX.png');
 
@@ -551,9 +555,12 @@ export class MainScene extends Phaser.Scene {
         //player.tryBounce();       
     }
 
-    playerTouchingPortalHandler(player: Player, portal: Portal): void {
-        portal.displayButtonIcon()
-        //player.tryBounce();       
+    playerTouchingPortalHandler(player: Player, portal: Portal): void {        
+                
+        if(portal.activationTime == 0)
+            player.getScene().sound.play("portalOpenSound");
+
+        portal.activate();
     }
 
     enemyTouchingSpringHandler(enemy: Enemy, spring: Spring): void {

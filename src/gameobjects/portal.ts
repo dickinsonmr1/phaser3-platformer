@@ -48,15 +48,15 @@
         this.tileX = tileX;
         this.tileY = tileY;
      
-        this.width = 128;
-        this.height = 128;
+        this.width = 64;
+        this.height = 64;
  
         this.scene.physics.world.enable(this, 0);   
-        this.setAlpha(0);
+        this.setAlpha(0.8);
 
         var body = <Phaser.Physics.Arcade.Body>this.body;
 
-        body.setSize(128, 128);     
+        body.setSize(64, 64);     
         
         //this.displayOriginX = 0.5;
         //this.displayOriginY = 0.5;
@@ -64,7 +64,7 @@
         body.moves = false;
         
         this.setOrigin(0.5, 0.5);
-        //this.setScale(0.5, 0.5);
+        this.setScale(2.0, 2.0);
 
         this.scene.add.existing(this);
             
@@ -87,7 +87,7 @@
 
         this.activated = false;
 
-        this.hideButtonIcon(); 
+        this.deactivate(); 
 
         return;        
      }
@@ -110,25 +110,39 @@
     }
     */
 
-    displayButtonIcon(): void {
+    activate(): void {
         this.activationTime = 10;
         this.buttonX.setAlpha(0.8);
         this.portalText.setAlpha(0.9);
+        
+        if(this.scale < 2.0)
+            this.scale += 0.1;
     }
 
-    hideButtonIcon(): void {
+    deactivate(): void {
         this.activationTime = 0;
         this.buttonX.setAlpha(0.0);
         this.portalText.setAlpha(0.0);
+
+        this.getScene().sound.play("portalCloseSound");
     }
 
     preUpdate(time, delta): void {
         super.preUpdate(time, delta);
 
+
+
         if(this.activationTime > 0) {
+
+            this.rotation += 0.05;
             this.activationTime--;
             if(this.activationTime == 0)
-                this.hideButtonIcon();
-        }        
+                this.deactivate();
+        }     
+        else {
+            this.rotation += 0.02;
+            if(this.scale > 1.0)
+                this.scale -= 0.1;
+        }   
     }
  }

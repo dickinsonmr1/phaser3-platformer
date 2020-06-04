@@ -107,7 +107,7 @@ export class World {
         this.layer03 = this.map.createDynamicLayer('layer03-gameobjects', tileSets, 0, 0);
         this.layer03.alpha = 1.0;//0.75;
 
-        var allEnemyTypes = [297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371, 555];
+        var allEnemyTypes = [2967, 2953, 2939, 2925, 2911, 2924, 2910, 2896, 3077, 3063];
 
         this.layer03.forEachTile(tile => {
 
@@ -149,7 +149,7 @@ export class World {
 
                 this.layer03.removeTileAt(tile.x, tile.y);
             }
-            else if(tile.index == Constants.tileOpenDoor)
+            else if(tile.index == Constants.portalBlueTile)
             {
                 // TODO: add door
                 const x = tile.getCenterX();
@@ -159,12 +159,12 @@ export class World {
                     scene: this.scene,
                     x: x,
                     y: y,
-                    key: "springLoaded"
+                    key: "portalBlue"
                     });        
                     portal.init("spring0", "spring1", "world-02-02", tile.x, tile.y);
                 this.scene.portals.push(portal);
 
-                //this.layer06.removeTileAt(tile.x, tile.y);
+                this.layer03.removeTileAt(tile.x, tile.y);
             }            
             else if(tile.index == Constants.tileGreenFlagDown)
             {
@@ -187,7 +187,7 @@ export class World {
                 var x = tile.getCenterX();
                 var y = tile.getCenterY();
 
-                var randomNumber = 0;//this.getRandomInt(3);
+                var randomNumber = this.getRandomInt(3);
 
                 switch(randomNumber)
                 {
@@ -197,7 +197,7 @@ export class World {
                             x: x,
                             y: y - 50,
                             key: "enemy01-Idle",
-                            drawScale: 2,
+                            drawScale: 1.5,
                             enemyOffsetY: 10,
                             defaultFacingRight: false,
                             });        
@@ -210,10 +210,10 @@ export class World {
                             scene: this.scene,
                             x: x,
                             y: y,
-                            widthOverride: 128,
-                            heightOverride: 128,
+                            widthOverride: 64,
+                            heightOverride: 64,
                             key: "enemy02-Idle",
-                            drawScale: 0.75,
+                            drawScale: 1.0,
                             enemyOffsetY: -10,
                             defaultFacingRight: true,
                             });        
@@ -229,7 +229,7 @@ export class World {
                             //widthOverride: 128,
                             //heightOverride: 128,
                             key: "enemy03-Idle",
-                            drawScale: 2,
+                            drawScale: 1.5,
                             enemyOffsetY: 10,
                             defaultFacingRight: false,
                             });        
@@ -270,12 +270,17 @@ export class World {
         
         this.layer01.setDepth(1);
         this.layer02.setDepth(2);
-        this.scene.enemies.forEach(x => x.setDepth(3));
+        this.scene.springs.forEach(x => x.setDepth(2));
+        this.scene.portals.forEach(x => x.setDepth(2));        
+
         player.setDepth(3)
+        this.scene.enemies.forEach(x => x.setDepth(3));
         player.playerGun.setDepth(4)        
-        this.layer03.setDepth(3);
-        this.layer04.setDepth(4);
-        this.layer05.setDepth(5);
+        
+        
+        this.layer03.setDepth(4);
+        this.layer04.setDepth(5);
+        this.layer05.setDepth(6);
 
         player.bullets = this.scene.physics.add.group({
             allowGravity: false
