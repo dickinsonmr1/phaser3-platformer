@@ -197,7 +197,7 @@ export class World {
                             x: x,
                             y: y - 50,
                             key: "enemy01-Idle",
-                            drawScale: 1.5,
+                            drawScale: 1.25,
                             enemyOffsetY: 10,
                             defaultFacingRight: false,
                             });        
@@ -210,11 +210,11 @@ export class World {
                             scene: this.scene,
                             x: x,
                             y: y,
-                            widthOverride: 64,
-                            heightOverride: 64,
+                            widthOverride: 128,
+                            heightOverride: 128,
                             key: "enemy02-Idle",
-                            drawScale: 1.0,
-                            enemyOffsetY: -10,
+                            drawScale: 0.5,
+                            enemyOffsetY: 0,
                             defaultFacingRight: true,
                             });        
                         enemy.init("enemy02-Idle", "enemy02-Walk", "enemy02-Dead");
@@ -229,7 +229,7 @@ export class World {
                             //widthOverride: 128,
                             //heightOverride: 128,
                             key: "enemy03-Idle",
-                            drawScale: 1.5,
+                            drawScale: 1.25,
                             enemyOffsetY: 10,
                             defaultFacingRight: false,
                             });        

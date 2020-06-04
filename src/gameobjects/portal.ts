@@ -71,7 +71,7 @@
         //this.activated = false;
         //this.anims.play(this.idleAnim, true);
  
-        var text = this.scene.add.text(this.x, this.y - this.GetTextOffsetY, "Synchronosis",
+        var text = this.scene.add.text(this.x, this.y - this.GetTextOffsetY, this.destinationName,
         {
             fontFamily: 'KenneyRocketSquare',
             fontSize: 24,
@@ -112,17 +112,24 @@
 
     activate(): void {
         this.activationTime = 10;
-        this.buttonX.setAlpha(0.8);
-        this.portalText.setAlpha(0.9);
+        //this.buttonX.setAlpha(1.0);
+        //this.portalText.setAlpha(1.0);
         
         if(this.scale < 2.0)
             this.scale += 0.1;
+
+
+        if(this.buttonX.alpha < 1)
+            this.buttonX.alpha += 0.1;
+    
+        if(this.portalText.alpha < 1)
+            this.portalText.alpha += 0.1;      
     }
 
     deactivate(): void {
         this.activationTime = 0;
-        this.buttonX.setAlpha(0.0);
-        this.portalText.setAlpha(0.0);
+        //this.buttonX.setAlpha(0.0);
+        //this.portalText.setAlpha(0.0);
 
         this.getScene().sound.play("portalCloseSound");
     }
@@ -131,18 +138,26 @@
         super.preUpdate(time, delta);
 
 
-
         if(this.activationTime > 0) {
-
+               
             this.rotation += 0.05;
+
             this.activationTime--;
+            
             if(this.activationTime == 0)
                 this.deactivate();
         }     
         else {
             this.rotation += 0.02;
+            
             if(this.scale > 1.0)
                 this.scale -= 0.1;
+
+            if(this.buttonX.alpha > 0)
+                this.buttonX.alpha -= 0.1;
+            
+            if(this.portalText.alpha > 0)
+                this.portalText.alpha -= 0.1;                
         }   
     }
  }
