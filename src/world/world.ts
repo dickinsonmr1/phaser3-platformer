@@ -13,14 +13,13 @@ import { Checkpoint } from "../gameobjects/checkpoint";
 export class World {
     map: Phaser.Tilemaps.Tilemap;
     
+
     private layer01: Phaser.Tilemaps.StaticTilemapLayer;
-    private layer03: Phaser.Tilemaps.StaticTilemapLayer;
-    private layer03A: Phaser.Tilemaps.StaticTilemapLayer;
-    private layer04: Phaser.Tilemaps.StaticTilemapLayer;
-    private layer05: Phaser.Tilemaps.DynamicTilemapLayer;
-    private layer06: Phaser.Tilemaps.DynamicTilemapLayer ;
-    private layer07: Phaser.Tilemaps.DynamicTilemapLayer;
     private layer02: Phaser.Tilemaps.DynamicTilemapLayer;
+    private layer03: Phaser.Tilemaps.DynamicTilemapLayer;
+    private layer04: Phaser.Tilemaps.StaticTilemapLayer;
+    private layer05: Phaser.Tilemaps.StaticTilemapLayer;
+
     public backgroundColor: string;
 
     isWorldLoaded: boolean;
@@ -42,14 +41,13 @@ export class World {
         // layer00-image (not currently used)
         // layer01-background-passable
         // layer02-nonpassable        
-        // (player spaceship)
-        // (player)
-        // layer07-enemies 
-        // layer05-collectibles
-        // layer03-foreground-passable-semitransparent
-            // like water... one idea is to make this automatically move
-        // layer06-gameobjects        
+        // layer03-gameobjects        
+        // (+ player, enemies, spaceship, items)
         // layer04-foreground-passable-opaque
+        // layer05-foreground-passable-semitransparent
+            // like water... one idea is to make this automatically move
+        
+        
         
         // TODO: tilemaps (https://medium.com/@michaelwesthadley/modular-game-worlds-in-phaser-3-tilemaps-1-958fc7e6bbd6)
         // 
@@ -86,16 +84,7 @@ export class World {
         this.scene.physics.add.collider(player, this.layer02);
         this.layer02.setCollisionByExclusion([-1],true);//, Constants.tileLockBlue]);
         this.layer02.setTileIndexCallback(Constants.tileLockBlue, this.scene.unlockDoor, this.scene);
-   
-        //---------------------------------------------------------------------------------------------------
-        // foreground semi-transparent layer (water, lava, clouds, etc.)
-        //---------------------------------------------------------------------------------------------------
-        this.layer03 = this.map.createStaticLayer('layer03-foreground-passable-semitransparent', tileSets, 0, 0);
-        this.layer03.alpha = 0.5;
-        this.scene.physics.add.overlap(player, this.layer03);
-        this.layer03.setTileIndexCallback(Constants.tileWater, this.scene.inWater, this.scene);
-        this.layer03.setTileIndexCallback(Constants.tileWaterTop, this.scene.inWater, this.scene);
-        
+                   
         //---------------------------------------------------------------------------------------------------
         // FOREGROUND PASSABLE OPAQUE LAYER (front wall of a cave, plant, etc.)
         //---------------------------------------------------------------------------------------------------
@@ -103,51 +92,24 @@ export class World {
         this.layer04.alpha = 1.0;
 
         //---------------------------------------------------------------------------------------------------
-        // COLLECTIBLES
+        // foreground semi-transparent layer (water, lava, clouds, etc.)
         //---------------------------------------------------------------------------------------------------
-        this.layer05 = this.map.createDynamicLayer('layer05-collectibles', tileSets, 0, 0);
-        this.layer05.alpha = 1.0;//0.75;
-
-        this.layer05.forEachTile(tile => {
-
-            if(tile.index == Constants.playerBlueSpawnTile)
-            {
-                const x = tile.getCenterX();
-                const y = tile.getCenterY();
-
-               
-                player.x = x;
-                player.y = y;
-
-                //this.layer06.removeTileAt(tile.x, tile.y);
-            }
-        })
-
+        this.layer05 = this.map.createStaticLayer('layer05-foreground-passable-semitransparent', tileSets, 0, 0);
+        this.layer05.alpha = 0.5;
         this.scene.physics.add.overlap(player, this.layer05);
-        this.layer05.setTileIndexCallback(
-            [
-                Constants.tileKeyGemRed,
-                Constants.tileKeyGemGreen,
-                Constants.tileKeyGemYellow,
-                Constants.tileKeyGemBlue
-            ],
-            this.scene.collectGem, this.scene);
-
-        this.layer05.setTileIndexCallback(Constants.tileGun1, this.scene.collectWeapon1, this.scene);
-        this.layer05.setTileIndexCallback(Constants.tileGun2, this.scene.collectWeapon2, this.scene);
-        this.layer05.setTileIndexCallback(Constants.tileGun3, this.scene.collectWeapon3, this.scene);
-        this.layer05.setTileIndexCallback(Constants.tileGun4, this.scene.collectWeapon4, this.scene);
-
-        this.layer05.setTileIndexCallback(Constants.tileKeyBlueKey, this.scene.collectKey, this.scene);        
-        this.layer05.setTileIndexCallback(Constants.tileKeyBattery, this.scene.collectBattery, this.scene);    
+        this.layer05.setTileIndexCallback(Constants.tileWater, this.scene.inWater, this.scene);
+        this.layer05.setTileIndexCallback(Constants.tileWaterTop, this.scene.inWater, this.scene);
 
 
-        //open door 236
+        //---------------------------------------------------------------------------------------------------
+        // gameobjects
+        //---------------------------------------------------------------------------------------------------
+        this.layer03 = this.map.createDynamicLayer('layer03-gameobjects', tileSets, 0, 0);
+        this.layer03.alpha = 1.0;//0.75;
 
-        this.layer06 = this.map.createDynamicLayer('layer06-gameobjects', tileSets, 0, 0);
-        this.layer06.alpha = 0.0;
+        var allEnemyTypes = [297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371, 555];
 
-        this.layer06.forEachTile(tile => {
+        this.layer03.forEachTile(tile => {
 
             if(tile.index == Constants.playerBlueSpawnTile)
             {
@@ -160,7 +122,18 @@ export class World {
 
                 //this.layer06.removeTileAt(tile.x, tile.y);
             }
-            if(tile.index == Constants.tileKeySpring)
+            else if(tile.index == Constants.playerBlueSpawnTile)
+            {
+                const x = tile.getCenterX();
+                const y = tile.getCenterY();
+
+               
+                player.x = x;
+                player.y = y;
+
+                //this.layer06.removeTileAt(tile.x, tile.y);
+            }
+            else if(tile.index == Constants.tileKeySpring)
             {
                 const x = tile.getCenterX();
                 const y = tile.getCenterY();
@@ -174,10 +147,9 @@ export class World {
                 spring.init("spring0", "spring1");
                 this.scene.springs.push(spring);
 
-                this.layer06.removeTileAt(tile.x, tile.y);
+                this.layer03.removeTileAt(tile.x, tile.y);
             }
-
-            if(tile.index == Constants.tileOpenDoor)
+            else if(tile.index == Constants.tileOpenDoor)
             {
                 // TODO: add door
                 const x = tile.getCenterX();
@@ -194,8 +166,7 @@ export class World {
 
                 //this.layer06.removeTileAt(tile.x, tile.y);
             }            
-
-            if(tile.index == Constants.tileGreenFlagDown)
+            else if(tile.index == Constants.tileGreenFlagDown)
             {
                 // TODO: add door
                 const x = tile.getCenterX();
@@ -210,20 +181,9 @@ export class World {
                     flag.init("flagGreenIdle", "flagGreenWave");
                 this.scene.flags.push(flag);
 
-                this.layer06.removeTileAt(tile.x, tile.y);
+                this.layer03.removeTileAt(tile.x, tile.y);
             }
-        })
-
-        this.layer06.setTileIndexCallback(Constants.tileOpenDoor, this.scene.activateDoorIcon, this.scene);
-
-        var allEnemyTypes = [297, 290, 322, 300, 380, 337, 395, 299, 323, 330, 353, 347, 371, 555];
-        //---------------------------------------------------------------------------------------------------
-        // ENEMIES
-        //---------------------------------------------------------------------------------------------------
-        this.layer07 = this.map.createDynamicLayer('layer07-enemies', tileSets, 0, 0);
-        this.layer07.alpha = 0.1;
-        this.layer07.forEachTile(tile => {
-            if(allEnemyTypes.includes(tile.index)) {
+            else if(allEnemyTypes.includes(tile.index)) {
                 var x = tile.getCenterX();
                 var y = tile.getCenterY();
 
@@ -277,11 +237,29 @@ export class World {
                         this.scene.enemies.push(enemy);
                         break;
                 }
-                this.layer07.removeTileAt(tile.x, tile.y);
+                this.layer03.removeTileAt(tile.x, tile.y);
             }
-        });
+        })
+
+        this.scene.physics.add.overlap(player, this.layer03);
+        this.layer03.setTileIndexCallback(
+            [
+                Constants.tileKeyGemRed,
+                Constants.tileKeyGemGreen,
+                Constants.tileKeyGemYellow,
+                Constants.tileKeyGemBlue
+            ],
+            this.scene.collectGem, this.scene);
+
+        this.layer03.setTileIndexCallback(Constants.tileGun1, this.scene.collectWeapon1, this.scene);
+        this.layer03.setTileIndexCallback(Constants.tileGun2, this.scene.collectWeapon2, this.scene);
+        this.layer03.setTileIndexCallback(Constants.tileGun3, this.scene.collectWeapon3, this.scene);
+        this.layer03.setTileIndexCallback(Constants.tileGun4, this.scene.collectWeapon4, this.scene);
+        this.layer03.setTileIndexCallback(Constants.tileKeyBlueKey, this.scene.collectKey, this.scene);        
+        this.layer03.setTileIndexCallback(Constants.tileKeyBattery, this.scene.collectBattery, this.scene);    
+        //open door 236
+        this.layer03.setTileIndexCallback(Constants.tileOpenDoor, this.scene.activateDoorIcon, this.scene);
       
-        this.scene.physics.add.collider(player, this.layer07);
         this.scene.physics.add.overlap(player, this.scene.enemies, this.scene.playerTouchingEnemiesHandler);
         this.scene.physics.add.overlap(player, this.scene.springs, this.scene.playerTouchingSpringHandler);
         this.scene.physics.add.overlap(player, this.scene.flags, this.scene.playerTouchingCheckpointHandler);
@@ -295,11 +273,9 @@ export class World {
         this.scene.enemies.forEach(x => x.setDepth(3));
         player.setDepth(3)
         player.playerGun.setDepth(4)        
-        this.layer07.setDepth(5);
-        this.layer05.setDepth(6);
-        this.layer03.setDepth(7);
-        this.layer06.setDepth(8);
-        this.layer04.setDepth(9);
+        this.layer03.setDepth(3);
+        this.layer04.setDepth(4);
+        this.layer05.setDepth(5);
 
         player.bullets = this.scene.physics.add.group({
             allowGravity: false
@@ -325,11 +301,11 @@ export class World {
 
     collectGem (tileX: number, tileY: number): void
     {
-        this.layer05.removeTileAt(tileX, tileY);
+        this.layer03.removeTileAt(tileX, tileY);
     }
 
     collectKey(tileX: number, tileY: number): void {
-        this.layer05.removeTileAt(tileX, tileY);
+        this.layer03.removeTileAt(tileX, tileY);
     }
 
     unlockDoor(tileX: number, tileY: number): void {
