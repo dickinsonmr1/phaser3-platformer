@@ -51,7 +51,7 @@ export class MainScene extends Phaser.Scene {
     jumpKey: Phaser.Input.Keyboard.Key;
     debugKey: Phaser.Input.Keyboard.Key;
 
-    playerBullets: Phaser.GameObjects.Group;
+    //playerBullets: Phaser.GameObjects.Group;
 
     worldName: string;
 
@@ -121,6 +121,9 @@ export class MainScene extends Phaser.Scene {
         this.load.image('playerRocket2', './assets/sprites/player/rocket_2_small.png');
 
         this.load.image('portalBlue', './assets/sprites/objects/portalBlue.png');
+        this.load.image('portalRed', './assets/sprites/objects/portalRed.png');
+        this.load.image('portalYellow', './assets/sprites/objects/portalYellow.png');
+        this.load.image('portalGreen', './assets/sprites/objects/portalGreen.png');
 
         this.load.image('buttonX', './assets/sprites/hud/buttonX.png');
 
@@ -303,7 +306,7 @@ export class MainScene extends Phaser.Scene {
     create(): void {    
 
         this.createAnims(this.anims);
-        this.skySprite = this.add.tileSprite(0, 0, 20480, 1024, 'world-02-01-sky');            
+        this.skySprite = this.add.tileSprite(0, 0, 20480, 2048, 'world-02-01-sky');            
         
         this.enemies = new Array<Phaser.GameObjects.Sprite>();
         this.enemiesPhysics = Array<Phaser.GameObjects.Sprite>();  // removed 324
@@ -462,6 +465,8 @@ export class MainScene extends Phaser.Scene {
         this.player.reload(newAmmoCount, WeaponType.Laser1);
         this.events.emit("weaponCollected", newAmmoCount);
 
+        this.addExpiringText(this, this.player.x, this.player.y, "LASER PISTOL");
+
         return true;
     }
 
@@ -473,6 +478,8 @@ export class MainScene extends Phaser.Scene {
         var newAmmoCount = 10;
         this.player.reload(newAmmoCount, WeaponType.Laser2);
         this.events.emit("weaponCollected", newAmmoCount);
+
+        this.addExpiringText(this, this.player.x, this.player.y, "LASER REPEATER");
 
         return true;
     }
@@ -486,6 +493,8 @@ export class MainScene extends Phaser.Scene {
         this.player.reload(newAmmoCount, WeaponType.Laser3);
         this.events.emit("weaponCollected", newAmmoCount);
 
+        this.addExpiringText(this, this.player.x, this.player.y, "PULSE CHARGE");
+
         return true;
     }
 
@@ -497,6 +506,8 @@ export class MainScene extends Phaser.Scene {
         var newAmmoCount = 15;
         this.player.reload(newAmmoCount, WeaponType.Laser4);
         this.events.emit("weaponCollected", newAmmoCount);
+
+        this.addExpiringText(this, this.player.x, this.player.y, "ROCKET LAUNCHER");
 
         return true;
     }
@@ -601,7 +612,7 @@ export class MainScene extends Phaser.Scene {
     }
 
     bulletTouchingEnemyHandler(enemy: Enemy, bullet: Bullet): void {
-        
+                
         var scene = <MainScene>enemy.getScene();
 
         var damage = 100;

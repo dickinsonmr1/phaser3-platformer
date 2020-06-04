@@ -312,15 +312,21 @@ export class Player extends Phaser.GameObjects.Sprite {
 
         var body = <Phaser.Physics.Arcade.Body>this.body;
         if (this.flipX) {
-            this.bullets
+            var bullet = this.bullets
                 .create(body.x, body.y + this.getBulletOffsetY(), this.currentWeaponBulletName)
                 .setFlipX(true)
-                .body.setVelocityX(-this.playerBulletVelocityX).setVelocityY(0);
+                .body.setVelocityX(-this.playerBulletVelocityX)
+                .setVelocityY(0);
+
+            //bullet.damage = 4;
         }
         else {
-            this.bullets
+            var bullet = this.bullets
                 .create(body.x + Player.playerBulletOffsetX, body.y + this.getBulletOffsetY(), this.currentWeaponBulletName)
-                .body.setVelocityX(this.playerBulletVelocityX).setVelocityY(0).sets;
+                .body.setVelocityX(this.playerBulletVelocityX)
+                .setVelocityY(0);
+
+            //bullet.damage = 4;
         }
     }
 

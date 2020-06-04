@@ -21,11 +21,14 @@ export class Bullet extends Phaser.GameObjects.Sprite {
         this.direction = 0;
         this.xSpeed = 0;
         this.ySpeed = 0;
-        this.damage = 4;
+        this.damage = params.damage;
+        
+        this.flipX = params.flipX;
         //this.setSize(12, 12, true);
 
         this.currentScene = params.scene;
         this.currentScene.physics.world.enable(this);
+
         this.displayWidth = 16;
         this.displayHeight = 16;
     }
@@ -40,6 +43,7 @@ export class Bullet extends Phaser.GameObjects.Sprite {
         this.born = 0; // Time since new bullet spawned
     }
 
+    /*
     // Updates the position of the bullet each cycle
     public update(time, delta)
     {
@@ -56,4 +60,5 @@ export class Bullet extends Phaser.GameObjects.Sprite {
     public kill(){
         this.kill();
     }
+    */
 }

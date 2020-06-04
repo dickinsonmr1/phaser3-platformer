@@ -108,7 +108,7 @@ export class World {
         this.layer03.alpha = 1.0;//0.75;
 
         var allEnemyTypes = [2967, 2953, 2939, 2925, 2911, 2924, 2910, 2896, 3077, 3063];
-
+        var allPortalTiles = [Constants.portalBlueTile, Constants.portalGreenTile, Constants.portalYellowTile, Constants.portalRedTile];
         this.layer03.forEachTile(tile => {
 
             if(tile.index == Constants.playerBlueSpawnTile)
@@ -149,17 +149,31 @@ export class World {
 
                 this.layer03.removeTileAt(tile.x, tile.y);
             }
-            else if(tile.index == Constants.portalBlueTile)
+            else if(allPortalTiles.includes(tile.index))
             {
                 // TODO: add door
                 const x = tile.getCenterX();
                 const y = tile.getCenterY();
-
+                var key = "";
+                switch(tile.index) {
+                    case Constants.portalBlueTile:
+                        key = "portalBlue";
+                        break;
+                    case Constants.portalRedTile:
+                        key = "portalRed";
+                        break;
+                    case Constants.portalGreenTile:
+                        key = "portalGreen";
+                        break;
+                    case Constants.portalYellowTile:
+                        key = "portalYellow";
+                        break;
+                }
                 let portal = new Portal({
                     scene: this.scene,
                     x: x,
                     y: y,
-                    key: "portalBlue"
+                    key: key
                     });        
                     portal.init("spring0", "spring1", "world-02-02", tile.x, tile.y);
                 this.scene.portals.push(portal);
