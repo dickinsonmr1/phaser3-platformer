@@ -301,6 +301,7 @@ export class World {
         player.bullets = this.scene.physics.add.group({
             allowGravity: false
         })
+        player.bullets.setDepth(4);
 
         this.scene.physics.add.collider(this.scene.enemies, player.bullets, this.scene.bulletTouchingEnemyHandler);
         this.scene.physics.add.collider(player.bullets, this.layer02, this.scene.bulletTouchingImpassableLayerHandler);                        

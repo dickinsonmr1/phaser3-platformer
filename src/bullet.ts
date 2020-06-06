@@ -3,62 +3,35 @@ import "phaser";
 
 export class Bullet extends Phaser.GameObjects.Sprite {
 
-    public born: number;
-    public speed: number;
-    public direction: number;
-    public xSpeed: number;
-    public ySpeed: number;
-    public currentScene: Phaser.Scene;
     public damage: number;
+    public velocityX: number;
 
     constructor(params)
     {
-        super(params.scene, params.x, params.y, params.key, params.frame);//, null);
+        super(params.scene, params.x, params.y, params.key);
 
-        //Phaser.GameObjects.Image.call(this, params.scene, params.x, params.y, 'bullet');
-        this.speed = 1;
-        this.born = 0;
-        this.direction = 0;
-        this.xSpeed = 0;
-        this.ySpeed = 0;
-        this.damage = params.damage;
-        
+        this.scene.add.existing(this);
+               
         this.flipX = params.flipX;
-        //this.setSize(12, 12, true);
+        this.damage = params.damage;       
+        this.velocityX = params.velocityX;
 
-        this.currentScene = params.scene;
-        this.currentScene.physics.world.enable(this);
-
-        this.displayWidth = 16;
-        this.displayHeight = 16;
+        this.scene.physics.world.enable(this);
+       
+        this.setAlpha(1.0);
     }
 
-    // Fires a bullet from the player to the reticle
-    public fire(x: number, y: number, isFacingRight: boolean)
+    public init()
     {       
-        this.x = x;
-        this.y = y;
-        this.ySpeed = 0;
-        this.xSpeed = isFacingRight ? 200 : 200;
-        this.born = 0; // Time since new bullet spawned
+       
     }
 
-    /*
-    // Updates the position of the bullet each cycle
-    public update(time, delta)
-    {
-        this.x += this.xSpeed * delta;
-        this.y += this.ySpeed * delta;
-        this.born += delta;
-        if (this.born > 1800)
-        {
-            this.setActive(false);
-            this.setVisible(false);
-        }
-    }   
+    preUpdate(time, delta): void {
+        super.preUpdate(time, delta);
 
-    public kill(){
-        this.kill();
+        var body = <Phaser.Physics.Arcade.Body>this.body;
+
+        body.setVelocityX(this.velocityX);
+        body.setVelocityY(0);
     }
-    */
 }

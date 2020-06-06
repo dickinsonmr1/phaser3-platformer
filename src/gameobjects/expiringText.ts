@@ -19,9 +19,8 @@
             align: 'center',            
             color:"rgb(255,255,255)",
         });
-
-        this.scene.add.existing(this);
- 
+        
+        this.scene.add.existing(this); 
      } 
      
      public getScene(): Scene {
@@ -29,31 +28,16 @@
      }
  
      public init(decayTimeInMs: number): void {
- 
+
+        // not used yet
         this.decayTimeInMs = decayTimeInMs;
 
         this.setFontSize(24);
-        //this.setFontFamily('KenneyRocketSquare');
-        //this.setAlign('center');
-        //this.setColor('rgb(255,255,255)')
-        //this.scene.physics.world.enable(this);
-
-        /*
-        var textItem = this.scene.add.text(this.x, this.y - this.GetTextOffsetY, text,
-        {
-            fontFamily: 'KenneyRocketSquare',
-            fontSize: 24,
-            align: 'center',            
-            color:"rgb(255,255,255)",
-        });
-        */
         this.setAlpha(1.0);
-        //this.setOrigin(0.5, 0);
         this.setDepth(7);
+        
         this.setStroke('rgb(0,0,0)', 4);        
-
-
-
+        
         return;        
      }
  }

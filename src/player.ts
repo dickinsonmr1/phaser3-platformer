@@ -8,6 +8,7 @@
 import { Constants } from "./constants";
 import "phaser";
 import { Scene } from "phaser";
+import { Bullet } from "./bullet";
 
 export enum WeaponType {
     Laser1,
@@ -76,7 +77,12 @@ export class Player extends Phaser.GameObjects.Sprite {
                 return "laser4Sound";
         }
     }  
-    private static get playerBulletOffsetX(): number {return 66;}  
+    private playerBulletOffsetX(): number {
+        if(this.flipX)
+            return -30;
+        else
+            return 66;
+    }  
     private get playerStandingBulletOffsetY(): number
     {
         switch(this.currentWeaponType) {
@@ -311,6 +317,27 @@ export class Player extends Phaser.GameObjects.Sprite {
     private createBullet() : void {
 
         var body = <Phaser.Physics.Arcade.Body>this.body;
+
+        var velocityX: number;
+        if(this.flipX)
+            velocityX = -this.playerBulletVelocityX
+        else
+            velocityX = this.playerBulletVelocityX;
+
+        var bullet = new Bullet({
+            scene: this.scene,
+            x: body.x + this.playerBulletOffsetX(),
+            y: body.y + this.getBulletOffsetY(),
+            key: this.currentWeaponBulletName,
+            flipX: this.flipX,
+            damage: 4,
+            velocityX: velocityX
+        });
+        bullet.init();
+
+        this.bullets.add(bullet);
+
+        /*
         if (this.flipX) {
             var bullet = this.bullets
                 .create(body.x, body.y + this.getBulletOffsetY(), this.currentWeaponBulletName)
@@ -328,6 +355,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
             //bullet.damage = 4;
         }
+        */
     }
 
     getBullets(): Phaser.GameObjects.Group {
