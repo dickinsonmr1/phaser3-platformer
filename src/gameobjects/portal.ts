@@ -80,6 +80,7 @@
         });
         text.setAlpha(0.9);
         text.setOrigin(0.5, 0);
+        text.setDepth(7);
         text.setStroke('rgb(0,0,0)', 4);        
 
         this.portalText = text;

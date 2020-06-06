@@ -289,12 +289,14 @@ export class World {
 
         player.setDepth(3)
         this.scene.enemies.forEach(x => x.setDepth(3));
-        player.playerGun.setDepth(4)        
+        player.playerGun.setDepth(4)       
         
-        
+                
         this.layer03.setDepth(4);
         this.layer04.setDepth(5);
         this.layer05.setDepth(6);
+
+        this.scene.expiringMessagesGroup.setDepth(7); 
 
         player.bullets = this.scene.physics.add.group({
             allowGravity: false

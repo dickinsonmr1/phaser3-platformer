@@ -17,6 +17,7 @@ import { Checkpoint } from "../gameobjects/checkpoint";
 import { Constants } from "../constants";
 import { Bullet } from "../bullet";
 import { World } from "../world/world";
+import { ExpiringText } from "../gameobjects/expiringText";
 
 export class MainScene extends Phaser.Scene {
   
@@ -634,22 +635,16 @@ export class MainScene extends Phaser.Scene {
     }
 
     private addExpiringText(scene: MainScene, x: number, y: number, text: string, ) {
-              
-        var emitText = scene.add.text(x, y, text,
-        {
-            fontFamily: 'KenneyRocketSquare',
-            fontSize: 24,
-            align: 'right',            
-            color:"rgb(255,255,255)",
-        });
-        emitText.setAlpha(0.75);
-        emitText.setStroke('rgb(0,0,0)', 4);
+                
+        var expiringText = new ExpiringText({
+            scene: scene,
+            x: x,
+            y: y,
+            text: text
+            });       
 
-        scene.physics.world.enable(emitText);
-
-        emitText.alpha = 0.6;
-        
-        scene.expiringMessagesGroup.add(emitText);
+        expiringText.init(1000);
+        scene.expiringMessagesGroup.add(expiringText);
     }
     
     updateExpiringText(): void {
