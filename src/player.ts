@@ -34,6 +34,15 @@ export class Player extends Phaser.GameObjects.Sprite {
     private static get playerGunOffsetY(): number {return 100;}
     private static get playerGunOffsetXFacingRight(): number {return 70;}  
 
+    private get GetTextOffsetY(): number { return -100; }
+    
+    private get GetIconOffsetX(): number { return -60; }
+    private get GetIconOffsetY(): number { return this.GetTextOffsetY + 2; }
+
+    private interactText: Phaser.GameObjects.Text;
+    private interactButtonImage: Phaser.GameObjects.Image;
+    private activateInteractTime: number;
+
     private static get playerJumpVelocityY(): number {return 450;}  
     private static get playerRunVelocityX(): number{return 400;}  
     private get playerBulletVelocityX(): number
@@ -177,6 +186,27 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.lastUsedBulletIndex = 0;
         this.springTime = 0;
         this.isDucking = false;
+
+        var text = this.scene.add.text(this.x, this.y - this.GetTextOffsetY, "Interact",
+        {
+            fontFamily: 'KenneyRocketSquare',
+            fontSize: 24,
+            //align: 'right',            
+            color:"rgb(255,255,255)",
+        });
+        text.setAlpha(0);
+        text.setOrigin(0, 0.5);
+        text.setDepth(7);
+        text.setStroke('rgb(0,0,0)', 4);        
+
+        this.interactText = text;
+
+        this.interactButtonImage = this.scene.add.image(text.x - text.width, this.y - this.GetIconOffsetY, 'buttonX');
+        this.interactButtonImage.alpha = 0;
+        this.interactButtonImage.setOrigin(0, 0.5);
+
+        this.activateInteractTime = 0;
+        this.hideInteractTextAndImage();
 
         this.currentWeaponType = WeaponType.Laser1;
         this.playerGun = this.scene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, 'playerGun')        
@@ -391,6 +421,26 @@ export class Player extends Phaser.GameObjects.Sprite {
         return offsetY;
     }
 
+    displayInteractTextAndImage(x: number, y: number) {
+        
+
+        var text = this.interactText;
+        text.setX(x);
+        text.setY(y + this.GetTextOffsetY);
+        text.alpha = 1;
+
+        this.interactButtonImage.setX(text.x - text.width * 0.3);
+        this.interactButtonImage.setY(y + this.GetIconOffsetY);    
+        this.interactButtonImage.alpha = 1;
+
+        this.activateInteractTime = 10;
+    }
+
+    hideInteractTextAndImage() {        
+        this.interactButtonImage.alpha = 0;
+        this.interactText.alpha = 0;
+    }
+
     update(): void {
 
         this.isInWater = false;
@@ -400,6 +450,12 @@ export class Player extends Phaser.GameObjects.Sprite {
                 this.setAlpha(0.5);
             else
                 this.setAlpha(1);
+        }
+
+        if(this.activateInteractTime > 0)
+            this.activateInteractTime--;
+        else if(this.activateInteractTime == 0) {
+            this.hideInteractTextAndImage();
         }
        
         if(this.flipX) {

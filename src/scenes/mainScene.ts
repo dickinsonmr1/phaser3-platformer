@@ -18,6 +18,7 @@ import { Constants } from "../constants";
 import { Bullet } from "../bullet";
 import { World } from "../world/world";
 import { ExpiringText } from "../gameobjects/expiringText";
+import { Switch } from "../gameobjects/switch";
 
 export class MainScene extends Phaser.Scene {
   
@@ -580,6 +581,14 @@ export class MainScene extends Phaser.Scene {
             player.getScene().sound.play("portalOpenSound");
 
         portal.activate();
+    }
+
+    playerTouchingSwitchHandler(player: Player, switchItem: Switch): void {        
+                
+        //if(switchItem.activationTime == 0)
+            //player.getScene().sound.play("portalOpenSound");
+
+        player.displayInteractTextAndImage(switchItem.x, switchItem.y);
     }
 
     enemyTouchingSpringHandler(enemy: Enemy, spring: Spring): void {

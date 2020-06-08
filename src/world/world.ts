@@ -295,6 +295,7 @@ export class World {
         this.scene.physics.add.overlap(player, this.scene.springs, this.scene.playerTouchingSpringHandler);
         this.scene.physics.add.overlap(player, this.scene.flags, this.scene.playerTouchingCheckpointHandler);
         this.scene.physics.add.overlap(player, this.scene.portals, this.scene.playerTouchingPortalHandler);
+        this.scene.physics.add.overlap(player, this.scene.switches, this.scene.playerTouchingSwitchHandler);
         this.scene.physics.add.overlap(this.scene.enemies, this.scene.springs, this.scene.enemyTouchingSpringHandler);
         this.scene.physics.add.collider(this.scene.enemies, this.layer02);
         this.scene.physics.add.collider(this.scene.enemies, this.scene.enemies, this.scene.enemyTouchingEnemyHandler);
