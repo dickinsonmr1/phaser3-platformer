@@ -58,6 +58,17 @@ export class Constants {
     public static get tileRedFlagDown(): number { return 153; }
     public static get tileRedFlagWave1(): number { return 137; }
     public static get tileRedFlagWave2(): number { return 145; }
+
+    //618, 617, 620, 619, 576, 575, 574, 573
+    //https://labs.phaser.io/edit.html?src=src\game%20objects\tilemap\dynamic\put%20tiles.js
+    public static get tileRedSwitchOn(): number { return 617; }
+    public static get tileRedSwitchOff(): number { return 618; }
+    public static get tileBlueSwitchOn(): number { return 619; }
+    public static get tileBlueSwitchOff(): number { return 620; }
+    public static get tileGreenSwitchOn(): number { return 575; }
+    public static get tileGreenSwitchOff(): number { return 576; }
+    public static get tileYellowSwitchOn(): number { return 573; }
+    public static get tileYellowSwitchOff(): number { return 574; }
     
     public static get enemySpeed(): number {return 200;}
     public static get playerDrawScale(): number {return 0.5;}
@@ -66,7 +77,5 @@ export class Constants {
     public static get playerOffsetY(): number {return 128;}
     
     public static get playerDuckingGunOffsetY(): number {return 12;}
-    public static get enemyOffsetY(): number {return 10;}
-
-    
+    public static get enemyOffsetY(): number {return 10;}    
 }

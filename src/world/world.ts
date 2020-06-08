@@ -9,6 +9,7 @@ import { Enemy } from "../enemy";
 import { Spring } from "../gameobjects/spring";
 import { Portal } from "../gameobjects/portal";
 import { Checkpoint } from "../gameobjects/checkpoint";
+import { Switch } from "../gameobjects/switch";
 
 export class World {
     map: Phaser.Tilemaps.Tilemap;
@@ -61,7 +62,8 @@ export class World {
         var compiledTileSet = this.map.addTilesetImage('compiled_64x64', 'compiledTiles');
         var completeTileSet = this.map.addTilesetImage('complete_64x64', 'completeTiles');
 
-    /*
+
+      /*
         var tileset1 = this.map.addTilesetImage('abstract_64x64', 'abstractTiles');
         var tileset2 = this.map.addTilesetImage('ground_64x64', 'groundTiles');
         var tileset3 = this.map.addTilesetImage('industrial_64x64', 'industrialTiles');
@@ -100,7 +102,6 @@ export class World {
         this.layer05.setTileIndexCallback(Constants.tileWater, this.scene.inWater, this.scene);
         this.layer05.setTileIndexCallback(Constants.tileWaterTop, this.scene.inWater, this.scene);
 
-
         //---------------------------------------------------------------------------------------------------
         // gameobjects
         //---------------------------------------------------------------------------------------------------
@@ -111,11 +112,11 @@ export class World {
         var allPortalTiles = [Constants.portalBlueTile, Constants.portalGreenTile, Constants.portalYellowTile, Constants.portalRedTile];
         this.layer03.forEachTile(tile => {
 
+
             if(tile.index == Constants.playerBlueSpawnTile)
             {
                 const x = tile.getCenterX();
-                const y = tile.getCenterY();
-
+                const y = tile.getCenterY();                
                
                 player.x = x;
                 player.y = y;
@@ -179,7 +180,23 @@ export class World {
                 this.scene.portals.push(portal);
 
                 this.layer03.removeTileAt(tile.x, tile.y);
-            }            
+            }         
+            else if(tile.index == Constants.tileYellowSwitchOff) {
+                const x = tile.getCenterX();
+                const y = tile.getCenterY();
+
+                var item = new Switch({
+                    scene: this.scene,
+                    x: x,
+                    y: y,
+                    key: "switchYellowOff"
+                    });        
+                item.init("switchYellowOff", "switchYellowOn");
+                item.setDepth(2);
+                this.scene.switches.push(item);
+
+                this.layer03.removeTileAt(tile.x, tile.y);
+            }   
             else if(tile.index == Constants.tileGreenFlagDown)
             {
                 // TODO: add door

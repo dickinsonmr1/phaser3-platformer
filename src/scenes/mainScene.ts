@@ -41,6 +41,7 @@ export class MainScene extends Phaser.Scene {
     springs: Array<Phaser.GameObjects.Sprite>;
     flags: Array<Phaser.GameObjects.Sprite>;
     portals: Array<Phaser.GameObjects.Sprite>;
+    switches: Array<Phaser.GameObjects.Sprite>;
 
     cursors: Phaser.Types.Input.Keyboard.CursorKeys;              
     zoomInKey: Phaser.Input.Keyboard.Key;
@@ -125,6 +126,9 @@ export class MainScene extends Phaser.Scene {
         this.load.image('portalRed', './assets/sprites/objects/portalRed.png');
         this.load.image('portalYellow', './assets/sprites/objects/portalYellow.png');
         this.load.image('portalGreen', './assets/sprites/objects/portalGreen.png');
+
+        this.load.image('switchYellowOff', './assets/sprites/objects/switchYellowOff.png');
+        this.load.image('switchYellowOn', './assets/sprites/objects/switchYellowOn.png');
 
         this.load.image('buttonX', './assets/sprites/hud/buttonX.png');
 
@@ -286,7 +290,7 @@ export class MainScene extends Phaser.Scene {
         });
 
         
-        // springs
+        // checkpoints
         anims.create({
             key: 'flagGreenIdle',
             frames: [{key: 'completeSprites', frame: 'flagGreen_down.png'}],
@@ -302,6 +306,8 @@ export class MainScene extends Phaser.Scene {
             frameRate: 2,
             repeat: -1
         });
+
+
     }
 
     create(): void {    
@@ -321,6 +327,7 @@ export class MainScene extends Phaser.Scene {
         this.springs = new Array<Phaser.GameObjects.Sprite>();
         this.flags = new Array<Phaser.GameObjects.Sprite>();
         this.portals = new Array<Phaser.GameObjects.Sprite>();
+        this.switches = new Array<Phaser.GameObjects.Sprite>();
         
         this.player = new Player({
             scene: this,
