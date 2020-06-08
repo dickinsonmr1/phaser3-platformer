@@ -189,9 +189,9 @@ export class World {
                     scene: this.scene,
                     x: x,
                     y: y,
-                    key: "switchYellowOff"
+                    key: "switchOn"
                     });        
-                item.init("switchYellowOff", "switchYellowOn");
+                item.init("switchOn", "switchOff");
                 item.setDepth(2);
                 this.scene.switches.push(item);
 

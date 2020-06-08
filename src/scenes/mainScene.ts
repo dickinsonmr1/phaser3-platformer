@@ -52,6 +52,7 @@ export class MainScene extends Phaser.Scene {
     pauseKey: Phaser.Input.Keyboard.Key;
     moveWaterKey: Phaser.Input.Keyboard.Key;
     jumpKey: Phaser.Input.Keyboard.Key;
+    interactKey: Phaser.Input.Keyboard.Key;
     debugKey: Phaser.Input.Keyboard.Key;
 
     //playerBullets: Phaser.GameObjects.Group;
@@ -308,7 +309,18 @@ export class MainScene extends Phaser.Scene {
             repeat: -1
         });
 
+        // checkpoints
+        anims.create({
+            key: 'switchOn',
+            frames: [{key: 'switchYellowOn'}],
+            frameRate: 10,
+        });
 
+        anims.create({
+            key: 'switchOff',
+            frames: [{key: 'switchYellowOff'}],
+            frameRate: 10,
+        });
     }
 
     create(): void {    
@@ -350,6 +362,7 @@ export class MainScene extends Phaser.Scene {
         this.pauseKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         this.moveWaterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
         this.jumpKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.interactKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
 
         this.debugKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F2);
 
@@ -393,6 +406,10 @@ export class MainScene extends Phaser.Scene {
             // debug stuff here    
         }
 
+        if(Phaser.Input.Keyboard.JustDown(this.interactKey)) {
+            this.player.tryInteract();
+        }
+
         if (this.cursors.left.isDown) {
            this.player.moveLeft();
         }
@@ -401,7 +418,7 @@ export class MainScene extends Phaser.Scene {
         }
         else if (this.cursors.down.isDown) {
            this.player.duck();
-        }
+        }        
         else {
             this.player.stand();
         }
@@ -589,6 +606,7 @@ export class MainScene extends Phaser.Scene {
             //player.getScene().sound.play("portalOpenSound");
 
         player.displayInteractTextAndImage(switchItem.x, switchItem.y);
+        player.setAvailableInteraction(switchItem);
     }
 
     enemyTouchingSpringHandler(enemy: Enemy, spring: Spring): void {

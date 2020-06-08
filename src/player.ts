@@ -9,6 +9,7 @@ import { Constants } from "./constants";
 import "phaser";
 import { Scene } from "phaser";
 import { Bullet } from "./bullet";
+import { Switch } from "./gameobjects/switch";
 
 export enum WeaponType {
     Laser1,
@@ -42,6 +43,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     private interactText: Phaser.GameObjects.Text;
     private interactButtonImage: Phaser.GameObjects.Image;
     private activateInteractTime: number;
+    private currentInteractionItem: Switch;
 
     private static get playerJumpVelocityY(): number {return 450;}  
     private static get playerRunVelocityX(): number{return 400;}  
@@ -207,6 +209,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
         this.activateInteractTime = 0;
         this.hideInteractTextAndImage();
+        this.currentInteractionItem = null;
 
         this.currentWeaponType = WeaponType.Laser1;
         this.playerGun = this.scene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, 'playerGun')        
@@ -421,24 +424,49 @@ export class Player extends Phaser.GameObjects.Sprite {
         return offsetY;
     }
 
-    displayInteractTextAndImage(x: number, y: number) {
-        
-
+    alignInteractTextAndImage(x: number, y: number) {
         var text = this.interactText;
         text.setX(x);
         text.setY(y + this.GetTextOffsetY);
-        text.alpha = 1;
 
-        this.interactButtonImage.setX(text.x - text.width * 0.3);
-        this.interactButtonImage.setY(y + this.GetIconOffsetY);    
-        this.interactButtonImage.alpha = 1;
+        var image = this.interactButtonImage;
+        image.setX(text.x - text.width * 0.3);
+        image.setY(y + this.GetIconOffsetY);    
+    }
 
+    displayInteractTextAndImage(x: number, y: number) {
+        
+        this.alignInteractTextAndImage(x, y);
+
+        //this.interactText.alpha = 1;
+        //this.interactButtonImage.alpha = 1;
         this.activateInteractTime = 10;
+
+        if(this.interactText.alpha < 1)
+            this.interactText.alpha += 0.1;
+
+        if(this.interactButtonImage.alpha < 1)
+            this.interactButtonImage.alpha += 0.1;      
     }
 
     hideInteractTextAndImage() {        
-        this.interactButtonImage.alpha = 0;
-        this.interactText.alpha = 0;
+        //this.interactButtonImage.alpha = 0;
+        //this.interactText.alpha = 0;
+
+        if(this.interactText.alpha > 0)
+            this.interactText.alpha -= 0.1;
+        
+        if(this.interactButtonImage.alpha > 0)
+            this.interactButtonImage.alpha -= 0.1;             
+    }
+
+    setAvailableInteraction(switchItem: Switch) {        
+        this.currentInteractionItem = switchItem;
+    }
+
+    tryInteract() {
+        if(this.currentInteractionItem != null)
+            this.currentInteractionItem.toggle();
     }
 
     update(): void {
@@ -454,7 +482,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
         if(this.activateInteractTime > 0)
             this.activateInteractTime--;
-        else if(this.activateInteractTime == 0) {
+        else {// if(this.activateInteractTime == 0) {
             this.hideInteractTextAndImage();
         }
        
@@ -466,5 +494,7 @@ export class Player extends Phaser.GameObjects.Sprite {
             this.playerGun.setFlipX(false);
             this.playerGun.setPosition(this.x + Player.playerGunOffsetXFacingRight, this.y + this.getGunOffsetY());//.setOffset(32, 128);
         }         
+
+        this.currentInteractionItem = null;
     }
 }

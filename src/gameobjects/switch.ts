@@ -15,11 +15,11 @@
  
      private offAnim: string;
      private onAnim: string;
- 
+
+     public transitionTime: number;
 
      constructor(params) {
-         super(params.scene, params.x, params.y, params.key, params.frame);
- 
+         super(params.scene, params.x, params.y, params.key); 
      } 
      
      public getScene(): Scene {
@@ -46,6 +46,7 @@
         this.scene.add.existing(this);
             
         this.activated = false;
+        this.transitionTime = 0;
         //this.anims.play(this.onTileKey, true);
 
         this.turnOff();
@@ -53,15 +54,34 @@
         return;        
      }
  
-    turnOff(): void {  
-        //this.
+    toggle() {
+        if(this.transitionTime == 0) {
+            if(this.activated) {
+                this.turnOff();
+                return;
+            }
+            else {
+                this.turnOn();
+            }
+        }
+    }
+
+    private turnOff(): void {  
+        this.anims.play(this.offAnim, true);
+        this.activated = false;
+        this.transitionTime = 5;
     }
       
-    turnOn(sound): void {
+    private turnOn(): void {
         this.anims.play(this.onAnim, true);
+        this.activated = true;
+        this.transitionTime = 5;
     }
 
-    update(): void {
+    preUpdate(time, delta): void {
+        super.preUpdate(time, delta);
 
+        if(this.transitionTime > 0)
+            this.transitionTime--;
     }
- }
+}
