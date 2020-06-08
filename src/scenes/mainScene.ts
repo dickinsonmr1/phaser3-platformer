@@ -97,6 +97,7 @@ export class MainScene extends Phaser.Scene {
         this.load.audio('noAmmoSound', '/assets/audio/fall3.ogg'); 
         this.load.audio('portalOpenSound', '/assets/audio/phaseJump3.ogg');      
         this.load.audio('portalCloseSound', '/assets/audio/phaserDown3.ogg');      
+        this.load.audio('switchSound', '/assets/audio/switch_001.ogg');      
     }    
 
     private loadSprites(): void {
@@ -650,13 +651,13 @@ export class MainScene extends Phaser.Scene {
                 
         var scene = <MainScene>enemy.getScene();
 
-        var damage = 100;
+        var damage = bullet.damage;
 
         scene.sound.play("enemyHurtSound");
        
         scene.addExpiringText(scene, enemy.x, enemy.y, damage.toString())
 
-        enemy.tryDamage(4);//bullet.damage);
+        enemy.tryDamage(damage);//bullet.damage);
         bullet.destroy();
     }
 

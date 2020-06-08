@@ -78,7 +78,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
         this.hurtTime = 0;
         this.idleTime = 0;
-        this.health = 8;
+        this.health = 100;
         this.springTime = 0;
 
         this.anims.play(this.idleAnim, true);

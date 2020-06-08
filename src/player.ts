@@ -88,6 +88,21 @@ export class Player extends Phaser.GameObjects.Sprite {
                 return "laser4Sound";
         }
     }  
+
+    private get currentWeaponDamage(): number
+    {
+        switch(this.currentWeaponType) {
+            case WeaponType.Laser1:
+                return 50;
+            case WeaponType.Laser2:
+                return 100;
+            case WeaponType.Laser3:
+                return 150;
+            case WeaponType.Laser4:
+                return 500;
+        }
+    }  
+
     private playerBulletOffsetX(): number {
         if(this.flipX)
             return -30;
@@ -363,7 +378,7 @@ export class Player extends Phaser.GameObjects.Sprite {
             y: body.y + this.getBulletOffsetY(),
             key: this.currentWeaponBulletName,
             flipX: this.flipX,
-            damage: 4,
+            damage: this.currentWeaponDamage,
             velocityX: velocityX
         });
         bullet.init();

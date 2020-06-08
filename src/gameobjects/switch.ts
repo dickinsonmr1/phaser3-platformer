@@ -56,6 +56,7 @@
  
     toggle() {
         if(this.transitionTime == 0) {
+            this.scene.sound.play("switchSound");
             if(this.activated) {
                 this.turnOff();
                 return;
