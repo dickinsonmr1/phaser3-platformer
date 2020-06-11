@@ -118,7 +118,7 @@ export class MainScene extends Phaser.Scene {
         //this.load.image('ghost', './assets/sprites/enemies/ghost.png');
         //this.load.image('piranha', './assets/sprites/enemies/piranha.png');
         //this.load.image('sprung', './assets/sprites/objects/sprung64.png');
-        //this.load.image('engineExhaust', './assets/sprites/ships/laserblue3.png');
+        this.load.image('engineExhaust', './assets/sprites/ships/laserblue3.png');
 
         this.load.image('playerGun', './assets/sprites/player/raygunPurpleBig.png');
         this.load.image('playerGunLaser1', './assets/sprites/player/laserPurpleDot15x15.png');
@@ -142,6 +142,8 @@ export class MainScene extends Phaser.Scene {
         //this.load.image('sky', './assets/sample/colored_grass.png');
         this.load.image('world-01-03-sky', './assets/sprites/backgrounds/blue_grass.png');
         this.load.image('world-02-01-sky', './assets/sprites/backgrounds/backgroundCastles.png');        
+
+      
     }
 
     private loadTileMaps(): void {
@@ -392,6 +394,22 @@ export class MainScene extends Phaser.Scene {
         //this.events.emit("infoTextEmitted", "Objective: repair ship");
 
         this.events.emit("infoTextEmitted", "Objective: repair ship");
+
+        /*
+        var particles = this.add.particles('engineExhaust');
+
+        particles.createEmitter({
+            x: this.player.x,
+            y: this.player.y,
+            lifespan: 2000,
+            speed: { min: 400, max: 600 },
+            angle: 330,
+            gravityY: 300,
+            scale: { start: 0.4, end: 0 },
+            quantity: 2,
+            blendMode: 'ADD'
+        });
+        */
     }
 
     update(): void {
@@ -654,6 +672,20 @@ export class MainScene extends Phaser.Scene {
     enemyTouchingSpringHandler(enemy: Enemy, spring: Spring): void {
         spring.tryBounce(enemy.getScene().sound);
         enemy.tryBounce();        
+    }
+
+    spaceshipTouchingEnemyHandler(enemy: Enemy, spaceship: Spaceship): void {
+        var scene = <MainScene>enemy.getScene();
+
+        if(scene.player.isInSpaceship) {
+            var damage = 1000;
+            scene.sound.play("enemyHurtSound");
+           
+            scene.addExpiringText(scene, enemy.x, enemy.y, damage.toString())
+    
+            enemy.tryDamage(damage);//bullet.damage);
+    
+        }
     }
 
     playerTouchingEnemiesHandler(player: Player, enemy: Enemy): void

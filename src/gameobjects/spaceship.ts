@@ -18,6 +18,8 @@
 
      public transitionTime: number;
 
+     private particleEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+
      public static get spaceshipVelocity(): number { return 800; }    
 
      constructor(params) {
@@ -57,6 +59,24 @@
         this.transitionTime = 0;
         this.anims.play(this.unmannedAnim, true);
 
+        var particles = this.scene.add.particles('engineExhaust');
+
+        this.particleEmitter = particles.createEmitter({
+            x: this.x,
+            y: this.y,
+            lifespan: 500,
+            speed: { min: 400, max: 400 },
+            angle: 90,
+            gravityY: 300,
+            scaleX: { start: 1, end: 2 },
+            scaleY: 1,
+            quantity: 1,
+            blendMode: 'ADD',
+            frequency: 100,
+            alpha: {start: 0.8, end: 0.0}
+            //active: false
+        });
+        this.particleEmitter.stop();
         //this.turnOff();
  
         return;        
@@ -82,6 +102,8 @@
         if(this.activated) {
             this.anims.play(this.unmannedAnim, true);
 
+            this.particleEmitter.stop();
+
             var body = <Phaser.Physics.Arcade.Body>this.body;
             body.moves = true;
             body.allowGravity = false;
@@ -96,6 +118,8 @@
     turnOn(): void {
         if(!this.activated  && this.transitionTime == 0) {
 
+            
+
             this.anims.play(this.mannedAnim, true);
             this.activated = true;
             this.scene.sound.play('engineSound');
@@ -103,6 +127,9 @@
             var body = <Phaser.Physics.Arcade.Body>this.body;
             body.moves = true;
             body.allowGravity = false;
+
+            this.particleEmitter.start();
+            this.particleEmitter.setPosition(this.x, this.y);
         }
         
         //this.transitionTime = 5;
@@ -110,6 +137,8 @@
 
     preUpdate(time, delta): void {
         super.preUpdate(time, delta);
+
+        this.particleEmitter.setPosition(this.x, this.y);
 
         if(this.transitionTime > 0)
             this.transitionTime--;

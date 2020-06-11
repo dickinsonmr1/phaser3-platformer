@@ -84,7 +84,7 @@ export class World {
         // non-passable blocks layer
         this.layer02 = this.map.createDynamicLayer('layer02-nonpassable', tileSets, 0, 0);
         this.layer02.alpha = 1.0;
-        this.scene.physics.add.collider(player, this.layer02);
+        this.scene.physics.add.collider(player, this.layer02);        
         this.layer02.setCollisionByExclusion([-1],true);//, Constants.tileLockBlue]);
         this.layer02.setTileIndexCallback(Constants.tileLockBlue, this.scene.unlockDoor, this.scene);
                    
@@ -316,8 +316,14 @@ export class World {
         this.scene.physics.add.overlap(player, this.scene.playerSpaceShip, this.scene.playerTouchingSpaceshipHandler);
         this.scene.physics.add.overlap(this.scene.enemies, this.scene.springs, this.scene.enemyTouchingSpringHandler);
         this.scene.physics.add.collider(this.scene.enemies, this.layer02);
-        this.scene.physics.add.collider(this.scene.enemies, this.scene.enemies, this.scene.enemyTouchingEnemyHandler);
+        this.scene.physics.add.collider(this.scene.enemies, this.scene.enemies, this.scene.enemyTouchingEnemyHandler);        
         
+        if(this.scene.playerSpaceShip != null) {
+            this.scene.physics.add.collider(this.scene.playerSpaceShip, this.layer02);
+            this.scene.physics.add.collider(this.scene.enemies, this.scene.playerSpaceShip, this.scene.spaceshipTouchingEnemyHandler);
+        }
+            
+
         this.layer01.setDepth(1);
         this.layer02.setDepth(2);
         this.scene.springs.forEach(x => x.setDepth(2));
