@@ -10,6 +10,7 @@ import "phaser";
 import { Scene } from "phaser";
 import { Bullet } from "./bullet";
 import { Switch } from "./gameobjects/switch";
+import { Spaceship } from "./gameobjects/spaceship";
 
 export enum WeaponType {
     Laser1,
@@ -146,6 +147,9 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     public hasBlueKey: boolean;
     public isInWater: boolean;
+    public get isInSpaceship(): boolean {
+        return this.currentSpaceship != null;
+    }
     public isDucking: boolean;
     public hurtTime: number;
     public health: number;
@@ -156,6 +160,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     public springTime: number;
 
     public currentWeaponType: WeaponType;
+    public currentSpaceship: Spaceship;
 
     public getScene(): Scene {
         return this.scene;
@@ -203,6 +208,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.lastUsedBulletIndex = 0;
         this.springTime = 0;
         this.isDucking = false;
+        this.currentSpaceship = null;
 
         var text = this.scene.add.text(this.x, this.y - this.GetTextOffsetY, "Interact",
         {
@@ -250,9 +256,10 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     moveLeft(): void {
 
-        var body = <Phaser.Physics.Arcade.Body>this.body;
-        body.setVelocityX(-Player.playerRunVelocityX); // move left
-            
+        if(!this.isInSpaceship) {
+            var body = <Phaser.Physics.Arcade.Body>this.body;
+            body.setVelocityX(-Player.playerRunVelocityX); // move left
+                
             if(this.isInWater) {
                 this.anims.play('player-swim', true);
             }
@@ -266,56 +273,88 @@ export class Player extends Phaser.GameObjects.Sprite {
             }
             
             this.flipX = true; // flip the sprite to the left 
+        }
+        else {
+            var body = <Phaser.Physics.Arcade.Body>this.currentSpaceship.body;
+            body.setVelocityX(-Spaceship.spaceshipVelocity);
+        }
     }
 
     moveRight(): void {
-        var body = <Phaser.Physics.Arcade.Body>this.body;
-        body.setVelocityX(Player.playerRunVelocityX); // move right
+        if(!this.isInSpaceship) {
 
-        if(this.isInWater) {
-            this.anims.play('player-swim', true);
-        }
-        else {
-            if(body.onFloor()) {
-                this.anims.play('player-walk', true);
+            var body = <Phaser.Physics.Arcade.Body>this.body;
+            body.setVelocityX(Player.playerRunVelocityX); // move right
+
+            if(this.isInWater) {
+                this.anims.play('player-swim', true);
             }
             else {
-                this.anims.play('player-jump', true);
+                if(body.onFloor()) {
+                    this.anims.play('player-walk', true);
+                }
+                else {
+                    this.anims.play('player-jump', true);
+                }
             }
-        }
 
-        this.flipX = false; // use the original sprite looking to the right
+            this.flipX = false; // use the original sprite looking to the right
+        }
+        else {
+            var body = <Phaser.Physics.Arcade.Body>this.currentSpaceship.body;
+            body.setVelocityX(Spaceship.spaceshipVelocity);
+        }
     }
 
     duck(): void {
-        var body = <Phaser.Physics.Arcade.Body>this.body;
-        if(body.onFloor())
-        {
-            this.anims.play('player-duck', true);
-            this.isDucking = true;
+        if(!this.isInSpaceship) {
+            var body = <Phaser.Physics.Arcade.Body>this.body;
+            if(body.onFloor())
+            {
+                this.anims.play('player-duck', true);
+                this.isDucking = true;
+            }
+        }
+        else {
+            var body = <Phaser.Physics.Arcade.Body>this.currentSpaceship.body;
+            body.setVelocityY(Spaceship.spaceshipVelocity);
         }
     }
 
     stand(): void {
-        this.isDucking = false;
-        var body = <Phaser.Physics.Arcade.Body>this.body;
-        body.setVelocityX(0);
-        if(body.onFloor())
-        {            
-            this.anims.play('player-idle', true);
+        if(!this.isInSpaceship) {
+            this.isDucking = false;
+            var body = <Phaser.Physics.Arcade.Body>this.body;
+            body.setVelocityX(0);
+            if(body.onFloor())
+            {            
+                this.anims.play('player-idle', true);
+            }
+            else
+            {
+                this.anims.play('player-jump', true);
+            }
         }
-        else
-        {
-            this.anims.play('player-jump', true);
-        }
+        else {
+            var body = <Phaser.Physics.Arcade.Body>this.currentSpaceship.body;
+            body.setVelocityX(0);
+            body.setVelocityY(0);
+        }        
     }
 
     tryJump(sound): void {
-        var body = <Phaser.Physics.Arcade.Body>this.body;
-        if(body.onFloor()) {
-            body.setVelocityY(-Player.playerJumpVelocityY);
-            this.anims.play('player-jump', true);
-            sound.play("jumpSound");
+        if(!this.isInSpaceship) {
+
+            var body = <Phaser.Physics.Arcade.Body>this.body;
+            if(body.onFloor()) {
+                body.setVelocityY(-Player.playerJumpVelocityY);
+                this.anims.play('player-jump', true);
+                sound.play("jumpSound");
+            }
+        }
+        else {
+            var body = <Phaser.Physics.Arcade.Body>this.currentSpaceship.body;
+            body.setVelocityY(-Spaceship.spaceshipVelocity);
         }
     }
 
@@ -326,24 +365,28 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     tryFireBullet(gameTime: number, sound): void {
-        if (gameTime > this.bulletTime) {
+        if(!this.isInSpaceship) {
+            if (gameTime > this.bulletTime) {
 
-            if(this.ammoCount > 0 ) {
-                this.createBullet();
-                this.bulletTime = gameTime + this.bulletTimeInterval;
-                this.ammoCount--;
-                sound.play(this.currentWeaponSoundName);
-                this.scene.events.emit("weaponFired", this.ammoCount);
-
-                //if(this.ammoCount < 3) 
-                    //this.scene.sound.play("lowAmmoSound");            
-
-                if(this.ammoCount == 0) {
-                    this.playerGun.alpha = 0.0;
-                    this.scene.sound.play("noAmmoSound");
-                }
-            }            
-        }
+                if(this.ammoCount > 0 ) {
+                    this.createBullet();
+                    this.bulletTime = gameTime + this.bulletTimeInterval;
+                    this.ammoCount--;
+                    sound.play(this.currentWeaponSoundName);
+                    this.scene.events.emit("weaponFired", this.ammoCount);
+    
+                    //if(this.ammoCount < 3) 
+                        //this.scene.sound.play("lowAmmoSound");            
+    
+                    if(this.ammoCount == 0) {
+                        this.playerGun.alpha = 0.0;
+                        this.scene.sound.play("noAmmoSound");
+                    }
+                }            
+            }
+        } else{
+            // TODO: add spaceship specific weapon
+        }       
     }
 
     tryBounce() {
@@ -360,6 +403,36 @@ export class Player extends Phaser.GameObjects.Sprite {
                 this.springTime = gameTime + 1000;
             //}        
         //}
+    }
+
+    tryEnterSpaceship(spaceship: Spaceship) {
+        if(!this.isInSpaceship && spaceship.transitionTime == 0) {
+
+            var gameTime = this.scene.game.loop.time;
+            var body = <Phaser.Physics.Arcade.Body>this.body;
+    
+            this.currentSpaceship = spaceship;
+
+            this.visible = false;
+            this.playerGun.visible = false;
+            body.x = this.currentSpaceship.x;
+            body.y = this.currentSpaceship.y;
+        }        
+    }
+
+    tryExitSpaceship(spaceship: Spaceship) {
+
+        if(this.currentSpaceship != null) {
+            
+            this.currentSpaceship.turnOff();
+
+            this.currentSpaceship = null;
+
+            this.visible = true;
+            this.playerGun.visible = true;
+
+            this.tryJump(this.scene.sound);
+        }
     }
 
     private createBullet() : void {
@@ -485,6 +558,13 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     update(): void {
+
+        if(this.isInSpaceship) {
+
+            var body = <Phaser.Physics.Arcade.Body>this.body;
+            body.x = this.currentSpaceship.x;
+            body.y = this.currentSpaceship.y;
+        }
 
         this.isInWater = false;
         if(this.hurtTime > 0) {

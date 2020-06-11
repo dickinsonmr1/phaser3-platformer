@@ -18,6 +18,8 @@
 
      public transitionTime: number;
 
+     public static get spaceshipVelocity(): number { return 800; }    
+
      constructor(params) {
          super(params.scene, params.x, params.y, params.key); 
      } 
@@ -45,6 +47,7 @@
         //body.setSize(93, 68);     
         body.setSize(124, 90);     
         body.moves = false;
+        body.allowGravity = true;
         
         this.setScale(0.75, 0.75);
 
@@ -75,17 +78,31 @@
     */
 
     turnOff(): void {  
-        this.anims.play(this.unmannedAnim, true);
-        //this.activated = false;
-        //this.transitionTime = 5;
+
+        if(this.activated) {
+            this.anims.play(this.unmannedAnim, true);
+
+            var body = <Phaser.Physics.Arcade.Body>this.body;
+            body.moves = true;
+            body.allowGravity = false;
+            
+            body.setVelocity(0, 0);
+
+            this.activated = false;
+            this.transitionTime = 30;
+        }        
     }
       
     turnOn(): void {
-        if(!this.activated) {
+        if(!this.activated  && this.transitionTime == 0) {
 
             this.anims.play(this.mannedAnim, true);
             this.activated = true;
             this.scene.sound.play('engineSound');
+
+            var body = <Phaser.Physics.Arcade.Body>this.body;
+            body.moves = true;
+            body.allowGravity = false;
         }
         
         //this.transitionTime = 5;

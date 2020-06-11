@@ -33,7 +33,7 @@ export class MainScene extends Phaser.Scene {
     
     // player stuff
     player: Player; //Phaser.Physics.Arcade.Sprite; 
-    playerSpaceShip: Phaser.GameObjects.Sprite;
+    playerSpaceShip: Spaceship;
 
     //playerBox: PlayerBox;
 
@@ -398,18 +398,17 @@ export class MainScene extends Phaser.Scene {
 
         this.world.updateSky(this.cameras.main);
 
-        if(this.shootKey.isDown) {
-            this.player.tryFireBullet(this.sys.game.loop.time, this.sound);
+        if(Phaser.Input.Keyboard.JustDown(this.pauseKey)) {
+            this.input.keyboard.resetKeys();
+
+            this.scene.pause('MainScene');            
+            this.scene.pause('HudScene');
+            this.scene.setVisible(false, "HudScene");
+
+            this.scene.run("PauseScene");
+            this.scene.bringToTop("PauseScene")
         }
-
-        if(this.shootKey2.isDown) {
-            this.events.emit("playerHurt");
-        }
-
-        //if(Phaser.Input.Keyboard.JustDown(this.debugKey) {
-            //this.physics.config.Arcade.debug = false;
-        //}
-
+             
         if(this.zoomInKey.isDown) {
             this.cameras.main.zoom -= 0.01;
         }
@@ -425,33 +424,61 @@ export class MainScene extends Phaser.Scene {
             this.player.tryInteract();
         }
 
-        if (this.cursors.left.isDown) {
-           this.player.moveLeft();
+        if(!this.player.isInSpaceship) {
+            if (this.cursors.left.isDown) {
+                this.player.moveLeft();
+            }
+            else if (this.cursors.right.isDown) {
+                this.player.moveRight();
+            }
+            else if (this.cursors.down.isDown) {
+                this.player.duck();
+            }        
+            else {
+                this.player.stand();
+            }
+                
+            if ((this.jumpKey.isDown || this.cursors.up.isDown))
+            {
+                this.player.tryJump(this.sound);
+            }     
         }
-        else if (this.cursors.right.isDown) {
-           this.player.moveRight();
-        }
-        else if (this.cursors.down.isDown) {
-           this.player.duck();
-        }        
         else {
-            this.player.stand();
+            if (this.cursors.left.isDown) {
+                this.player.moveLeft();
+            }
+            else if (this.cursors.right.isDown) {
+                this.player.moveRight();
+            }
+            else {
+                var body = <Phaser.Physics.Arcade.Body>this.player.currentSpaceship.body;
+                body.setVelocityX(0);
+            }
+
+            if (this.cursors.down.isDown) {
+                this.player.duck();
+            }        
+            else if (this.cursors.up.isDown)
+            {
+                this.player.tryJump(this.sound);
+            }     
+            else {
+                var body = <Phaser.Physics.Arcade.Body>this.player.currentSpaceship.body;
+                body.setVelocityY(0);
+            }                            
         }
-        if(Phaser.Input.Keyboard.JustDown(this.pauseKey)) {
-            this.input.keyboard.resetKeys();
 
-            this.scene.pause('MainScene');            
-            this.scene.pause('HudScene');
-            this.scene.setVisible(false, "HudScene");
-
-            this.scene.run("PauseScene");
-            this.scene.bringToTop("PauseScene")
+        if(this.shootKey.isDown) {
+            this.player.tryFireBullet(this.sys.game.loop.time, this.sound);
         }
 
-        if ((this.jumpKey.isDown || this.cursors.up.isDown))
-        {
-            this.player.tryJump(this.sound);
-        }      
+        if(this.shootKey2.isDown) {
+            this.player.tryExitSpaceship(this.playerSpaceShip);
+        }
+
+        //if(Phaser.Input.Keyboard.JustDown(this.debugKey) {
+            //this.physics.config.Arcade.debug = false;
+        //}
 
         this.player.update();
         this.updateExpiringText();
@@ -639,6 +666,7 @@ export class MainScene extends Phaser.Scene {
     {
         //console.log(this);
         spaceship.turnOn();
+        player.tryEnterSpaceship(spaceship);
     }
 
     enemyTouchingEnemyHandler(enemy1: Enemy, enemy2: Enemy): void {
