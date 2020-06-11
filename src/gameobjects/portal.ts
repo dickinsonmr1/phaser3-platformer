@@ -87,8 +87,7 @@
         this.buttonX = this.scene.add.image(this.x, this.y - this.GetIconOffsetY, 'buttonX');
 
         this.activated = false;
-
-        this.deactivate(); 
+        this.activationTime = 0;
 
         return;        
      }

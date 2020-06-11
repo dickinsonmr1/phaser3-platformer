@@ -27,6 +27,7 @@ export class Constants {
     public static get playerYellowSpawnTile(): number { return 3035; }
     public static get playerTanSpawnTile(): number { return 3006; }
     public static get playerGreenSpawnTile(): number { return 2897; }
+    public static get playerSpaceShipSpawnTile(): number { return 3000; }
 
     public static get portalBlueTile(): number { return 671; }
     public static get portalRedTile(): number { return 716; }

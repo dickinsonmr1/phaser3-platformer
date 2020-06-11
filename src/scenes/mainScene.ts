@@ -19,6 +19,7 @@ import { Bullet } from "../bullet";
 import { World } from "../world/world";
 import { ExpiringText } from "../gameobjects/expiringText";
 import { Switch } from "../gameobjects/switch";
+import { Spaceship } from "../gameobjects/spaceship";
 
 export class MainScene extends Phaser.Scene {
   
@@ -33,6 +34,7 @@ export class MainScene extends Phaser.Scene {
     // player stuff
     player: Player; //Phaser.Physics.Arcade.Sprite; 
     playerSpaceShip: Phaser.GameObjects.Sprite;
+
     //playerBox: PlayerBox;
 
     enemies: Array<Phaser.GameObjects.Sprite>;
@@ -98,6 +100,7 @@ export class MainScene extends Phaser.Scene {
         this.load.audio('portalOpenSound', '/assets/audio/phaseJump3.ogg');      
         this.load.audio('portalCloseSound', '/assets/audio/phaserDown3.ogg');      
         this.load.audio('switchSound', '/assets/audio/switch_001.ogg');      
+        this.load.audio('engineSound', '/assets/audio/engine5.ogg');      
     }    
 
     private loadSprites(): void {
@@ -195,6 +198,17 @@ export class MainScene extends Phaser.Scene {
             frameRate: 10,
         });
 
+        // player spaceship
+        anims.create({
+            key: 'spaceshipBlue',
+            frames: [{key: 'alienShipSprites', frame: 'shipBlue.png'}],
+            frameRate: 10,
+        });   
+        anims.create({
+            key: 'spaceshipBlue_manned',
+            frames: [{key: 'alienShipSprites', frame: 'shipBlue_manned.png'}],
+            frameRate: 10,
+        });    
 
         // enemies
         anims.create({
@@ -202,7 +216,7 @@ export class MainScene extends Phaser.Scene {
             frames: [{key: 'enemySprites2', frame: 'enemyWalking_1.png', }],
             frameRate: 10,
         });
-        
+
         anims.create({
             key: 'enemy01-Walk',
             frames:
@@ -617,8 +631,14 @@ export class MainScene extends Phaser.Scene {
 
     playerTouchingEnemiesHandler(player: Player, enemy: Enemy): void
     {
-        console.log(this);
+        //console.log(this);
         player.tryDamage();
+    }
+
+    playerTouchingSpaceshipHandler(player: Player, spaceship: Spaceship): void
+    {
+        //console.log(this);
+        spaceship.turnOn();
     }
 
     enemyTouchingEnemyHandler(enemy1: Enemy, enemy2: Enemy): void {

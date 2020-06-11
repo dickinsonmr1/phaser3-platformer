@@ -10,6 +10,7 @@ import { Spring } from "../gameobjects/spring";
 import { Portal } from "../gameobjects/portal";
 import { Checkpoint } from "../gameobjects/checkpoint";
 import { Switch } from "../gameobjects/switch";
+import { Spaceship } from "../gameobjects/spaceship";
 
 export class World {
     map: Phaser.Tilemaps.Tilemap;
@@ -119,7 +120,7 @@ export class World {
                 const y = tile.getCenterY();                
                
                 player.x = x;
-                player.y = y;
+                player.y = y - 100;
 
                 //this.layer06.removeTileAt(tile.x, tile.y);
             }
@@ -133,6 +134,22 @@ export class World {
                 player.y = y;
 
                 //this.layer06.removeTileAt(tile.x, tile.y);
+            }
+            else if(tile.index == Constants.playerSpaceShipSpawnTile)
+            {
+                const x = tile.getCenterX();
+                const y = tile.getCenterY();
+               
+                var spaceship = new Spaceship({
+                    scene: this.scene,
+                    x: x,
+                    y: y,
+                    key: "spaceshipBlue"
+                    });        
+                    spaceship.init("spaceshipBlue", "spaceshipBlue_manned");
+                this.scene.playerSpaceShip = spaceship;
+
+                this.layer03.removeTileAt(tile.x, tile.y);
             }
             else if(tile.index == Constants.tileKeySpring)
             {
@@ -296,6 +313,7 @@ export class World {
         this.scene.physics.add.overlap(player, this.scene.flags, this.scene.playerTouchingCheckpointHandler);
         this.scene.physics.add.overlap(player, this.scene.portals, this.scene.playerTouchingPortalHandler);
         this.scene.physics.add.overlap(player, this.scene.switches, this.scene.playerTouchingSwitchHandler);
+        this.scene.physics.add.overlap(player, this.scene.playerSpaceShip, this.scene.playerTouchingSpaceshipHandler);
         this.scene.physics.add.overlap(this.scene.enemies, this.scene.springs, this.scene.enemyTouchingSpringHandler);
         this.scene.physics.add.collider(this.scene.enemies, this.layer02);
         this.scene.physics.add.collider(this.scene.enemies, this.scene.enemies, this.scene.enemyTouchingEnemyHandler);
@@ -305,11 +323,11 @@ export class World {
         this.scene.springs.forEach(x => x.setDepth(2));
         this.scene.portals.forEach(x => x.setDepth(2));        
 
-        player.setDepth(3)
+        player.setDepth(3);
         this.scene.enemies.forEach(x => x.setDepth(3));
-        player.playerGun.setDepth(4)       
-        
-                
+        player.playerGun.setDepth(4);
+        this.scene.playerSpaceShip.setDepth(3);
+                        
         this.layer03.setDepth(4);
         this.layer04.setDepth(5);
         this.layer05.setDepth(6);
