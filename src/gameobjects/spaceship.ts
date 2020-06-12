@@ -19,8 +19,9 @@
      public transitionTime: number;
 
      private particleEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+     private get emitterOffsetY(): number {return 30;}
 
-     public static get spaceshipVelocity(): number { return 800; }    
+     public static get spaceshipVelocity(): number { return 600; }    
 
      constructor(params) {
          super(params.scene, params.x, params.y, params.key); 
@@ -60,6 +61,7 @@
         this.anims.play(this.unmannedAnim, true);
 
         var particles = this.scene.add.particles('engineExhaust');
+        particles.setDepth(4);
 
         this.particleEmitter = particles.createEmitter({
             x: this.x,
@@ -69,7 +71,7 @@
             angle: 90,
             gravityY: 300,
             scaleX: { start: 1, end: 2 },
-            scaleY: 1,
+            scaleY: 0.5,
             quantity: 1,
             blendMode: 'ADD',
             frequency: 100,
@@ -103,6 +105,7 @@
             this.anims.play(this.unmannedAnim, true);
 
             this.particleEmitter.stop();
+            this.scene.sound.stopByKey('engineSound')
 
             var body = <Phaser.Physics.Arcade.Body>this.body;
             body.moves = true;
@@ -117,19 +120,17 @@
       
     turnOn(): void {
         if(!this.activated  && this.transitionTime == 0) {
-
             
-
             this.anims.play(this.mannedAnim, true);
             this.activated = true;
-            this.scene.sound.play('engineSound');
+            this.scene.sound.play('engineSound', { volume: 0.5, loop: true });
 
             var body = <Phaser.Physics.Arcade.Body>this.body;
             body.moves = true;
             body.allowGravity = false;
 
             this.particleEmitter.start();
-            this.particleEmitter.setPosition(this.x, this.y);
+            this.particleEmitter.setPosition(this.x, this.y + this.emitterOffsetY);
         }
         
         //this.transitionTime = 5;
@@ -138,7 +139,7 @@
     preUpdate(time, delta): void {
         super.preUpdate(time, delta);
 
-        this.particleEmitter.setPosition(this.x, this.y);
+        this.particleEmitter.setPosition(this.x, this.y + this.emitterOffsetY);
 
         if(this.transitionTime > 0)
             this.transitionTime--;

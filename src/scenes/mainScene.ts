@@ -658,6 +658,10 @@ export class MainScene extends Phaser.Scene {
             player.getScene().sound.play("portalOpenSound");
 
         portal.activate();
+
+        player.setAvailableInteraction(portal);
+        player.displayInteractTextAndImage(portal.x, portal.y);
+
     }
 
     playerTouchingSwitchHandler(player: Player, switchItem: Switch): void {        
@@ -665,8 +669,9 @@ export class MainScene extends Phaser.Scene {
         //if(switchItem.activationTime == 0)
             //player.getScene().sound.play("portalOpenSound");
 
-        player.displayInteractTextAndImage(switchItem.x, switchItem.y);
+        
         player.setAvailableInteraction(switchItem);
+        player.displayInteractTextAndImage(switchItem.x, switchItem.y);
     }
 
     enemyTouchingSpringHandler(enemy: Enemy, spring: Spring): void {
@@ -697,8 +702,13 @@ export class MainScene extends Phaser.Scene {
     playerTouchingSpaceshipHandler(player: Player, spaceship: Spaceship): void
     {
         //console.log(this);
-        spaceship.turnOn();
-        player.tryEnterSpaceship(spaceship);
+        //spaceship.turnOn();
+        //player.tryEnterSpaceship(spaceship);
+        
+        if(!player.isInSpaceship) {
+            player.displayInteractTextAndImage(spaceship.x, spaceship.y);
+            player.setAvailableInteraction(spaceship);
+        }        
     }
 
     enemyTouchingEnemyHandler(enemy1: Enemy, enemy2: Enemy): void {

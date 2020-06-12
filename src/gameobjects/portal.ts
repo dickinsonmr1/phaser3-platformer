@@ -23,7 +23,7 @@
 
      buttonX: Phaser.GameObjects.Image;
 
-     private get GetTextOffsetY(): number { return 110; }
+     private get GetTextOffsetY(): number { return 175; }
      private get GetIconOffsetY(): number { return 150; }
  
      public idleTime: number;
@@ -74,7 +74,7 @@
         var text = this.scene.add.text(this.x, this.y - this.GetTextOffsetY, this.destinationName,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: 24,
+            fontSize: 32,
             align: 'center',            
             color:"rgb(255,255,255)",
         });
@@ -84,7 +84,7 @@
         text.setStroke('rgb(0,0,0)', 4);        
 
         this.portalText = text;
-        this.buttonX = this.scene.add.image(this.x, this.y - this.GetIconOffsetY, 'buttonX');
+        //this.buttonX = this.scene.add.image(this.x, this.y - this.GetIconOffsetY, 'buttonX');
 
         this.activated = false;
         this.activationTime = 0;
@@ -119,8 +119,8 @@
             this.scale += 0.1;
 
 
-        if(this.buttonX.alpha < 1)
-            this.buttonX.alpha += 0.1;
+        //if(this.buttonX.alpha < 1)
+            //this.buttonX.alpha += 0.1;
     
         if(this.portalText.alpha < 1)
             this.portalText.alpha += 0.1;      
@@ -153,8 +153,8 @@
             if(this.scale > 1.0)
                 this.scale -= 0.1;
 
-            if(this.buttonX.alpha > 0)
-                this.buttonX.alpha -= 0.1;
+            //if(this.buttonX.alpha > 0)
+                //this.buttonX.alpha -= 0.1;
             
             if(this.portalText.alpha > 0)
                 this.portalText.alpha -= 0.1;                

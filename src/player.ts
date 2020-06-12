@@ -11,6 +11,7 @@ import { Scene } from "phaser";
 import { Bullet } from "./bullet";
 import { Switch } from "./gameobjects/switch";
 import { Spaceship } from "./gameobjects/spaceship";
+import { Portal } from "./gameobjects/portal";
 
 export enum WeaponType {
     Laser1,
@@ -35,6 +36,8 @@ export class Player extends Phaser.GameObjects.Sprite {
     private static get playerGunOffsetXFacingLeft(): number {return -5;}
     private static get playerGunOffsetY(): number {return 100;}
     private static get playerGunOffsetXFacingRight(): number {return 70;}  
+    private static get playerOffsetXInSpaceship(): number {return -32;}  
+    private static get playerOffsetYInSpaceship(): number {return -100;}  
 
     private get GetTextOffsetY(): number { return -100; }
     
@@ -44,7 +47,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     private interactText: Phaser.GameObjects.Text;
     private interactButtonImage: Phaser.GameObjects.Image;
     private activateInteractTime: number;
-    private currentInteractionItem: Switch;
+    private currentInteractionItem: Phaser.GameObjects.Sprite;
 
     private static get playerJumpVelocityY(): number {return 450;}  
     private static get playerRunVelocityX(): number{return 400;}  
@@ -415,8 +418,8 @@ export class Player extends Phaser.GameObjects.Sprite {
 
             this.visible = false;
             this.playerGun.visible = false;
-            body.x = this.currentSpaceship.x;
-            body.y = this.currentSpaceship.y;
+            body.x = this.currentSpaceship.x + Player.playerOffsetXInSpaceship;
+            body.y = this.currentSpaceship.y + Player.playerOffsetYInSpaceship;
         }        
     }
 
@@ -431,9 +434,17 @@ export class Player extends Phaser.GameObjects.Sprite {
             this.visible = true;
             this.playerGun.visible = true;
 
-            this.tryJump(this.scene.sound);
+            this.exitSpaceship(this.scene.sound);
         }
     }
+
+    private exitSpaceship(sound): void {
+        var body = <Phaser.Physics.Arcade.Body>this.body;
+        body.setVelocityY(-Player.playerJumpVelocityY);
+        this.anims.play('player-jump', true);
+        sound.play("jumpSound");
+    }
+
 
     private createBullet() : void {
 
@@ -548,13 +559,34 @@ export class Player extends Phaser.GameObjects.Sprite {
             this.interactButtonImage.alpha -= 0.1;             
     }
 
-    setAvailableInteraction(switchItem: Switch) {        
-        this.currentInteractionItem = switchItem;
+    setAvailableInteraction(item: Phaser.GameObjects.Sprite) {        
+        this.currentInteractionItem = item;
     }
 
     tryInteract() {
-        if(this.currentInteractionItem != null)
-            this.currentInteractionItem.toggle();
+        if(this.currentInteractionItem != null) {
+
+            if (this.currentInteractionItem instanceof Switch) {
+
+                let item = <Switch>this.currentInteractionItem;
+                item.toggle();
+                // do something
+            }
+            if (this.currentInteractionItem instanceof Spaceship) {
+
+                let item = <Spaceship>this.currentInteractionItem;
+                item.turnOn();
+                this.tryEnterSpaceship(this.currentInteractionItem)
+                this.hideInteractTextAndImage();
+                // do something
+            }
+            if (this.currentInteractionItem instanceof Portal) {
+
+                let item = <Portal>this.currentInteractionItem;
+                //item.activate();
+                // do something
+            }
+        }            
     }
 
     update(): void {
@@ -562,8 +594,8 @@ export class Player extends Phaser.GameObjects.Sprite {
         if(this.isInSpaceship) {
 
             var body = <Phaser.Physics.Arcade.Body>this.body;
-            body.x = this.currentSpaceship.x;
-            body.y = this.currentSpaceship.y;
+            body.x = this.currentSpaceship.x + Player.playerOffsetXInSpaceship;
+            body.y = this.currentSpaceship.y + Player.playerOffsetYInSpaceship;
         }
 
         this.isInWater = false;
