@@ -16,9 +16,6 @@
 
      public destinationName: string;
  
-     private idleAnim: string;
-     private waveAnim: string;
-
      private portalText: Phaser.GameObjects.Text;
 
      buttonX: Phaser.GameObjects.Image;
@@ -40,10 +37,8 @@
          return this.scene;
      }
  
-     public init(idleAnim: string, waveAnim: string, destinationName: string, tileX: number, tileY: number): void {
+     public init(destinationName: string, tileX: number, tileY: number): void {
          
-        this.idleAnim = idleAnim;
-        this.waveAnim = waveAnim;
         this.destinationName = destinationName;
         this.tileX = tileX;
         this.tileY = tileY;
@@ -67,10 +62,7 @@
         this.setScale(2.0, 2.0);
 
         this.scene.add.existing(this);
-            
-        //this.activated = false;
-        //this.anims.play(this.idleAnim, true);
- 
+             
         var text = this.scene.add.text(this.x, this.y - this.GetTextOffsetY, this.destinationName,
         {
             fontFamily: 'KenneyRocketSquare',
@@ -91,26 +83,12 @@
 
         return;        
      }
- 
-    /*
-    idle(): void {  
-        if(this.scene != undefined) {       
-            this.anims.play(this.idleAnim, true);
-        }
-    }
-      
-    activate(sound): void {
-        if(!this.activated) {
-            this.activated = true;
-            this.activationTime = 60;
-            if(this.scene != undefined) {
-                this.anims.play(this.waveAnim, true);
-            }
-        }        
-    }
-    */
-
+   
     activate(): void {
+
+        if(this.activationTime == 0)
+            this.getScene().sound.play("portalOpenSound", { volume: 0.5 });
+
         this.activationTime = 10;
         //this.buttonX.setAlpha(1.0);
         //this.portalText.setAlpha(1.0);
@@ -131,12 +109,11 @@
         //this.buttonX.setAlpha(0.0);
         //this.portalText.setAlpha(0.0);
 
-        this.getScene().sound.play("portalCloseSound");
+        this.getScene().sound.play("portalCloseSound", { volume: 0.5 });
     }
 
     preUpdate(time, delta): void {
         super.preUpdate(time, delta);
-
 
         if(this.activationTime > 0) {
                

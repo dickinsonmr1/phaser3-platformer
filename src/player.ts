@@ -361,6 +361,13 @@ export class Player extends Phaser.GameObjects.Sprite {
         }
     }
 
+    tryMoveUp(): void {
+        if(this.isInSpaceship) {
+            var body = <Phaser.Physics.Arcade.Body>this.currentSpaceship.body;
+            body.setVelocityY(-Spaceship.spaceshipVelocity);
+        }
+    }
+
     reload(ammoCount: number, weaponType: WeaponType) {
         this.ammoCount = ammoCount;
         this.currentWeaponType = weaponType;

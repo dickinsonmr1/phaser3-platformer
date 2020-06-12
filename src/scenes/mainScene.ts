@@ -32,10 +32,8 @@ export class MainScene extends Phaser.Scene {
     selectedPlayerIndex = 0;
     
     // player stuff
-    player: Player; //Phaser.Physics.Arcade.Sprite; 
+    player: Player;
     playerSpaceShip: Spaceship;
-
-    //playerBox: PlayerBox;
 
     enemies: Array<Phaser.GameObjects.Sprite>;
     enemiesPhysics: Array<Phaser.GameObjects.Sprite>;
@@ -56,8 +54,6 @@ export class MainScene extends Phaser.Scene {
     jumpKey: Phaser.Input.Keyboard.Key;
     interactKey: Phaser.Input.Keyboard.Key;
     debugKey: Phaser.Input.Keyboard.Key;
-
-    //playerBullets: Phaser.GameObjects.Group;
 
     worldName: string;
 
@@ -114,10 +110,6 @@ export class MainScene extends Phaser.Scene {
         this.load.atlasXML('alienShipSprites', './assets/sprites/ships/spritesheet_spaceships.png', './assets/sprites/ships/spritesheet_spaceships.xml');
         this.load.atlasXML('alienShipLaserSprites', './assets/sprites/ships/spritesheet_lasers.png', './assets/sprites/ships/spritesheet_lasers.xml');
 
-        // initial placeholders for animated objects
-        //this.load.image('ghost', './assets/sprites/enemies/ghost.png');
-        //this.load.image('piranha', './assets/sprites/enemies/piranha.png');
-        //this.load.image('sprung', './assets/sprites/objects/sprung64.png');
         this.load.image('engineExhaust', './assets/sprites/ships/laserblue3.png');
 
         this.load.image('playerGun', './assets/sprites/player/raygunPurpleBig.png');
@@ -138,31 +130,15 @@ export class MainScene extends Phaser.Scene {
 
         this.load.image('buttonX', './assets/sprites/hud/buttonX.png');
 
-        //this.load.image('logo', './assets/sample/phaser.png');
-        //this.load.image('sky', './assets/sample/colored_grass.png');
         this.load.image('world-01-03-sky', './assets/sprites/backgrounds/blue_grass.png');
-        this.load.image('world-02-01-sky', './assets/sprites/backgrounds/backgroundCastles.png');        
-
-      
+        this.load.image('world-02-01-sky', './assets/sprites/backgrounds/backgroundCastles.png');              
     }
 
     private loadTileMaps(): void {
-        // tilemap for level building
-        //this.load.tilemapTiledJSON('level1', './assets/tilemaps/maps/world-00-overworld.json');
-        //this.load.tilemapTiledJSON('world-01-03', './assets/tilemaps/maps/world-01-03.json');
         this.load.tilemapTiledJSON(this.worldName, './assets/tilemaps/maps/' + this.worldName + '.json');
 
         this.load.image('completeTiles', './assets/tilemaps/tiles/complete_64x64.png');
         this.load.image('compiledTiles', './assets/tilemaps/tiles/compiled_64x64.png');
-        /*
-        this.load.image('abstractTiles', './assets/tilemaps/tiles/abstract_64x64.png');
-        this.load.image('groundTiles', './assets/tilemaps/tiles/ground_64x64.png');
-        this.load.image('industrialTiles', './assets/tilemaps/tiles/industrial_64x64.png');
-        this.load.image('itemsTiles', './assets/tilemaps/tiles/items_64x64.png');
-        this.load.image('objectstiles', './assets/tilemaps/tiles/objects_64x64.png');
-        this.load.image('requestsTiles', './assets/tilemaps/tiles/requests_64x64.png');
-        this.load.image('simplifiedTiles', './assets/tilemaps/tiles/simplified_64x64.png');
-        */
     }
 
     private createAnims(anims) {
@@ -212,13 +188,14 @@ export class MainScene extends Phaser.Scene {
             frameRate: 10,
         });    
 
-        // enemies
+        ////////////////////////////////////////////////////////////////
+        // enemy 1
+        ////////////////////////////////////////////////////////////////
         anims.create({
             key: 'enemy01-Idle',
             frames: [{key: 'enemySprites2', frame: 'enemyWalking_1.png', }],
             frameRate: 10,
         });
-
         anims.create({
             key: 'enemy01-Walk',
             frames:
@@ -239,8 +216,9 @@ export class MainScene extends Phaser.Scene {
             frameRate: 10,
         });
 
-
-        // enemies
+        ////////////////////////////////////////////////////////////////
+        // enemy 2
+        ////////////////////////////////////////////////////////////////
         anims.create({
             key: 'enemy02-Idle',
             frames: [{key: 'completeSprites', frame: 'slimeBlue.png', }],
@@ -262,7 +240,9 @@ export class MainScene extends Phaser.Scene {
             frameRate: 10,
         });
 
-        // enemies
+        ////////////////////////////////////////////////////////////////
+        // enemy 3
+        ////////////////////////////////////////////////////////////////
         anims.create({
             key: 'enemy03-Idle',
             frames: [{key: 'enemySprites3', frame: 'playerRed_stand.png', }],
@@ -326,7 +306,7 @@ export class MainScene extends Phaser.Scene {
             repeat: -1
         });
 
-        // checkpoints
+        // switches
         anims.create({
             key: 'switchOn',
             frames: [{key: 'switchYellowOn'}],
@@ -346,7 +326,7 @@ export class MainScene extends Phaser.Scene {
         this.skySprite = this.add.tileSprite(0, 0, 20480, 2048, 'world-02-01-sky');            
         
         this.enemies = new Array<Phaser.GameObjects.Sprite>();
-        this.enemiesPhysics = Array<Phaser.GameObjects.Sprite>();  // removed 324
+        this.enemiesPhysics = Array<Phaser.GameObjects.Sprite>();
         this.enemiesNonGravity = Array<Phaser.GameObjects.Sprite>();
 
         this.expiringMessagesGroup = this.physics.add.group({
@@ -394,22 +374,6 @@ export class MainScene extends Phaser.Scene {
         //this.events.emit("infoTextEmitted", "Objective: repair ship");
 
         this.events.emit("infoTextEmitted", "Objective: repair ship");
-
-        /*
-        var particles = this.add.particles('engineExhaust');
-
-        particles.createEmitter({
-            x: this.player.x,
-            y: this.player.y,
-            lifespan: 2000,
-            speed: { min: 400, max: 600 },
-            angle: 330,
-            gravityY: 300,
-            scale: { start: 0.4, end: 0 },
-            quantity: 2,
-            blendMode: 'ADD'
-        });
-        */
     }
 
     update(): void {
@@ -422,6 +386,7 @@ export class MainScene extends Phaser.Scene {
             this.scene.pause('MainScene');            
             this.scene.pause('HudScene');
             this.scene.setVisible(false, "HudScene");
+            this.sound.pauseAll();
 
             this.scene.run("PauseScene");
             this.scene.bringToTop("PauseScene")
@@ -478,22 +443,22 @@ export class MainScene extends Phaser.Scene {
             }        
             else if (this.cursors.up.isDown)
             {
-                this.player.tryJump(this.sound);
+                this.player.tryMoveUp();
             }     
             else {
                 var body = <Phaser.Physics.Arcade.Body>this.player.currentSpaceship.body;
                 body.setVelocityY(0);
-            }                            
+            }           
+            
+            if(this.jumpKey.isDown || this.shootKey2.isDown) {
+                this.player.tryExitSpaceship(this.playerSpaceShip);
+            }    
         }
 
         if(this.shootKey.isDown) {
             this.player.tryFireBullet(this.sys.game.loop.time, this.sound);
         }
-
-        if(this.shootKey2.isDown) {
-            this.player.tryExitSpaceship(this.playerSpaceShip);
-        }
-
+ 
         //if(Phaser.Input.Keyboard.JustDown(this.debugKey) {
             //this.physics.config.Arcade.debug = false;
         //}
@@ -545,7 +510,7 @@ export class MainScene extends Phaser.Scene {
     collectWeapon1 (sprite, tile): boolean
     {
         this.world.collectGem(tile.x, tile.y);
-        this.sound.play("batterySound");
+        this.sound.play("batterySound", { volume: 0.5 });
 
         var newAmmoCount = 10;
         this.player.reload(newAmmoCount, WeaponType.Laser1);
@@ -559,7 +524,7 @@ export class MainScene extends Phaser.Scene {
     collectWeapon2 (sprite, tile): boolean
     {
         this.world.collectGem(tile.x, tile.y);
-        this.sound.play("batterySound");
+        this.sound.play("batterySound", { volume: 0.5 });
 
         var newAmmoCount = 10;
         this.player.reload(newAmmoCount, WeaponType.Laser2);
@@ -573,7 +538,7 @@ export class MainScene extends Phaser.Scene {
     collectWeapon3 (sprite, tile): boolean
     {
         this.world.collectGem(tile.x, tile.y);
-        this.sound.play("batterySound");
+        this.sound.play("batterySound", { volume: 0.5 });
 
         var newAmmoCount = 15;
         this.player.reload(newAmmoCount, WeaponType.Laser3);
@@ -587,7 +552,7 @@ export class MainScene extends Phaser.Scene {
     collectWeapon4 (sprite, tile): boolean
     {
         this.world.collectGem(tile.x, tile.y);
-        this.sound.play("batterySound");
+        this.sound.play("batterySound", { volume: 0.5 });
 
         var newAmmoCount = 15;
         this.player.reload(newAmmoCount, WeaponType.Laser4);
@@ -652,11 +617,7 @@ export class MainScene extends Phaser.Scene {
         //player.tryBounce();       
     }
 
-    playerTouchingPortalHandler(player: Player, portal: Portal): void {        
-                
-        if(portal.activationTime == 0)
-            player.getScene().sound.play("portalOpenSound");
-
+    playerTouchingPortalHandler(player: Player, portal: Portal): void {                        
         portal.activate();
 
         player.setAvailableInteraction(portal);
@@ -666,10 +627,6 @@ export class MainScene extends Phaser.Scene {
 
     playerTouchingSwitchHandler(player: Player, switchItem: Switch): void {        
                 
-        //if(switchItem.activationTime == 0)
-            //player.getScene().sound.play("portalOpenSound");
-
-        
         player.setAvailableInteraction(switchItem);
         player.displayInteractTextAndImage(switchItem.x, switchItem.y);
     }
@@ -688,23 +645,17 @@ export class MainScene extends Phaser.Scene {
            
             scene.addExpiringText(scene, enemy.x, enemy.y, damage.toString())
     
-            enemy.tryDamage(damage);//bullet.damage);
-    
+            enemy.tryDamage(damage);    
         }
     }
 
     playerTouchingEnemiesHandler(player: Player, enemy: Enemy): void
     {
-        //console.log(this);
         player.tryDamage();
     }
 
     playerTouchingSpaceshipHandler(player: Player, spaceship: Spaceship): void
-    {
-        //console.log(this);
-        //spaceship.turnOn();
-        //player.tryEnterSpaceship(spaceship);
-        
+    {       
         if(!player.isInSpaceship) {
             player.displayInteractTextAndImage(spaceship.x, spaceship.y);
             player.setAvailableInteraction(spaceship);
@@ -732,9 +683,6 @@ export class MainScene extends Phaser.Scene {
             body2.velocity.x = 0;
             enemy2.idle();
         }            
-
-        //console.log("Enemy1.x: " + enemy.x);
-        //console.log("Enemy2.x: " + enemy2.x);
     }
 
     bulletTouchingEnemyHandler(enemy: Enemy, bullet: Bullet): void {
@@ -747,7 +695,7 @@ export class MainScene extends Phaser.Scene {
        
         scene.addExpiringText(scene, enemy.x, enemy.y, damage.toString())
 
-        enemy.tryDamage(damage);//bullet.damage);
+        enemy.tryDamage(damage);
         bullet.destroy();
     }
 

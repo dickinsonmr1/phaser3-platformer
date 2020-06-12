@@ -193,7 +193,7 @@ export class World {
                     y: y,
                     key: key
                     });        
-                    portal.init("spring0", "spring1", "world-02-02", tile.x, tile.y);
+                    portal.init("world-02-02", tile.x, tile.y);
                 this.scene.portals.push(portal);
 
                 this.layer03.removeTileAt(tile.x, tile.y);

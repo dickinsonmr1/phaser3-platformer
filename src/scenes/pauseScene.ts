@@ -16,7 +16,6 @@
     // HUD
     menu: Menu;
 
-    //cursors: Phaser.Input.Keyboard.CursorKeys;     
     pauseKey: Phaser.Input.Keyboard.Key;
     selectKey: Phaser.Input.Keyboard.Key;
     cursorUp: Phaser.Input.Keyboard.Key;
@@ -48,7 +47,6 @@
         this.menu.setTitle(this, "Game Paused");
         this.menu.setMarker(this, ">>");
         this.menu.addMenuItem(this, "Resume");
-        //this.menu.addMenuItem(this, "Toggle Sound - On");
         this.menu.addMenuComplexItem(this, "Toggle Sound", ['On', 'Off']);
         this.menu.addMenuItem(this, "Exit to Title");     
         
