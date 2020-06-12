@@ -54,12 +54,14 @@
             if(this.menu.selectedIndex == 0) {
                 this.input.keyboard.resetKeys();
                 this.scene.sleep('LevelSelectScene');
+                this.scene.start('LoadingScene');
                 this.scene.start('MainScene', {id: 0});
                 this.scene.start('HudScene');
             }
             if(this.menu.selectedIndex == 1) {
                 this.input.keyboard.resetKeys();
                 this.scene.sleep('LevelSelectScene');
+                this.scene.start('LoadingScene');
                 this.scene.start('MainScene', {id: 1});
                 this.scene.start('HudScene');
             }

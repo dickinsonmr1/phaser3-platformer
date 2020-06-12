@@ -41,7 +41,7 @@
        
         this.menu = new Menu(this);
 
-        this.menu.setTitle(this, "Galactic Gem Collector");
+        this.menu.setTitle(this, "Zenith Commando");
         this.menu.setMarker(this, ">>");
         this.menu.addMenuItem(this, "Start Game");
         this.menu.addMenuItem(this, "Continue Game");
@@ -53,9 +53,10 @@
         if(Phaser.Input.Keyboard.JustDown(this.selectKey))  {
             if(this.menu.selectedIndex == 0) {
                 this.input.keyboard.resetKeys();
-                this.scene.sleep('TitleScene');
+                this.scene.sleep('TitleScene');                
                 this.scene.start('MainScene', { id: 0, worldName: 'world-04-02' });
                 this.scene.start('HudScene');
+                this.scene.start('LoadingScene');
             }
             else if(this.menu.selectedIndex == 1) {
                 this.input.keyboard.resetKeys();

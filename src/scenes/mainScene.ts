@@ -374,6 +374,11 @@ export class MainScene extends Phaser.Scene {
         //this.events.emit("infoTextEmitted", "Objective: repair ship");
 
         this.events.emit("infoTextEmitted", "Objective: repair ship");
+
+        //this.events.emit("gameLoaded");
+        this.scene.stop("LoadingScene");
+        this.scene.bringToTop("HudScene");
+        this.scene.setVisible(true, "HudScene");
     }
 
     update(): void {
@@ -403,11 +408,14 @@ export class MainScene extends Phaser.Scene {
             // debug stuff here    
         }
 
-        if(Phaser.Input.Keyboard.JustDown(this.interactKey)) {
-            this.player.tryInteract();
-        }
+
 
         if(!this.player.isInSpaceship) {
+
+            if(Phaser.Input.Keyboard.JustDown(this.interactKey)) {
+                this.player.tryInteract();
+            }
+
             if (this.cursors.left.isDown) {
                 this.player.moveLeft();
             }
@@ -450,7 +458,7 @@ export class MainScene extends Phaser.Scene {
                 body.setVelocityY(0);
             }           
             
-            if(this.jumpKey.isDown || this.shootKey2.isDown) {
+            if(this.jumpKey.isDown || this.shootKey2.isDown || Phaser.Input.Keyboard.JustDown(this.interactKey)) {
                 this.player.tryExitSpaceship(this.playerSpaceShip);
             }    
         }

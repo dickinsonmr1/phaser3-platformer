@@ -156,7 +156,8 @@
 
         this.setHealth(8);
         
-        this.scene.bringToTop;
+        //this.scene.bringToTop;
+        this.scene.setVisible(false);
     }
 
     update(): void {
