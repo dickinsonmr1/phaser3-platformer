@@ -568,7 +568,7 @@ export class MainScene extends Phaser.Scene {
         this.world.collectGem(tile.x, tile.y);
         this.sound.play("batterySound", { volume: 0.5 });
 
-        this.particleEmitter.explode(20, this.player.x, this.player.y);
+        this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
 
         var newAmmoCount = 10;
         this.player.reload(newAmmoCount, WeaponType.Laser1);
@@ -584,7 +584,7 @@ export class MainScene extends Phaser.Scene {
         this.world.collectGem(tile.x, tile.y);
         this.sound.play("batterySound", { volume: 0.5 });
 
-        this.particleEmitter.explode(20, this.player.x, this.player.y);
+        this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
 
         var newAmmoCount = 10;
         this.player.reload(newAmmoCount, WeaponType.Laser2);
@@ -600,7 +600,7 @@ export class MainScene extends Phaser.Scene {
         this.world.collectGem(tile.x, tile.y);
         this.sound.play("batterySound", { volume: 0.5 });
 
-        this.particleEmitter.explode(20, this.player.x, this.player.y);
+        this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
 
         var newAmmoCount = 15;
         this.player.reload(newAmmoCount, WeaponType.Laser3);
@@ -616,8 +616,8 @@ export class MainScene extends Phaser.Scene {
         this.world.collectGem(tile.x, tile.y);
         this.sound.play("batterySound", { volume: 0.5 });
 
-        this.particleEmitter.explode(20, this.player.x, this.player.y);
-        
+        this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
+
         var newAmmoCount = 15;
         this.player.reload(newAmmoCount, WeaponType.Laser4);
         this.events.emit("weaponCollected", newAmmoCount);
@@ -753,7 +753,7 @@ export class MainScene extends Phaser.Scene {
                 
         var scene = <MainScene>enemy.getScene();
 
-        scene.weaponHitParticleEmitter.explode(10, bullet.x, bullet.y);
+        scene.weaponHitParticleEmitter.explode(10, enemy.x, enemy.y);
 
         var damage = bullet.damage;
 

@@ -41,6 +41,8 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         return this.scene;
     }
 
+    //public getPosition(): 
+
     public init(idleAnim: string, walkAnim: string, deadAnim: string): void {
 
         this.setFlipX(this.defaultFacingRight);
@@ -71,6 +73,9 @@ export class Enemy extends Phaser.GameObjects.Sprite {
               
         this.displayOriginX = 0.5;
         this.displayOriginY = 0.5;
+
+        this.originX = 0.5;
+        this.originY = 0.5;
 
         this.setScale(this.drawScale, this.drawScale);
         
