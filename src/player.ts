@@ -36,8 +36,8 @@ export class Player extends Phaser.GameObjects.Sprite {
     private static get playerGunOffsetXFacingLeft(): number {return -5;}
     private static get playerGunOffsetY(): number {return 100;}
     private static get playerGunOffsetXFacingRight(): number {return 70;}  
-    private static get playerOffsetXInSpaceship(): number {return -32;}  
-    private static get playerOffsetYInSpaceship(): number {return -100;}  
+    private static get playerOffsetXInSpaceship(): number {return -17;}  
+    private static get playerOffsetYInSpaceship(): number {return -80;}  
 
     private get GetTextOffsetY(): number { return -100; }
     
@@ -49,7 +49,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     private activateInteractTime: number;
     private currentInteractionItem: Phaser.GameObjects.Sprite;
 
-    private static get playerJumpVelocityY(): number {return 450;}  
+    private static get playerJumpVelocityY(): number {return 400;}  
     private static get playerRunVelocityX(): number{return 400;}  
     private get playerBulletVelocityX(): number
     {

@@ -114,7 +114,7 @@
             body.setVelocity(0, 0);
 
             this.activated = false;
-            this.transitionTime = 30;
+            this.transitionTime = 60;
         }        
     }
       

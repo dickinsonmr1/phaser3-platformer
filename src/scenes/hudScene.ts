@@ -25,6 +25,8 @@
     preload(): void {
         this.load.atlasXML('hudSprites', './assets/sprites/HUD/spritesheet_hud.png', './assets/sprites/HUD/spritesheet_hud.xml');        
         this.load.atlasXML('uiSpaceSprites', './assets/sprites/HUD/uipackSpace_sheet.png', './assets/sprites/HUD/uipackSpace_sheet.xml');        
+        this.load.atlasXML('redUISprites', './assets/sprites/HUD/redSheet.png', './assets/sprites/HUD/redSheet.xml');        
+        this.load.atlasXML('greyUISprites', './assets/sprites/HUD/greySheet.png', './assets/sprites/HUD/greySheet.xml');        
         this.load.image('weaponIcon', './assets/sprites/player/raygunPurpleBig.png');
     }
 
@@ -70,10 +72,10 @@
         this.hudComponent.heartEmpty4 = this.add.image(450, 200, 'hudSprites', 'hudHeart_empty.png');
         this.hudComponent.heartEmpty4.setScale(0.5);
 
-        this.hudComponent.gem = this.add.image(1720, 200, 'hudSprites', 'hudJewel_green.png');
+        this.hudComponent.gem = this.add.image(800, 200, 'hudSprites', 'hudJewel_green.png');
         this.hudComponent.gem.setScale(1.0);
 
-        this.hudComponent.gemCountText = this.add.text(1500, 150, '0',
+        this.hudComponent.gemCountText = this.add.text(900, 150, '0',
         {
             fontFamily: 'KenneyRocketSquare',
             fontSize: 64,
@@ -82,9 +84,9 @@
         });
         this.hudComponent.gemCountText.setStroke('rgb(0,0,0)', 16);
 
-        this.hudComponent.weapon = this.add.image(800, 200, 'weaponIcon');
+        this.hudComponent.weapon = this.add.image(1720, 200, 'weaponIcon');
         this.hudComponent.weapon.setScale(2.0, 2.0);
-        this.hudComponent.ammoText = this.add.text(900, 150, '5',
+        this.hudComponent.ammoText = this.add.text(1500, 150, '5',
         {
             fontFamily: 'KenneyRocketSquare',
             fontSize: 64,
@@ -97,17 +99,29 @@
         //this.hudComponent.healthBarShadowLeft.originX = 0;
         //this.hudComponent.healthBarShadowLeft.displayWidth = 6;  
 
-        //this.hudComponent.healthBarShadowMid = this.add.image(606, 200, 'uiSpaceSprites', 'barHorizontal_shadow_mid.png');
-        //this.hudComponent.healthBarShadowMid.originX = 0;
-        //this.hudComponent.healthBarShadowMid.displayWidth = 88;        
+        //this.hudComponent.healthBarShadowMid = this.add.image(604, 195, 'uiSpaceSprites', 'glassPanel.png');
+        this.hudComponent.healthBarShadowMid = this.add.image(604, 195, 'greyUISprites', 'grey_button05.png');
+        //this.hudComponent.healthBarShadowMid = this.add.image(604, 195, 'redUISprites', 'red_button10.png');
+        this.hudComponent.healthBarShadowMid.originX = 0;
+        this.hudComponent.healthBarShadowMid.originY = 0;
+        this.hudComponent.healthBarShadowMid.displayOriginX = 0;
+        this.hudComponent.healthBarShadowMid.displayOriginY = 0;
+        this.hudComponent.healthBarShadowMid.displayWidth = 210;        
+        this.hudComponent.healthBarShadowMid.displayHeight = 50;    
+        this.hudComponent.healthBarShadowMid.alpha = 0.4;    
         
         //this.hudComponent.healthBarShadowRight = this.add.image(694, 200, 'uiSpaceSprites', 'barHorizontal_shadow_right.png');
         //this.hudComponent.healthBarShadowRight.originX = 0;
         //this.hudComponent.healthBarShadowRight.displayWidth = 6;  
 
         //this.hudComponent.healthBarLeft = this.add.image(600, 200, 'uiSpaceSprites', 'barHorizontal_red_left.png');
-        //this.hudComponent.healthBarMid = this.add.image(606, 200, 'uiSpaceSprites', 'barHorizontal_red_mid.png');
-        //this.hudComponent.healthBarMid.displayWidth = 88;
+        this.hudComponent.healthBarMid = this.add.image(609, 200, 'redUISprites', 'red_panel.png');
+        this.hudComponent.healthBarMid.originX = 0;
+        this.hudComponent.healthBarMid.originY = 0;
+        this.hudComponent.healthBarMid.displayOriginX = 0;
+        this.hudComponent.healthBarMid.displayOriginY = 0;
+        this.hudComponent.healthBarMid.displayWidth = 200;
+        this.hudComponent.healthBarMid.displayHeight = 40;
         //this.hudComponent.healthBarRight = this.add.image(694, 200, 'uiSpaceSprites', 'barHorizontal_red_right.png');
 
         this.hudComponent.infoText = this.add.text(300, 300, 'test',

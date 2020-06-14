@@ -720,7 +720,7 @@ export class MainScene extends Phaser.Scene {
 
     playerTouchingSpaceshipHandler(player: Player, spaceship: Spaceship): void
     {       
-        if(!player.isInSpaceship) {
+        if(!player.isInSpaceship && spaceship.transitionTime == 0) {
             player.displayInteractTextAndImage(spaceship.x, spaceship.y);
             player.setAvailableInteraction(spaceship);
         }        
