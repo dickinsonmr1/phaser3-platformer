@@ -1,5 +1,6 @@
 // https://labs.phaser.io/edit.html?src=src\games\topdownShooter\topdown_combatMechanics.js
 import "phaser";
+import { Scene } from "phaser";
 
 export class Bullet extends Phaser.GameObjects.Sprite {
 
@@ -19,6 +20,10 @@ export class Bullet extends Phaser.GameObjects.Sprite {
         this.scene.physics.world.enable(this);
        
         this.setAlpha(1.0);
+    }
+
+    public getScene(): Scene {
+        return this.scene;
     }
 
     public init()

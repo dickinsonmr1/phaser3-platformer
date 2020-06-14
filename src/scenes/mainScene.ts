@@ -26,7 +26,8 @@ export class MainScene extends Phaser.Scene {
     public skySprite: Phaser.GameObjects.TileSprite;
 
     world: World;    
-    emitter: Phaser.GameObjects.Particles.ParticleEmitter;
+    particleEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+    weaponHitParticleEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
 
     // player selection
     selectedPlayerIndex = 0;
@@ -120,6 +121,8 @@ export class MainScene extends Phaser.Scene {
         this.load.image('playerRocket1', './assets/sprites/player/rocket_1.png');
         this.load.image('playerRocket2', './assets/sprites/player/rocket_2_small.png');
 
+        this.load.image('laserYellowBurst', './assets/sprites/player/laserYellowBurst.png');
+
         this.load.image('portalBlue', './assets/sprites/objects/portalBlue.png');
         this.load.image('portalRed', './assets/sprites/objects/portalRed.png');
         this.load.image('portalYellow', './assets/sprites/objects/portalYellow.png');
@@ -132,6 +135,50 @@ export class MainScene extends Phaser.Scene {
 
         this.load.image('world-01-03-sky', './assets/sprites/backgrounds/blue_grass.png');
         this.load.image('world-02-01-sky', './assets/sprites/backgrounds/backgroundCastles.png');              
+    }
+
+    private loadParticles(){
+
+        var particles = this.add.particles('laserYellowBurst');
+        particles.setDepth(4);
+
+        this.particleEmitter = particles.createEmitter({
+            x: 0,
+            y: 0,
+            lifespan: 500,
+            speed: 200,
+            //angle: { start: 0. },
+            //gravityY: 300,
+            //scaleX: { start: 1, end: 2 },
+            //scaleY: 0.5,
+            //quantity: 10,
+            scale: 0.25,
+            blendMode: 'ADD',
+            frequency: -1,
+            alpha: {start: 0.8, end: 0.0},
+
+            //active: false
+        });
+
+        var weaponHitParticles = this.add.particles('laserYellowBurst');
+        weaponHitParticles.setDepth(4);
+        this.weaponHitParticleEmitter = weaponHitParticles.createEmitter({
+            x: 0,
+            y: 0,
+            lifespan: 500,
+            speed: 200,
+            //angle: { start: 0. },
+            //gravityY: 300,
+            //scaleX: { start: 1, end: 2 },
+            //scaleY: 0.5,
+            //quantity: 10,
+            scale: 0.25,
+            blendMode: 'ADD',
+            frequency: -1,
+            alpha: {start: 0.8, end: 0.0},
+
+            //active: false
+        });
     }
 
     private loadTileMaps(): void {
@@ -323,6 +370,7 @@ export class MainScene extends Phaser.Scene {
     create(): void {    
 
         this.createAnims(this.anims);
+        this.loadParticles();
         this.skySprite = this.add.tileSprite(0, 0, 20480, 2048, 'world-02-01-sky');            
         
         this.enemies = new Array<Phaser.GameObjects.Sprite>();
@@ -520,6 +568,8 @@ export class MainScene extends Phaser.Scene {
         this.world.collectGem(tile.x, tile.y);
         this.sound.play("batterySound", { volume: 0.5 });
 
+        this.particleEmitter.explode(20, this.player.x, this.player.y);
+
         var newAmmoCount = 10;
         this.player.reload(newAmmoCount, WeaponType.Laser1);
         this.events.emit("weaponCollected", newAmmoCount);
@@ -533,6 +583,8 @@ export class MainScene extends Phaser.Scene {
     {
         this.world.collectGem(tile.x, tile.y);
         this.sound.play("batterySound", { volume: 0.5 });
+
+        this.particleEmitter.explode(20, this.player.x, this.player.y);
 
         var newAmmoCount = 10;
         this.player.reload(newAmmoCount, WeaponType.Laser2);
@@ -548,6 +600,8 @@ export class MainScene extends Phaser.Scene {
         this.world.collectGem(tile.x, tile.y);
         this.sound.play("batterySound", { volume: 0.5 });
 
+        this.particleEmitter.explode(20, this.player.x, this.player.y);
+
         var newAmmoCount = 15;
         this.player.reload(newAmmoCount, WeaponType.Laser3);
         this.events.emit("weaponCollected", newAmmoCount);
@@ -562,6 +616,8 @@ export class MainScene extends Phaser.Scene {
         this.world.collectGem(tile.x, tile.y);
         this.sound.play("batterySound", { volume: 0.5 });
 
+        this.particleEmitter.explode(20, this.player.x, this.player.y);
+        
         var newAmmoCount = 15;
         this.player.reload(newAmmoCount, WeaponType.Laser4);
         this.events.emit("weaponCollected", newAmmoCount);
@@ -697,6 +753,8 @@ export class MainScene extends Phaser.Scene {
                 
         var scene = <MainScene>enemy.getScene();
 
+        scene.weaponHitParticleEmitter.explode(10, bullet.x, bullet.y);
+
         var damage = bullet.damage;
 
         scene.sound.play("enemyHurtSound");
@@ -707,7 +765,11 @@ export class MainScene extends Phaser.Scene {
         bullet.destroy();
     }
 
-    bulletTouchingImpassableLayerHandler(bullet, layer): void {
+    bulletTouchingImpassableLayerHandler(bullet: Bullet, layer): void {        
+
+        var scene = <MainScene>bullet.getScene();
+        scene.weaponHitParticleEmitter.explode(2, bullet.x, bullet.y);
+
         bullet.destroy();
     }
   

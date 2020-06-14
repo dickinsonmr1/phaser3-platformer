@@ -16,8 +16,8 @@
     "ts-loader": "5.3.2",
     "typescript": "3.2.2",
     "webpack": "4.28.3",
-    "webpack-cli": "3.1.2",
-    "webpack-dev-server": "3.1.14"
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
     "phaser": "^3.23.0"
