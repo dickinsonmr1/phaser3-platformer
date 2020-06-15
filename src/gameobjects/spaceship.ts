@@ -9,6 +9,7 @@
  import { Constants } from "../constants";
  import "phaser";
  import { Scene } from "phaser";
+import { HealthBar } from "../scenes/healthBar";
  
  export class Spaceship extends Phaser.GameObjects.Sprite {
      public activated: boolean;
@@ -18,8 +19,13 @@
 
      public transitionTime: number;
 
+     public healthBar: HealthBar;
+
      private particleEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
      private get emitterOffsetY(): number {return 30;}
+
+     private get healthBarOffsetX(): number {return -50;}
+     private get healthBarOffsetY(): number {return -100;}
 
      public static get spaceshipVelocity(): number { return 600; }    
 
@@ -80,7 +86,12 @@
         });
         this.particleEmitter.stop();
         //this.turnOff();
- 
+        
+        this.healthBar = new HealthBar(this.getScene());
+
+        this.healthBar.init(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY, 100, 
+            100, 15);
+        this.healthBar.setVisible(false);
         return;        
      }
 
@@ -115,6 +126,7 @@
 
             this.activated = false;
             this.transitionTime = 60;
+            this.healthBar.setVisible(false);
         }        
     }
       
@@ -131,6 +143,8 @@
 
             this.particleEmitter.start();
             this.particleEmitter.setPosition(this.x, this.y + this.emitterOffsetY);
+
+            this.healthBar.setVisible(true);
         }
         
         //this.transitionTime = 5;
@@ -140,6 +154,8 @@
         super.preUpdate(time, delta);
 
         this.particleEmitter.setPosition(this.x, this.y + this.emitterOffsetY);
+
+        this.healthBar.updatePosition(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY);
 
         if(this.transitionTime > 0)
             this.transitionTime--;

@@ -3,20 +3,21 @@ export class HealthBar extends Phaser.GameObjects.Group {
     private healthBarOriginX: number;// {return 600;}  
     private healthBarOriginY: number;// {return 900;}  
     private static get healthBarLeftSegmentWidth(): number {return 6;}  
-    private healthBarMidSegmentWidth(): number {return this.healthMax * 2;}  
+    //private healthBarMidSegmentWidth(): number {return this.healthMax * 2;}  
     private static get healthBarRightSegmentWidth(): number {return 6;}  
-    private static get healthBarHeight(): number {return 30;} 
+    private healthBarHeight: number;
 
     private static get healthBarShadowBuffer(): number {return 4;}
     private static get healthBarShadowOffsetX(): number {return -2;}  
     private static get healthBarShadowOffsetY(): number {return -2;}  
-    private static get healthBarShadowHeight(): number {return HealthBar.healthBarHeight + HealthBar.healthBarShadowBuffer;} 
+    private healthBarShadowHeight(): number {return this.healthBarHeight + HealthBar.healthBarShadowBuffer;} 
     private static get healthBarShadowLeftSegmentWidth(): number {return HealthBar.healthBarLeftSegmentWidth;}  
-    private healthBarShadowMidSegmentWidth(): number {return this.healthBarMidSegmentWidth() + HealthBar.healthBarShadowBuffer;}  
+    private healthBarShadowMidSegmentWidth(): number {return this.calculateCurrentHealthBarWidthInPixels() + HealthBar.healthBarShadowBuffer;}  
     private static get healthBarShadowRightSegmentWidth(): number {return HealthBar.healthBarRightSegmentWidth;}  
 
     public currentHealth: number = 100;
     public healthMax: number;
+    public healthMaxWidthInPixels: number;
 
     healthBarShadowLeft: Phaser.GameObjects.Image;
     healthBarShadowMid: Phaser.GameObjects.Image;
@@ -26,10 +27,13 @@ export class HealthBar extends Phaser.GameObjects.Group {
     healthBarMid: Phaser.GameObjects.Image;
     healthBarRight: Phaser.GameObjects.Image;
 
-    init(originX: number, originY: number, healthMax: number): void {
+    init(originX: number, originY: number, healthMax: number, healthMaxWidthInPixels: number, healthBarHeight: number): void {
         
         this.healthMax = healthMax;
         this.currentHealth = healthMax;
+
+        this.healthBarHeight = healthBarHeight;
+        this.healthMaxWidthInPixels = healthMaxWidthInPixels;
 
         this.healthBarOriginX = originX;
         this.healthBarOriginY = originY;
@@ -39,7 +43,7 @@ export class HealthBar extends Phaser.GameObjects.Group {
             'uiSpaceSprites', 'barHorizontal_shadow_left.png');
         this.healthBarShadowLeft.setOrigin(0,0);
         this.healthBarShadowLeft.setDisplayOrigin(0,0);
-        this.healthBarShadowLeft.setDisplaySize(HealthBar.healthBarShadowLeftSegmentWidth, HealthBar.healthBarShadowHeight);
+        this.healthBarShadowLeft.setDisplaySize(HealthBar.healthBarShadowLeftSegmentWidth, this.healthBarShadowHeight());
         this.healthBarShadowLeft.alpha = 0.4;    
         
         this.healthBarShadowMid = this.scene.add.image(
@@ -48,7 +52,7 @@ export class HealthBar extends Phaser.GameObjects.Group {
             'uiSpaceSprites', 'barHorizontal_shadow_mid.png');
         this.healthBarShadowMid.setOrigin(0, 0);
         this.healthBarShadowMid.setDisplayOrigin(0,0);// = 0;
-        this.healthBarShadowMid.setDisplaySize(this.healthBarShadowMidSegmentWidth(), HealthBar.healthBarShadowHeight);
+        this.healthBarShadowMid.setDisplaySize(this.healthMaxWidthInPixels, this.healthBarShadowHeight());
         this.healthBarShadowMid.alpha = 0.4;    
         
         this.healthBarShadowRight = this.scene.add.image(
@@ -57,27 +61,31 @@ export class HealthBar extends Phaser.GameObjects.Group {
             'uiSpaceSprites', 'barHorizontal_shadow_right.png');
         this.healthBarShadowRight.setOrigin(0,0);
         this.healthBarShadowRight.setDisplayOrigin(0,0);
-        this.healthBarShadowRight.setDisplaySize(HealthBar.healthBarShadowRightSegmentWidth, HealthBar.healthBarShadowHeight);
+        this.healthBarShadowRight.setDisplaySize(HealthBar.healthBarShadowRightSegmentWidth, this.healthBarShadowHeight());
         this.healthBarShadowRight.alpha = 0.4;    
         
         this.healthBarLeft = this.scene.add.image(this.healthBarOriginX, this.healthBarOriginY, 'healthBarLeft');
         this.healthBarLeft.setOrigin(0,0);
         this.healthBarLeft.setDisplayOrigin(0,0);
-        this.healthBarLeft.setDisplaySize(HealthBar.healthBarLeftSegmentWidth, HealthBar.healthBarHeight);
+        this.healthBarLeft.setDisplaySize(HealthBar.healthBarLeftSegmentWidth, this.healthBarHeight);
 
         this.healthBarMid = this.scene.add.image(
             this.healthBarOriginX + HealthBar.healthBarLeftSegmentWidth,
             this.healthBarOriginY, 'healthBarMid');
         this.healthBarMid.setOrigin(0,0);
         this.healthBarMid.setDisplayOrigin(0,0);
-        this.healthBarMid.setDisplaySize(this.healthBarMidSegmentWidth(), HealthBar.healthBarHeight);
+        this.healthBarMid.setDisplaySize(this.calculateCurrentHealthBarWidthInPixels(), this.healthBarHeight);
 
         this.healthBarRight = this.scene.add.image(
-            this.healthBarOriginX + HealthBar.healthBarLeftSegmentWidth + this.healthBarMidSegmentWidth(),
+            this.healthBarOriginX + HealthBar.healthBarLeftSegmentWidth + this.calculateCurrentHealthBarWidthInPixels(),
             this.healthBarOriginY, 'healthBarRight');
             this.healthBarRight.setOrigin(0,0);
             this.healthBarRight.setDisplayOrigin(0,0);
-            this.healthBarRight.setDisplaySize(HealthBar.healthBarRightSegmentWidth, HealthBar.healthBarHeight);
+            this.healthBarRight.setDisplaySize(HealthBar.healthBarRightSegmentWidth, this.healthBarHeight);
+    }
+
+    calculateCurrentHealthBarWidthInPixels(): number {
+        return (this.currentHealth / this.healthMax) * this.healthMaxWidthInPixels;
     }
 
     updatePosition(originX: number, originY: number) {
@@ -85,12 +93,28 @@ export class HealthBar extends Phaser.GameObjects.Group {
         this.healthBarOriginY = originY;
 
         this.healthBarLeft.setPosition(this.healthBarOriginX, this.healthBarOriginY);
-        this.healthBarMid.setX(this.healthBarLeft.x + HealthBar.healthBarLeftSegmentWidth);
-        this.healthBarMid.setDisplaySize(this.currentHealth, HealthBar.healthBarHeight);    
-        this.healthBarRight.setX(this.healthBarMid.x + this.healthBarMid.displayWidth);
+
+        this.healthBarMid.setPosition(this.healthBarLeft.x + HealthBar.healthBarLeftSegmentWidth,
+            this.healthBarOriginY);         
+        this.healthBarMid.setDisplaySize(this.calculateCurrentHealthBarWidthInPixels(), this.healthBarHeight);    
+
+        this.healthBarRight.setPosition(this.healthBarMid.x + this.healthBarMid.displayWidth,
+            this.healthBarOriginY);   
+
+        this.healthBarShadowLeft.setPosition(this.healthBarOriginX + HealthBar.healthBarShadowOffsetX,
+            this.healthBarOriginY + HealthBar.healthBarShadowOffsetY);
+
+        this.healthBarShadowMid.setPosition(this.healthBarOriginX + HealthBar.healthBarShadowOffsetX + HealthBar.healthBarShadowLeftSegmentWidth,
+            this.healthBarOriginY + HealthBar.healthBarShadowOffsetY);
+
+        this.healthBarShadowRight.setPosition(this.healthBarOriginX + HealthBar.healthBarShadowOffsetX + HealthBar.healthBarShadowLeftSegmentWidth + this.healthMaxWidthInPixels,
+            this.healthBarOriginY + HealthBar.healthBarShadowOffsetY);
     }
 
     updateHealth(health: number) {
+
+        this.currentHealth = health;
+
         if(health <= 0) {
             this.healthBarLeft.visible = false;
             this.healthBarMid.visible = false;
@@ -102,10 +126,7 @@ export class HealthBar extends Phaser.GameObjects.Group {
             this.healthBarMid.visible = true;
             this.healthBarRight.visible = true;
 
-            this.healthBarLeft.setPosition(this.healthBarOriginX, this.healthBarOriginY);
-            this.healthBarMid.setX(this.healthBarLeft.x + HealthBar.healthBarLeftSegmentWidth);
-            this.healthBarMid.setDisplaySize(health, HealthBar.healthBarHeight);    
-            this.healthBarRight.setX(this.healthBarMid.x + this.healthBarMid.displayWidth);    
+            this.updatePosition(this.healthBarOriginX, this.healthBarOriginY);        
         }
     }
 

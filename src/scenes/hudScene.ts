@@ -118,10 +118,6 @@ import { HealthBar } from "./healthBar";
         });
         this.hudComponent.ammoText.setStroke('rgb(0,0,0)', 16);
 
-
-        this.healthBar = new HealthBar(this);
-        this.healthBar.init(600, 900, 100);
-
         /*
         this.hudComponent.healthBarShadowLeft = this.add.image(
             HudScene.healthBarOriginX + HudScene.healthBarShadowOffsetX,
@@ -201,7 +197,7 @@ import { HealthBar } from "./healthBar";
         //  Listen for events from it
         ourGame.events.on('playerHealthUpdated', function (health) {
             this.setHealth(health);
-            this.updateHealthBar(health * 12.5 * 2);
+            this.updateHealthBar(health);
         }, this);
 
         //  Listen for events from it
@@ -231,8 +227,15 @@ import { HealthBar } from "./healthBar";
             this.setInfoText(text);
         }, this);
 
-        this.setHealth(8);
+        var maxHealth = 8;
+        this.setHealth(maxHealth);
         
+        this.healthBar = new HealthBar(this);
+        this.healthBar.init(600, 900, maxHealth,
+            200, 30);
+
+        this.healthBar.updateHealth(maxHealth);
+
         //this.scene.bringToTop;
         this.scene.setVisible(false);
     }
