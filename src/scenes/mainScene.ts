@@ -121,7 +121,7 @@ export class MainScene extends Phaser.Scene {
         this.load.image('playerRocket1', './assets/sprites/player/rocket_1.png');
         this.load.image('playerRocket2', './assets/sprites/player/rocket_2_small.png');
 
-        this.load.image('laserYellowBurst', './assets/sprites/player/laserYellowBurst.png');
+        this.load.image('laserWhiteBurst', './assets/sprites/player/laserWhiteBurst_16x16.png');
 
         this.load.image('portalBlue', './assets/sprites/objects/portalBlue.png');
         this.load.image('portalRed', './assets/sprites/objects/portalRed.png');
@@ -139,7 +139,7 @@ export class MainScene extends Phaser.Scene {
 
     private loadParticles(){
 
-        var particles = this.add.particles('laserYellowBurst');
+        var particles = this.add.particles('laserWhiteBurst');
         particles.setDepth(4);
 
         this.particleEmitter = particles.createEmitter({
@@ -147,37 +147,26 @@ export class MainScene extends Phaser.Scene {
             y: 0,
             lifespan: 500,
             speed: 200,
-            //angle: { start: 0. },
-            //gravityY: 300,
-            //scaleX: { start: 1, end: 2 },
-            //scaleY: 0.5,
-            //quantity: 10,
-            scale: 0.25,
+            angle: { min: 0, max: 360, steps: 10 },
+            scale: 1,
+            gravityY: 200,
             blendMode: 'ADD',
             frequency: -1,
             alpha: {start: 0.8, end: 0.0},
-
-            //active: false
         });
 
-        var weaponHitParticles = this.add.particles('laserYellowBurst');
+        var weaponHitParticles = this.add.particles('laserWhiteBurst');
         weaponHitParticles.setDepth(4);
         this.weaponHitParticleEmitter = weaponHitParticles.createEmitter({
             x: 0,
             y: 0,
             lifespan: 500,
-            speed: 200,
-            //angle: { start: 0. },
-            //gravityY: 300,
-            //scaleX: { start: 1, end: 2 },
-            //scaleY: 0.5,
-            //quantity: 10,
-            scale: 0.25,
+            speed: { min: -400, max: 400 },
+            tint: 0xff0000, 
+            scale: 1,
             blendMode: 'ADD',
             frequency: -1,
             alpha: {start: 0.8, end: 0.0},
-
-            //active: false
         });
     }
 
@@ -560,6 +549,8 @@ export class MainScene extends Phaser.Scene {
         this.world.removeTileAt(tile.x, tile.y);
         this.player.tryHeal();
 
+        this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
+
         return true;
     }
 
@@ -579,7 +570,7 @@ export class MainScene extends Phaser.Scene {
 
         this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
 
-        var newAmmoCount = 10;
+        var newAmmoCount = 20;
         this.player.reload(newAmmoCount, WeaponType.Laser1);
         this.events.emit("weaponCollected", newAmmoCount);
 
@@ -595,7 +586,7 @@ export class MainScene extends Phaser.Scene {
 
         this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
 
-        var newAmmoCount = 10;
+        var newAmmoCount = 30;
         this.player.reload(newAmmoCount, WeaponType.Laser2);
         this.events.emit("weaponCollected", newAmmoCount);
 
@@ -611,7 +602,7 @@ export class MainScene extends Phaser.Scene {
 
         this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
 
-        var newAmmoCount = 15;
+        var newAmmoCount = 10;
         this.player.reload(newAmmoCount, WeaponType.Laser3);
         this.events.emit("weaponCollected", newAmmoCount);
 
@@ -627,7 +618,7 @@ export class MainScene extends Phaser.Scene {
 
         this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
 
-        var newAmmoCount = 15;
+        var newAmmoCount = 5;
         this.player.reload(newAmmoCount, WeaponType.Laser4);
         this.events.emit("weaponCollected", newAmmoCount);
 

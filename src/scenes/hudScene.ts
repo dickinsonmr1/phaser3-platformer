@@ -263,6 +263,10 @@
         }
         else {
 
+            this.hudComponent.healthBarLeft.visible = true;
+            this.hudComponent.healthBarMid.visible = true;
+            this.hudComponent.healthBarRight.visible = true;
+
             this.hudComponent.healthBarMid.setX(this.hudComponent.healthBarLeft.x + HudScene.healthBarLeftSegmentWidth);
             this.hudComponent.healthBarMid.setDisplaySize(health, HudScene.healthBarHeight);    
             this.hudComponent.healthBarRight.setX(this.hudComponent.healthBarMid.x + this.hudComponent.healthBarMid.displayWidth);    
