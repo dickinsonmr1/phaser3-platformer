@@ -28,7 +28,28 @@
         this.load.atlasXML('redUISprites', './assets/sprites/HUD/redSheet.png', './assets/sprites/HUD/redSheet.xml');        
         this.load.atlasXML('greyUISprites', './assets/sprites/HUD/greySheet.png', './assets/sprites/HUD/greySheet.xml');        
         this.load.image('weaponIcon', './assets/sprites/player/raygunPurpleBig.png');
+
+        this.load.image('healthBarLeft', './assets/sprites/HUD/barHorizontal_red_left.png');
+        this.load.image('healthBarMid', './assets/sprites/HUD/barHorizontal_red_mid.png');
+        this.load.image('healthBarRight', './assets/sprites/HUD/barHorizontal_red_right.png');
     }
+
+    private static get healthBarOriginX(): number {return 600;}  
+    private static get healthBarOriginY(): number {return 900;}  
+    private static get healthBarLeftSegmentWidth(): number {return 6;}  
+    private static get healthBarMidSegmentWidth(): number {return 200;}  
+    private static get healthBarRightSegmentWidth(): number {return 6;}  
+    private static get healthBarHeight(): number {return 30;} 
+
+    private static get healthBarShadowBuffer(): number {return 4;}
+    private static get healthBarShadowOffsetX(): number {return -2;}  
+    private static get healthBarShadowOffsetY(): number {return -2;}  
+    private static get healthBarShadowHeight(): number {return HudScene.healthBarHeight + HudScene.healthBarShadowBuffer;} 
+    private static get healthBarShadowLeftSegmentWidth(): number {return HudScene.healthBarLeftSegmentWidth;}  
+    private static get healthBarShadowMidSegmentWidth(): number {return HudScene.healthBarMidSegmentWidth + HudScene.healthBarShadowBuffer;}  
+    private static get healthBarShadowRightSegmentWidth(): number {return HudScene.healthBarRightSegmentWidth;}  
+
+    public healthBarHealth = 100;
 
     create(): void {
 
@@ -95,34 +116,69 @@
         });
         this.hudComponent.ammoText.setStroke('rgb(0,0,0)', 16);
 
-        //this.hudComponent.healthBarShadowLeft = this.add.image(600, 200, 'uiSpaceSprites', 'barHorizontal_shadow_left.png');
-        //this.hudComponent.healthBarShadowLeft.originX = 0;
-        //this.hudComponent.healthBarShadowLeft.displayWidth = 6;  
 
-        //this.hudComponent.healthBarShadowMid = this.add.image(604, 195, 'uiSpaceSprites', 'glassPanel.png');
-        this.hudComponent.healthBarShadowMid = this.add.image(604, 195, 'greyUISprites', 'grey_button05.png');
+        this.hudComponent.healthBarShadowLeft = this.add.image(
+            HudScene.healthBarOriginX + HudScene.healthBarShadowOffsetX,
+            HudScene.healthBarOriginY + HudScene.healthBarShadowOffsetY,
+            'uiSpaceSprites', 'barHorizontal_shadow_left.png');
+        this.hudComponent.healthBarShadowLeft.setOrigin(0,0);
+        this.hudComponent.healthBarShadowLeft.setDisplayOrigin(0,0);
+        this.hudComponent.healthBarShadowLeft.setDisplaySize(HudScene.healthBarShadowLeftSegmentWidth, HudScene.healthBarShadowHeight);
+        this.hudComponent.healthBarShadowLeft.alpha = 0.4;    
+        
+        this.hudComponent.healthBarShadowMid = this.add.image(
+            HudScene.healthBarOriginX + HudScene.healthBarShadowOffsetX + HudScene.healthBarShadowLeftSegmentWidth,
+            HudScene.healthBarOriginY + HudScene.healthBarShadowOffsetY,
+            'uiSpaceSprites', 'barHorizontal_shadow_mid.png');
+        //this.hudComponent.healthBarShadowMid = this.add.image(601, 195, 'uiSpaceSprites', 'glassPanel.png');
+        //this.hudComponent.healthBarShadowMid = this.add.image(604, 195, 'greyUISprites', 'grey_button05.png');
         //this.hudComponent.healthBarShadowMid = this.add.image(604, 195, 'redUISprites', 'red_button10.png');
-        this.hudComponent.healthBarShadowMid.originX = 0;
-        this.hudComponent.healthBarShadowMid.originY = 0;
-        this.hudComponent.healthBarShadowMid.displayOriginX = 0;
-        this.hudComponent.healthBarShadowMid.displayOriginY = 0;
-        this.hudComponent.healthBarShadowMid.displayWidth = 210;        
-        this.hudComponent.healthBarShadowMid.displayHeight = 50;    
+        this.hudComponent.healthBarShadowMid.setOrigin(0, 0);
+        this.hudComponent.healthBarShadowMid.setDisplayOrigin(0,0);// = 0;
+        this.hudComponent.healthBarShadowMid.setDisplaySize(HudScene.healthBarShadowMidSegmentWidth, HudScene.healthBarShadowHeight);
         this.hudComponent.healthBarShadowMid.alpha = 0.4;    
         
-        //this.hudComponent.healthBarShadowRight = this.add.image(694, 200, 'uiSpaceSprites', 'barHorizontal_shadow_right.png');
-        //this.hudComponent.healthBarShadowRight.originX = 0;
-        //this.hudComponent.healthBarShadowRight.displayWidth = 6;  
+        this.hudComponent.healthBarShadowRight = this.add.image(
+            HudScene.healthBarOriginX + HudScene.healthBarShadowOffsetX + HudScene.healthBarShadowLeftSegmentWidth + HudScene.healthBarShadowMidSegmentWidth,
+            HudScene.healthBarOriginY + HudScene.healthBarShadowOffsetY,
+            'uiSpaceSprites', 'barHorizontal_shadow_right.png');
+        this.hudComponent.healthBarShadowRight.setOrigin(0,0);
+        this.hudComponent.healthBarShadowRight.setDisplayOrigin(0,0);
+        this.hudComponent.healthBarShadowRight.setDisplaySize(HudScene.healthBarShadowRightSegmentWidth, HudScene.healthBarShadowHeight);
+        this.hudComponent.healthBarShadowRight.alpha = 0.4;    
+        
+        this.hudComponent.healthBarLeft = this.add.image(HudScene.healthBarOriginX, HudScene.healthBarOriginY, 'healthBarLeft');//'uiSpaceSprites', 'barHorizontal_red_left.png');
+        this.hudComponent.healthBarLeft.setOrigin(0,0);
+        this.hudComponent.healthBarLeft.setDisplayOrigin(0,0);
+        this.hudComponent.healthBarLeft.setDisplaySize(HudScene.healthBarLeftSegmentWidth, HudScene.healthBarHeight);
 
-        //this.hudComponent.healthBarLeft = this.add.image(600, 200, 'uiSpaceSprites', 'barHorizontal_red_left.png');
-        this.hudComponent.healthBarMid = this.add.image(609, 200, 'redUISprites', 'red_panel.png');
-        this.hudComponent.healthBarMid.originX = 0;
-        this.hudComponent.healthBarMid.originY = 0;
-        this.hudComponent.healthBarMid.displayOriginX = 0;
-        this.hudComponent.healthBarMid.displayOriginY = 0;
-        this.hudComponent.healthBarMid.displayWidth = 200;
-        this.hudComponent.healthBarMid.displayHeight = 40;
+        this.hudComponent.healthBarMid = this.add.image(
+            HudScene.healthBarOriginX + HudScene.healthBarLeftSegmentWidth,
+            HudScene.healthBarOriginY, 'healthBarMid');//'uiSpaceSprites', 'barHorizontal_red_mid.png');
+        //this.hudComponent.healthBarMid = this.add.image(609, 200, 'redUISprites', 'red_panel.png');
+        this.hudComponent.healthBarMid.setOrigin(0,0);
+        this.hudComponent.healthBarMid.setDisplayOrigin(0,0);
+        this.hudComponent.healthBarMid.setDisplaySize(HudScene.healthBarMidSegmentWidth, HudScene.healthBarHeight);
+
+        this.hudComponent.healthBarRight = this.add.image(
+            HudScene.healthBarOriginX + HudScene.healthBarLeftSegmentWidth + HudScene.healthBarMidSegmentWidth,
+            HudScene.healthBarOriginY, 'healthBarRight');//'uiSpaceSprites', 'barHorizontal_red_right.png');
+            this.hudComponent.healthBarRight.setOrigin(0,0);
+            this.hudComponent.healthBarRight.setDisplayOrigin(0,0);
+            this.hudComponent.healthBarRight.setDisplaySize(HudScene.healthBarRightSegmentWidth, HudScene.healthBarHeight);
+
+        /*
+        var graphics = this.add.graphics({ fillStyle:{ color: 0xff0000, alpha: 0.8 },  });
+
+        var rect = new Phaser.Geom.Rectangle(900, 200, 200, 40);;
+
+        var graphics2 = this.add.graphics({ lineStyle: { color: 0xffffff, width: 2} });
+
+        var rect2 = new Phaser.Geom.Rectangle(895, 195, 210, 50);;
+        graphics.fillRectShape(rect);
+        graphics2.strokeRectShape(rect2);
         //this.hudComponent.healthBarRight = this.add.image(694, 200, 'uiSpaceSprites', 'barHorizontal_red_right.png');
+        */
 
         this.hudComponent.infoText = this.add.text(300, 300, 'test',
         {
@@ -139,6 +195,7 @@
         //  Listen for events from it
         ourGame.events.on('playerHealthUpdated', function (health) {
             this.setHealth(health);
+            this.updateHealthBar(health * 12.5 * 2);
         }, this);
 
         //  Listen for events from it
@@ -196,6 +253,20 @@
         this.hudComponent.heartEmpty2.visible = (health < 3);
         this.hudComponent.heartEmpty3.visible = (health < 5);
         this.hudComponent.heartEmpty4.visible = (health < 7);
+    }
+
+    updateHealthBar(health: number) {
+        if(health <= 0) {
+            this.hudComponent.healthBarLeft.visible = false;
+            this.hudComponent.healthBarMid.visible = false;
+            this.hudComponent.healthBarRight.visible = false;
+        }
+        else {
+
+            this.hudComponent.healthBarMid.setX(this.hudComponent.healthBarLeft.x + HudScene.healthBarLeftSegmentWidth);
+            this.hudComponent.healthBarMid.setDisplaySize(health, HudScene.healthBarHeight);    
+            this.hudComponent.healthBarRight.setX(this.hudComponent.healthBarMid.x + this.hudComponent.healthBarMid.displayWidth);    
+        }
     }
 
     setGemCount(gemCount: number): void {
