@@ -307,6 +307,7 @@ export class World {
         this.layer03.setTileIndexCallback(Constants.tileKeyBattery, this.scene.collectBattery, this.scene);    
         //open door 236
         this.layer03.setTileIndexCallback(Constants.tileOpenDoor, this.scene.activateDoorIcon, this.scene);
+        this.layer03.setTileIndexCallback(Constants.tileHealth, this.scene.collectHealth, this.scene);
       
         this.scene.physics.add.overlap(player, this.scene.enemies, this.scene.playerTouchingEnemiesHandler);
         this.scene.physics.add.overlap(player, this.scene.springs, this.scene.playerTouchingSpringHandler);
@@ -362,6 +363,12 @@ export class World {
         this.sky.setY(camera.y);
         this.sky.setTilePosition(-(camera.scrollX * 0.25), -(camera.scrollY * 0.05));
     }
+
+    removeTileAt (tileX: number, tileY: number): void
+    {
+        this.layer03.removeTileAt(tileX, tileY);
+    }
+
 
     collectGem (tileX: number, tileY: number): void
     {

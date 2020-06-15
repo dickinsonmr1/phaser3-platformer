@@ -156,6 +156,9 @@ export class Player extends Phaser.GameObjects.Sprite {
     public isDucking: boolean;
     public hurtTime: number;
     public health: number;
+
+    public static get maxHealth(): number { return 8; }
+
     public gemsCollected: number;
     public ammoCount: number;
 
@@ -204,7 +207,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.isInWater = false;
 
         this.hurtTime = 0;
-        this.health = 8;
+        this.health = Player.maxHealth;
         this.gemsCollected = 0;
         this.ammoCount = 5;
         this.bulletTime = 0;
@@ -509,6 +512,15 @@ export class Player extends Phaser.GameObjects.Sprite {
                 this.scene.sound.play("hurtSound");
                 this.hurtTime = 60;
             }
+        }
+    }
+
+    tryHeal(): void {
+        if(this.health < Player.maxHealth) {
+            this.health++;
+            this.scene.events.emit("playerHealthUpdated", this.health);
+            //this.scene.sound.play("hurtSound");
+            //this.hurtTime = 60;
         }
     }
 

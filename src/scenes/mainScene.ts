@@ -554,6 +554,15 @@ export class MainScene extends Phaser.Scene {
         return true;
     }
 
+    
+    collectHealth (sprite, tile): boolean
+    {
+        this.world.removeTileAt(tile.x, tile.y);
+        this.player.tryHeal();
+
+        return true;
+    }
+
     collectBattery (sprite, tile): boolean
     {
         this.world.collectGem(tile.x, tile.y);
