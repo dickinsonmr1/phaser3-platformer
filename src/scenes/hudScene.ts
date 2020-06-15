@@ -9,6 +9,7 @@
  import "phaser";
  import { Player } from "../player";
  import { Constants } from "../constants";
+import { HealthBar } from "./healthBar";
  
  export class HudScene extends Phaser.Scene {
 
@@ -50,6 +51,7 @@
     private static get healthBarShadowRightSegmentWidth(): number {return HudScene.healthBarRightSegmentWidth;}  
 
     public healthBarHealth = 100;
+    public healthBar: HealthBar;
 
     create(): void {
 
@@ -117,6 +119,10 @@
         this.hudComponent.ammoText.setStroke('rgb(0,0,0)', 16);
 
 
+        this.healthBar = new HealthBar(this);
+        this.healthBar.init(600, 900, 100);
+
+        /*
         this.hudComponent.healthBarShadowLeft = this.add.image(
             HudScene.healthBarOriginX + HudScene.healthBarShadowOffsetX,
             HudScene.healthBarOriginY + HudScene.healthBarShadowOffsetY,
@@ -166,7 +172,7 @@
             this.hudComponent.healthBarRight.setOrigin(0,0);
             this.hudComponent.healthBarRight.setDisplayOrigin(0,0);
             this.hudComponent.healthBarRight.setDisplaySize(HudScene.healthBarRightSegmentWidth, HudScene.healthBarHeight);
-
+        */
         /*
         var graphics = this.add.graphics({ fillStyle:{ color: 0xff0000, alpha: 0.8 },  });
 
@@ -256,28 +262,31 @@
     }
 
     updateHealthBar(health: number) {
+        this.healthBar.updateHealth(health);
+
+        /*
         if(health <= 0) {
-            this.hudComponent.healthBarLeft.visible = false;
-            this.hudComponent.healthBarMid.visible = false;
-            this.hudComponent.healthBarRight.visible = false;
+            this.healthBar.healthBarLeft.visible = false;
+            this.healthBar.healthBarMid.visible = false;
+            this.healthBar.healthBarRight.visible = false;
         }
         else {
 
-            this.hudComponent.healthBarLeft.visible = true;
-            this.hudComponent.healthBarMid.visible = true;
-            this.hudComponent.healthBarRight.visible = true;
+            this.healthBar.healthBarLeft.visible = true;
+            this.healthBar.healthBarMid.visible = true;
+            this.healthBar.healthBarRight.visible = true;
 
-            this.hudComponent.healthBarMid.setX(this.hudComponent.healthBarLeft.x + HudScene.healthBarLeftSegmentWidth);
-            this.hudComponent.healthBarMid.setDisplaySize(health, HudScene.healthBarHeight);    
-            this.hudComponent.healthBarRight.setX(this.hudComponent.healthBarMid.x + this.hudComponent.healthBarMid.displayWidth);    
+            this.healthBar.healthBarMid.setX(this.healthBar.healthBarLeft.x + HudScene.healthBarLeftSegmentWidth);
+            this.healthBar.healthBarMid.setDisplaySize(health, HudScene.healthBarHeight);    
+            this.healthBar.healthBarRight.setX(this.healthBar.healthBarMid.x + this.healthBar.healthBarMid.displayWidth);    
         }
+        */
     }
 
     setGemCount(gemCount: number): void {
         this.hudComponent.gemCountText.setText(gemCount.toString());
         //this.hudComponent.gemCountOutlineText.setText(gemCount.toString());
     }
-
     
     setammoCount(ammo: number): void {
         this.hudComponent.ammoText.setText(ammo.toString());
@@ -342,6 +351,9 @@ export class HUDComponent {
     weapon: Phaser.GameObjects.Image;
     ammoText: Phaser.GameObjects.Text;
 
+    healthBar: HealthBar;
+
+    /*
     healthBarShadowLeft: Phaser.GameObjects.Image;
     healthBarShadowMid: Phaser.GameObjects.Image;
     healthBarShadowRight: Phaser.GameObjects.Image;
@@ -349,7 +361,8 @@ export class HUDComponent {
     healthBarLeft: Phaser.GameObjects.Image;
     healthBarMid: Phaser.GameObjects.Image;
     healthBarRight: Phaser.GameObjects.Image;
-
+    */
+   
     infoText: Phaser.GameObjects.Text;
     infoTextAlpha: number;
 }
