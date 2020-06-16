@@ -1,11 +1,11 @@
 
-/// <reference path="../phaser.d.ts"/>
+/// <reference path="../dts/phaser.d.ts"/>
 
 import { Constants } from "../constants";
 import "phaser";
 import { MainScene } from "../scenes/mainScene";
-import { Player } from "../player";
-import { Enemy } from "../enemy";
+import { Player } from "../gameobjects/player";
+import { Enemy } from "../gameobjects/enemy";
 import { Spring } from "../gameobjects/spring";
 import { Portal } from "../gameobjects/portal";
 import { Checkpoint } from "../gameobjects/checkpoint";

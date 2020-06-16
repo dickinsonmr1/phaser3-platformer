@@ -4,7 +4,7 @@
  * @license      none
  */
 
- /// <reference path="../phaser.d.ts"/>
+ /// <reference path="../dts/phaser.d.ts"/>
 
  import "phaser";
  import { Menu } from "./menu";

@@ -4,15 +4,15 @@
  * @license      none
  */
 
- /// <reference path="phaser.d.ts"/>
-import { Constants } from "./constants";
+ /// <reference path="../dts/phaser.d.ts"/>
+import { Constants } from "../constants";
 import "phaser";
 import { Scene } from "phaser";
 import { Bullet } from "./bullet";
-import { Switch } from "./gameobjects/switch";
-import { Spaceship } from "./gameobjects/spaceship";
-import { Portal } from "./gameobjects/portal";
-import { Weapon, LaserRepeater } from "./gameobjects/weapon";
+import { Switch } from "./switch";
+import { Spaceship } from "./spaceship";
+import { Portal } from "./portal";
+import { Weapon, LaserRepeater } from "./weapon";
 
 // TODO: fix and move implementation here once basic player functionality is working in main scene
 export class Player extends Phaser.GameObjects.Sprite {

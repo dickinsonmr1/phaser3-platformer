@@ -4,19 +4,19 @@
  * @license      none
  */
 
- /// <reference path="../phaser.d.ts"/>
+ /// <reference path="../dts/phaser.d.ts"/>
 
 import "phaser";
-import { Player } from "../player";
+import { Player } from "../gameobjects/player";
 import { WeaponType } from "../gameObjects/weapon";
 import { Weapon } from "../gameObjects/weapon";
 import { HudScene } from "./hudScene";
-import { Enemy } from "../enemy";
+import { Enemy } from "../gameobjects/enemy";
 import { Spring } from "../gameobjects/spring";
 import { Portal } from "../gameobjects/portal";
 import { Checkpoint } from "../gameobjects/checkpoint";
 import { Constants } from "../constants";
-import { Bullet } from "../bullet";
+import { Bullet } from "../gameobjects/bullet";
 import { World } from "../world/world";
 import { ExpiringText } from "../gameobjects/expiringText";
 import { Switch } from "../gameobjects/switch";

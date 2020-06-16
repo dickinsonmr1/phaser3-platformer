@@ -5,7 +5,7 @@
  */
 
  
- /// <reference path="../phaser.d.ts"/>
+ /// <reference path="../dts/phaser.d.ts"/>
  import { Constants } from "../constants";
  import "phaser";
  import { Scene } from "phaser";
