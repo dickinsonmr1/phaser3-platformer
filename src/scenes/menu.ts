@@ -1,6 +1,7 @@
 export class Menu {
     title: Phaser.GameObjects.Text;
     footer: Phaser.GameObjects.Text;
+    footer2: Phaser.GameObjects.Text;
     marker: Phaser.GameObjects.Text;    
     subItemMarkerLeft: Phaser.GameObjects.Text;        
     subItemMarkerRight: Phaser.GameObjects.Text;    
@@ -10,14 +11,16 @@ export class Menu {
     menuStartX: number;
     menuStartY: number;
 
-    titleOffsetX(): number {return -100;}
+    titleOffsetX(): number {return 0;}
     titleOffsetY(): number {return -300;}
 
     highlightedColor(): string {return "rgb(255,255,255)"};
     nonHighlightedColor(): string {return "rgb(150,150,150)"};
 
+    titleStartX: number;
     footerStartX: number;
     footerStartY: number;
+    footer2StartY: number;
 
     markerOffsetX(): number {return -100;}
     menuItemDistanceY(): number {return 60;}
@@ -26,10 +29,14 @@ export class Menu {
         this.items = new Array<MenuItem>();
         this.selectedIndex = 0;
 
+        this.titleStartX = scene.game.canvas.width / 2;
+
         this.menuStartX = scene.game.canvas.width / 4;
         this.menuStartY = scene.game.canvas.height / 2;
-        this.footerStartX = scene.game.canvas.width / 4 + this.titleOffsetX();
+        
+        this.footerStartX = scene.game.canvas.width / 2;// + this.titleOffsetX();
         this.footerStartY = scene.game.canvas.height - scene.game.canvas.height / 8;
+        this.footer2StartY = scene.game.canvas.height - scene.game.canvas.height / 16;
     }
 
     addMenuItem(scene: Phaser.Scene, text: string) {              
@@ -74,13 +81,14 @@ export class Menu {
     }
 
     setTitle(scene: Phaser.Scene, text: string) {
-        this.title = scene.add.text(this.menuStartX + this.titleOffsetX(), this.menuStartY + this.titleOffsetY(), text,
+        this.title = scene.add.text(this.titleStartX + this.titleOffsetX(), this.menuStartY + this.titleOffsetY(), text,
         {
             fontFamily: 'KenneyRocketSquare',
             fontSize: 96,
             align: 'center',            
             color: "rgb(255,255,255)",
         });
+        this.title.setOrigin(0.5, 0.5);
         this.title.setStroke('rgb(0,0,0)', 16);
     }
 
@@ -92,7 +100,20 @@ export class Menu {
             align: 'center',            
             color:"rgb(255,255,255)",
         });
+        this.footer.setOrigin(0.5, 0.5);
         this.footer.setStroke('rgb(0,0,0)', 16);
+    }
+
+    setFooter2(scene: Phaser.Scene, text: string) {
+        this.footer2 = scene.add.text(this.footerStartX, this.footer2StartY, text,
+        {
+            fontFamily: 'KenneyRocketSquare',
+            fontSize: 32,
+            align: 'center',            
+            color:"rgb(255,255,255)",
+        });
+        this.footer2.setOrigin(0.5, 0.5);
+        this.footer2.setStroke('rgb(0,0,0)', 16);
     }
 
     setMarker(scene: Phaser.Scene, text: string) {

@@ -53,8 +53,7 @@
         this.menu.setMarker(this, ">>");
         this.menu.addMenuItem(this, "World 01-01");
         this.menu.addMenuItem(this, "World 02-01");
-        this.menu.addMenuItem(this, "Exit to Title");
-        this.menu.setFooter(this, "©2020 by Mark Dickinson  //  Powered by Phaser 3");
+        this.menu.addMenuItem(this, "Exit to Title");        
     }
 
     update(): void {
