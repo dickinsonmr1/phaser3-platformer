@@ -18,9 +18,6 @@
     cursorUp: Phaser.Input.Keyboard.Key;
     cursorDown: Phaser.Input.Keyboard.Key;
 
-    private skySprite: Phaser.GameObjects.TileSprite;
-    skySpriteX: number;
-
     constructor() {
         super({
             key: "LevelSelectScene"
@@ -29,7 +26,6 @@
 
     init(data): void {
         console.log(data.id);
-        this.skySpriteX = data.skySpriteX;
     }
         
     preload(): void {
@@ -37,11 +33,6 @@
     }
 
     create(): void {
-
-        this.skySprite = this.add.tileSprite(0, 0, 20480, 1080, 'menuSky');
-        this.skySprite.setX(this.skySpriteX);
-        this.skySprite.setY(540);
-
         this.pauseKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         this.selectKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         this.cursorDown = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
@@ -61,6 +52,7 @@
             if(this.menu.selectedIndex == 0) {
                 this.input.keyboard.resetKeys();
                 this.scene.sleep('LevelSelectScene');
+                this.scene.sleep('MenuBackgroundScene');
                 this.scene.start('LoadingScene');
                 this.scene.start('MainScene', {id: 0});
                 this.scene.start('HudScene');
@@ -68,6 +60,7 @@
             if(this.menu.selectedIndex == 1) {
                 this.input.keyboard.resetKeys();
                 this.scene.sleep('LevelSelectScene');
+                this.scene.sleep('MenuBackgroundScene');
                 this.scene.start('LoadingScene');
                 this.scene.start('MainScene', {id: 1});
                 this.scene.start('HudScene');
@@ -86,9 +79,5 @@
         if(Phaser.Input.Keyboard.JustDown(this.cursorDown)) {
             this.menu.selectNextItem();
         }
-
-        this.skySprite.x -= 10;
-        if(this.skySprite.x  * (-1) > this.skySprite.width * .4)
-            this.skySprite.x = 0;
     }
 }
