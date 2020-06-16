@@ -299,10 +299,15 @@ export class World {
             ],
             this.scene.collectGem, this.scene);
 
-        this.layer03.setTileIndexCallback(Constants.tileGun1, this.scene.collectWeapon1, this.scene);
-        this.layer03.setTileIndexCallback(Constants.tileGun2, this.scene.collectWeapon2, this.scene);
-        this.layer03.setTileIndexCallback(Constants.tileGun3, this.scene.collectWeapon3, this.scene);
-        this.layer03.setTileIndexCallback(Constants.tileGun4, this.scene.collectWeapon4, this.scene);
+        this.layer03.setTileIndexCallback(
+            [
+                Constants.tileGun1,
+                Constants.tileGun2,
+                Constants.tileGun3,
+                Constants.tileGun4
+            ],
+            this.scene.collectWeapon, this.scene);
+
         this.layer03.setTileIndexCallback(Constants.tileKeyBlueKey, this.scene.collectKey, this.scene);        
         this.layer03.setTileIndexCallback(Constants.tileKeyBattery, this.scene.collectBattery, this.scene);    
         //open door 236

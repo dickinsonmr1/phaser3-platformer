@@ -8,6 +8,7 @@ export enum WeaponType {
 export class Weapon {
 
     weaponType: WeaponType;
+    weaponDisplayName: string;
     bulletVelocityX: number;
     bulletName: string;
     weaponSoundName: string;
@@ -18,6 +19,7 @@ export class Weapon {
     currentAmmo: number;
 
     constructor(weaponType: WeaponType,
+        weaponDisplayName: string,
         bulletVelocityX: number,
         bulletName: string,
         weaponSoundName: string,
@@ -27,6 +29,7 @@ export class Weapon {
         maxAmmo: number) {
 
             this.weaponType = weaponType;
+            this.weaponDisplayName = weaponDisplayName;
             this.bulletVelocityX = bulletVelocityX;
             this.bulletName = bulletName;
             this.weaponSoundName = weaponSoundName;
@@ -41,6 +44,7 @@ export class Weapon {
 export class LaserPistol extends Weapon {
     constructor() {
         super(WeaponType.LaserPistol,
+            "LASER PISTOL",
             700,
             'playerGunLaser1',
            'laser1Sound',
@@ -54,6 +58,7 @@ export class LaserPistol extends Weapon {
 export class LaserRepeater extends Weapon {
     constructor() {
         super(WeaponType.LaserRepeater,
+            "LASER REPEATER",
             900,
             'playerGunLaser2',
            'laser2Sound',
@@ -67,6 +72,7 @@ export class LaserRepeater extends Weapon {
 export class PulseCharge extends Weapon {
     constructor() {
         super(WeaponType.PulseCharge,
+            "PULSE CHARGE",
             900,
             'playerGunLaser3',
            'laser3Sound',
@@ -80,6 +86,7 @@ export class PulseCharge extends Weapon {
 export class RocketLauncher extends Weapon {
     constructor() {
         super(WeaponType.RocketLauncher,
+            "ROCKET LAUNCHER",
             1000,
             'playerRocket2',
            'laser4Sound',

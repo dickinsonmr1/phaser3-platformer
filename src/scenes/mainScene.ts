@@ -561,75 +561,42 @@ export class MainScene extends Phaser.Scene {
         this.world.collectGem(tile.x, tile.y);
         this.sound.play("batterySound");        
 
-
         return true;
     }
 
-    collectWeapon1 (sprite, tile): boolean
+    collectWeapon (sprite, tile): boolean
     {
+        var weapon: Weapon;
+        switch(tile.index){
+            case Constants.tileGun1:
+                weapon = new LaserPistol();
+                break;
+            case Constants.tileGun2:
+                weapon = new LaserRepeater();
+                break;
+            case Constants.tileGun3:
+                weapon = new PulseCharge();
+                break;
+            case Constants.tileGun4:
+                weapon = new RocketLauncher();
+                break;
+            default:
+                weapon = new LaserPistol();
+                break;
+        };
+
         this.world.collectGem(tile.x, tile.y);
         this.sound.play("batterySound", { volume: 0.5 });
 
         this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
 
-        var newAmmoCount = 20;
-        this.player.reload(new LaserPistol());
-        this.events.emit("weaponCollected", newAmmoCount);
+        this.player.reload(weapon);
+        this.events.emit("weaponCollected", weapon.currentAmmo);
 
-        this.addExpiringText(this, this.player.x, this.player.y, "LASER PISTOL");
-
-        return true;
-    }
-
-    collectWeapon2 (sprite, tile): boolean
-    {
-        this.world.collectGem(tile.x, tile.y);
-        this.sound.play("batterySound", { volume: 0.5 });
-
-        this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
-
-        var newAmmoCount = 30;
-        this.player.reload(new LaserRepeater());
-        this.events.emit("weaponCollected", newAmmoCount);
-
-        this.addExpiringText(this, this.player.x, this.player.y, "LASER REPEATER");
+        this.addExpiringText(this, this.player.x, this.player.y, weapon.weaponDisplayName);
 
         return true;
     }
-
-    collectWeapon3 (sprite, tile): boolean
-    {
-        this.world.collectGem(tile.x, tile.y);
-        this.sound.play("batterySound", { volume: 0.5 });
-
-        this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
-
-        var newAmmoCount = 10;
-        this.player.reload(new PulseCharge());
-        this.events.emit("weaponCollected", newAmmoCount);
-
-        this.addExpiringText(this, this.player.x, this.player.y, "PULSE CHARGE");
-
-        return true;
-    }
-
-    collectWeapon4 (sprite, tile): boolean
-    {
-        this.world.collectGem(tile.x, tile.y);
-        this.sound.play("batterySound", { volume: 0.5 });
-
-        this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
-
-        var newAmmoCount = 5;
-        this.player.reload(new RocketLauncher());
-        this.events.emit("weaponCollected", newAmmoCount);
-
-        this.addExpiringText(this, this.player.x, this.player.y, "ROCKET LAUNCHER");
-
-        return true;
-    }
-
-
     activateCheckpoint (sprite, tile): boolean
     {
         this.world.collectGem(tile.x, tile.y);

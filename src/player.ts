@@ -14,21 +14,12 @@ import { Spaceship } from "./gameobjects/spaceship";
 import { Portal } from "./gameobjects/portal";
 import { Weapon, LaserRepeater } from "./gameobjects/weapon";
 
-/*
-export enum WeaponType {
-    Laser1,
-    Laser2, 
-    Laser3,
-    Laser4
-}*/
-
 // TODO: fix and move implementation here once basic player functionality is working in main scene
 export class Player extends Phaser.GameObjects.Sprite {
-    //public sprite: Phaser.Physics.Arcade.Sprite;
+    
     public playerGun: any;//Phaser.Physics.Arcade.Image;
 
     private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-    //private anims: Phaser.Animations.AnimationManager;
 
     private moveKeyLeft: Phaser.Input.Keyboard.Key;
     private moveKeyRight: Phaser.Input.Keyboard.Key;
