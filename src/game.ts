@@ -7,6 +7,7 @@
 /// <reference path="./dts/phaser.d.ts"/>
 
 import "phaser";
+import { SceneController } from "./scenes/sceneController";
 import { TitleScene } from "./scenes/titleScene";
 import { LevelSelectScene } from "./scenes/levelSelectScene";
 import { MainScene } from "./scenes/mainScene";
@@ -22,7 +23,7 @@ var config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   parent: "game",  
   input: { keyboard: true},
-  scene: [ TitleScene, LevelSelectScene, MenuBackgroundScene, LoadingScene, PauseScene, MainScene, HudScene ],
+  scene: [ SceneController, TitleScene, LevelSelectScene, MenuBackgroundScene, LoadingScene, PauseScene, MainScene, HudScene ],
   audio: {
     //noAudio: true
   },

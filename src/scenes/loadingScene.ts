@@ -53,7 +53,7 @@
             color:"rgb(255,255,255)",
         });
         this.infoText.setStroke('rgb(0,0,0)', 16);
-
+        */
         //  Grab a reference to the Game Scene
         let ourGame = this.scene.get('MainScene');
         
@@ -61,8 +61,17 @@
         //  Listen for events from it
         ourGame.events.on('gameLoaded', function () {            
 
+            var test = this.add.text(600, 800, 'PRESS X to continue',
+            {
+                fontFamily: 'KenneyRocketSquare',
+                fontSize: 64,
+                align: 'right',            
+                color:"rgb(255,255,255)",
+            });
+            this.loadingText.setStroke('rgb(0,0,0)', 16);
+
         }, this);
-        */
+        
         this.scene.bringToTop;
     }
 

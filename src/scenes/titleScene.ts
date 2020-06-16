@@ -28,7 +28,7 @@
         console.log(data.id);        
     }
 
-    preload(): void {
+    preload(): void {        
     }
 
     create(): void {
