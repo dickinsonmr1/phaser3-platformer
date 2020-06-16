@@ -8,7 +8,8 @@
 
 import "phaser";
 import { Player } from "../player";
-import { WeaponType } from "../player";
+import { WeaponType } from "../gameObjects/weapon";
+import { Weapon } from "../gameObjects/weapon";
 import { HudScene } from "./hudScene";
 import { Enemy } from "../enemy";
 import { Spring } from "../gameobjects/spring";
@@ -20,6 +21,7 @@ import { World } from "../world/world";
 import { ExpiringText } from "../gameobjects/expiringText";
 import { Switch } from "../gameobjects/switch";
 import { Spaceship } from "../gameobjects/spaceship";
+import { RocketLauncher, PulseCharge, LaserRepeater, LaserPistol } from "../gameobjects/weapon";
 
 export class MainScene extends Phaser.Scene {
   
@@ -571,7 +573,7 @@ export class MainScene extends Phaser.Scene {
         this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
 
         var newAmmoCount = 20;
-        this.player.reload(newAmmoCount, WeaponType.Laser1);
+        this.player.reload(new LaserPistol());
         this.events.emit("weaponCollected", newAmmoCount);
 
         this.addExpiringText(this, this.player.x, this.player.y, "LASER PISTOL");
@@ -587,7 +589,7 @@ export class MainScene extends Phaser.Scene {
         this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
 
         var newAmmoCount = 30;
-        this.player.reload(newAmmoCount, WeaponType.Laser2);
+        this.player.reload(new LaserRepeater());
         this.events.emit("weaponCollected", newAmmoCount);
 
         this.addExpiringText(this, this.player.x, this.player.y, "LASER REPEATER");
@@ -603,7 +605,7 @@ export class MainScene extends Phaser.Scene {
         this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
 
         var newAmmoCount = 10;
-        this.player.reload(newAmmoCount, WeaponType.Laser3);
+        this.player.reload(new PulseCharge());
         this.events.emit("weaponCollected", newAmmoCount);
 
         this.addExpiringText(this, this.player.x, this.player.y, "PULSE CHARGE");
@@ -619,7 +621,7 @@ export class MainScene extends Phaser.Scene {
         this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
 
         var newAmmoCount = 5;
-        this.player.reload(newAmmoCount, WeaponType.Laser4);
+        this.player.reload(new RocketLauncher());
         this.events.emit("weaponCollected", newAmmoCount);
 
         this.addExpiringText(this, this.player.x, this.player.y, "ROCKET LAUNCHER");

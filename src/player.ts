@@ -12,13 +12,15 @@ import { Bullet } from "./bullet";
 import { Switch } from "./gameobjects/switch";
 import { Spaceship } from "./gameobjects/spaceship";
 import { Portal } from "./gameobjects/portal";
+import { Weapon, LaserRepeater } from "./gameobjects/weapon";
 
+/*
 export enum WeaponType {
     Laser1,
     Laser2, 
     Laser3,
     Laser4
-}
+}*/
 
 // TODO: fix and move implementation here once basic player functionality is working in main scene
 export class Player extends Phaser.GameObjects.Sprite {
@@ -53,58 +55,22 @@ export class Player extends Phaser.GameObjects.Sprite {
     private static get playerRunVelocityX(): number{return 400;}  
     private get playerBulletVelocityX(): number
     {
-        switch(this.currentWeaponType) {
-            case WeaponType.Laser1:
-                return 700;
-            case WeaponType.Laser2:
-                return 900;
-            case WeaponType.Laser3:
-                return 900;
-            case WeaponType.Laser4:
-                return 1000;
-        }
+        return this.currentWeapon.bulletVelocityX;
     }  
 
     private get currentWeaponBulletName(): string
     {
-        switch(this.currentWeaponType) {
-            case WeaponType.Laser1:
-                return "playerGunLaser1";
-            case WeaponType.Laser2:
-                return "playerGunLaser2";
-            case WeaponType.Laser3:
-                return "playerGunLaser3";
-            case WeaponType.Laser4:
-                return "playerRocket2";
-        }
+        return this.currentWeapon.bulletName;
     }  
 
     private get currentWeaponSoundName(): string
     {
-        switch(this.currentWeaponType) {
-            case WeaponType.Laser1:
-                return "laser1Sound";
-            case WeaponType.Laser2:
-                return "laser2Sound";
-            case WeaponType.Laser3:
-                return "laser3Sound";
-            case WeaponType.Laser4:
-                return "laser4Sound";
-        }
+        return this.currentWeapon.weaponSoundName;
     }  
 
     private get currentWeaponDamage(): number
     {
-        switch(this.currentWeaponType) {
-            case WeaponType.Laser1:
-                return 50;
-            case WeaponType.Laser2:
-                return 100;
-            case WeaponType.Laser3:
-                return 150;
-            case WeaponType.Laser4:
-                return 500;
-        }
+        return this.currentWeapon.weaponDamage;
     }  
 
     private playerBulletOffsetX(): number {
@@ -115,30 +81,12 @@ export class Player extends Phaser.GameObjects.Sprite {
     }  
     private get playerStandingBulletOffsetY(): number
     {
-        switch(this.currentWeaponType) {
-            case WeaponType.Laser1:
-                return 45;
-            case WeaponType.Laser2:
-                return 45;
-            case WeaponType.Laser3:
-                return 70;
-            case WeaponType.Laser4:
-                return 45;
-        }
+       return this.currentWeapon.playerStandingBulletOffsetY;
     }  
 
     private get bulletTimeInterval(): number
     {
-        switch(this.currentWeaponType) {
-            case WeaponType.Laser1:
-                return 300;
-            case WeaponType.Laser2:
-                return 200;
-            case WeaponType.Laser3:
-                return 500;
-            case WeaponType.Laser4:
-                return 750;
-        }
+        return this.currentWeapon.bulletTimeInterval;
     }  
 
     // game objects
@@ -160,12 +108,14 @@ export class Player extends Phaser.GameObjects.Sprite {
     public static get maxHealth(): number { return 8; }
 
     public gemsCollected: number;
-    public ammoCount: number;
+    //public ammoCount: number;
 
     public isTouchingSpring: boolean;
     public springTime: number;
 
-    public currentWeaponType: WeaponType;
+    //public currentWeaponType: WeaponType;
+    public currentWeapon: Weapon;
+
     public currentSpaceship: Spaceship;
 
     public getScene(): Scene {
@@ -209,7 +159,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.hurtTime = 0;
         this.health = Player.maxHealth;
         this.gemsCollected = 0;
-        this.ammoCount = 5;
+        //this.ammoCount = 5;
         this.bulletTime = 0;
         this.lastUsedBulletIndex = 0;
         this.springTime = 0;
@@ -238,7 +188,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.hideInteractTextAndImage();
         this.currentInteractionItem = null;
 
-        this.currentWeaponType = WeaponType.Laser1;
+        this.currentWeapon = new LaserRepeater();
         this.playerGun = this.scene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, 'playerGun')        
         //this.bullets = this.currentScene.add.group();
         
@@ -371,9 +321,9 @@ export class Player extends Phaser.GameObjects.Sprite {
         }
     }
 
-    reload(ammoCount: number, weaponType: WeaponType) {
-        this.ammoCount = ammoCount;
-        this.currentWeaponType = weaponType;
+    reload(weapon: Weapon) {
+        //this.ammoCount = ammoCount;
+        this.currentWeapon = weapon;
         this.playerGun.alpha = 1.0;
     }
 
@@ -381,17 +331,17 @@ export class Player extends Phaser.GameObjects.Sprite {
         if(!this.isInSpaceship) {
             if (gameTime > this.bulletTime) {
 
-                if(this.ammoCount > 0 ) {
+                if(this.currentWeapon.currentAmmo > 0 ) {
                     this.createBullet();
                     this.bulletTime = gameTime + this.bulletTimeInterval;
-                    this.ammoCount--;
+                    this.currentWeapon.currentAmmo--;
                     sound.play(this.currentWeaponSoundName);
-                    this.scene.events.emit("weaponFired", this.ammoCount);
+                    this.scene.events.emit("weaponFired", this.currentWeapon.currentAmmo);
     
                     //if(this.ammoCount < 3) 
                         //this.scene.sound.play("lowAmmoSound");            
     
-                    if(this.ammoCount == 0) {
+                    if(this.currentWeapon.currentAmmo == 0) {
                         this.playerGun.alpha = 0.0;
                         this.scene.sound.play("noAmmoSound");
                     }

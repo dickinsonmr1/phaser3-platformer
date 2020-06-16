@@ -1,9 +1,8 @@
 export class HealthBar extends Phaser.GameObjects.Group {
 
-    private healthBarOriginX: number;// {return 600;}  
-    private healthBarOriginY: number;// {return 900;}  
+    private healthBarOriginX: number;
+    private healthBarOriginY: number;
     private static get healthBarLeftSegmentWidth(): number {return 6;}  
-    //private healthBarMidSegmentWidth(): number {return this.healthMax * 2;}  
     private static get healthBarRightSegmentWidth(): number {return 6;}  
     private healthBarHeight: number;
 
@@ -88,6 +87,27 @@ export class HealthBar extends Phaser.GameObjects.Group {
         return (this.currentHealth / this.healthMax) * this.healthMaxWidthInPixels;
     }
 
+    
+
+    updateHealth(health: number) {
+
+        this.currentHealth = health;
+
+        if(health <= 0) {
+            this.healthBarLeft.visible = false;
+            this.healthBarMid.visible = false;
+            this.healthBarRight.visible = false;
+        }
+        else {
+
+            this.healthBarLeft.visible = true;
+            this.healthBarMid.visible = true;
+            this.healthBarRight.visible = true;
+
+            this.updatePosition(this.healthBarOriginX, this.healthBarOriginY);        
+        }
+    }
+
     updatePosition(originX: number, originY: number) {
         this.healthBarOriginX = originX;
         this.healthBarOriginY = originY;
@@ -109,25 +129,6 @@ export class HealthBar extends Phaser.GameObjects.Group {
 
         this.healthBarShadowRight.setPosition(this.healthBarOriginX + HealthBar.healthBarShadowOffsetX + HealthBar.healthBarShadowLeftSegmentWidth + this.healthMaxWidthInPixels,
             this.healthBarOriginY + HealthBar.healthBarShadowOffsetY);
-    }
-
-    updateHealth(health: number) {
-
-        this.currentHealth = health;
-
-        if(health <= 0) {
-            this.healthBarLeft.visible = false;
-            this.healthBarMid.visible = false;
-            this.healthBarRight.visible = false;
-        }
-        else {
-
-            this.healthBarLeft.visible = true;
-            this.healthBarMid.visible = true;
-            this.healthBarRight.visible = true;
-
-            this.updatePosition(this.healthBarOriginX, this.healthBarOriginY);        
-        }
     }
 
     preUpdate() {
