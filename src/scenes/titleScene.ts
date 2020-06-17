@@ -59,16 +59,11 @@ import { SceneController } from "./sceneController";
         if(Phaser.Input.Keyboard.JustDown(this.selectKey))  {
             if(this.menu.selectedIndex == 0) {
                 this.input.keyboard.resetKeys();
-                this.scene.sleep('TitleScene');                
-                this.scene.sleep('MenuBackgroundScene'); 
-                this.scene.start('MainScene', { id: 0, worldName: 'world-04-02' });
-                this.scene.start('HudScene');
-                this.scene.start('LoadingScene');
+                this.sceneController.loadGameWithLoadingScene(0);
             }
             else if(this.menu.selectedIndex == 1) {
                 this.input.keyboard.resetKeys();
-                this.scene.sleep('TitleScene');                
-                this.scene.start('LevelSelectScene');
+                this.sceneController.loadLevelSelectScene();
             }
         }
 

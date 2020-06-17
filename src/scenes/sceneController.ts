@@ -53,9 +53,7 @@ export class SceneController extends Phaser.Scene {
         this.hudScene = new HudScene(this);
         this.game.scene.add("HudScene", this.hudScene);        
 
-        this.scene.launch("TitleScene");
-        //this.scene.launch("LevelSelectScene");
-        this.scene.launch("MenuBackgroundScene");
+        this.loadTitleScene();        
     }
 
     update(): void {
@@ -63,26 +61,56 @@ export class SceneController extends Phaser.Scene {
     }
 
     loadTitleScene() {
-
+        this.scene.launch("TitleScene");
+        this.scene.launch("MenuBackgroundScene");
     }
 
-    loadLoadingScene() {
+    returnToTitleSceneFromLevelSelect() {
+        this.scene.sleep('LevelSelectScene');
+        this.scene.start('TitleScene');
+        this.scene.start('MenuBackgroundScene');
+    }
 
+    loadGameWithLoadingScene(levelId: number) {
+        this.scene.sleep('TitleScene');                
+        this.scene.sleep('MenuBackgroundScene'); 
+        this.scene.start('MainScene', { id: 0, worldName: 'world-04-02' });
+        this.scene.start('HudScene');
+        this.scene.start('LoadingScene');
+    }
+
+    loadLevelSelectScene() {
+        this.scene.sleep('TitleScene');                
+        this.scene.start('LevelSelectScene');
     }
 
     loadMainScene() {
-
+        this.scene.stop("LoadingScene");
+        this.scene.bringToTop("HudScene");
+        this.scene.setVisible(true, "HudScene");
     }
 
     pauseGame() {
+        this.scene.pause('MainScene');            
+        this.scene.pause('HudScene');
+        this.scene.setVisible(false, "HudScene");
+        this.sound.pauseAll();
 
+        this.scene.run("PauseScene");
+        this.scene.bringToTop("PauseScene")
     }
 
     returnToGame() {
-
+        this.scene.sleep('PauseScene');   
+        this.scene.wake('MainScene');               
+        this.scene.setVisible(true, 'HudScene');
     }
 
     returnToTitleScene() {
-
+        this.scene.stop('MainScene');
+        this.scene.stop('HudScene');
+        this.scene.sleep('PauseScene');
+        this.scene.switch('TitleScene');      
+        this.scene.launch('MenuBackgroundScene');
     }
 }

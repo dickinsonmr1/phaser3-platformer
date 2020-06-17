@@ -29,7 +29,7 @@ import { SceneController } from "./sceneController";
         super({
             key: "PauseScene"
         });
-        sceneController: SceneController;
+        this.sceneController = sceneController;
     }
         
     preload(): void {
@@ -93,16 +93,11 @@ import { SceneController } from "./sceneController";
 
     returnToGame(): void {        
         this.input.keyboard.resetKeys();
-        this.scene.sleep('PauseScene');   
-        this.scene.wake('MainScene');               
-        this.scene.setVisible(true, 'HudScene');
+        this.sceneController.returnToGame();
     }   
 
     endGameAndReturnToTitleMenu(): void {
-        this.input.keyboard.resetKeys();        
-        this.scene.stop('MainScene');
-        this.scene.stop('HudScene');
-        this.scene.sleep('PauseScene');
-        this.scene.switch('TitleScene');        
+        this.input.keyboard.resetKeys();             
+        this.sceneController.returnToTitleScene();
     }   
  }

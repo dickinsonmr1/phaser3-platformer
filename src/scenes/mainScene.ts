@@ -70,7 +70,7 @@ export class MainScene extends Phaser.Scene {
             //active: true
             //map: {   events: 'events', audio: 'audio'}
         });
-        sceneController: SceneController;
+        this.sceneController = sceneController;
     }
 
     init(data): void {
@@ -420,9 +420,8 @@ export class MainScene extends Phaser.Scene {
         this.events.emit("gameLoaded");
         //this.scene.pause();
         //this.scene.setVisible(false, "MainScene");
-        this.scene.stop("LoadingScene");
-        this.scene.bringToTop("HudScene");
-        this.scene.setVisible(true, "HudScene");
+
+        this.sceneController.loadMainScene();
     }
 
     update(): void {
@@ -432,13 +431,7 @@ export class MainScene extends Phaser.Scene {
         if(Phaser.Input.Keyboard.JustDown(this.pauseKey)) {
             this.input.keyboard.resetKeys();
 
-            this.scene.pause('MainScene');            
-            this.scene.pause('HudScene');
-            this.scene.setVisible(false, "HudScene");
-            this.sound.pauseAll();
-
-            this.scene.run("PauseScene");
-            this.scene.bringToTop("PauseScene")
+            this.sceneController.pauseGame();
         }
              
         if(this.zoomInKey.isDown) {

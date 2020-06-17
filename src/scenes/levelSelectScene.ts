@@ -54,24 +54,17 @@
         if(Phaser.Input.Keyboard.JustDown(this.selectKey))  {
             if(this.menu.selectedIndex == 0) {
                 this.input.keyboard.resetKeys();
-                this.scene.sleep('LevelSelectScene');
-                this.scene.sleep('MenuBackgroundScene');
-                this.scene.start('LoadingScene');
-                this.scene.start('MainScene', {id: 0});
-                this.scene.start('HudScene');
+
+                this.sceneController.loadGameWithLoadingScene(0);                
             }
             if(this.menu.selectedIndex == 1) {
                 this.input.keyboard.resetKeys();
-                this.scene.sleep('LevelSelectScene');
-                this.scene.sleep('MenuBackgroundScene');
-                this.scene.start('LoadingScene');
-                this.scene.start('MainScene', {id: 1});
-                this.scene.start('HudScene');
+
+                this.sceneController.loadGameWithLoadingScene(1);   
             }
             else if(this.menu.selectedIndex == 2) {
                 this.input.keyboard.resetKeys();
-                this.scene.sleep('LevelSelectScene');
-                this.scene.start('TitleScene', { skySpriteX: 0 });
+                this.sceneController.returnToTitleSceneFromLevelSelect();
             }
         }
 
