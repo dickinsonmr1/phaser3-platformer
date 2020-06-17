@@ -1,15 +1,21 @@
+import { SceneController } from "./sceneController";
+
 export class MenuBackgroundScene extends Phaser.Scene {
     
+    sceneController: SceneController;
+
     private skySprite: Phaser.GameObjects.TileSprite;
     skySpriteX: number;
     
     private spaceship: Phaser.GameObjects.Sprite;
     private spaceshipMoveTime: number;
 
-    constructor() {
+    constructor(sceneController: SceneController) {
         super({
             key: "MenuBackgroundScene"
         });
+
+        this.sceneController = sceneController;
     }
 
     preload(): void {

@@ -10,9 +10,11 @@
  import { Player } from "../gameobjects/player";
  import { Constants } from "../constants";
  import { Menu } from "./menu";
+import { SceneController } from "./sceneController";
  
  export class PauseScene extends Phaser.Scene {
 
+    sceneController: SceneController;
     // HUD
     menu: Menu;
 
@@ -23,10 +25,11 @@
     cursorLeft: Phaser.Input.Keyboard.Key;
     cursorRight: Phaser.Input.Keyboard.Key;
 
-    constructor() {
+    constructor(sceneController: SceneController) {
         super({
             key: "PauseScene"
         });
+        sceneController: SceneController;
     }
         
     preload(): void {

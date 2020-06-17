@@ -7,8 +7,11 @@
  /// <reference path="../dts/phaser.d.ts"/>
 
  import "phaser";
+ import { SceneController } from "./sceneController";
 
  export class LoadingScene extends Phaser.Scene {
+
+    sceneController: SceneController;
 
     playerIcon: Phaser.GameObjects.Image;
     loadingText: Phaser.GameObjects.Text;
@@ -17,10 +20,12 @@
     //infoText: Phaser.GameObjects.Text;
     //infoTextAlpha: number;
     
-    constructor() {
+    constructor(sceneController: SceneController) {
         super({
             key: "LoadingScene"
         });
+
+        this.sceneController = sceneController;
     }
 
         

@@ -22,9 +22,11 @@ import { ExpiringText } from "../gameobjects/expiringText";
 import { Switch } from "../gameobjects/switch";
 import { Spaceship } from "../gameobjects/spaceship";
 import { RocketLauncher, PulseCharge, LaserRepeater, LaserPistol } from "../gameobjects/weapon";
+import { SceneController } from "./sceneController";
 
 export class MainScene extends Phaser.Scene {
   
+    sceneController: SceneController;
     public skySprite: Phaser.GameObjects.TileSprite;
 
     world: World;    
@@ -62,12 +64,13 @@ export class MainScene extends Phaser.Scene {
 
     expiringMessagesGroup: Phaser.GameObjects.Group;
      
-    constructor() {
-    super({
-        key: "MainScene",
-        //active: true
-        //map: {   events: 'events', audio: 'audio'}
-    });
+    constructor(sceneController: SceneController) {
+        super({
+            key: "MainScene",
+            //active: true
+            //map: {   events: 'events', audio: 'audio'}
+        });
+        sceneController: SceneController;
     }
 
     init(data): void {
@@ -415,11 +418,11 @@ export class MainScene extends Phaser.Scene {
         this.events.emit("infoTextEmitted", "Objective: repair ship");
 
         this.events.emit("gameLoaded");
-        this.scene.pause();
-        this.scene.setVisible(false, "MainScene");
-        //this.scene.stop("LoadingScene");
-        //this.scene.bringToTop("HudScene");
-        //this.scene.setVisible(true, "HudScene");
+        //this.scene.pause();
+        //this.scene.setVisible(false, "MainScene");
+        this.scene.stop("LoadingScene");
+        this.scene.bringToTop("HudScene");
+        this.scene.setVisible(true, "HudScene");
     }
 
     update(): void {
@@ -448,8 +451,6 @@ export class MainScene extends Phaser.Scene {
         if(this.moveWaterKey.isDown) {
             // debug stuff here    
         }
-
-
 
         if(!this.player.isInSpaceship) {
 

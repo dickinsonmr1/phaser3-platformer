@@ -23,7 +23,7 @@ var config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   parent: "game",  
   input: { keyboard: true},
-  scene: [ SceneController, TitleScene, LevelSelectScene, MenuBackgroundScene, LoadingScene, PauseScene, MainScene, HudScene ],
+  scene: [ SceneController], //, TitleScene, LevelSelectScene, MenuBackgroundScene, LoadingScene, PauseScene, MainScene, HudScene ],
   audio: {
     //noAudio: true
   },

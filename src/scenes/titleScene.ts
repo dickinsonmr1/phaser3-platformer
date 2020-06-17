@@ -8,9 +8,11 @@
 
  import "phaser";
  import { Menu } from "./menu";
+import { SceneController } from "./sceneController";
  
  export class TitleScene extends Phaser.Scene {
 
+    sceneController: SceneController;
     menu: Menu;
 
     pauseKey: Phaser.Input.Keyboard.Key;
@@ -18,10 +20,12 @@
     cursorUp: Phaser.Input.Keyboard.Key;
     cursorDown: Phaser.Input.Keyboard.Key;
 
-    constructor() {
+    constructor(sceneController: SceneController) {
         super({
             key: "TitleScene"
         });
+
+        this.sceneController = sceneController;
     }
         
     init(data): void {

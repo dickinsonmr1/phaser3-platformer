@@ -9,19 +9,20 @@
  import "phaser";
  import { Player } from "../gameobjects/player";
  import { Constants } from "../constants";
-import { HealthBar } from "./healthBar";
+ import { HealthBar } from "./healthBar";
+ import { SceneController } from "./sceneController";
  
  export class HudScene extends Phaser.Scene {
-
+    sceneController: SceneController;
     // HUD
     hudComponent: HUDComponent;
 
-    constructor() {
+    constructor(sceneController: SceneController) {
         super({
             key: "HudScene"
         });
+        this.sceneController = sceneController;
     }
-
         
     preload(): void {
         this.load.atlasXML('hudSprites', './assets/sprites/HUD/spritesheet_hud.png', './assets/sprites/HUD/spritesheet_hud.xml');        
