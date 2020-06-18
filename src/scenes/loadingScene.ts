@@ -13,9 +13,17 @@
 
     sceneController: SceneController;
 
+    selectKey: Phaser.Input.Keyboard.Key;
+
     playerIcon: Phaser.GameObjects.Image;
+
+    titleText: Phaser.GameObjects.Text;
     loadingText: Phaser.GameObjects.Text;
     loadingTextAlpha: number;
+
+    gameLoaded: boolean;
+
+    private get titleStartX(): number { return this.game.canvas.width / 2; }
 
     //infoText: Phaser.GameObjects.Text;
     //infoTextAlpha: number;
@@ -35,45 +43,43 @@
 
     create(): void {
 
+        this.loadingTextAlpha = 0;
+        this.gameLoaded = false;
+        this.selectKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+
         this.playerIcon = this.add.image(200, 200, 'sprites', 'hudPlayer_blue.png');
         this.playerIcon.setScale(1.0, 1.0);
 
-        this.loadingText = this.add.text(600, 150, '// LOADING GAME',
+        this.titleText = this.add.text(this.titleStartX, 150, 'WORLD 04-02',
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: 64,
-            align: 'right',            
+            fontSize: 96,
+            align: 'center',            
             color:"rgb(255,255,255)",
         });
-        this.loadingText.setStroke('rgb(0,0,0)', 16);
-             
+        this.titleText.setStroke('rgb(0,0,0)', 16);   
+        this.titleText.setAlpha(1);//this.loadingTextAlpha);        
+        this.titleText.setOrigin(0.5, 0);
         //var scene = <Phaser.Scene>this;
-        
-        /*
-        this.infoText = this.add.text(this.game., 300, '// LOADING WORLD',
+                
+        this.loadingText = this.add.text(this.titleStartX, 800, 'LOADING WORLD...',
         {
             fontFamily: 'KenneyRocketSquare',
             fontSize: 64,
             align: 'center',            
             color:"rgb(255,255,255)",
         });
-        this.infoText.setStroke('rgb(0,0,0)', 16);
-        */
+        this.loadingText.setStroke('rgb(0,0,0)', 16);
+        this.loadingText.setOrigin(0.5, 0);
+
         //  Grab a reference to the Game Scene
         let ourGame = this.scene.get('MainScene');
-        
-
+    
         //  Listen for events from it
         ourGame.events.on('gameLoaded', function () {            
 
-            var test = this.add.text(600, 800, 'PRESS X to continue',
-            {
-                fontFamily: 'KenneyRocketSquare',
-                fontSize: 64,
-                align: 'right',            
-                color:"rgb(255,255,255)",
-            });
-            this.loadingText.setStroke('rgb(0,0,0)', 16);
+            this.loadingText.setText('PRESS ENTER TO CONTINUE');               
+            this.gameLoaded = true;
 
         }, this);
         
@@ -81,9 +87,18 @@
     }
 
     update(): void {
-        if(this.loadingTextAlpha > 0) {
 
-            this.loadingTextAlpha -= 0.01;
+
+        //if(this.titleText.x > 600)
+            //this.titleText.x -= 50;
+
+        if(Phaser.Input.Keyboard.JustDown(this.selectKey) && this.gameLoaded)  {
+            this.sceneController.loadMainScene();
+        }
+
+        if(this.loadingTextAlpha < 1) {
+
+            this.loadingTextAlpha += 0.05;
             this.loadingText.setAlpha(this.loadingTextAlpha);
         }        
     }

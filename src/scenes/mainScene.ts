@@ -418,10 +418,10 @@ export class MainScene extends Phaser.Scene {
         this.events.emit("infoTextEmitted", "Objective: repair ship");
 
         this.events.emit("gameLoaded");
-        //this.scene.pause();
-        //this.scene.setVisible(false, "MainScene");
+        this.scene.pause();
+        this.scene.setVisible(false, "MainScene");
 
-        this.sceneController.loadMainScene();
+        //this.sceneController.loadMainScene();
     }
 
     update(): void {

@@ -86,8 +86,12 @@ export class SceneController extends Phaser.Scene {
 
     loadMainScene() {
         this.scene.stop("LoadingScene");
+
         this.scene.bringToTop("HudScene");
         this.scene.setVisible(true, "HudScene");
+        
+        this.scene.resume('MainScene');        
+        this.scene.setVisible(true, "MainScene");
     }
 
     pauseGame() {
