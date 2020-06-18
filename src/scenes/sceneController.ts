@@ -71,7 +71,7 @@ export class SceneController extends Phaser.Scene {
         this.scene.start('MenuBackgroundScene');
     }
 
-    loadGameWithLoadingScene(levelId: number) {
+    preloadGameAndDisplayLoadingScene(levelId: number) {
         this.scene.sleep('TitleScene');                
         this.scene.sleep('MenuBackgroundScene'); 
         this.scene.start('MainScene', { id: 0, worldName: 'world-04-02' });

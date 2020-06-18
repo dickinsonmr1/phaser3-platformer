@@ -55,12 +55,12 @@
             if(this.menu.selectedIndex == 0) {
                 this.input.keyboard.resetKeys();
 
-                this.sceneController.loadGameWithLoadingScene(0);                
+                this.sceneController.preloadGameAndDisplayLoadingScene(0);                
             }
             if(this.menu.selectedIndex == 1) {
                 this.input.keyboard.resetKeys();
 
-                this.sceneController.loadGameWithLoadingScene(1);   
+                this.sceneController.preloadGameAndDisplayLoadingScene(1);   
             }
             else if(this.menu.selectedIndex == 2) {
                 this.input.keyboard.resetKeys();

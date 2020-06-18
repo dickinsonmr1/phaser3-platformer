@@ -18,6 +18,9 @@
     playerIcon: Phaser.GameObjects.Image;
 
     titleText: Phaser.GameObjects.Text;
+
+    objectiveText: Phaser.GameObjects.Text;
+
     loadingText: Phaser.GameObjects.Text;
     loadingTextAlpha: number;
 
@@ -71,6 +74,16 @@
         });
         this.loadingText.setStroke('rgb(0,0,0)', 16);
         this.loadingText.setOrigin(0.5, 0);
+
+        this.objectiveText = this.add.text(this.titleStartX, 300, 'Objective: repair ship',
+        {
+            fontFamily: 'KenneyRocketSquare',
+            fontSize: 64,
+            align: 'center',            
+            color:"rgb(255,255,255)",
+        });
+        this.objectiveText.setStroke('rgb(0,0,0)', 16);
+        this.objectiveText.setOrigin(0.5, 0);
 
         //  Grab a reference to the Game Scene
         let ourGame = this.scene.get('MainScene');
