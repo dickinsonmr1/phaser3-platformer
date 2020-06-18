@@ -147,7 +147,7 @@ export class Menu {
         */
     }
 
-    private refreshColorsAndMarker() {
+    refreshColorsAndMarker() {
         for(var i = 0; i < this.items.length; i++) {
             if(i == this.selectedIndex) {
                 this.items[i].setColor(this.highlightedColor());

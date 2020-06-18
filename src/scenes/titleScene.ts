@@ -55,15 +55,24 @@ import { SceneController } from "./sceneController";
         this.scene.sendToBack('MenuBackgroundScene');              
     }
 
+    resetMarker(): void {
+        if(this.menu != null) {
+            this.menu.refreshColorsAndMarker();
+            this.menu.marker.visible = false;
+        }
+    }
+
     update(): void {
         if(Phaser.Input.Keyboard.JustDown(this.selectKey))  {
             if(this.menu.selectedIndex == 0) {
                 this.input.keyboard.resetKeys();
                 this.sceneController.preloadGameAndDisplayLoadingScene(0);
+                this.menu.refreshColorsAndMarker();
             }
             else if(this.menu.selectedIndex == 1) {
                 this.input.keyboard.resetKeys();
                 this.sceneController.loadLevelSelectScene();
+                this.menu.refreshColorsAndMarker();
             }
         }
 

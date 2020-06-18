@@ -24,7 +24,7 @@
         super({
             key: "LevelSelectScene"
         });
-        this.sceneController;
+        this.sceneController = sceneController;
     }
 
     init(data): void {
@@ -50,21 +50,30 @@
         this.menu.addMenuItem(this, "Exit to Title");        
     }
 
+    resetMarker(): void {
+        if(this.menu != null) {
+            this.menu.refreshColorsAndMarker();
+            this.menu.marker.visible = false;
+        }
+    }
+
     update(): void {
         if(Phaser.Input.Keyboard.JustDown(this.selectKey))  {
             if(this.menu.selectedIndex == 0) {
                 this.input.keyboard.resetKeys();
-
                 this.sceneController.preloadGameAndDisplayLoadingScene(0);                
+                this.menu.refreshColorsAndMarker();
             }
             if(this.menu.selectedIndex == 1) {
                 this.input.keyboard.resetKeys();
 
-                this.sceneController.preloadGameAndDisplayLoadingScene(1);   
+                this.sceneController.preloadGameAndDisplayLoadingScene(1);
+                this.menu.refreshColorsAndMarker();   
             }
             else if(this.menu.selectedIndex == 2) {
                 this.input.keyboard.resetKeys();
                 this.sceneController.returnToTitleSceneFromLevelSelect();
+                this.menu.refreshColorsAndMarker();
             }
         }
 

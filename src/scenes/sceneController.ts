@@ -67,8 +67,8 @@ export class SceneController extends Phaser.Scene {
 
     returnToTitleSceneFromLevelSelect() {
         this.scene.sleep('LevelSelectScene');
-        this.scene.start('TitleScene');
-        this.scene.start('MenuBackgroundScene');
+        this.scene.launch('TitleScene');        
+        this.titleScene.resetMarker();
     }
 
     preloadGameAndDisplayLoadingScene(levelId: number) {
@@ -82,6 +82,8 @@ export class SceneController extends Phaser.Scene {
     loadLevelSelectScene() {
         this.scene.sleep('TitleScene');                
         this.scene.start('LevelSelectScene');
+        this.levelSelectScene.resetMarker();
+        //this.levelSelectScene.menu.refreshColorsAndMarker();
     }
 
     loadMainScene() {

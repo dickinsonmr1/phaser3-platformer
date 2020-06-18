@@ -36,21 +36,6 @@
         this.load.image('healthBarRight', './assets/sprites/HUD/barHorizontal_red_right.png');
     }
 
-    private static get healthBarOriginX(): number {return 600;}  
-    private static get healthBarOriginY(): number {return 900;}  
-    private static get healthBarLeftSegmentWidth(): number {return 6;}  
-    private static get healthBarMidSegmentWidth(): number {return 200;}  
-    private static get healthBarRightSegmentWidth(): number {return 6;}  
-    private static get healthBarHeight(): number {return 30;} 
-
-    private static get healthBarShadowBuffer(): number {return 4;}
-    private static get healthBarShadowOffsetX(): number {return -2;}  
-    private static get healthBarShadowOffsetY(): number {return -2;}  
-    private static get healthBarShadowHeight(): number {return HudScene.healthBarHeight + HudScene.healthBarShadowBuffer;} 
-    private static get healthBarShadowLeftSegmentWidth(): number {return HudScene.healthBarLeftSegmentWidth;}  
-    private static get healthBarShadowMidSegmentWidth(): number {return HudScene.healthBarMidSegmentWidth + HudScene.healthBarShadowBuffer;}  
-    private static get healthBarShadowRightSegmentWidth(): number {return HudScene.healthBarRightSegmentWidth;}  
-
     public healthBarHealth = 100;
     public healthBar: HealthBar;
 
