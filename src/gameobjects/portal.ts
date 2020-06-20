@@ -112,6 +112,10 @@
         this.getScene().sound.play("portalCloseSound", { volume: 0.5 });
     }
 
+    interact() {
+
+    }
+
     preUpdate(time, delta): void {
         super.preUpdate(time, delta);
 

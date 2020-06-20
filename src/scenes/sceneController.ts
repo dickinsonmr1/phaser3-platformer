@@ -5,6 +5,7 @@ import { PauseScene } from "./pauseScene";
 import { TitleScene } from "./titleScene";
 import { LevelSelectScene } from "./levelSelectScene";
 import { HudScene } from "./hudScene";
+import { GameProgress } from "./gameProgress";
 
 export class SceneController extends Phaser.Scene {
 
@@ -113,6 +114,10 @@ export class SceneController extends Phaser.Scene {
     }
 
     returnToTitleScene() {
+
+        var gameProgress = new GameProgress();
+        gameProgress.save();
+
         this.scene.stop('MainScene');
         this.scene.stop('HudScene');
         this.scene.sleep('PauseScene');
