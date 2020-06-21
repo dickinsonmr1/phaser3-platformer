@@ -80,6 +80,15 @@ export class SceneController extends Phaser.Scene {
         this.scene.start('LoadingScene');
     }
 
+    preloadSavedGameAndDisplayLoadingScene(levelId: number) {
+        this.scene.sleep('TitleScene');                
+        this.scene.sleep('LevelSelectScene');  
+        this.scene.sleep('MenuBackgroundScene'); 
+        this.scene.start('MainScene', { id: 0, worldName: 'world-04-02' });
+        this.scene.start('HudScene');
+        this.scene.start('LoadingScene');
+    }
+
     loadLevelSelectScene() {
         this.scene.sleep('TitleScene');                
         this.scene.start('LevelSelectScene');
@@ -121,6 +130,7 @@ export class SceneController extends Phaser.Scene {
         this.scene.stop('MainScene');
         this.scene.stop('HudScene');
         this.scene.sleep('PauseScene');
+        
         this.scene.switch('TitleScene');      
         this.scene.launch('MenuBackgroundScene');
     }

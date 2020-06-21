@@ -51,7 +51,7 @@ import { SceneController } from "./sceneController";
         this.menu.setMarker(this, ">>");
         this.menu.addMenuItem(this, "Resume");
         this.menu.addMenuComplexItem(this, "Toggle Sound", ['On', 'Off']);
-        this.menu.addMenuItem(this, "Save and Exit to Title");     
+        this.menu.addMenuItem(this, "Save and Exit");     
         
         this.scene.bringToTop;
     }
