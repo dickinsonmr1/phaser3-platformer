@@ -415,13 +415,19 @@ export class MainScene extends Phaser.Scene {
         //this.time.addEvent({delay: 1000, callback: hudScene.displayExpiringInfoText, callbackScope: this });
         //this.events.emit("infoTextEmitted", "Objective: repair ship");
 
-        this.events.emit("infoTextEmitted", "Objective: repair ship");
+        //this.events.emit("infoTextEmitted", "Objective: repair ship");
 
-        this.events.emit("gameLoaded");
+        this.sceneController.mainSceneLoaded();
+
+        //this.events.emit("gameLoaded");
         this.scene.pause();
         this.scene.setVisible(false, "MainScene");
 
         //this.sceneController.loadMainScene();
+    }
+
+    resumeFromLoadingScreen() {
+
     }
 
     update(): void {

@@ -72,33 +72,40 @@ export class SceneController extends Phaser.Scene {
         this.titleScene.resetMarker();
     }
 
-    preloadGameAndDisplayLoadingScene(levelId: number) {
-        this.scene.sleep('TitleScene');                
-        this.scene.sleep('MenuBackgroundScene'); 
-        this.scene.start('MainScene', { id: 0, worldName: 'world-04-02' });
-        this.scene.start('HudScene');
-        this.scene.start('LoadingScene');
+    preloadNewGameAndDisplayLoadingScene(levelId: number) {
+        this.scene.stop('TitleScene');                
+        this.scene.stop('MenuBackgroundScene'); 
+        
+        this.scene.launch('LoadingScene');
+        this.scene.launch('MainScene', { id: 0, worldName: 'world-04-02' });
+        this.scene.launch('HudScene');        
     }
 
     preloadSavedGameAndDisplayLoadingScene(levelId: number) {
-        this.scene.sleep('TitleScene');                
-        this.scene.sleep('LevelSelectScene');  
-        this.scene.sleep('MenuBackgroundScene'); 
-        this.scene.start('MainScene', { id: 0, worldName: 'world-04-02' });
-        this.scene.start('HudScene');
-        this.scene.start('LoadingScene');
+        this.scene.stop('TitleScene');                
+        this.scene.stop('LevelSelectScene');  
+        this.scene.stop('MenuBackgroundScene'); 
+
+        this.scene.launch('LoadingScene');
+        this.scene.launch('MainScene', { id: 0, worldName: 'world-04-02' });
+        this.scene.launch('HudScene');        
+    }
+
+    mainSceneLoaded() {
+        this.loadingScene.mainSceneLoaded();
+        this.scene.bringToTop("LoadingScene");
     }
 
     loadLevelSelectScene() {
         this.scene.sleep('TitleScene');                
-        this.scene.start('LevelSelectScene');
+        this.scene.launch('LevelSelectScene');
         this.levelSelectScene.resetMarker();
         //this.levelSelectScene.menu.refreshColorsAndMarker();
     }
 
     loadMainScene() {
-        this.scene.stop("LoadingScene");
-
+        this.scene.sleep("LoadingScene");
+        
         this.scene.bringToTop("HudScene");
         this.scene.setVisible(true, "HudScene");
         
@@ -129,9 +136,8 @@ export class SceneController extends Phaser.Scene {
 
         this.scene.stop('MainScene');
         this.scene.stop('HudScene');
-        this.scene.sleep('PauseScene');
-        
-        this.scene.switch('TitleScene');      
-        this.scene.launch('MenuBackgroundScene');
+        this.scene.stop('PauseScene');
+
+        this.loadTitleScene();
     }
 }

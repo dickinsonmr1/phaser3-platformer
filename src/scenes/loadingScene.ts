@@ -46,6 +46,8 @@
 
     create(): void {
 
+        this.input.keyboard.resetKeys();
+        
         this.loadingTextAlpha = 0;
         this.gameLoaded = false;
         this.selectKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
@@ -85,18 +87,12 @@
         this.objectiveText.setStroke('rgb(0,0,0)', 16);
         this.objectiveText.setOrigin(0.5, 0);
 
-        //  Grab a reference to the Game Scene
-        let ourGame = this.scene.get('MainScene');
-    
-        //  Listen for events from it
-        ourGame.events.on('gameLoaded', function () {            
-
-            this.loadingText.setText('PRESS ENTER TO CONTINUE');               
-            this.gameLoaded = true;
-
-        }, this);
-        
         this.scene.bringToTop;
+    }
+
+    mainSceneLoaded() : void{
+        this.loadingText.setText('PRESS ENTER TO CONTINUE');               
+        this.gameLoaded = true;
     }
 
     update(): void {

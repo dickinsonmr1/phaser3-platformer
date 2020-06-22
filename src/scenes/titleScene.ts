@@ -66,7 +66,7 @@ import { SceneController } from "./sceneController";
         if(Phaser.Input.Keyboard.JustDown(this.selectKey))  {
             if(this.menu.selectedIndex == 0) {
                 this.input.keyboard.resetKeys();
-                this.sceneController.preloadGameAndDisplayLoadingScene(0);
+                this.sceneController.preloadNewGameAndDisplayLoadingScene(0);
                 this.menu.refreshColorsAndMarker();
             }
             else if(this.menu.selectedIndex == 1) {
