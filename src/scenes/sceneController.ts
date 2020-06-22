@@ -103,7 +103,7 @@ export class SceneController extends Phaser.Scene {
         //this.levelSelectScene.menu.refreshColorsAndMarker();
     }
 
-    loadMainScene() {
+    resumePreloadedMainScene() {
         this.scene.sleep("LoadingScene");
         
         this.scene.bringToTop("HudScene");
@@ -111,6 +111,7 @@ export class SceneController extends Phaser.Scene {
         
         this.scene.resume('MainScene');        
         this.scene.setVisible(true, "MainScene");
+        this.mainScene.fadeInCamera();
     }
 
     pauseGame() {

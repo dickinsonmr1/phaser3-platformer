@@ -25,6 +25,7 @@
     loadingTextAlpha: number;
 
     gameLoaded: boolean;
+    gameLoadedTime: number;
 
     private get titleStartX(): number { return this.game.canvas.width / 2; }
 
@@ -47,35 +48,40 @@
     create(): void {
 
         this.input.keyboard.resetKeys();
-        
+
         this.loadingTextAlpha = 0;
         this.gameLoaded = false;
+        this.gameLoadedTime = 0;
         this.selectKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
 
         this.playerIcon = this.add.image(200, 200, 'sprites', 'hudPlayer_blue.png');
         this.playerIcon.setScale(1.0, 1.0);
 
-        this.titleText = this.add.text(this.titleStartX, 150, 'WORLD 04-02',
-        {
-            fontFamily: 'KenneyRocketSquare',
-            fontSize: 96,
-            align: 'center',            
-            color:"rgb(255,255,255)",
-        });
-        this.titleText.setStroke('rgb(0,0,0)', 16);   
-        this.titleText.setAlpha(1);//this.loadingTextAlpha);        
-        this.titleText.setOrigin(0.5, 0);
+        if(this.titleText == undefined) {
+            this.titleText = this.add.text(this.titleStartX, 150, 'WORLD 04-02',
+            {
+                fontFamily: 'KenneyRocketSquare',
+                fontSize: 96,
+                align: 'center',            
+                color:"rgb(255,255,255)",
+            });
+            this.titleText.setStroke('rgb(0,0,0)', 16);   
+            this.titleText.setAlpha(1);//this.loadingTextAlpha);        
+            this.titleText.setOrigin(0.5, 0);
+        }
         //var scene = <Phaser.Scene>this;
-                
-        this.loadingText = this.add.text(this.titleStartX, 800, 'LOADING WORLD...',
-        {
-            fontFamily: 'KenneyRocketSquare',
-            fontSize: 64,
-            align: 'center',            
-            color:"rgb(255,255,255)",
-        });
-        this.loadingText.setStroke('rgb(0,0,0)', 16);
-        this.loadingText.setOrigin(0.5, 0);
+             
+        if(this.loadingText == undefined) {
+            this.loadingText = this.add.text(this.titleStartX, 800, 'LOADING WORLD...',
+            {
+                fontFamily: 'KenneyRocketSquare',
+                fontSize: 64,
+                align: 'center',            
+                color:"rgb(255,255,255)",
+            });
+            this.loadingText.setStroke('rgb(0,0,0)', 16);
+            this.loadingText.setOrigin(0.5, 0);
+        }
 
         this.objectiveText = this.add.text(this.titleStartX, 300, 'Objective: repair ship',
         {
@@ -87,12 +93,13 @@
         this.objectiveText.setStroke('rgb(0,0,0)', 16);
         this.objectiveText.setOrigin(0.5, 0);
 
-        this.scene.bringToTop;
+        this.scene.bringToTop;        
     }
 
     mainSceneLoaded() : void{
         this.loadingText.setText('PRESS ENTER TO CONTINUE');               
         this.gameLoaded = true;
+        this.gameLoadedTime = 60;
     }
 
     update(): void {
@@ -102,7 +109,7 @@
             //this.titleText.x -= 50;
 
         if(Phaser.Input.Keyboard.JustDown(this.selectKey) && this.gameLoaded)  {
-            this.sceneController.loadMainScene();
+            this.sceneController.resumePreloadedMainScene();
         }
 
         if(this.loadingTextAlpha < 1) {
@@ -110,6 +117,17 @@
             this.loadingTextAlpha += 0.05;
             this.loadingText.setAlpha(this.loadingTextAlpha);
         }        
+
+        if(this.gameLoaded) {
+            if(this.gameLoadedTime > 30)
+                this.loadingText.scale += 0.005;
+            else if(this.gameLoadedTime < 30 && this.gameLoadedTime > 0)
+                this.loadingText.scale -= 0.005;
+            else if(this.gameLoadedTime == 0)
+                this.gameLoadedTime = 60;
+
+            this.gameLoadedTime--;
+        }
     }
 
     setText(text: string): void {

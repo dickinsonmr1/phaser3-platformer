@@ -426,8 +426,8 @@ export class MainScene extends Phaser.Scene {
         //this.sceneController.loadMainScene();
     }
 
-    resumeFromLoadingScreen() {
-
+    fadeInCamera() {
+        this.cameras.main.fadeIn(500);
     }
 
     update(): void {
