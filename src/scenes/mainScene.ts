@@ -536,7 +536,7 @@ export class MainScene extends Phaser.Scene {
     {
         this.world.collectGem(tile.x, tile.y);
         this.sound.play("gemSound");
-        this.events.emit("gemCollected", this.player.gemsCollected++);
+        this.events.emit("gemCollected", ++this.player.gemsCollected);
 
         return true;
     }

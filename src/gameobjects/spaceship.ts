@@ -24,8 +24,8 @@ import { HealthBar } from "../scenes/healthBar";
      private particleEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
      private get emitterOffsetY(): number {return 30;}
 
-     private get healthBarOffsetX(): number {return -50;}
-     private get healthBarOffsetY(): number {return -100;}
+     private get healthBarOffsetX(): number {return -55;}
+     private get healthBarOffsetY(): number {return -75;}
 
      public static get spaceshipVelocity(): number { return 600; }    
 

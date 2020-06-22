@@ -66,7 +66,7 @@
         var text = this.scene.add.text(this.x, this.y - this.GetTextOffsetY, this.destinationName,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: 32,
+            fontSize: 36,
             align: 'center',            
             color:"rgb(255,255,255)",
         });

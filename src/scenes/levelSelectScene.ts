@@ -9,7 +9,7 @@
  import "phaser";
  import { Menu } from "./menu";
  import { SceneController } from "./sceneController";
-import { GameProgress, SaveGameFile } from "./gameProgress";
+ import { GameProgress, SaveGameFile } from "./gameProgress";
  
  export class LevelSelectScene extends Phaser.Scene {
 

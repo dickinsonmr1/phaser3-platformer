@@ -17,6 +17,19 @@
     // HUD
     hudComponent: HUDComponent;
 
+    private get PlayerIconX(): number { return 150; }
+    private get HeartStartX(): number { return this.PlayerIconX + 100; }
+    private get HeartOffsetX(): number { return 50; }
+
+    private get GemIconX(): number { return 900; }
+    private get GemTextOffsetX(): number { return 100; }
+
+    private get WeaponIconX(): number { return 1720; }
+    private get AmmoTextOffsetX(): number { return -120; }
+    
+    private get HudBaseOffsetY(): number { return 100; }
+    private get AmmoTextOffsetY(): number { return -50; }
+
     constructor(sceneController: SceneController) {
         super({
             key: "HudScene"
@@ -42,49 +55,49 @@
     create(): void {
 
         this.hudComponent = new HUDComponent();
-        this.hudComponent.playerHudIcon = this.add.sprite(200, 200, 'hudSprites', 'hudPlayer_blue.png');
+        this.hudComponent.playerHudIcon = this.add.sprite(this.PlayerIconX, this.HudBaseOffsetY, 'hudSprites', 'hudPlayer_blue.png');
         this.hudComponent.playerHudIcon.setScrollFactor(0);
 
-        this.hudComponent.heart1 = this.add.image(300, 200, 'hudSprites', 'hudHeart_full.png');
+        this.hudComponent.heart1 = this.add.image(this.HeartStartX, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_full.png');
         this.hudComponent.heart1.setScale(0.5);
 
-        this.hudComponent.heart2 = this.add.sprite(350, 200, 'hudSprites', 'hudHeart_full.png');
+        this.hudComponent.heart2 = this.add.sprite(this.HeartStartX + this.HeartOffsetX, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_full.png');
         this.hudComponent.heart2.setScale(0.5);
         
-        this.hudComponent.heart3 = this.add.sprite(400, 200, 'hudSprites', 'hudHeart_full.png');
+        this.hudComponent.heart3 = this.add.sprite(this.HeartStartX + this.HeartOffsetX * 2, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_full.png');
         this.hudComponent.heart3.setScale(0.5);
         
-        this.hudComponent.heart4 = this.add.sprite(450, 200, 'hudSprites', 'hudHeart_full.png');
+        this.hudComponent.heart4 = this.add.sprite(this.HeartStartX + this.HeartOffsetX * 3, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_full.png');
         this.hudComponent.heart4.setScale(0.5);
 
-        this.hudComponent.heartHalf1 = this.add.image(300, 200, 'hudSprites', 'hudHeart_half.png');
+        this.hudComponent.heartHalf1 = this.add.image(this.HeartStartX, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_half.png');
         this.hudComponent.heartHalf1.setScale(0.5);
 
-        this.hudComponent.heartHalf2 = this.add.sprite(350, 200, 'hudSprites', 'hudHeart_half.png');
+        this.hudComponent.heartHalf2 = this.add.sprite(this.HeartStartX + this.HeartOffsetX, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_half.png');
         this.hudComponent.heartHalf2.setScale(0.5);
         
-        this.hudComponent.heartHalf3 = this.add.sprite(400, 200, 'hudSprites', 'hudHeart_half.png');
+        this.hudComponent.heartHalf3 = this.add.sprite(this.HeartStartX + this.HeartOffsetX * 2, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_half.png');
         this.hudComponent.heartHalf3.setScale(0.5);
         
-        this.hudComponent.heartHalf4 = this.add.sprite(450, 200, 'hudSprites', 'hudHeart_half.png');
+        this.hudComponent.heartHalf4 = this.add.sprite(this.HeartStartX + this.HeartOffsetX * 3, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_half.png');
         this.hudComponent.heartHalf4.setScale(0.5);
                
-        this.hudComponent.heartEmpty1 = this.add.image(300, 200, 'hudSprites', 'hudHeart_empty.png');
+        this.hudComponent.heartEmpty1 = this.add.image(this.HeartStartX, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_empty.png');
         this.hudComponent.heartEmpty1.setScale(0.5);
 
-        this.hudComponent.heartEmpty2 = this.add.image(350, 200, 'hudSprites', 'hudHeart_empty.png');
+        this.hudComponent.heartEmpty2 = this.add.image(this.HeartStartX + this.HeartOffsetX, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_empty.png');
         this.hudComponent.heartEmpty2.setScale(0.5);
 
-        this.hudComponent.heartEmpty3 = this.add.image(400, 200, 'hudSprites', 'hudHeart_empty.png');
+        this.hudComponent.heartEmpty3 = this.add.image(this.HeartStartX + this.HeartOffsetX * 2, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_empty.png');
         this.hudComponent.heartEmpty3.setScale(0.5);
 
-        this.hudComponent.heartEmpty4 = this.add.image(450, 200, 'hudSprites', 'hudHeart_empty.png');
+        this.hudComponent.heartEmpty4 = this.add.image(this.HeartStartX + this.HeartOffsetX * 3, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_empty.png');
         this.hudComponent.heartEmpty4.setScale(0.5);
 
-        this.hudComponent.gem = this.add.image(800, 200, 'hudSprites', 'hudJewel_green.png');
+        this.hudComponent.gem = this.add.image(this.GemIconX, this.HudBaseOffsetY, 'hudSprites', 'hudJewel_green.png');
         this.hudComponent.gem.setScale(1.0);
 
-        this.hudComponent.gemCountText = this.add.text(900, 150, '0',
+        this.hudComponent.gemCountText = this.add.text(this.GemIconX + this.GemTextOffsetX, this.HudBaseOffsetY + this.AmmoTextOffsetY, '0',
         {
             fontFamily: 'KenneyRocketSquare',
             fontSize: 64,
@@ -93,9 +106,9 @@
         });
         this.hudComponent.gemCountText.setStroke('rgb(0,0,0)', 16);
 
-        this.hudComponent.weapon = this.add.image(1720, 200, 'weaponIcon');
+        this.hudComponent.weapon = this.add.image(this.WeaponIconX, this.HudBaseOffsetY, 'weaponIcon');
         this.hudComponent.weapon.setScale(2.0, 2.0);
-        this.hudComponent.ammoText = this.add.text(1500, 150, '5',
+        this.hudComponent.ammoText = this.add.text(this.WeaponIconX + this.AmmoTextOffsetX, this.HudBaseOffsetY + this.AmmoTextOffsetY, '5',
         {
             fontFamily: 'KenneyRocketSquare',
             fontSize: 64,
@@ -103,6 +116,7 @@
             color:"rgb(255,255,255)",
         });
         this.hudComponent.ammoText.setStroke('rgb(0,0,0)', 16);
+        this.hudComponent.ammoText.setOrigin(1, 0);
 
         this.hudComponent.infoText = this.add.text(300, 300, 'test',
         {
@@ -153,7 +167,7 @@
         this.setHealth(maxHealth);
         
         this.healthBar = new HealthBar(this);
-        this.healthBar.init(600, 900, maxHealth,
+        this.healthBar.init(this.HeartStartX - 20, this.HudBaseOffsetY + 50, maxHealth,
             200, 30);
 
         this.healthBar.updateHealth(maxHealth);
@@ -188,24 +202,6 @@
 
     updateHealthBar(health: number) {
         this.healthBar.updateHealth(health);
-
-        /*
-        if(health <= 0) {
-            this.healthBar.healthBarLeft.visible = false;
-            this.healthBar.healthBarMid.visible = false;
-            this.healthBar.healthBarRight.visible = false;
-        }
-        else {
-
-            this.healthBar.healthBarLeft.visible = true;
-            this.healthBar.healthBarMid.visible = true;
-            this.healthBar.healthBarRight.visible = true;
-
-            this.healthBar.healthBarMid.setX(this.healthBar.healthBarLeft.x + HudScene.healthBarLeftSegmentWidth);
-            this.healthBar.healthBarMid.setDisplaySize(health, HudScene.healthBarHeight);    
-            this.healthBar.healthBarRight.setX(this.healthBar.healthBarMid.x + this.healthBar.healthBarMid.displayWidth);    
-        }
-        */
     }
 
     setGemCount(gemCount: number): void {
