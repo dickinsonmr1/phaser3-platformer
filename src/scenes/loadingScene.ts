@@ -27,6 +27,9 @@
     gameLoaded: boolean;
     gameLoadedTime: number;
 
+    worldName: string;
+    objective: string;
+
     private get titleStartX(): number { return this.game.canvas.width / 2; }
 
     //infoText: Phaser.GameObjects.Text;
@@ -40,6 +43,11 @@
         this.sceneController = sceneController;
     }
 
+    init(data): void {
+        this.worldName = data.worldName;
+        this.objective = data.objective;
+        console.log(data.worldName);        
+    }
         
     preload(): void {
         this.load.atlasXML('sprites', './assets/sprites/HUD/spritesheet_hud.png', './assets/sprites/HUD/spritesheet_hud.xml');
@@ -58,7 +66,7 @@
         this.playerIcon.setScale(1.0, 1.0);
 
         if(this.titleText == undefined) {
-            this.titleText = this.add.text(this.titleStartX, 150, 'WORLD 04-02',
+            this.titleText = this.add.text(this.titleStartX, 150, this.worldName,
             {
                 fontFamily: 'KenneyRocketSquare',
                 fontSize: 96,
@@ -69,6 +77,7 @@
             this.titleText.setAlpha(1);//this.loadingTextAlpha);        
             this.titleText.setOrigin(0.5, 0);
         }
+        this.titleText.text = this.worldName;
         //var scene = <Phaser.Scene>this;
              
         if(this.loadingText == undefined) {
@@ -83,15 +92,18 @@
             this.loadingText.setOrigin(0.5, 0);
         }
 
-        this.objectiveText = this.add.text(this.titleStartX, 300, 'Objective: repair ship',
-        {
-            fontFamily: 'KenneyRocketSquare',
-            fontSize: 64,
-            align: 'center',            
-            color:"rgb(255,255,255)",
-        });
-        this.objectiveText.setStroke('rgb(0,0,0)', 16);
-        this.objectiveText.setOrigin(0.5, 0);
+        if(this.objectiveText == undefined) {
+            this.objectiveText = this.add.text(this.titleStartX, 300, 'Objective: ' + this.objective,
+            {
+                fontFamily: 'KenneyRocketSquare',
+                fontSize: 64,
+                align: 'center',            
+                color:"rgb(255,255,255)",
+            });
+            this.objectiveText.setStroke('rgb(0,0,0)', 16);
+            this.objectiveText.setOrigin(0.5, 0);
+        }
+        this.objectiveText.text = 'Objective: ' + this.objective;
 
         this.scene.bringToTop;        
     }

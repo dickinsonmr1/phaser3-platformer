@@ -13,6 +13,7 @@ import { Switch } from "./switch";
 import { Spaceship } from "./spaceship";
 import { Portal } from "./portal";
 import { Weapon, LaserRepeater } from "./weapon";
+import { MainScene } from "../scenes/mainScene";
 
 // TODO: fix and move implementation here once basic player functionality is working in main scene
 export class Player extends Phaser.GameObjects.Sprite {
@@ -543,6 +544,9 @@ export class Player extends Phaser.GameObjects.Sprite {
             if (this.currentInteractionItem instanceof Portal) {
 
                 let item = <Portal>this.currentInteractionItem;
+
+                let scene = <MainScene>this.scene;
+                scene.sceneController.warpViaPortal();
                 //item.activate();
                 // do something
             }

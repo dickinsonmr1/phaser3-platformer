@@ -76,8 +76,8 @@ export class SceneController extends Phaser.Scene {
         this.scene.stop('TitleScene');                
         this.scene.stop('MenuBackgroundScene'); 
         
-        this.scene.launch('LoadingScene');
-        this.scene.launch('MainScene', { id: 0, worldName: 'world-04-02' });
+        this.scene.launch('LoadingScene', { id: 0, worldName: 'world-04-02', objective: "Collect 100 gems" });
+        this.scene.launch('MainScene', { id: 0, worldName: 'world-04-02', objective: "Collect 100 gems" });
         this.scene.launch('HudScene');        
     }
 
@@ -86,8 +86,19 @@ export class SceneController extends Phaser.Scene {
         this.scene.stop('LevelSelectScene');  
         this.scene.stop('MenuBackgroundScene'); 
 
-        this.scene.launch('LoadingScene');
-        this.scene.launch('MainScene', { id: 0, worldName: 'world-04-02' });
+        this.scene.launch('LoadingScene', { id: 0, worldName: 'world-04-02', objective: "Collect 100 gems" });
+        this.scene.launch('MainScene', { id: 0, worldName: 'world-04-02', objective: "Collect 100 gems" });
+        this.scene.launch('HudScene');        
+    }
+
+    warpViaPortal() {
+        this.mainScene.fadeOutToWhite();
+
+        //this.loadingScene.scene.restart();
+        //this.scene.stop('MainScene');    
+
+        this.scene.launch('LoadingScene', { id: 0, worldName: 'world-04-03', objective: "Collect 100 gems" });
+        this.scene.launch('MainScene', { id: 0, worldName: 'world-04-03', objective: "Collect 100 gems" });
         this.scene.launch('HudScene');        
     }
 
@@ -131,6 +142,8 @@ export class SceneController extends Phaser.Scene {
     }
 
     returnToTitleScene() {
+
+        this.mainScene.fadeOutCamera();
 
         var gameProgress = new GameProgress();
         gameProgress.save();

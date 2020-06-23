@@ -430,6 +430,15 @@ export class MainScene extends Phaser.Scene {
         this.cameras.main.fadeIn(500);
     }
 
+    fadeOutCamera() {
+        this.cameras.main.fadeOut(500);
+    }
+
+    
+    fadeOutToWhite() {
+        this.cameras.main.fadeOut(1000, 255, 255, 255);
+    }
+
     update(): void {
 
         this.world.updateSky(this.cameras.main);

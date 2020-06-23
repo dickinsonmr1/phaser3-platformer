@@ -31,7 +31,14 @@ export class MenuBackgroundScene extends Phaser.Scene {
         this.skySprite.setY(540);
 
         this.spaceship = this.add.sprite(1600, 650, 'alienShipSprites', 'shipBlue_manned.png');
+        
+        this.fadeInCamera();
     }
+    
+    fadeInCamera() {
+        this.cameras.main.fadeIn(500);
+    }
+
 
     update(): void {
         this.skySprite.x -= 10;
