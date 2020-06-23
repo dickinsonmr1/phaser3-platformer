@@ -94,8 +94,7 @@ export class SceneController extends Phaser.Scene {
     warpViaPortal() {
         this.mainScene.fadeOutToWhite();
 
-        //this.loadingScene.scene.restart();
-        //this.scene.stop('MainScene');    
+        //this.mainScene.scene.transition({ target: 'LoadingScene', duration: 2000 });
 
         this.scene.launch('LoadingScene', { id: 0, worldName: 'world-04-03', objective: "Collect 100 gems" });
         this.scene.launch('MainScene', { id: 0, worldName: 'world-04-03', objective: "Collect 100 gems" });

@@ -406,6 +406,8 @@ export class MainScene extends Phaser.Scene {
         this.debugKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F2);
 
         this.cameras.main.startFollow(this.player);
+        this.cameras.main.zoom = 0.5;
+        this.cameras.main.zoomTo(1, 2000);
         this.cameras.main.setBackgroundColor(this.world.backgroundColor);
 
         //let hudScene = <HudScene>this.scene.get('HudScene');
@@ -436,7 +438,9 @@ export class MainScene extends Phaser.Scene {
 
     
     fadeOutToWhite() {
-        this.cameras.main.fadeOut(1000, 255, 255, 255);
+        let transitionTime = 1000;
+        this.cameras.main.fadeOut(transitionTime, 255, 255, 255);
+        this.cameras.main.zoomTo(5, transitionTime);
     }
 
     update(): void {
@@ -696,6 +700,7 @@ export class MainScene extends Phaser.Scene {
     playerTouchingEnemiesHandler(player: Player, enemy: Enemy): void
     {
         player.tryDamage();
+        player.getScene().cameras.main.shake(100, 0.01, false);
     }
 
     playerTouchingSpaceshipHandler(player: Player, spaceship: Spaceship): void
