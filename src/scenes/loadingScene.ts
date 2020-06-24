@@ -58,6 +58,7 @@
         this.input.keyboard.resetKeys();
 
         this.loadingTextAlpha = 0;
+        //this.cameras.main.setBackgroundColor("#FFFFFF");
         this.gameLoaded = false;
         this.gameLoadedTime = 0;
         this.selectKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);

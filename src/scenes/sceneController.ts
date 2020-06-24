@@ -74,8 +74,10 @@ export class SceneController extends Phaser.Scene {
 
     preloadNewGameAndDisplayLoadingScene(destinationName: string) {
         this.scene.stop('TitleScene');                
-        this.scene.stop('MenuBackgroundScene'); 
+        //this.scene.stop('MenuBackgroundScene'); 
         
+        //this.menuBackgroundScene.transitionToLoadingScene(destinationName);
+
         this.scene.launch('LoadingScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
         this.scene.launch('MainScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
         this.scene.launch('HudScene');        
@@ -84,7 +86,7 @@ export class SceneController extends Phaser.Scene {
     preloadSavedGameAndDisplayLoadingScene(destinationName: string) {
         this.scene.stop('TitleScene');                
         this.scene.stop('LevelSelectScene');  
-        this.scene.stop('MenuBackgroundScene'); 
+        //this.scene.stop('MenuBackgroundScene'); 
 
         this.scene.launch('LoadingScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
         this.scene.launch('MainScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
@@ -104,6 +106,7 @@ export class SceneController extends Phaser.Scene {
     mainSceneLoaded() {
         this.loadingScene.mainSceneLoaded();
         this.scene.bringToTop("LoadingScene");
+        
     }
 
     loadLevelSelectScene() {
@@ -114,6 +117,8 @@ export class SceneController extends Phaser.Scene {
     }
 
     resumePreloadedMainScene() {
+
+        this.scene.sleep("MenuBackgroundScene");
         this.scene.sleep("LoadingScene");
         
         this.scene.bringToTop("HudScene");

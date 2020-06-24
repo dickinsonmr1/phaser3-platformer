@@ -92,6 +92,7 @@ import { HealthBar } from "../scenes/healthBar";
         this.healthBar.init(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY, 100, 
             100, 15);
         this.healthBar.setVisible(false);
+        this.healthBar.setDepth(4);
         return;        
      }
 

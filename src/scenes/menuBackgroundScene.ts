@@ -39,6 +39,16 @@ export class MenuBackgroundScene extends Phaser.Scene {
         this.cameras.main.fadeIn(500);
     }
 
+    fadeOutToWhite() {
+        let transitionTime = 1000;
+        this.cameras.main.fadeOut(transitionTime, 255, 255, 255);
+        //this.cameras.main.zoomTo(5, transitionTime);
+    }
+
+    transitionToLoadingScene(destinationName: string) {
+        //this.scene.transition({target: 'LoadingScene', duration: 2000, destinationName: destinationName});
+    }
+
 
     update(): void {
         this.skySprite.x -= 10;

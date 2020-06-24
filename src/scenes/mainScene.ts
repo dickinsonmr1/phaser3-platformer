@@ -399,6 +399,7 @@ export class MainScene extends Phaser.Scene {
         //underSkySprite.setCrop(0, 924, 20480, 100);
         this.world.sky = this.skySprite;
         this.world.sky.setScale(1);
+        this.world.sky.setDepth(0);
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.zoomInKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
