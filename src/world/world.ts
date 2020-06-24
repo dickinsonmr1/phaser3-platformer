@@ -24,8 +24,11 @@ export class World {
 
     public backgroundColor: string;
 
+    private static get skyOffsetY(): number{return 512;}  
+
     isWorldLoaded: boolean;
     sky: Phaser.GameObjects.TileSprite;
+    skyName: string;
 
     scene: MainScene
 
@@ -37,7 +40,7 @@ export class World {
         return Math.floor(Math.random() * Math.floor(max));
     }
 
-    createWorld(worldName: string, skyName: string, backgroundColor: string, player: Player): void {
+    createWorld(worldName: string, player: Player): void {
         // using the Tiled map editor, here is the order of the layers from back to front:
         
         // layer00-image (not currently used)
@@ -48,34 +51,18 @@ export class World {
         // layer04-foreground-passable-opaque
         // layer05-foreground-passable-semitransparent
             // like water... one idea is to make this automatically move
-        
-        
-        
+                    
         // TODO: tilemaps (https://medium.com/@michaelwesthadley/modular-game-worlds-in-phaser-3-tilemaps-1-958fc7e6bbd6)
-        // 
-        this.sky = this.scene.skySprite;
-        this.sky.setScale(1);
-        this.backgroundColor = backgroundColor
-        //this.sky = this.scene.add.tileSprite(0, 0, 20480, 1024, skyName);
-        //this.sky.setDepth();   //this.scene.skySprite;
 
         this.map = this.scene.add.tilemap(worldName);
         var compiledTileSet = this.map.addTilesetImage('compiled_64x64', 'compiledTiles');
         var completeTileSet = this.map.addTilesetImage('complete_64x64', 'completeTiles');
 
-
-      /*
-        var tileset1 = this.map.addTilesetImage('abstract_64x64', 'abstractTiles');
-        var tileset2 = this.map.addTilesetImage('ground_64x64', 'groundTiles');
-        var tileset3 = this.map.addTilesetImage('industrial_64x64', 'industrialTiles');
-        var tileset4 = this.map.addTilesetImage('items_64x64', 'itemsTiles');
-        var tileset5 = this.map.addTilesetImage('objects_64x64', 'objectsTiles');
-        var tileset6 = this.map.addTilesetImage('requests_64x64', 'requestsTiles');
-        var tileset7 = this.map.addTilesetImage('simplified_64x64', 'simplifiedTiles');
-      */  
+        this.backgroundColor = this.map.properties[0].value;
+        this.skyName = this.map.properties[1].value;
+        //console.log(this.map.properties[0].value);
 
         var tileSets = [compiledTileSet, completeTileSet];
-        //var tileSets = [tileset1, tileset2, tileset3, tileset4, tileset5, tileset6, tileset7];
         
         // background layer
         this.layer01 = this.map.createStaticLayer('layer01-background-passable', tileSets, 0, 0);
@@ -173,18 +160,23 @@ export class World {
                 const x = tile.getCenterX();
                 const y = tile.getCenterY();
                 var key = "";
+                var destinationWorld = "";
                 switch(tile.index) {
                     case Constants.portalBlueTile:
                         key = "portalBlue";
+                        destinationWorld = "world-01-01";
                         break;
                     case Constants.portalRedTile:
                         key = "portalRed";
+                        destinationWorld = "world-02-02";
                         break;
                     case Constants.portalGreenTile:
                         key = "portalGreen";
+                        destinationWorld = "world-03-03";
                         break;
                     case Constants.portalYellowTile:
                         key = "portalYellow";
+                        destinationWorld = "world-04-04";
                         break;
                 }
                 let portal = new Portal({
@@ -193,7 +185,7 @@ export class World {
                     y: y,
                     key: key
                     });        
-                    portal.init("world-02-02", tile.x, tile.y);
+                    portal.init(destinationWorld, tile.x, tile.y);
                 this.scene.portals.push(portal);
 
                 this.layer03.removeTileAt(tile.x, tile.y);
@@ -365,8 +357,8 @@ export class World {
 
     updateSky(camera: Phaser.Cameras.Scene2D.Camera): void {
         this.sky.setX(camera.x);
-        this.sky.setY(camera.y);
-        this.sky.setTilePosition(-(camera.scrollX * 0.25), -(camera.scrollY * 0.05));
+        this.sky.setY(camera.y + World.skyOffsetY);
+        this.sky.setTilePosition(-(camera.scrollX * 0.25), -(camera.scrollY * 0.00));
     }
 
     removeTileAt (tileX: number, tileY: number): void

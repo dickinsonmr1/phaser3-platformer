@@ -175,6 +175,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.interactButtonImage = this.scene.add.image(text.x - text.width, this.y - this.GetIconOffsetY, 'buttonX');
         this.interactButtonImage.alpha = 0;
         this.interactButtonImage.setOrigin(0, 0.5);
+        this.interactButtonImage.setDepth(4);
 
         this.activateInteractTime = 0;
         this.hideInteractTextAndImage();
@@ -182,9 +183,6 @@ export class Player extends Phaser.GameObjects.Sprite {
 
         this.currentWeapon = new LaserRepeater();
         this.playerGun = this.scene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, 'playerGun')        
-        //this.bullets = this.currentScene.add.group();
-        
-        //this.createAnims(anims);
 
         return;        
     }
@@ -196,10 +194,6 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.moveKeyRight = input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         this.shootingKey = input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);
         this.jumpingKey = input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-    }
-
-    processinput(): void {
-
     }
 
     moveLeft(): void {
@@ -544,9 +538,10 @@ export class Player extends Phaser.GameObjects.Sprite {
             if (this.currentInteractionItem instanceof Portal) {
 
                 let item = <Portal>this.currentInteractionItem;
+                let destinationName = item.destinationName;
 
                 let scene = <MainScene>this.scene;
-                scene.sceneController.warpViaPortal();
+                scene.sceneController.warpViaPortal(destinationName);
                 //item.activate();
                 // do something
             }

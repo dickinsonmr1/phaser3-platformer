@@ -139,7 +139,8 @@ export class MainScene extends Phaser.Scene {
         this.load.image('buttonX', './assets/sprites/hud/buttonX.png');
 
         this.load.image('world-01-03-sky', './assets/sprites/backgrounds/blue_grass.png');
-        this.load.image('world-02-01-sky', './assets/sprites/backgrounds/backgroundCastles.png');              
+        //this.load.image('world-02-01-sky', './assets/sprites/backgrounds/backgroundCastles.png');              
+        this.load.image('world-02-01-sky', './assets/sprites/backgrounds/backgroundForest.png');              
     }
 
     private loadParticles(){
@@ -365,7 +366,7 @@ export class MainScene extends Phaser.Scene {
 
         this.createAnims(this.anims);
         this.loadParticles();
-        this.skySprite = this.add.tileSprite(0, 0, 20480, 2048, 'world-02-01-sky');            
+        
         
         this.enemies = new Array<Phaser.GameObjects.Sprite>();
         this.enemiesPhysics = Array<Phaser.GameObjects.Sprite>();
@@ -389,10 +390,16 @@ export class MainScene extends Phaser.Scene {
             });        
         this.player.init();
 
-        var color = '#CFEFFC';
+        //var color = '#CFEFFC';
         this.world = new World(this);
-        this.world.createWorld(this.worldName, 'sky', '#CFEFFC', this.player);
+        this.world.createWorld(this.worldName, this.player);
         
+        this.skySprite = this.add.tileSprite(0, 0, 20480, 1024, this.world.skyName);            
+        //var underSkySprite = this.add.tileSprite(0, 1024, 20480, 1024, this.world.skyName);            
+        //underSkySprite.setCrop(0, 924, 20480, 100);
+        this.world.sky = this.skySprite;
+        this.world.sky.setScale(1);
+
         this.cursors = this.input.keyboard.createCursorKeys();
         this.zoomInKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
         this.zoomOutKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);

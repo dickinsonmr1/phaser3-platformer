@@ -76,8 +76,8 @@ export class SceneController extends Phaser.Scene {
         this.scene.stop('TitleScene');                
         this.scene.stop('MenuBackgroundScene'); 
         
-        this.scene.launch('LoadingScene', { id: 0, worldName: 'world-04-02', objective: "Collect 100 gems" });
-        this.scene.launch('MainScene', { id: 0, worldName: 'world-04-02', objective: "Collect 100 gems" });
+        this.scene.launch('LoadingScene', { id: 0, worldName: 'world-00-00', objective: "Collect 100 gems" });
+        this.scene.launch('MainScene', { id: 0, worldName: 'world-00-00', objective: "Collect 100 gems" });
         this.scene.launch('HudScene');        
     }
 
@@ -91,13 +91,13 @@ export class SceneController extends Phaser.Scene {
         this.scene.launch('HudScene');        
     }
 
-    warpViaPortal() {
+    warpViaPortal(destinationName: string) {
         this.mainScene.fadeOutToWhite();
 
         //this.mainScene.scene.transition({ target: 'LoadingScene', duration: 2000 });
 
-        this.scene.launch('LoadingScene', { id: 0, worldName: 'world-04-03', objective: "Collect 100 gems" });
-        this.scene.launch('MainScene', { id: 0, worldName: 'world-04-03', objective: "Collect 100 gems" });
+        this.scene.launch('LoadingScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
+        this.scene.launch('MainScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
         this.scene.launch('HudScene');        
     }
 

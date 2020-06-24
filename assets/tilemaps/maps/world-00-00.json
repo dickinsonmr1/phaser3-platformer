@@ -4,7 +4,7 @@
      "export":
         {
          "format":"json",
-         "target":"world-04-02.json"
+         "target":"world-00-00.json"
         }
     },
  "height":20,
@@ -82,7 +82,7 @@
         {
          "name":"sky",
          "type":"string",
-         "value":"world-02-01-sky"
+         "value":"world-01-03-sky"
         }],
  "renderorder":"right-down",
  "tiledversion":"1.3.5",

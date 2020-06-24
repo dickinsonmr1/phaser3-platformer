@@ -3,6 +3,10 @@
  <editorsettings>
   <export target="../maps/world-04-03.json" format="json"/>
  </editorsettings>
+ <properties>
+  <property name="backgroundColor" value="#CFEFFC"/>
+  <property name="sky" value="world-01-03-sky"/>
+ </properties>
  <tileset firstgid="1" name="compiled_64x64" tilewidth="64" tileheight="64" tilecount="968" columns="44">
   <image source="../tiles/compiled_64x64.png" width="2816" height="1408"/>
  </tileset>
