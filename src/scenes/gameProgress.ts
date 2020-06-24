@@ -2,7 +2,7 @@ export class GameProgress {
 
     // https://www.dynetisgames.com/2018/10/28/how-save-load-player-progress-localstorage/
     // https://github.com/Jerenaux/clicker/blob/master/js/game.js
-    public getAvailableSaveFiles(): Array<SaveGameFile> {
+    public loadAllSaveFiles(): Array<SaveGameFile> {
 
         var slot0 = JSON.parse(localStorage.getItem("saveFile0"));
         var slot1 = JSON.parse(localStorage.getItem("saveFile1"));
@@ -20,14 +20,7 @@ export class GameProgress {
         return returnItems;
     }
 
-    public load(saveFileName: string) {
-
-        var file = JSON.parse(localStorage.getItem(saveFileName));
-        //Game.scene.score = file.score;
-        //Game.scene.visits = file.visits;
-    }
-
-    public save() {
+    public save(destinationName: string) {
         /*
         var file = {
             gemsCollected: this.mainScene.player.gemsCollected,
@@ -44,6 +37,7 @@ export class GameProgress {
         saveFile.world05Cleared = true;
         saveFile.modifiedDateTime = Date.now();
         saveFile.name = "Slot 1";
+        saveFile.destinationName = destinationName;
 
         localStorage.setItem('saveFile0', JSON.stringify(saveFile));
     }
@@ -55,6 +49,7 @@ export class GameProgress {
 
 export class SaveGameFile {
     name: string;
+    destinationName: string;
     world01Cleared: boolean;
     world02Cleared: boolean;
     world03Cleared: boolean;

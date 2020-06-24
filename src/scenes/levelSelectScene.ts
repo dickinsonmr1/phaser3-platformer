@@ -50,7 +50,7 @@
         this.cursorUp = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         this.deleteAllSaveFilesKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
 
-        this.saveGameFiles = this.gameProgress.getAvailableSaveFiles();
+        this.saveGameFiles = this.gameProgress.loadAllSaveFiles();
 
         this.menu = new Menu(this);
 
@@ -77,6 +77,10 @@
         }
     }
 
+    loadSelectedSaveGameFile(): SaveGameFile {
+        return this.saveGameFiles[this.menu.selectedIndex];
+    }
+
     update(): void {
         if(Phaser.Input.Keyboard.JustDown(this.selectKey))  {
             /*
@@ -98,10 +102,9 @@
             }
             else {
                 if(this.saveGameFiles.length > 0) {
-                    var selectedFile = this.saveGameFiles[this.menu.selectedIndex];
+                    var selectedFile = this.loadSelectedSaveGameFile();
 
-                    //this.gameProgress.load(selectedFile.name);
-                    this.sceneController.preloadSavedGameAndDisplayLoadingScene(0);
+                    this.sceneController.preloadSavedGameAndDisplayLoadingScene(selectedFile.destinationName);
                     this.menu.refreshColorsAndMarker();
                 }
             }

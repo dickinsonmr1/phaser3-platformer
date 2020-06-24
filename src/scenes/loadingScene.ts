@@ -91,6 +91,7 @@
             this.loadingText.setStroke('rgb(0,0,0)', 16);
             this.loadingText.setOrigin(0.5, 0);
         }
+        this.loadingText.setScale(1);
 
         if(this.objectiveText == undefined) {
             this.objectiveText = this.add.text(this.titleStartX, 300, 'Objective: ' + this.objective,

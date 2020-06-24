@@ -72,22 +72,22 @@ export class SceneController extends Phaser.Scene {
         this.titleScene.resetMarker();
     }
 
-    preloadNewGameAndDisplayLoadingScene(levelId: number) {
+    preloadNewGameAndDisplayLoadingScene(destinationName: string) {
         this.scene.stop('TitleScene');                
         this.scene.stop('MenuBackgroundScene'); 
         
-        this.scene.launch('LoadingScene', { id: 0, worldName: 'world-00-00', objective: "Collect 100 gems" });
-        this.scene.launch('MainScene', { id: 0, worldName: 'world-00-00', objective: "Collect 100 gems" });
+        this.scene.launch('LoadingScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
+        this.scene.launch('MainScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
         this.scene.launch('HudScene');        
     }
 
-    preloadSavedGameAndDisplayLoadingScene(levelId: number) {
+    preloadSavedGameAndDisplayLoadingScene(destinationName: string) {
         this.scene.stop('TitleScene');                
         this.scene.stop('LevelSelectScene');  
         this.scene.stop('MenuBackgroundScene'); 
 
-        this.scene.launch('LoadingScene', { id: 0, worldName: 'world-04-02', objective: "Collect 100 gems" });
-        this.scene.launch('MainScene', { id: 0, worldName: 'world-04-02', objective: "Collect 100 gems" });
+        this.scene.launch('LoadingScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
+        this.scene.launch('MainScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
         this.scene.launch('HudScene');        
     }
 
@@ -144,8 +144,9 @@ export class SceneController extends Phaser.Scene {
 
         this.mainScene.fadeOutCamera();
 
+        var destinationName = this.mainScene.worldName;
         var gameProgress = new GameProgress();
-        gameProgress.save();
+        gameProgress.save(destinationName);
 
         this.scene.stop('MainScene');
         this.scene.stop('HudScene');

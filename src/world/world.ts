@@ -172,11 +172,11 @@ export class World {
                         break;
                     case Constants.portalGreenTile:
                         key = "portalGreen";
-                        destinationWorld = "world-03-03";
+                        destinationWorld = "world-04-02";
                         break;
                     case Constants.portalYellowTile:
                         key = "portalYellow";
-                        destinationWorld = "world-04-04";
+                        destinationWorld = "world-04-03";
                         break;
                 }
                 let portal = new Portal({
