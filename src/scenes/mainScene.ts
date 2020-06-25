@@ -136,6 +136,9 @@ export class MainScene extends Phaser.Scene {
         this.load.image('switchYellowOff', './assets/sprites/objects/switchYellowOff.png');
         this.load.image('switchYellowOn', './assets/sprites/objects/switchYellowOn.png');
 
+        this.load.image('forceFieldYellowHorizontal', './assets/sprites/objects/laserYellowHorizontal_64x64.png');
+        this.load.image('forceFieldYellowVertical', './assets/sprites/objects/laserYellowVertical_64x64.png');
+
         this.load.image('buttonX', './assets/sprites/hud/buttonX.png');
 
         this.load.image('world-01-03-sky', './assets/sprites/backgrounds/blue_grass.png');

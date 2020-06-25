@@ -72,6 +72,9 @@ export class Constants {
     public static get tileGreenSwitchOff(): number { return 576; }
     public static get tileYellowSwitchOn(): number { return 573; }
     public static get tileYellowSwitchOff(): number { return 574; }
+
+    public static get tileYellowEnergyBeamHorizontal(): number { return 625; }
+    public static get tileYellowEnergyBeamVertical(): number { return 581; }
     
     public static get enemySpeed(): number {return 200;}
     public static get playerDrawScale(): number {return 0.5;}

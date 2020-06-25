@@ -9,6 +9,7 @@
  import { Constants } from "../constants";
  import "phaser";
  import { Scene } from "phaser";
+import { MainScene } from "../scenes/mainScene";
  
  export class Switch extends Phaser.GameObjects.Sprite {
      public activated: boolean;
@@ -47,7 +48,6 @@
             
         this.activated = false;
         this.transitionTime = 0;
-        //this.anims.play(this.onTileKey, true);
 
         this.turnOff();
  
@@ -71,12 +71,18 @@
         this.anims.play(this.offAnim, true);
         this.activated = false;
         this.transitionTime = 5;
+
+        var mainScene = <MainScene>this.scene;
+        mainScene.world.turnOffForceFields();
     }
       
     private turnOn(): void {
         this.anims.play(this.onAnim, true);
         this.activated = true;
         this.transitionTime = 5;
+
+        var mainScene = <MainScene>this.scene;
+        mainScene.world.turnOnForceFields();
     }
 
     preUpdate(time, delta): void {

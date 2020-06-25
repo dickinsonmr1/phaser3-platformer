@@ -74,6 +74,7 @@ export class World {
         this.scene.physics.add.collider(player, this.layer02);        
         this.layer02.setCollisionByExclusion([-1],true);//, Constants.tileLockBlue]);
         this.layer02.setTileIndexCallback(Constants.tileLockBlue, this.scene.unlockDoor, this.scene);
+        //this.layer02.setCollisionBetween(581, 625, false);
                    
         //---------------------------------------------------------------------------------------------------
         // FOREGROUND PASSABLE OPAQUE LAYER (front wall of a cave, plant, etc.)
@@ -190,6 +191,12 @@ export class World {
 
                 this.layer03.removeTileAt(tile.x, tile.y);
             }         
+            else if(tile.index == Constants.tileYellowEnergyBeamHorizontal ||
+                    tile.index == Constants.tileYellowEnergyBeamVertical) {
+                                        
+                this.layer03.removeTileAt(tile.x, tile.y);
+                this.layer02.putTileAt(Constants.tileYellowEnergyBeamHorizontal, tile.x, tile.y)
+            }   
             else if(tile.index == Constants.tileYellowSwitchOff) {
                 const x = tile.getCenterX();
                 const y = tile.getCenterY();
@@ -203,8 +210,6 @@ export class World {
                 item.init("switchOn", "switchOff");
                 item.setDepth(2);
                 this.scene.switches.push(item);
-
-                this.layer03.removeTileAt(tile.x, tile.y);
             }   
             else if(tile.index == Constants.tileGreenFlagDown)
             {
@@ -365,7 +370,32 @@ export class World {
     {
         this.layer03.removeTileAt(tileX, tileY);
     }
+        
+    turnOffForceFields(): void {
+        this.layer02.setCollision(Constants.tileYellowEnergyBeamVertical, false);
+        this.layer02.setCollision(Constants.tileYellowEnergyBeamHorizontal, false);
 
+        this.layer02.forEachTile(tile => {
+            if(tile.index == Constants.tileYellowEnergyBeamHorizontal ||
+                tile.index == Constants.tileYellowEnergyBeamVertical) {
+                tile.setAlpha(0.1);
+            }
+        });
+    }
+
+    turnOnForceFields(): void
+    {
+        this.layer02.setCollision(Constants.tileYellowEnergyBeamVertical, true);      
+        this.layer02.setCollision(Constants.tileYellowEnergyBeamHorizontal, true);      
+                        
+        this.layer02.forEachTile(tile => {
+            if(tile.index == Constants.tileYellowEnergyBeamHorizontal ||
+                tile.index == Constants.tileYellowEnergyBeamVertical)
+            {
+                tile.setAlpha(1);
+            }
+        });
+    }
 
     collectGem (tileX: number, tileY: number): void
     {
