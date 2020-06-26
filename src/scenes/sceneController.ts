@@ -105,8 +105,7 @@ export class SceneController extends Phaser.Scene {
 
     mainSceneLoaded() {
         this.loadingScene.mainSceneLoaded();
-        this.scene.bringToTop("LoadingScene");
-        
+        this.scene.bringToTop("LoadingScene");        
     }
 
     loadLevelSelectScene() {
@@ -123,6 +122,7 @@ export class SceneController extends Phaser.Scene {
         
         this.scene.bringToTop("HudScene");
         this.scene.setVisible(true, "HudScene");
+        this.hudScene.setInfoText("Objective: reach portal.")
         
         this.scene.resume('MainScene');        
         this.scene.setVisible(true, "MainScene");

@@ -30,6 +30,9 @@
     private get HudBaseOffsetY(): number { return 100; }
     private get AmmoTextOffsetY(): number { return -50; }
 
+    private get InfoTextStartX(): number {return this.game.canvas.width / 2; }
+    private get InfoTextStartY(): number {return this.game.canvas.height - this.game.canvas.height / 4; }
+
     constructor(sceneController: SceneController) {
         super({
             key: "HudScene"
@@ -118,13 +121,14 @@
         this.hudComponent.ammoText.setStroke('rgb(0,0,0)', 16);
         this.hudComponent.ammoText.setOrigin(1, 0);
 
-        this.hudComponent.infoText = this.add.text(300, 300, 'test',
+        this.hudComponent.infoText = this.add.text(this.InfoTextStartX, this.InfoTextStartY, 'test',
         {
             fontFamily: 'KenneyRocketSquare',
             fontSize: 64,
             align: 'center',            
             color:"rgb(255,255,255)",
         });
+        this.hudComponent.infoText.setOrigin(0.5, 0.5);
         this.hudComponent.infoText.setStroke('rgb(0,0,0)', 16);
 
         //  Grab a reference to the Game Scene

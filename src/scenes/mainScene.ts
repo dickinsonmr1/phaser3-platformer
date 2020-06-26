@@ -714,7 +714,9 @@ export class MainScene extends Phaser.Scene {
         this.player.reload(weapon);
         this.events.emit("weaponCollected", weapon.currentAmmo);
 
-        this.addExpiringText(this, this.player.x, this.player.y, weapon.weaponDisplayName);
+        this.sceneController.hudScene.setInfoText(weapon.weaponDisplayName + " acquired");
+
+        //this.addExpiringText(this, this.player.x, this.player.y, weapon.weaponDisplayName);
 
         return true;
     }
@@ -807,6 +809,14 @@ export class MainScene extends Phaser.Scene {
     {
         player.tryDamage();
         player.getScene().cameras.main.shake(100, 0.01, false);
+    }
+    
+    playerTouchingSpikesHandler (sprite, tile): boolean
+    {
+        this.player.tryDamage();
+        this.player.getScene().cameras.main.shake(100, 0.01, false);
+
+        return true;
     }
 
     playerTouchingSpaceshipHandler(player: Player, spaceship: Spaceship): void

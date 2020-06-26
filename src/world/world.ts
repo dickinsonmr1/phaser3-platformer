@@ -81,7 +81,11 @@ export class World {
         //---------------------------------------------------------------------------------------------------
         this.layer04 = this.map.createStaticLayer('layer04-foreground-passable-opaque', tileSets, 0, 0);
         this.layer04.alpha = 1.0;
-
+        this.scene.physics.add.overlap(player, this.layer04);
+        this.layer04.setTileIndexCallback(Constants.tileTwoSpikesCeiling, this.scene.playerTouchingSpikesHandler, this.scene);
+        this.layer04.setTileIndexCallback(Constants.tileTwoSpikesGround, this.scene.playerTouchingSpikesHandler, this.scene);
+        this.layer04.setTileIndexCallback(Constants.tileThreeSpikesFloor, this.scene.playerTouchingSpikesHandler, this.scene);
+        
         //---------------------------------------------------------------------------------------------------
         // foreground semi-transparent layer (water, lava, clouds, etc.)
         //---------------------------------------------------------------------------------------------------
