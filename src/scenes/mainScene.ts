@@ -395,8 +395,38 @@ export class MainScene extends Phaser.Scene {
             frames: [{key: 'enemySprites2', frame: 'enemyFloating_1.png'}],
             frameRate: 10,
         });
-       
+
+        ////////////////////////////////////////////////////////////////
+        // enemy 7
+        ////////////////////////////////////////////////////////////////
+        anims.create({
+            key: 'enemy07-Idle',
+            frames: [{key: 'enemySprites3', frame: 'playerGreen_walk1.png', }],
+            frameRate: 10,
+        });
+        
+        anims.create({
+            key: 'enemy07-Walk',
+            frames:
+            [
+                {key: 'enemySprites3', frame: 'playerGreen_walk1.png'},
+                {key: 'enemySprites3', frame: 'playerGreen_walk2.png'},
+                {key: 'enemySprites3', frame: 'playerGreen_walk3.png'},
+                //{key: 'enemySprites3', frame: 'playerGreen_walk4.png'},
+            ],
+            frameRate: 20,
+            repeat: -1
+        });
+        
+        anims.create({
+            key: 'enemy07-Dead',
+            frames: [{key: 'enemySprites3', frame: 'playerGreen_dead.png'}],
+            frameRate: 10,
+        });
+
+        ////////////////////////////////////////////////////////////////
         // springs
+        ////////////////////////////////////////////////////////////////
         anims.create({
             key: 'spring0',
             frames: [{key: 'completeSprites', frame: 'spring0.png'}],
@@ -409,8 +439,9 @@ export class MainScene extends Phaser.Scene {
             frameRate: 10,
         });
 
-        
+        ////////////////////////////////////////////////////////////////
         // checkpoints
+        ////////////////////////////////////////////////////////////////
         anims.create({
             key: 'flagGreenIdle',
             frames: [{key: 'completeSprites', frame: 'flagGreen_down.png'}],

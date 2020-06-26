@@ -131,6 +131,8 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         if(this.health <= 0) {
             this.scene.sound.play("enemyDeathSound");
             this.destroy();       
+            //this.anims.play(this.deadAnim, true);
+            //var body = <Phaser.Physics.Arcade.Body>this.body;            
         }
     }
 

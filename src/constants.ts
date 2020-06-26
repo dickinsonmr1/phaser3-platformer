@@ -7,7 +7,8 @@ export class Constants {
     public static get tileKeyGemYellow(): number { return 1044; }
     public static get tileKeyGemBlue(): number { return 1013; }
     public static get tileKeyBattery(): number { return 233; }
-    public static get tileKeySpring(): number { return 1898; }
+    public static get tileKeySpring1(): number { return 1898; }
+    public static get tileKeySpring2(): number { return 1930; }
     public static get tileLockYellow(): number { return 1771; }
     public static get tileLockRed(): number { return 1803; }
     public static get tileLockGreen(): number { return 1835; }

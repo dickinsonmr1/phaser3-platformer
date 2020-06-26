@@ -101,7 +101,6 @@ export class World {
         var allPortalTiles = [Constants.portalBlueTile, Constants.portalGreenTile, Constants.portalYellowTile, Constants.portalRedTile];
         this.layer03.forEachTile(tile => {
 
-
             if(tile.index == Constants.playerBlueSpawnTile)
             {
                 const x = tile.getCenterX();
@@ -128,7 +127,7 @@ export class World {
 
                 this.layer03.removeTileAt(tile.x, tile.y);
             }
-            else if(tile.index == Constants.tileKeySpring)
+            else if(tile.index == Constants.tileKeySpring1 || tile.index == Constants.tileKeySpring2)
             {
                 const x = tile.getCenterX();
                 const y = tile.getCenterY();
@@ -265,9 +264,10 @@ export class World {
                 var x = tile.getCenterX();
                 var y = tile.getCenterY();
 
-                var randomNumber = this.getRandomInt(6);
+                let index = allEnemyTypes.indexOf(tile.index);
+                //var randomNumber = 6;//this.getRandomInt(6);
 
-                switch(randomNumber)
+                switch(index)
                 {
                     case 0:
                         var enemy = new Enemy({
@@ -360,6 +360,22 @@ export class World {
                             defaultFacingRight: true,
                             });        
                         enemy.init("enemy06-Idle", "enemy06-Walk", "enemy06-Dead");
+                        this.scene.enemies.push(enemy);
+                        break;
+
+                    default:
+                        var enemy = new Enemy({
+                            scene: this.scene,
+                            x: x,
+                            y: y - 50,
+                            widthOverride: 48,
+                            heightOverride: 48,
+                            key: "enemy07-Idle",
+                            drawScale: 1.5,
+                            enemyOffsetY: 2,
+                            defaultFacingRight: false,
+                            });        
+                        enemy.init("enemy07-Idle", "enemy07-Walk", "enemy07-Dead");
                         this.scene.enemies.push(enemy);
                         break;
                 }
