@@ -14,8 +14,8 @@ import { MainScene } from "../scenes/mainScene";
  export class Switch extends Phaser.GameObjects.Sprite {
      public activated: boolean;
  
-     private offAnim: string;
-     private onAnim: string;
+     private offTexture: string;
+     private onTexture: string;
 
      public transitionTime: number;
      public color: ForceFieldColor;
@@ -28,11 +28,11 @@ import { MainScene } from "../scenes/mainScene";
          return this.scene;
      }
  
-     public init(color: ForceFieldColor, offAnim: string, onAnim: string): void {
+     public init(color: ForceFieldColor, onTexture: string, offTexture: string, isInitiallyOn: boolean): void {
          
         this.color = color;
-        this.offAnim = offAnim;
-        this.onAnim = onAnim;
+        this.offTexture = offTexture;
+        this.onTexture = onTexture;
 
         this.width = 64;
         this.height = 64;
@@ -45,13 +45,17 @@ import { MainScene } from "../scenes/mainScene";
         body.moves = false;
         
         this.setScale(1, 1);
+        this.setDepth(2);
 
         this.scene.add.existing(this);
             
-        this.activated = false;
+        //this.activated = false;
         this.transitionTime = 0;
 
-        this.turnOff();
+        if(isInitiallyOn)
+            this.turnOn();
+        else
+            this.turnOff();
  
         return;        
      }
@@ -70,7 +74,8 @@ import { MainScene } from "../scenes/mainScene";
     }
 
     private turnOff(): void {  
-        this.anims.play(this.offAnim, true);
+        this.setTexture(this.offTexture);
+        //this.anims.play(this.offAnim, true);
         this.activated = false;
         this.transitionTime = 5;
 
@@ -79,7 +84,8 @@ import { MainScene } from "../scenes/mainScene";
     }
       
     private turnOn(): void {
-        this.anims.play(this.onAnim, true);
+        this.setTexture(this.onTexture);
+        //this.anims.play(this.onAnim, true);
         this.activated = true;
         this.transitionTime = 5;
 

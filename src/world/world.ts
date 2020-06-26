@@ -112,17 +112,6 @@ export class World {
 
                 //this.layer06.removeTileAt(tile.x, tile.y);
             }
-            else if(tile.index == Constants.playerBlueSpawnTile)
-            {
-                const x = tile.getCenterX();
-                const y = tile.getCenterY();
-
-               
-                player.x = x;
-                player.y = y;
-
-                //this.layer06.removeTileAt(tile.x, tile.y);
-            }
             else if(tile.index == Constants.playerSpaceShipSpawnTile)
             {
                 const x = tile.getCenterX();
@@ -191,61 +180,69 @@ export class World {
 
                 this.layer03.removeTileAt(tile.x, tile.y);
             }   
-            else if(tile.index == Constants.tileYellowSwitchOff) {
+            else if(tile.index == Constants.tileYellowSwitchOff || tile.index == Constants.tileYellowSwitchOn) {
                 const x = tile.getCenterX();
                 const y = tile.getCenterY();
 
+                let isInitiallyOn = (tile.index == Constants.tileYellowSwitchOn);
                 var item = new Switch({
                     scene: this.scene,
                     x: x,
                     y: y,
-                    key: "switchOn"
+                    key: "switchYellowOff"
                     });        
-                item.init(ForceFieldColor.Yellow, "switchOn_yellow", "switchOff_yellow");
-                item.setDepth(2);
+                item.init(ForceFieldColor.Yellow, "switchYellowOn", "switchYellowOff", isInitiallyOn);
                 this.scene.switches.push(item);
+
+                this.layer03.removeTileAt(tile.x, tile.y);
             }   
-            else if(tile.index == Constants.tileBlueSwitchOff) {
+            else if(tile.index == Constants.tileBlueSwitchOff || tile.index == Constants.tileBlueSwitchOn) {
                 const x = tile.getCenterX();
                 const y = tile.getCenterY();
 
+                let isInitiallyOn = (tile.index == Constants.tileBlueSwitchOn);
                 var item = new Switch({
                     scene: this.scene,
                     x: x,
                     y: y,
-                    key: "switchOn"
+                    key: "switchBlueOff"
                     });        
-                item.init(ForceFieldColor.Blue, "switchOn_blue", "switchOff_blue");
-                item.setDepth(2);
+                item.init(ForceFieldColor.Blue, "switchBlueOn", "switchBlueOff", isInitiallyOn);
                 this.scene.switches.push(item);
+
+                this.layer03.removeTileAt(tile.x, tile.y);
             }   
-            else if(tile.index == Constants.tileGreenSwitchOff) {
+            else if(tile.index == Constants.tileGreenSwitchOff || tile.index == Constants.tileGreenSwitchOn) {
                 const x = tile.getCenterX();
                 const y = tile.getCenterY();
 
+                let isInitiallyOn = (tile.index == Constants.tileGreenSwitchOn);
                 var item = new Switch({
                     scene: this.scene,
                     x: x,
                     y: y,
-                    key: "switchOn"
+                    key: "switchGreenOff"
                     });        
-                item.init(ForceFieldColor.Green, "switchOn_green", "switchOff_green");
-                item.setDepth(2);
+                item.init(ForceFieldColor.Green, "switchGreenOn", "switchGreenOff", isInitiallyOn);
                 this.scene.switches.push(item);
+
+                this.layer03.removeTileAt(tile.x, tile.y);
             }   
-            else if(tile.index == Constants.tileRedSwitchOff) {
+            else if(tile.index == Constants.tileRedSwitchOff || tile.index == Constants.tileRedSwitchOn) {
                 const x = tile.getCenterX();
                 const y = tile.getCenterY();
 
+                let isInitiallyOn = (tile.index == Constants.tileRedSwitchOn);
                 var item = new Switch({
                     scene: this.scene,
                     x: x,
                     y: y,
-                    key: "switchOn"
+                    key: "switchRedOff"
                     });        
-                item.init(ForceFieldColor.Red, "switchOn_red", "switchOff_red");
-                item.setDepth(2);
+                item.init(ForceFieldColor.Red, "switchRedOn", "switchRedOff", isInitiallyOn);
                 this.scene.switches.push(item);
+
+                this.layer03.removeTileAt(tile.x, tile.y);
             }   
             else if(tile.index == Constants.tileGreenFlagDown)
             {
