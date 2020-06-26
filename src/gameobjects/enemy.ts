@@ -33,8 +33,8 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.scene.physics.world.enable(this);
         this.drawOffsetY = params.enemyOffsetY;
         this.defaultFacingRight = params.defaultFacingRight;
-        this.widthOverride = params.heightOverride;
-        this.heightOverride = params.widthOverride;
+        this.widthOverride = params.widthOverride;
+        this.heightOverride = params.heightOverride;
     } 
     
     public getScene(): Scene {

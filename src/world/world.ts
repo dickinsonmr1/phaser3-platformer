@@ -265,7 +265,7 @@ export class World {
                 var x = tile.getCenterX();
                 var y = tile.getCenterY();
 
-                var randomNumber = this.getRandomInt(3);
+                var randomNumber = this.getRandomInt(6);
 
                 switch(randomNumber)
                 {
@@ -312,6 +312,54 @@ export class World {
                             defaultFacingRight: false,
                             });        
                         enemy.init("enemy03-Idle", "enemy03-Walk", "enemy03-Dead");
+                        this.scene.enemies.push(enemy);
+                        break;
+
+                    case 3:
+                        var enemy = new Enemy({
+                            scene: this.scene,
+                            x: x,
+                            y: y - 50,
+                            widthOverride: 128,
+                            heightOverride: 32,
+                            key: "enemy04-Idle",
+                            drawScale: 0.75,
+                            enemyOffsetY: 96,
+                            defaultFacingRight: true,
+                            });        
+                        enemy.init("enemy04-Idle", "enemy04-Walk", "enemy04-Dead");
+                        this.scene.enemies.push(enemy);
+                        break;
+
+                    case 4:
+                        var enemy = new Enemy({
+                            scene: this.scene,
+                            x: x,
+                            y: y - 50,
+                            widthOverride: 128,
+                            heightOverride: 128,
+                            key: "enemy05-Idle",
+                            drawScale: 0.75,
+                            enemyOffsetY: 0,
+                            defaultFacingRight: true,
+                            });        
+                        enemy.init("enemy05-Idle", "enemy05-Walk", "enemy05-Dead");
+                        this.scene.enemies.push(enemy);
+                        break;
+
+                    case 5:
+                        var enemy = new Enemy({
+                            scene: this.scene,
+                            x: x,
+                            y: y - 50,
+                            widthOverride: 48,
+                            heightOverride: 48,
+                            key: "enemy06-Idle",
+                            drawScale: 1.5,
+                            enemyOffsetY: 2,
+                            defaultFacingRight: true,
+                            });        
+                        enemy.init("enemy06-Idle", "enemy06-Walk", "enemy06-Dead");
                         this.scene.enemies.push(enemy);
                         break;
                 }

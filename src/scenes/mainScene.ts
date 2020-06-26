@@ -237,7 +237,7 @@ export class MainScene extends Phaser.Scene {
         });    
 
         ////////////////////////////////////////////////////////////////
-        // enemy 1
+        // enemy 1: walking abstract
         ////////////////////////////////////////////////////////////////
         anims.create({
             key: 'enemy01-Idle',
@@ -265,7 +265,7 @@ export class MainScene extends Phaser.Scene {
         });
 
         ////////////////////////////////////////////////////////////////
-        // enemy 2
+        // enemy 2: blue slime
         ////////////////////////////////////////////////////////////////
         anims.create({
             key: 'enemy02-Idle',
@@ -322,6 +322,79 @@ export class MainScene extends Phaser.Scene {
             frameRate: 10,
         });
 
+        ////////////////////////////////////////////////////////////////
+        // enemy 4: green worm
+        ////////////////////////////////////////////////////////////////
+        anims.create({
+            key: 'enemy04-Idle',
+            frames: [{key: 'completeSprites', frame: 'wormGreen.png', }],
+            frameRate: 10,
+        });        
+        anims.create({
+            key: 'enemy04-Walk',
+            frames:
+            [
+                {key: 'completeSprites', frame: 'wormGreen.png'},
+                {key: 'completeSprites', frame: 'wormGreen_move.png'},                
+            ],
+            frameRate: 10,
+            repeat: -1
+        });
+        anims.create({
+            key: 'enemy04-Dead',
+            frames: [{key: 'completeSprites', frame: 'wormGreen_dead.png'}],
+            frameRate: 10,
+        });
+
+        
+        ////////////////////////////////////////////////////////////////
+        // enemy 5: saw
+        ////////////////////////////////////////////////////////////////
+        anims.create({
+            key: 'enemy05-Idle',
+            frames: [{key: 'completeSprites', frame: 'saw.png', }],
+            frameRate: 10,
+        });        
+        anims.create({
+            key: 'enemy05-Walk',
+            frames:
+            [
+                {key: 'completeSprites', frame: 'saw.png'},
+                {key: 'completeSprites', frame: 'saw_move.png'},                
+            ],
+            frameRate: 10,
+            repeat: -1
+        });
+        anims.create({
+            key: 'enemy05-Dead',
+            frames: [{key: 'completeSprites', frame: 'saw_dead.png'}],
+            frameRate: 10,
+        });
+
+        ////////////////////////////////////////////////////////////////
+        // enemy 6: floating with spikes
+        ////////////////////////////////////////////////////////////////
+        anims.create({
+            key: 'enemy06-Idle',
+            frames: [{key: 'enemySprites2', frame: 'enemyFloating_1.png', }],
+            frameRate: 10,
+        });
+        anims.create({
+            key: 'enemy06-Walk',
+            frames:
+            [
+                {key: 'enemySprites2', frame: 'enemyFloating_1.png'},
+                {key: 'enemySprites2', frame: 'enemyFloating_2.png'},
+                {key: 'enemySprites2', frame: 'enemyFloating_3.png'},               
+            ],
+            frameRate: 5,
+            repeat: -1
+        });        
+        anims.create({
+            key: 'enemy06-Dead',
+            frames: [{key: 'enemySprites2', frame: 'enemyFloating_1.png'}],
+            frameRate: 10,
+        });
        
         // springs
         anims.create({
