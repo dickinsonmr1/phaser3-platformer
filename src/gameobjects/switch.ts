@@ -6,7 +6,7 @@
 
  
  /// <reference path="../dts/phaser.d.ts"/>
- import { Constants } from "../constants";
+ import { Constants, ForceFieldColor } from "../constants";
  import "phaser";
  import { Scene } from "phaser";
 import { MainScene } from "../scenes/mainScene";
@@ -18,6 +18,7 @@ import { MainScene } from "../scenes/mainScene";
      private onAnim: string;
 
      public transitionTime: number;
+     public color: ForceFieldColor;
 
      constructor(params) {
          super(params.scene, params.x, params.y, params.key); 
@@ -27,8 +28,9 @@ import { MainScene } from "../scenes/mainScene";
          return this.scene;
      }
  
-     public init(offAnim: string, onAnim: string): void {
+     public init(color: ForceFieldColor, offAnim: string, onAnim: string): void {
          
+        this.color = color;
         this.offAnim = offAnim;
         this.onAnim = onAnim;
 
@@ -73,7 +75,7 @@ import { MainScene } from "../scenes/mainScene";
         this.transitionTime = 5;
 
         var mainScene = <MainScene>this.scene;
-        mainScene.world.turnOffForceFields();
+        mainScene.world.toggleForceFields(this.color, false);
     }
       
     private turnOn(): void {
@@ -82,7 +84,7 @@ import { MainScene } from "../scenes/mainScene";
         this.transitionTime = 5;
 
         var mainScene = <MainScene>this.scene;
-        mainScene.world.turnOnForceFields();
+        mainScene.world.toggleForceFields(this.color, true);
     }
 
     preUpdate(time, delta): void {

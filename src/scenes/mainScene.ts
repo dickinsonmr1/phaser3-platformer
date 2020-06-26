@@ -135,9 +135,12 @@ export class MainScene extends Phaser.Scene {
 
         this.load.image('switchYellowOff', './assets/sprites/objects/switchYellowOff.png');
         this.load.image('switchYellowOn', './assets/sprites/objects/switchYellowOn.png');
-
-        this.load.image('forceFieldYellowHorizontal', './assets/sprites/objects/laserYellowHorizontal_64x64.png');
-        this.load.image('forceFieldYellowVertical', './assets/sprites/objects/laserYellowVertical_64x64.png');
+        this.load.image('switchGreenOff', './assets/sprites/objects/switchGreenwOff.png');
+        this.load.image('switchGreenOn', './assets/sprites/objects/switchGreenOn.png');
+        this.load.image('switchBlueOff', './assets/sprites/objects/switchBlueOff.png');
+        this.load.image('switchBlueOn', './assets/sprites/objects/switchBlueOn.png');
+        this.load.image('switchRedOff', './assets/sprites/objects/switchRedOff.png');
+        this.load.image('switchRedOn', './assets/sprites/objects/switchRedOn.png');
 
         this.load.image('buttonX', './assets/sprites/hud/buttonX.png');
 
@@ -352,17 +355,17 @@ export class MainScene extends Phaser.Scene {
         });
 
         // switches
-        anims.create({
-            key: 'switchOn',
-            frames: [{key: 'switchYellowOn'}],
-            frameRate: 10,
-        });
+        anims.create({ key: 'switchOn_yellow', frames: [{key: 'switchYellowOn'}], frameRate: 10 });
+        anims.create({ key: 'switchOff_yellow', frames: [{key: 'switchYellowOff'}], frameRate: 10 });
 
-        anims.create({
-            key: 'switchOff',
-            frames: [{key: 'switchYellowOff'}],
-            frameRate: 10,
-        });
+        anims.create({ key: 'switchOn_green', frames: [{key: 'switchYellowOn'}], frameRate: 10 });
+        anims.create({ key: 'switchOff_green', frames: [{key: 'switchYellowOff'}], frameRate: 10 });
+
+        anims.create({ key: 'switchOn_blue', frames: [{key: 'switchYellowOn'}], frameRate: 10 });
+        anims.create({ key: 'switchOff_blue', frames: [{key: 'switchYellowOff'}], frameRate: 10 });
+
+        anims.create({ key: 'switchOn_red', frames: [{key: 'switchYellowOn'}], frameRate: 10 });
+        anims.create({ key: 'switchOff_red', frames: [{key: 'switchYellowOff'}], frameRate: 10 });
     }
 
     create(): void {    

@@ -1,7 +1,7 @@
 
 /// <reference path="../dts/phaser.d.ts"/>
 
-import { Constants } from "../constants";
+import { Constants, ForceFieldColor } from "../constants";
 import "phaser";
 import { MainScene } from "../scenes/mainScene";
 import { Player } from "../gameobjects/player";
@@ -190,12 +190,6 @@ export class World {
                 this.scene.portals.push(portal);
 
                 this.layer03.removeTileAt(tile.x, tile.y);
-            }         
-            else if(tile.index == Constants.tileYellowEnergyBeamHorizontal ||
-                    tile.index == Constants.tileYellowEnergyBeamVertical) {
-                                        
-                this.layer03.removeTileAt(tile.x, tile.y);
-                this.layer02.putTileAt(Constants.tileYellowEnergyBeamHorizontal, tile.x, tile.y)
             }   
             else if(tile.index == Constants.tileYellowSwitchOff) {
                 const x = tile.getCenterX();
@@ -207,7 +201,49 @@ export class World {
                     y: y,
                     key: "switchOn"
                     });        
-                item.init("switchOn", "switchOff");
+                item.init(ForceFieldColor.Yellow, "switchOn_yellow", "switchOff_yellow");
+                item.setDepth(2);
+                this.scene.switches.push(item);
+            }   
+            else if(tile.index == Constants.tileBlueSwitchOff) {
+                const x = tile.getCenterX();
+                const y = tile.getCenterY();
+
+                var item = new Switch({
+                    scene: this.scene,
+                    x: x,
+                    y: y,
+                    key: "switchOn"
+                    });        
+                item.init(ForceFieldColor.Blue, "switchOn_blue", "switchOff_blue");
+                item.setDepth(2);
+                this.scene.switches.push(item);
+            }   
+            else if(tile.index == Constants.tileGreenSwitchOff) {
+                const x = tile.getCenterX();
+                const y = tile.getCenterY();
+
+                var item = new Switch({
+                    scene: this.scene,
+                    x: x,
+                    y: y,
+                    key: "switchOn"
+                    });        
+                item.init(ForceFieldColor.Green, "switchOn_green", "switchOff_green");
+                item.setDepth(2);
+                this.scene.switches.push(item);
+            }   
+            else if(tile.index == Constants.tileRedSwitchOff) {
+                const x = tile.getCenterX();
+                const y = tile.getCenterY();
+
+                var item = new Switch({
+                    scene: this.scene,
+                    x: x,
+                    y: y,
+                    key: "switchOn"
+                    });        
+                item.init(ForceFieldColor.Red, "switchOn_red", "switchOff_red");
                 item.setDepth(2);
                 this.scene.switches.push(item);
             }   
@@ -370,7 +406,38 @@ export class World {
     {
         this.layer03.removeTileAt(tileX, tileY);
     }
-        
+
+    toggleForceFields(color: ForceFieldColor, enabled: boolean) {
+
+        var eligibleTileIndexes = new Array<integer>();
+        switch(color) {
+            case ForceFieldColor.Yellow:
+                eligibleTileIndexes.push(Constants.tileYellowEnergyBeamVertical, Constants.tileYellowEnergyBeamHorizontal);
+                break;
+            case ForceFieldColor.Blue:
+                eligibleTileIndexes.push(Constants.tileBlueEnergyBeamVertical, Constants.tileBlueEnergyBeamHorizontal);
+                break;
+            case ForceFieldColor.Green:
+                eligibleTileIndexes.push(Constants.tileGreenEnergyBeamVertical, Constants.tileGreenEnergyBeamHorizontal);
+                break;
+            case ForceFieldColor.Red:
+                eligibleTileIndexes.push(Constants.tileRedEnergyBeamVertical, Constants.tileRedEnergyBeamHorizontal);
+                break;
+        }
+
+        this.layer02.setCollision(eligibleTileIndexes, enabled);
+
+        this.layer02.forEachTile(tile => {
+            if(eligibleTileIndexes.includes(tile.index)) {
+                if(enabled)
+                    tile.setAlpha(1);
+                else
+                    tile.setAlpha(0.1);
+            }
+        });
+    }
+    
+    /*
     turnOffForceFields(): void {
         this.layer02.setCollision(Constants.tileYellowEnergyBeamVertical, false);
         this.layer02.setCollision(Constants.tileYellowEnergyBeamHorizontal, false);
@@ -396,6 +463,7 @@ export class World {
             }
         });
     }
+    */
 
     collectGem (tileX: number, tileY: number): void
     {

@@ -75,6 +75,12 @@ export class Constants {
 
     public static get tileYellowEnergyBeamHorizontal(): number { return 625; }
     public static get tileYellowEnergyBeamVertical(): number { return 581; }
+    public static get tileGreenEnergyBeamHorizontal(): number { return 626; }
+    public static get tileGreenEnergyBeamVertical(): number { return 582; }
+    public static get tileRedEnergyBeamHorizontal(): number { return 627; }
+    public static get tileRedEnergyBeamVertical(): number { return 583; }
+    public static get tileBlueEnergyBeamHorizontal(): number { return 628; }
+    public static get tileBlueEnergyBeamVertical(): number { return 584; }
     
     public static get enemySpeed(): number {return 200;}
     public static get playerDrawScale(): number {return 0.5;}
@@ -84,4 +90,12 @@ export class Constants {
     
     public static get playerDuckingGunOffsetY(): number {return 12;}
     public static get enemyOffsetY(): number {return 10;}    
+
+}
+
+export enum ForceFieldColor {
+    Yellow,
+    Blue,
+    Green,
+    Red
 }
