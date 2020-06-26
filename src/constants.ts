@@ -47,7 +47,13 @@ export class Constants {
     public static get enemy09SpawnTile(): number { return 3077; }
     public static get enemy10SpawnTile(): number { return 3063; }
 
-    
+    public static get tileTwoSpikesGround(): number { return 142; }
+    public static get tileTwoSpikesCeiling(): number { return 98; }
+    public static get tileSawBlade(): number { return 187; }
+    public static get tileSawBladeinGround1(): number { return 188; }
+    public static get tileSawBladeinGround2(): number { return 189; }
+    public static get tileThreeSpikesFloor(): number { return 1962; }
+
     // the next block is not updated yet
     public static get tileYellowFlagDown(): number { return 129; }
     public static get tileYellowFlagWave1(): number { return 150; }
