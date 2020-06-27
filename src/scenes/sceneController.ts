@@ -6,6 +6,7 @@ import { TitleScene } from "./titleScene";
 import { LevelSelectScene } from "./levelSelectScene";
 import { HudScene } from "./hudScene";
 import { GameProgress } from "./gameProgress";
+import { LevelCompleteScene } from "./levelCompleteScene";
 
 export class SceneController extends Phaser.Scene {
 
@@ -16,6 +17,7 @@ export class SceneController extends Phaser.Scene {
     menuBackgroundScene: MenuBackgroundScene;
     pauseScene: PauseScene;
     hudScene: HudScene;
+    levelCompleteScene: LevelCompleteScene;
 
     constructor() {
         super({
@@ -52,7 +54,10 @@ export class SceneController extends Phaser.Scene {
         this.game.scene.add("PauseScene", this.pauseScene);
 
         this.hudScene = new HudScene(this);
-        this.game.scene.add("HudScene", this.hudScene);        
+        this.game.scene.add("HudScene", this.hudScene);     
+        
+        this.levelCompleteScene = new LevelCompleteScene(this);
+        this.game.scene.add("LevelCompleteScene", this.levelCompleteScene);
 
         this.loadTitleScene();        
     }
@@ -72,8 +77,9 @@ export class SceneController extends Phaser.Scene {
         this.titleScene.resetMarker();
     }
 
-    preloadNewGameAndDisplayLoadingScene(destinationName: string) {
-        this.scene.stop('TitleScene');                
+    preloadMainSceneAndDisplayLoadingScene(destinationName: string) {
+        this.scene.stop('TitleScene');        
+        this.scene.stop('LevelSelectScene');         
         //this.scene.stop('MenuBackgroundScene'); 
         
         //this.menuBackgroundScene.transitionToLoadingScene(destinationName);
@@ -82,17 +88,6 @@ export class SceneController extends Phaser.Scene {
         this.scene.launch('MainScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
         this.scene.launch('HudScene');        
     }
-
-    preloadSavedGameAndDisplayLoadingScene(destinationName: string) {
-        this.scene.stop('TitleScene');                
-        this.scene.stop('LevelSelectScene');  
-        //this.scene.stop('MenuBackgroundScene'); 
-
-        this.scene.launch('LoadingScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
-        this.scene.launch('MainScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
-        this.scene.launch('HudScene');        
-    }
-
     warpViaPortal(destinationName: string) {
         this.mainScene.fadeOutToWhite();
 
@@ -101,6 +96,31 @@ export class SceneController extends Phaser.Scene {
         this.scene.launch('LoadingScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
         this.scene.launch('MainScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
         this.scene.launch('HudScene');        
+    }
+
+    levelComplete() {
+
+        this.mainScene.fadeOutToWhite();
+
+        this.scene.launch('LevelCompleteScene');
+        this.scene.launch('MenuBackgroundScene');
+
+        this.scene.stop('HudScene');
+        this.scene.stop('PauseScene');
+
+        /*
+        this.mainScene.fadeOutCamera();
+
+        var destinationName = this.mainScene.worldName;
+        var gameProgress = new GameProgress();
+        gameProgress.save(destinationName);
+
+        this.scene.stop('MainScene');
+        this.scene.stop('HudScene');
+        this.scene.stop('PauseScene');
+
+        this.loadTitleScene();
+        */
     }
 
     mainSceneLoaded() {

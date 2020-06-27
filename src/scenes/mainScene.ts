@@ -511,7 +511,7 @@ export class MainScene extends Phaser.Scene {
 
         this.debugKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F2);
 
-        this.cameras.main.startFollow(this.player);
+        this.cameras.main.startFollow(this.player, true, 0.5, 1, this.player.displayWidth / 2, this.player.displayHeight / 2);
         this.cameras.main.zoom = 0.5;
         this.cameras.main.zoomTo(1, 2000);
         this.cameras.main.setBackgroundColor(this.world.backgroundColor);
@@ -811,7 +811,7 @@ export class MainScene extends Phaser.Scene {
         player.getScene().cameras.main.shake(100, 0.01, false);
     }
     
-    playerTouchingSpikesHandler (sprite, tile): boolean
+    playerTouchingSpikesHandler(sprite, tile): boolean
     {
         this.player.tryDamage();
         this.player.getScene().cameras.main.shake(100, 0.01, false);

@@ -1,6 +1,6 @@
 /**
  * @author       Mark Dickinson
- * @copyright    2019 Mark Dickinson
+ * @copyright    2020 Mark Dickinson
  * @license      none
  */
 

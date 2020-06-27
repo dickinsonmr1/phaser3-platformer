@@ -10,7 +10,7 @@
  import { Menu } from "./menu";
 import { SceneController } from "./sceneController";
  
- export class TitleScene extends Phaser.Scene {
+ export class LevelCompleteScene extends Phaser.Scene {
 
     sceneController: SceneController;
     menu: Menu;
@@ -22,7 +22,7 @@ import { SceneController } from "./sceneController";
 
     constructor(sceneController: SceneController) {
         super({
-            key: "TitleScene"
+            key: "LevelCompleteScene"
         });
 
         this.sceneController = sceneController;
@@ -43,16 +43,15 @@ import { SceneController } from "./sceneController";
        
         this.menu = new Menu(this);
 
-        this.menu.setTitle(this, "Alien Commando");
+        this.menu.setTitle(this, "Level Complete");
         this.menu.setMarker(this, ">>");
-        this.menu.addMenuItem(this, "Start Game");
-        this.menu.addMenuItem(this, "Continue Game");
-        this.menu.addMenuItem(this, "Exit");
-        this.menu.setFooter(this, "©2020 by Mark Dickinson" );
-        this.menu.setFooter2(this, "Powered by Phaser 3  //  Assets by Kenney.nl" );
+        this.menu.addMenuItem(this, "Save and Continue");
+        this.menu.addMenuItem(this, "Save and Exit");
+        //this.menu.setFooter(this, "©2020 by Mark Dickinson" );
+        //this.menu.setFooter2(this, "Powered by Phaser 3  //  Assets by Kenney.nl" );
 
-        this.scene.run('MenuBackgroundScene');
-        this.scene.sendToBack('MenuBackgroundScene');              
+        //this.scene.run('MenuBackgroundScene');
+        //this.scene.sendToBack('MenuBackgroundScene');              
     }
 
     resetMarker(): void {
@@ -66,12 +65,12 @@ import { SceneController } from "./sceneController";
         if(Phaser.Input.Keyboard.JustDown(this.selectKey))  {
             if(this.menu.selectedIndex == 0) {
                 this.input.keyboard.resetKeys();
-                this.sceneController.preloadMainSceneAndDisplayLoadingScene('world-01-01');
+                this.sceneController.preloadMainSceneAndDisplayLoadingScene('world-00-00');
                 this.menu.refreshColorsAndMarker();
             }
             else if(this.menu.selectedIndex == 1) {
                 this.input.keyboard.resetKeys();
-                this.sceneController.loadLevelSelectScene();
+                this.sceneController.returnToTitleScene();
                 this.menu.refreshColorsAndMarker();
             }
         }

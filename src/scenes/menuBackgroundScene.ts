@@ -49,7 +49,6 @@ export class MenuBackgroundScene extends Phaser.Scene {
         //this.scene.transition({target: 'LoadingScene', duration: 2000, destinationName: destinationName});
     }
 
-
     update(): void {
         this.skySprite.x -= 10;
         if(this.skySprite.x  * (-1) > this.skySprite.width * .4)

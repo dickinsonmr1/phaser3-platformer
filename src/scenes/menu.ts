@@ -34,7 +34,7 @@ export class Menu {
         this.menuStartX = scene.game.canvas.width / 4;
         this.menuStartY = scene.game.canvas.height / 2;
         
-        this.footerStartX = scene.game.canvas.width / 2;// + this.titleOffsetX();
+        this.footerStartX = scene.game.canvas.width / 2;
         this.footerStartY = scene.game.canvas.height - scene.game.canvas.height / 8;
         this.footer2StartY = scene.game.canvas.height - scene.game.canvas.height / 16;
     }

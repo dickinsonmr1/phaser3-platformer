@@ -83,18 +83,6 @@
 
     update(): void {
         if(Phaser.Input.Keyboard.JustDown(this.selectKey))  {
-            /*
-            if(this.menu.selectedIndex == 0) {
-                this.input.keyboard.resetKeys();
-                this.sceneController.preloadGameAndDisplayLoadingScene(0);                
-                this.menu.refreshColorsAndMarker();
-            }
-            if(this.menu.selectedIndex == 1) {
-                this.input.keyboard.resetKeys();
-
-                this.sceneController.preloadGameAndDisplayLoadingScene(1);
-                this.menu.refreshColorsAndMarker();   
-            }*/
             if(this.menu.selectedIndex == this.menu.items.length - 1) {
                 this.input.keyboard.resetKeys();
                 this.sceneController.returnToTitleSceneFromLevelSelect();
@@ -104,7 +92,7 @@
                 if(this.saveGameFiles.length > 0) {
                     var selectedFile = this.loadSelectedSaveGameFile();
 
-                    this.sceneController.preloadSavedGameAndDisplayLoadingScene(selectedFile.destinationName);
+                    this.sceneController.preloadMainSceneAndDisplayLoadingScene(selectedFile.destinationName);
                     this.menu.refreshColorsAndMarker();
                 }
             }
