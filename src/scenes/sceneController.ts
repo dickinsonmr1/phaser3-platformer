@@ -68,7 +68,10 @@ export class SceneController extends Phaser.Scene {
 
     loadTitleScene() {
         this.scene.launch("TitleScene");
+        this.scene.launch("LevelSelectScene");
         this.scene.launch("MenuBackgroundScene");
+        
+        this.scene.sleep("LevelSelectScene");
     }
 
     returnToTitleSceneFromLevelSelect() {
@@ -80,22 +83,23 @@ export class SceneController extends Phaser.Scene {
     preloadMainSceneAndDisplayLoadingScene(destinationName: string) {
         this.scene.stop('TitleScene');        
         this.scene.stop('LevelSelectScene');         
-        //this.scene.stop('MenuBackgroundScene'); 
-        
-        //this.menuBackgroundScene.transitionToLoadingScene(destinationName);
 
-        this.scene.launch('LoadingScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
+        this.scene.launch("HudScene");
         this.scene.launch('MainScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
-        this.scene.launch('HudScene');        
+        this.scene.launch('LoadingScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
+        //this.scene.launch('HudScene');        
     }
+
     warpViaPortal(destinationName: string) {
+        this.levelComplete();
+        
+        /*
         this.mainScene.fadeOutToWhite();
 
-        //this.mainScene.scene.transition({ target: 'LoadingScene', duration: 2000 });
-
         this.scene.launch('LoadingScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
         this.scene.launch('MainScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
         this.scene.launch('HudScene');        
+        */
     }
 
     levelComplete() {
@@ -105,6 +109,8 @@ export class SceneController extends Phaser.Scene {
         this.scene.launch('LevelCompleteScene');
         this.scene.launch('MenuBackgroundScene');
 
+
+        this.scene.stop('MainScene');
         this.scene.stop('HudScene');
         this.scene.stop('PauseScene');
 
@@ -124,13 +130,13 @@ export class SceneController extends Phaser.Scene {
     }
 
     mainSceneLoaded() {
-        this.loadingScene.mainSceneLoaded();
+        this.loadingScene.mainSceneLoaded();        
         this.scene.bringToTop("LoadingScene");        
     }
 
     loadLevelSelectScene() {
         this.scene.sleep('TitleScene');                
-        this.scene.launch('LevelSelectScene');
+        this.scene.resume('LevelSelectScene');
         this.levelSelectScene.resetMarker();
         //this.levelSelectScene.menu.refreshColorsAndMarker();
     }

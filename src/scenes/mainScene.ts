@@ -512,26 +512,13 @@ export class MainScene extends Phaser.Scene {
         this.debugKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F2);
 
         this.cameras.main.startFollow(this.player, true, 0.5, 1, this.player.displayWidth / 2, this.player.displayHeight / 2);
-        this.cameras.main.zoom = 0.5;
         this.cameras.main.zoomTo(1, 2000);
         this.cameras.main.setBackgroundColor(this.world.backgroundColor);
 
-        //let hudScene = <HudScene>this.scene.get('HudScene');
-        //hudScene.setText("Objective: repair ship");
-
-        //this.events.once("infoTextEmitted", hudScene.setInfoText, this);
-        //this.time.addEvent({delay: 1000, callback: hudScene.displayExpiringInfoText, callbackScope: this });
-        //this.events.emit("infoTextEmitted", "Objective: repair ship");
-
-        //this.events.emit("infoTextEmitted", "Objective: repair ship");
-
         this.sceneController.mainSceneLoaded();
 
-        //this.events.emit("gameLoaded");
         this.scene.pause();
         this.scene.setVisible(false, "MainScene");
-
-        //this.sceneController.loadMainScene();
     }
 
     fadeInCamera() {
@@ -541,7 +528,6 @@ export class MainScene extends Phaser.Scene {
     fadeOutCamera() {
         this.cameras.main.fadeOut(500);
     }
-
     
     fadeOutToWhite() {
         let transitionTime = 1000;
