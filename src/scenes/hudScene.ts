@@ -31,7 +31,7 @@
     private get AmmoTextOffsetY(): number { return -50; }
 
     private get InfoTextStartX(): number {return this.game.canvas.width / 2; }
-    private get InfoTextStartY(): number {return this.game.canvas.height - this.game.canvas.height / 4; }
+    private get InfoTextStartY(): number {return this.game.canvas.height - this.game.canvas.height / 4; }   
 
     constructor(sceneController: SceneController) {
         super({
@@ -130,7 +130,8 @@
         });
         this.hudComponent.infoText.setOrigin(0.5, 0.5);
         this.hudComponent.infoText.setStroke('rgb(0,0,0)', 16);
-
+        this.hudComponent.infoTextExpiryGameTime = this.game.getTime();
+        
         //  Grab a reference to the Game Scene
         let ourGame = this.scene.get('MainScene');
 
@@ -176,16 +177,7 @@
 
         this.healthBar.updateHealth(maxHealth);
 
-        //this.scene.bringToTop;
         this.scene.setVisible(false);
-    }
-
-    update(): void {
-        if(this.hudComponent.infoTextAlpha > 0) {
-
-            this.hudComponent.infoTextAlpha -= 0.01;
-            this.hudComponent.infoText.setAlpha(this.hudComponent.infoTextAlpha);
-        }        
     }
 
     setHealth(health: number): void {        
@@ -210,7 +202,6 @@
 
     setGemCount(gemCount: number): void {
         this.hudComponent.gemCountText.setText(gemCount.toString());
-        //this.hudComponent.gemCountOutlineText.setText(gemCount.toString());
     }
     
     setammoCount(ammo: number): void {
@@ -219,26 +210,24 @@
             this.hudComponent.ammoText.setColor("rgb(255,50,50)")
         else
             this.hudComponent.ammoText.setColor("rgb(255,255,255)")
-        //this.hudComponent.gemCountOutlineText.setText(gemCount.toString());
     }
 
-    setText(text: string): void {
-        this.hudComponent.infoText.setText(text);
-    }
-
-    displayExpiringInfoText(): void {
-        this.hudComponent.infoTextAlpha = 1;
-        this.hudComponent.infoText.setAlpha(this.hudComponent.infoTextAlpha);
-    }
-
-    setInfoText(text: string): void {
+    setInfoText(text: string, infoTextDurationInMs: number): void {
         this.hudComponent.infoText.setText(text);
         this.hudComponent.infoTextAlpha = 1;
+        this.hudComponent.infoTextExpiryGameTime = this.game.getTime() + infoTextDurationInMs;
 
         this.hudComponent.infoText.setAlpha(this.hudComponent.infoTextAlpha);
-        //this.hudComponent.gemCountOutlineText.setText(gemCount.toString());
     }
    
+    update(): void {
+        if(this.game.getTime() > this.hudComponent.infoTextExpiryGameTime) {
+            if(this.hudComponent.infoTextAlpha > 0) {
+                this.hudComponent.infoTextAlpha -= 0.01;
+                this.hudComponent.infoText.setAlpha(this.hudComponent.infoTextAlpha);
+            }
+        } 
+    }
 }
 
 export class HUDComponent {
@@ -277,17 +266,8 @@ export class HUDComponent {
     ammoText: Phaser.GameObjects.Text;
 
     healthBar: HealthBar;
-
-    /*
-    healthBarShadowLeft: Phaser.GameObjects.Image;
-    healthBarShadowMid: Phaser.GameObjects.Image;
-    healthBarShadowRight: Phaser.GameObjects.Image;
-
-    healthBarLeft: Phaser.GameObjects.Image;
-    healthBarMid: Phaser.GameObjects.Image;
-    healthBarRight: Phaser.GameObjects.Image;
-    */
    
     infoText: Phaser.GameObjects.Text;
     infoTextAlpha: number;
+    infoTextExpiryGameTime: number;
 }

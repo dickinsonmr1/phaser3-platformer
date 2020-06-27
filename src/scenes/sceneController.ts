@@ -122,7 +122,7 @@ export class SceneController extends Phaser.Scene {
         
         this.scene.bringToTop("HudScene");
         this.scene.setVisible(true, "HudScene");
-        this.hudScene.setInfoText("Objective: reach portal.")
+        this.hudScene.setInfoText("Objective: reach portal", 5000);
         
         this.scene.resume('MainScene');        
         this.scene.setVisible(true, "MainScene");

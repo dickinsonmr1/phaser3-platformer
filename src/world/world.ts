@@ -15,7 +15,6 @@ import { Spaceship } from "../gameobjects/spaceship";
 export class World {
     map: Phaser.Tilemaps.Tilemap;
     
-
     private layer01: Phaser.Tilemaps.StaticTilemapLayer;
     private layer02: Phaser.Tilemaps.DynamicTilemapLayer;
     private layer03: Phaser.Tilemaps.DynamicTilemapLayer;

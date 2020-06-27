@@ -714,7 +714,7 @@ export class MainScene extends Phaser.Scene {
         this.player.reload(weapon);
         this.events.emit("weaponCollected", weapon.currentAmmo);
 
-        this.sceneController.hudScene.setInfoText(weapon.weaponDisplayName + " acquired");
+        this.sceneController.hudScene.setInfoText(weapon.weaponDisplayName + " acquired", 2000);
 
         //this.addExpiringText(this, this.player.x, this.player.y, weapon.weaponDisplayName);
 
