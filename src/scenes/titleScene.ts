@@ -9,23 +9,30 @@
  import "phaser";
  import { Menu } from "./menu";
 import { SceneController } from "./sceneController";
+import { GameProgress, SaveGameFile } from "./gameProgress";
  
  export class TitleScene extends Phaser.Scene {
 
     sceneController: SceneController;
-    menu: Menu;
+    menus: Array<Menu>;
+    menuSelectedIndex: number;
+    
+    gameProgress: GameProgress;
+    saveGameFiles: Array<SaveGameFile>;
 
     pauseKey: Phaser.Input.Keyboard.Key;
     selectKey: Phaser.Input.Keyboard.Key;
     cursorUp: Phaser.Input.Keyboard.Key;
     cursorDown: Phaser.Input.Keyboard.Key;
-
+    deleteAllSaveFilesKey: Phaser.Input.Keyboard.Key;
+    
     constructor(sceneController: SceneController) {
         super({
             key: "TitleScene"
         });
 
         this.sceneController = sceneController;
+        this.gameProgress = new GameProgress();
     }
         
     init(data): void {
@@ -40,48 +47,119 @@ import { SceneController } from "./sceneController";
         this.selectKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         this.cursorDown = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         this.cursorUp = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
-       
-        this.menu = new Menu(this);
+        this.deleteAllSaveFilesKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
 
-        this.menu.setTitle(this, "Alien Commando");
-        this.menu.setMarker(this, ">>");
-        this.menu.addMenuItem(this, "Start Game");
-        this.menu.addMenuItem(this, "Continue Game");
-        this.menu.addMenuItem(this, "Exit");
-        this.menu.setFooter(this, "©2020 by Mark Dickinson" );
-        this.menu.setFooter2(this, "Powered by Phaser 3  //  Assets by Kenney.nl" );
+        this.saveGameFiles = this.gameProgress.loadAllSaveFiles();
+
+        this.menus = new Array<Menu>();
+        var menu = new Menu(this);
+
+        menu.setTitle(this, "Alien Commando");
+        menu.setMarker(this, ">>");
+        menu.addMenuItem(this, "Start Game");
+        menu.addMenuItem(this, "Continue Game");
+        menu.addMenuItem(this, "Exit");
+        menu.setFooter(this, "©2020 by Mark Dickinson" );
+        menu.setFooter2(this, "Powered by Phaser 3  //  Assets by Kenney.nl" );
+
+        
+        this.menus.push(menu);
+
+        var menu2 = new Menu(this);
+
+        menu2.setTitle(this, "Continue Game");
+        menu2.setMarker(this, ">>");
+
+        this.saveGameFiles.forEach(element => {
+            var item = <SaveGameFile>element;
+
+            var date = new Date(item.modifiedDateTime).toLocaleDateString("en-US");
+            menu2.addMenuItem(this, item.name + ' (' + date + ')');
+        });
+
+        if(this.saveGameFiles.length == 0)
+            menu2.addMenuItem(this, "No Saved Games Found");
+
+        menu2.addMenuItem(this, "Exit to Title");   
+        this.menus.push(menu2);
+        menu2.hide();
+        
+        this.menuSelectedIndex = 0;
+    
 
         this.scene.run('MenuBackgroundScene');
         this.scene.sendToBack('MenuBackgroundScene');              
     }
 
     resetMarker(): void {
-        if(this.menu != null) {
-            this.menu.refreshColorsAndMarker();
-            this.menu.marker.visible = false;
+        if(this.menus[this.menuSelectedIndex] != null) {
+            this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
+            this.menus[this.menuSelectedIndex].marker.visible = false;
         }
     }
 
     update(): void {
         if(Phaser.Input.Keyboard.JustDown(this.selectKey))  {
-            if(this.menu.selectedIndex == 0) {
-                this.input.keyboard.resetKeys();
-                this.sceneController.preloadMainSceneAndDisplayLoadingScene('world-01-01');
-                this.menu.refreshColorsAndMarker();
+
+            var selectedMenu = this.menus[this.menuSelectedIndex];
+            if(this.menuSelectedIndex == 0) {
+
+                
+                if(selectedMenu.selectedItemIndex == 0) {
+                    this.input.keyboard.resetKeys();
+                    this.sceneController.preloadMainSceneAndDisplayLoadingScene('world-01-01');
+                    this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
+                }
+                else if(selectedMenu.selectedItemIndex == 1) {
+
+                    selectedMenu.hide();
+                    this.menuSelectedIndex++;
+
+                    this.menus[this.menuSelectedIndex].show();
+                    this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
+                    
+                    this.input.keyboard.resetKeys();
+                    //this.sceneController.loadLevelSelectScene();
+                    
+                }
             }
-            else if(this.menu.selectedIndex == 1) {
-                this.input.keyboard.resetKeys();
-                this.sceneController.loadLevelSelectScene();
-                this.menu.refreshColorsAndMarker();
+            else if(this.menuSelectedIndex == 1) {
+                if(selectedMenu.selectedItemIndex == selectedMenu.items.length - 1) {
+
+                    selectedMenu.hide();
+                    this.menuSelectedIndex = 0;
+
+                    this.menus[this.menuSelectedIndex].show();
+                    this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
+                    
+                    this.input.keyboard.resetKeys();
+                    this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
+                }
+                else {
+                    if(this.saveGameFiles.length > 0) {
+                        var selectedFile = this.loadSelectedSaveGameFile();
+    
+                        this.sceneController.preloadMainSceneAndDisplayLoadingScene(selectedFile.destinationName);
+                        selectedMenu.refreshColorsAndMarker();
+                    }
+                }
             }
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.cursorUp)) {
-            this.menu.selectPreviousItem();
+            this.menus[this.menuSelectedIndex].selectPreviousItem();
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.cursorDown)) {
-            this.menu.selectNextItem();
+            this.menus[this.menuSelectedIndex].selectNextItem();
         }
+
+        if(Phaser.Input.Keyboard.JustDown(this.deleteAllSaveFilesKey)) {
+            this.gameProgress.deleteAll();          
+        }
+    }
+
+    loadSelectedSaveGameFile(): SaveGameFile {
+        return this.saveGameFiles[this.menus[this.menuSelectedIndex].selectedItemIndex];
     }
 }

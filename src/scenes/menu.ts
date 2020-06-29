@@ -6,7 +6,7 @@ export class Menu {
     subItemMarkerLeft: Phaser.GameObjects.Text;        
     subItemMarkerRight: Phaser.GameObjects.Text;    
     items: Array<Phaser.GameObjects.Text>;
-    selectedIndex: integer;
+    selectedItemIndex: integer;
 
     menuStartX: number;
     menuStartY: number;
@@ -27,7 +27,7 @@ export class Menu {
 
     constructor(scene: Phaser.Scene) {        
         this.items = new Array<MenuItem>();
-        this.selectedIndex = 0;
+        this.selectedItemIndex = 0;
 
         this.titleStartX = scene.game.canvas.width / 2;
 
@@ -149,7 +149,7 @@ export class Menu {
 
     refreshColorsAndMarker() {
         for(var i = 0; i < this.items.length; i++) {
-            if(i == this.selectedIndex) {
+            if(i == this.selectedItemIndex) {
                 this.items[i].setColor(this.highlightedColor());
             }
             else {
@@ -157,7 +157,7 @@ export class Menu {
             }
         }     
 
-        this.marker.setY(this.menuStartY + this.selectedIndex * this.menuItemDistanceY());   
+        this.marker.setY(this.menuStartY + this.selectedItemIndex * this.menuItemDistanceY());   
 
         /*
         this.subItemMarkerLeft.setY(this.menuStartY + this.selectedIndex * this.menuItemDistanceY());   
@@ -180,38 +180,102 @@ export class Menu {
     }
 
     selectNextItem() {
-        if(this.selectedIndex < this.items.length - 1) {
-            this.selectedIndex++;        
+        if(this.selectedItemIndex < this.items.length - 1) {
+            this.selectedItemIndex++;        
         }
             
         this.refreshColorsAndMarker();        
     }
 
     selectPreviousItem() {
-        if(this.selectedIndex > 0) {
-            this.items[this.selectedIndex].setColor(this.nonHighlightedColor());
-            this.selectedIndex--;        
+        if(this.selectedItemIndex > 0) {
+            this.items[this.selectedItemIndex].setColor(this.nonHighlightedColor());
+            this.selectedItemIndex--;        
         }
 
         this.refreshColorsAndMarker();        
     }
 
     trySelectNextSubItem() {
-       var temp = this.items[this.selectedIndex];
+       var temp = this.items[this.selectedItemIndex];
        if(temp instanceof ComplexMenuItem)
        {
-            var item = <ComplexMenuItem>this.items[this.selectedIndex];
+            var item = <ComplexMenuItem>this.items[this.selectedItemIndex];
             item.selectNextItem();
        }       
     }
 
     trySelectPreviousSubItem() {
-        var temp = this.items[this.selectedIndex];
+        var temp = this.items[this.selectedItemIndex];
         if(temp instanceof ComplexMenuItem)
         {
-             var item = <ComplexMenuItem>this.items[this.selectedIndex];
+             var item = <ComplexMenuItem>this.items[this.selectedItemIndex];
              item.selectPreviousItem();
         }   
+     }
+
+     show() {
+        this.title.setVisible(true);
+
+        if(this.footer != null)
+            this.footer.setVisible(true);
+        
+        if(this.footer2 != null)
+            this.footer2.setVisible(true);
+        
+        this.marker.setVisible(true);
+
+        if(this.subItemMarkerLeft != null)
+            this.subItemMarkerLeft.setVisible(true);
+
+        if(this.subItemMarkerRight != null)
+            this.subItemMarkerRight.setVisible(true);
+        
+        this.items.forEach(x => {
+            x.setVisible(true);
+        });
+        
+        /*
+        title: Phaser.GameObjects.Text;
+        footer: Phaser.GameObjects.Text;
+        footer2: Phaser.GameObjects.Text;
+        marker: Phaser.GameObjects.Text;    
+        subItemMarkerLeft: Phaser.GameObjects.Text;        
+        subItemMarkerRight: Phaser.GameObjects.Text;    
+        items: Array<Phaser.GameObjects.Text>;
+        */
+     }
+
+     hide() {
+        this.title.setVisible(false);
+
+        if(this.footer != null)
+            this.footer.setVisible(false);
+        
+        if(this.footer2 != null)
+            this.footer2.setVisible(false);
+        
+        this.marker.setVisible(false);
+
+        if(this.subItemMarkerLeft != null)
+            this.subItemMarkerLeft.setVisible(false);
+
+        if(this.subItemMarkerRight != null)
+            this.subItemMarkerRight.setVisible(false);
+        
+        this.items.forEach(x => {
+            x.setVisible(false);
+        });
+        
+        /*
+        title: Phaser.GameObjects.Text;
+        footer: Phaser.GameObjects.Text;
+        footer2: Phaser.GameObjects.Text;
+        marker: Phaser.GameObjects.Text;    
+        subItemMarkerLeft: Phaser.GameObjects.Text;        
+        subItemMarkerRight: Phaser.GameObjects.Text;    
+        items: Array<Phaser.GameObjects.Text>;
+        */
      }
 }
 

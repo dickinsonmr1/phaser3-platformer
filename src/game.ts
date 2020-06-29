@@ -8,13 +8,6 @@
 
 import "phaser";
 import { SceneController } from "./scenes/sceneController";
-import { TitleScene } from "./scenes/titleScene";
-import { LevelSelectScene } from "./scenes/levelSelectScene";
-import { MainScene } from "./scenes/mainScene";
-import { MenuBackgroundScene } from "./scenes/menuBackgroundScene";
-import { HudScene } from "./scenes/hudScene";
-import { PauseScene } from "./scenes/pauseScene";
-import { LoadingScene } from "./scenes/loadingScene";
 
 // main game configuration
 var config: Phaser.Types.Core.GameConfig = {
@@ -23,7 +16,7 @@ var config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   parent: "game",  
   input: { keyboard: true},
-  scene: [ SceneController], //, TitleScene, LevelSelectScene, MenuBackgroundScene, LoadingScene, PauseScene, MainScene, HudScene ],
+  scene: [ SceneController],
   audio: {
     //noAudio: true
   },

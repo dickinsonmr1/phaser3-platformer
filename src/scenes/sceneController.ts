@@ -3,7 +3,6 @@ import { MainScene } from "./mainScene";
 import { MenuBackgroundScene } from "./menuBackgroundScene";
 import { PauseScene } from "./pauseScene";
 import { TitleScene } from "./titleScene";
-import { LevelSelectScene } from "./levelSelectScene";
 import { HudScene } from "./hudScene";
 import { GameProgress } from "./gameProgress";
 import { LevelCompleteScene } from "./levelCompleteScene";
@@ -11,7 +10,6 @@ import { LevelCompleteScene } from "./levelCompleteScene";
 export class SceneController extends Phaser.Scene {
 
     titleScene: TitleScene;
-    levelSelectScene: LevelSelectScene;
     loadingScene: LoadingScene;
     mainScene: MainScene;
     menuBackgroundScene: MenuBackgroundScene;
@@ -41,9 +39,6 @@ export class SceneController extends Phaser.Scene {
         this.menuBackgroundScene = new MenuBackgroundScene(this);
         this.game.scene.add("MenuBackgroundScene", this.menuBackgroundScene);
                 
-        this.levelSelectScene = new LevelSelectScene(this);
-        this.game.scene.add("LevelSelectScene", this.levelSelectScene);
-
         this.loadingScene = new LoadingScene(this);
         this.game.scene.add("LoadingScene", this.loadingScene);
 
@@ -68,24 +63,14 @@ export class SceneController extends Phaser.Scene {
 
     loadTitleScene() {
         this.scene.launch("TitleScene");
-        this.scene.launch("LevelSelectScene");
         this.scene.launch("MenuBackgroundScene");
-        
-        this.scene.sleep("LevelSelectScene");
-    }
-
-    returnToTitleSceneFromLevelSelect() {
-        this.scene.sleep('LevelSelectScene');
-        this.scene.launch('TitleScene');        
-        this.titleScene.resetMarker();
     }
 
     preloadMainSceneAndDisplayLoadingScene(destinationName: string) {
-        this.scene.stop('TitleScene');        
-        this.scene.stop('LevelSelectScene');         
-
-        this.scene.launch("HudScene");
+        this.scene.stop('TitleScene');             
+        
         this.scene.launch('MainScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
+        this.scene.launch("HudScene");
         this.scene.launch('LoadingScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
         //this.scene.launch('HudScene');        
     }
@@ -106,13 +91,23 @@ export class SceneController extends Phaser.Scene {
 
         this.mainScene.fadeOutToWhite();
 
+        //var destinationName = this.mainScene.worldName;
+        //var gameProgress = new GameProgress();
+        //gameProgress.save(destinationName);
+
+        
         this.scene.launch('LevelCompleteScene');
-        this.scene.launch('MenuBackgroundScene');
+                 
+        this.mainScene.scene.transition({
+            target: 'MenuBackgroundScene',
+            duration: 2000,
+            moveBelow: false,
+            remove: true,          
+        });
 
-
-        this.scene.stop('MainScene');
-        this.scene.stop('HudScene');
-        this.scene.stop('PauseScene');
+        this.scene.sleep('MainScene');
+        this.scene.sleep('HudScene');
+        this.scene.sleep('PauseScene');
 
         /*
         this.mainScene.fadeOutCamera();
@@ -132,13 +127,6 @@ export class SceneController extends Phaser.Scene {
     mainSceneLoaded() {
         this.loadingScene.mainSceneLoaded();        
         this.scene.bringToTop("LoadingScene");        
-    }
-
-    loadLevelSelectScene() {
-        this.scene.sleep('TitleScene');                
-        this.scene.resume('LevelSelectScene');
-        this.levelSelectScene.resetMarker();
-        //this.levelSelectScene.menu.refreshColorsAndMarker();
     }
 
     resumePreloadedMainScene() {
@@ -173,8 +161,6 @@ export class SceneController extends Phaser.Scene {
 
     returnToTitleScene() {
 
-        this.mainScene.fadeOutCamera();
-
         var destinationName = this.mainScene.worldName;
         var gameProgress = new GameProgress();
         gameProgress.save(destinationName);
@@ -182,6 +168,7 @@ export class SceneController extends Phaser.Scene {
         this.scene.stop('MainScene');
         this.scene.stop('HudScene');
         this.scene.stop('PauseScene');
+        this.scene.stop('LevelCompleteScene');
 
         this.loadTitleScene();
     }

@@ -63,13 +63,13 @@ import { SceneController } from "./sceneController";
 
         if(Phaser.Input.Keyboard.JustDown(this.selectKey)) {
 
-            if(this.menu.selectedIndex == 0) {
+            if(this.menu.selectedItemIndex == 0) {
                this.returnToGame();
             }
-            else if(this.menu.selectedIndex == 1) {
+            else if(this.menu.selectedItemIndex == 1) {
                 this.menu.trySelectNextSubItem();
             }
-            else if(this.menu.selectedIndex == 2) {
+            else if(this.menu.selectedItemIndex == 2) {
                 this.endGameAndReturnToTitleMenu();
             }
         }

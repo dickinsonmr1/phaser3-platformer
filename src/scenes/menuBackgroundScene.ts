@@ -33,6 +33,10 @@ export class MenuBackgroundScene extends Phaser.Scene {
         this.spaceship = this.add.sprite(1600, 650, 'alienShipSprites', 'shipBlue_manned.png');
         
         this.fadeInCamera();
+
+        this.events.on('transitioncomplete', function () {
+            this.fadeInToWhite();
+        }, this);
     }
     
     fadeInCamera() {
@@ -42,6 +46,13 @@ export class MenuBackgroundScene extends Phaser.Scene {
     fadeOutToWhite() {
         let transitionTime = 1000;
         this.cameras.main.fadeOut(transitionTime, 255, 255, 255);
+        //this.cameras.main.zoomTo(5, transitionTime);
+    }
+
+    fadeInToWhite() {
+        //this.scene.restart();
+        let transitionTime = 1000;
+        this.cameras.main.fadeIn(transitionTime, 255, 255, 255);
         //this.cameras.main.zoomTo(5, transitionTime);
     }
 
