@@ -42,6 +42,7 @@ import { GameProgress, SaveGameFile } from "./gameProgress";
     preload(): void {        
 
         this.load.atlasXML('sprites', './assets/sprites/HUD/spritesheet_hud.png', './assets/sprites/HUD/spritesheet_hud.xml');
+        //this.load.atlasXML('sprites', './assets/sprites/player/spritesheet_players.png', './assets/sprites/player/spritesheet_players.xml');
     }    
 
     create(): void {
@@ -57,7 +58,8 @@ import { GameProgress, SaveGameFile } from "./gameProgress";
         var menu = new Menu(this);
 
         menu.setTitle(this, "Alien Commando");
-        menu.setTitleIcon(this, 'sprites', 'hudPlayer_blue.png');
+        menu.setTitleIcon(this, 'sprites', 'hudPlayer_blue.png', 1);
+        //menu.setTitleIcon(this, 'sprites', 'alienBlue_front.png', 1);
         menu.setMarker(this, ">>");
         menu.addMenuItem(this, "Start Game");
         menu.addMenuItem(this, "Continue Game");

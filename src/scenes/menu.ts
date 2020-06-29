@@ -118,9 +118,11 @@ export class Menu {
         this.subtitle.setStroke('rgb(0,0,0)', 16);
     }
 
-    setTitleIcon(scene: Phaser.Scene, texture: string, frame: string) {
+    setTitleIcon(scene: Phaser.Scene, texture: string, frame: string, scale: number) {
         this.titleIcon = scene.add.image(this.titleStartX - this.title.width / 2 - 100, this.titleStartY, texture, frame);
-        this.titleIcon.setScale(1.0, 1.0);
+        this.titleIcon.setOrigin(0.5, 0.5);
+        this.titleIcon.setScale(scale, scale);
+        
         this.titleIcon.setDepth(1);
     }
 
