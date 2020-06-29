@@ -100,7 +100,8 @@ export class Player extends Phaser.GameObjects.Sprite {
     public static get maxHealth(): number { return 8; }
 
     public gemsCollected: number;
-    //public ammoCount: number;
+    public score: number;
+    public enemiesKilled: number;
 
     public isTouchingSpring: boolean;
     public springTime: number;
@@ -151,7 +152,8 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.hurtTime = 0;
         this.health = Player.maxHealth;
         this.gemsCollected = 0;
-        //this.ammoCount = 5;
+        this.score = 0;
+        this.enemiesKilled = 0;
         this.bulletTime = 0;
         this.lastUsedBulletIndex = 0;
         this.springTime = 0;

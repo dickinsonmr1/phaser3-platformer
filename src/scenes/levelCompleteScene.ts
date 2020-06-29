@@ -20,9 +20,21 @@ import { SceneController } from "./sceneController";
     cursorUp: Phaser.Input.Keyboard.Key;
     cursorDown: Phaser.Input.Keyboard.Key;
 
+    gem: Phaser.GameObjects.Image;
+
+    gemsCollected: number;
     gemSummaryText: Phaser.GameObjects.Text;
+
+    score: number;
     scoreSummaryText: Phaser.GameObjects.Text;
+
+    enemiesKilled: number;
     enemySummaryText: Phaser.GameObjects.Text;
+
+    summaryFontSize(): number {return 40;}
+    summaryStartX(): number {return this.game.canvas.width / 3;}
+    summaryStartY(): number {return this.game.canvas.height / 3;}
+    summaryItemDistanceY(): number {return 50;}
 
     constructor(sceneController: SceneController) {
         super({
@@ -34,9 +46,14 @@ import { SceneController } from "./sceneController";
         
     init(data): void {
         console.log(data.id);        
+        this.gemsCollected = data.gemCount;
+        this.score = data.score;
+        this.enemiesKilled = data.enemiesKilled;
     }
 
-    preload(): void {        
+    preload(): void {    
+        this.load.atlasXML('hudSprites', './assets/sprites/HUD/spritesheet_hud.png', './assets/sprites/HUD/spritesheet_hud.xml');            
+        this.load.image('weaponIcon', './assets/sprites/player/raygunPurpleBig.png');
     }
 
     create(): void {
@@ -52,40 +69,51 @@ import { SceneController } from "./sceneController";
         this.menu.addMenuItem(this, "Save and Continue");
         this.menu.addMenuItem(this, "Save and Exit");
 
-        this.gemSummaryText = this.add.text(300, 600, "Gems: 38/40",
+        this.gem = this.add.image(this.summaryStartX() - 50, this.summaryStartY(), 'hudSprites', 'hudJewel_green.png');
+        this.gem.setScale(0.5);
+        this.gem.setDepth(10);
+
+        this.gemSummaryText = this.add.text(this.summaryStartX(), this.summaryStartY(), "Gems: " + this.gemsCollected,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: 32,
-            align: 'center',            
+            fontSize: this.summaryFontSize(),
+            align: 'left',            
             color:"rgb(255,255,255)",
         });
-        this.gemSummaryText.setOrigin(0.5, 0.5);
+        this.gemSummaryText.setOrigin(0, 0.5);
         this.gemSummaryText.setStroke('rgb(0,0,0)', 16);
 
-        this.scoreSummaryText = this.add.text(300, 700, "Score: 25300",
+        this.scoreSummaryText = this.add.text(
+                                    this.summaryStartX(),
+                                    this.summaryStartY() + this.summaryItemDistanceY(),
+                                    "Score: " +  + this.score,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: 32,
-            align: 'center',            
+            fontSize: this.summaryFontSize(),
+            align: 'left',            
             color:"rgb(255,255,255)",
         });
-        this.scoreSummaryText.setOrigin(0.5, 0.5);
+        this.scoreSummaryText.setOrigin(0, 0.5);
         this.scoreSummaryText.setStroke('rgb(0,0,0)', 16);
 
-        this.enemySummaryText = this.add.text(300, 800, "Enemies: 8/10",
+        this.enemySummaryText = this.add.text(
+                                    this.summaryStartX(),
+                                    this.summaryStartY() + this.summaryItemDistanceY() * 2,
+                                    "Enemies: "  + this.enemiesKilled,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: 32,
-            align: 'center',            
+            fontSize: this.summaryFontSize(),
+            align: 'left',            
             color:"rgb(255,255,255)",
         });
-        this.enemySummaryText.setOrigin(0.5, 0.5);
+        this.enemySummaryText.setOrigin(0, 0.5);
         this.enemySummaryText.setStroke('rgb(0,0,0)', 16);
         //this.menu.setFooter(this, "©2020 by Mark Dickinson" );
         //this.menu.setFooter2(this, "Powered by Phaser 3  //  Assets by Kenney.nl" );
 
         //this.scene.run('MenuBackgroundScene');
-        //this.scene.sendToBack('MenuBackgroundScene');              
+        //this.scene.sendToBack('MenuBackgroundScene');  
+        this.scene.bringToTop();            
     }
 
     resetMarker(): void {

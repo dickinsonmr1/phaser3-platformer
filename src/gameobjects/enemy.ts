@@ -9,6 +9,7 @@
 import { Constants } from "../constants";
 import "phaser";
 import { Scene } from "phaser";
+import { MainScene } from "../scenes/mainScene";
 
 export class Enemy extends Phaser.GameObjects.Sprite {
     public hurtTime: number;
@@ -130,6 +131,10 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
         if(this.health <= 0) {
             this.scene.sound.play("enemyDeathSound");
+            
+            var scene = <MainScene>this.scene;
+            scene.player.enemiesKilled++;
+
             this.destroy();       
             //this.anims.play(this.deadAnim, true);
             //var body = <Phaser.Physics.Arcade.Body>this.body;            

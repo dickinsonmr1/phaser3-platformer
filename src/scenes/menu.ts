@@ -22,6 +22,10 @@ export class Menu {
     footerStartY: number;
     footer2StartY: number;
 
+    titleFontSize(): number {return 72;}
+    menuItemFontSize(): number {return 48;}
+    footerFontSize(): number {return 32;}
+
     markerOffsetX(): number {return -100;}
     menuItemDistanceY(): number {return 60;}
 
@@ -31,7 +35,7 @@ export class Menu {
 
         this.titleStartX = scene.game.canvas.width / 2;
 
-        this.menuStartX = scene.game.canvas.width / 4;
+        this.menuStartX = scene.game.canvas.width / 3;
         this.menuStartY = scene.game.canvas.height / 2;
         
         this.footerStartX = scene.game.canvas.width / 2;
@@ -47,7 +51,7 @@ export class Menu {
             text: text,
             style: {
                 fontFamily: 'KenneyRocketSquare',
-                fontSize: 64,
+                fontSize: this.menuItemFontSize(),
                 align: 'right',            
                 color: this.nonHighlightedColor(),
             }});
@@ -67,7 +71,7 @@ export class Menu {
             text: text,
             style: {
                 fontFamily: 'KenneyRocketSquare',
-                fontSize: 64,
+                fontSize: this.menuItemFontSize(),
                 align: 'right',            
                 color: this.nonHighlightedColor(),
             },
@@ -84,7 +88,7 @@ export class Menu {
         this.title = scene.add.text(this.titleStartX + this.titleOffsetX(), this.menuStartY + this.titleOffsetY(), text,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: 96,
+            fontSize: this.titleFontSize(),
             align: 'center',            
             color: "rgb(255,255,255)",
         });
@@ -96,7 +100,7 @@ export class Menu {
         this.footer = scene.add.text(this.footerStartX, this.footerStartY, text,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: 32,
+            fontSize: this.footerFontSize(),
             align: 'center',            
             color:"rgb(255,255,255)",
         });
@@ -108,7 +112,7 @@ export class Menu {
         this.footer2 = scene.add.text(this.footerStartX, this.footer2StartY, text,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: 32,
+            fontSize: this.footerFontSize(),
             align: 'center',            
             color:"rgb(255,255,255)",
         });
@@ -120,7 +124,7 @@ export class Menu {
         this.marker = scene.add.text(this.menuStartX + this.markerOffsetX(), this.menuStartY, text,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: 64,
+            fontSize: this.menuItemFontSize(),
             align: 'right',            
             color:"rgb(255,255,255)",
         });

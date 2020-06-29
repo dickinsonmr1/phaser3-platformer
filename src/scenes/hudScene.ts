@@ -21,17 +21,20 @@
     private get HeartStartX(): number { return this.PlayerIconX + 100; }
     private get HeartOffsetX(): number { return 50; }
 
+    private get fontSize(): number { return 48; }
+
     private get GemIconX(): number { return 900; }
-    private get GemTextOffsetX(): number { return 100; }
+    private get GemTextOffsetX(): number { return 120; }
 
     private get WeaponIconX(): number { return 1720; }
     private get AmmoTextOffsetX(): number { return -120; }
     
     private get HudBaseOffsetY(): number { return 100; }
-    private get AmmoTextOffsetY(): number { return -50; }
+    private get AmmoTextOffsetY(): number { return 0; }
 
     private get InfoTextStartX(): number {return this.game.canvas.width / 2; }
     private get InfoTextStartY(): number {return this.game.canvas.height - this.game.canvas.height / 4; }   
+    private get infoTextFontSize(): number { return 48; }
 
     constructor(sceneController: SceneController) {
         super({
@@ -103,10 +106,11 @@
         this.hudComponent.gemCountText = this.add.text(this.GemIconX + this.GemTextOffsetX, this.HudBaseOffsetY + this.AmmoTextOffsetY, '0',
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: 64,
+            fontSize: this.fontSize,
             align: 'right',            
             color:"rgb(255,255,255)",
         });
+        this.hudComponent.gemCountText.setOrigin(0, 0.5);
         this.hudComponent.gemCountText.setStroke('rgb(0,0,0)', 16);
 
         this.hudComponent.weapon = this.add.image(this.WeaponIconX, this.HudBaseOffsetY, 'weaponIcon');
@@ -114,17 +118,17 @@
         this.hudComponent.ammoText = this.add.text(this.WeaponIconX + this.AmmoTextOffsetX, this.HudBaseOffsetY + this.AmmoTextOffsetY, '5',
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: 64,
+            fontSize: this.fontSize,
             align: 'right',            
             color:"rgb(255,255,255)",
         });
         this.hudComponent.ammoText.setStroke('rgb(0,0,0)', 16);
-        this.hudComponent.ammoText.setOrigin(1, 0);
+        this.hudComponent.ammoText.setOrigin(1, 0.5);
 
         this.hudComponent.infoText = this.add.text(this.InfoTextStartX, this.InfoTextStartY, 'test',
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: 64,
+            fontSize: this.infoTextFontSize,
             align: 'center',            
             color:"rgb(255,255,255)",
         });

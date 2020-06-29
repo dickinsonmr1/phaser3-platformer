@@ -849,6 +849,8 @@ export class MainScene extends Phaser.Scene {
         scene.addExpiringText(scene, enemy.x, enemy.y, damage.toString())
 
         enemy.tryDamage(damage);
+        scene.player.score += damage;
+        
         bullet.destroy();
     }
 

@@ -37,6 +37,8 @@ export class MenuBackgroundScene extends Phaser.Scene {
         this.events.on('transitioncomplete', function () {
             this.fadeInToWhite();
         }, this);
+
+        this.scene.sendToBack();
     }
     
     fadeInCamera() {

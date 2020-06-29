@@ -1,6 +1,6 @@
 /**
  * @author       Mark Dickinson
- * @copyright    2019 Mark Dickinson
+ * @copyright    2020 Mark Dickinson
  * @license      none
  */
 
@@ -30,8 +30,12 @@
     worldName: string;
     objective: string;
 
-    private get titleStartX(): number { return this.game.canvas.width / 2; }
+    private get titleFontSize(): number { return 72; }
+    private get objectiveTextFontSize(): number { return 48; }
+    private get loadingTextFontSize(): number { return 48; }
 
+    private get titleStartX(): number { return this.game.canvas.width / 2; }
+    
     //infoText: Phaser.GameObjects.Text;
     //infoTextAlpha: number;
     
@@ -70,7 +74,7 @@
             this.titleText = this.add.text(this.titleStartX, 150, this.worldName,
             {
                 fontFamily: 'KenneyRocketSquare',
-                fontSize: 96,
+                fontSize: this.titleFontSize,
                 align: 'center',            
                 color:"rgb(255,255,255)",
             });
@@ -85,7 +89,7 @@
             this.loadingText = this.add.text(this.titleStartX, 800, 'LOADING WORLD...',
             {
                 fontFamily: 'KenneyRocketSquare',
-                fontSize: 64,
+                fontSize: this.loadingTextFontSize,
                 align: 'center',            
                 color:"rgb(255,255,255)",
             });
@@ -98,7 +102,7 @@
             this.objectiveText = this.add.text(this.titleStartX, 300, 'Objective: ' + this.objective,
             {
                 fontFamily: 'KenneyRocketSquare',
-                fontSize: 64,
+                fontSize: this.objectiveTextFontSize,
                 align: 'center',            
                 color:"rgb(255,255,255)",
             });
