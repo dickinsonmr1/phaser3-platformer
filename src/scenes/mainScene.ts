@@ -649,6 +649,10 @@ export class MainScene extends Phaser.Scene {
         this.sound.play("gemSound");
         this.events.emit("gemCollected", ++this.player.gemsCollected);
 
+        let scene = this.world.scene;
+        scene.addExpiringText(scene, sprite.x, sprite.y + 64, Constants.gemScore.toString());
+        this.player.score += Constants.gemScore;
+
         return true;
     }
 

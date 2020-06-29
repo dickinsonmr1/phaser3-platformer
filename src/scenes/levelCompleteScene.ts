@@ -23,12 +23,14 @@ import { SceneController } from "./sceneController";
     gem: Phaser.GameObjects.Image;
 
     gemsCollected: number;
+    totalGems: number;
     gemSummaryText: Phaser.GameObjects.Text;
 
     score: number;
     scoreSummaryText: Phaser.GameObjects.Text;
 
     enemiesKilled: number;
+    totalEnemies: number;
     enemySummaryText: Phaser.GameObjects.Text;
 
     summaryFontSize(): number {return 40;}
@@ -49,6 +51,8 @@ import { SceneController } from "./sceneController";
         this.gemsCollected = data.gemCount;
         this.score = data.score;
         this.enemiesKilled = data.enemiesKilled;
+        this.totalEnemies = data.totalEnemies;
+        this.totalGems = data.totalGems;
     }
 
     preload(): void {    
@@ -73,7 +77,7 @@ import { SceneController } from "./sceneController";
         this.gem.setScale(0.5);
         this.gem.setDepth(10);
 
-        this.gemSummaryText = this.add.text(this.summaryStartX(), this.summaryStartY(), "Gems: " + this.gemsCollected,
+        this.gemSummaryText = this.add.text(this.summaryStartX(), this.summaryStartY(), "Gems: " + this.gemsCollected + "/" + this.totalGems,
         {
             fontFamily: 'KenneyRocketSquare',
             fontSize: this.summaryFontSize(),
@@ -83,9 +87,22 @@ import { SceneController } from "./sceneController";
         this.gemSummaryText.setOrigin(0, 0.5);
         this.gemSummaryText.setStroke('rgb(0,0,0)', 16);
 
-        this.scoreSummaryText = this.add.text(
+        this.enemySummaryText = this.add.text(
                                     this.summaryStartX(),
                                     this.summaryStartY() + this.summaryItemDistanceY(),
+                                    "Enemies: "  + this.enemiesKilled  + "/" + this.totalEnemies,
+        {
+            fontFamily: 'KenneyRocketSquare',
+            fontSize: this.summaryFontSize(),
+            align: 'left',            
+            color:"rgb(255,255,255)",
+        });
+        this.enemySummaryText.setOrigin(0, 0.5);
+        this.enemySummaryText.setStroke('rgb(0,0,0)', 16);
+
+        this.scoreSummaryText = this.add.text(
+                                    this.summaryStartX(),
+                                    this.summaryStartY() + this.summaryItemDistanceY()  * 2,
                                     "Score: " +  + this.score,
         {
             fontFamily: 'KenneyRocketSquare',
@@ -96,18 +113,7 @@ import { SceneController } from "./sceneController";
         this.scoreSummaryText.setOrigin(0, 0.5);
         this.scoreSummaryText.setStroke('rgb(0,0,0)', 16);
 
-        this.enemySummaryText = this.add.text(
-                                    this.summaryStartX(),
-                                    this.summaryStartY() + this.summaryItemDistanceY() * 2,
-                                    "Enemies: "  + this.enemiesKilled,
-        {
-            fontFamily: 'KenneyRocketSquare',
-            fontSize: this.summaryFontSize(),
-            align: 'left',            
-            color:"rgb(255,255,255)",
-        });
-        this.enemySummaryText.setOrigin(0, 0.5);
-        this.enemySummaryText.setStroke('rgb(0,0,0)', 16);
+     
         //this.menu.setFooter(this, "©2020 by Mark Dickinson" );
         //this.menu.setFooter2(this, "Powered by Phaser 3  //  Assets by Kenney.nl" );
 

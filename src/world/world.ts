@@ -29,6 +29,9 @@ export class World {
     sky: Phaser.GameObjects.TileSprite;
     skyName: string;
 
+    totalEnemies: number = 0;
+    totalGems: number = 0;
+
     scene: MainScene
 
     constructor(scene: MainScene){
@@ -102,6 +105,8 @@ export class World {
 
         var allEnemyTypes = [2967, 2953, 2939, 2925, 2911, 2924, 2910, 2896, 3077, 3063];
         var allPortalTiles = [Constants.portalBlueTile, Constants.portalGreenTile, Constants.portalYellowTile, Constants.portalRedTile];
+        var allGemTiles = [Constants.tileKeyGemRed, Constants.tileKeyGemGreen, Constants.tileKeyGemYellow, Constants.tileKeyGemBlue];
+        
         this.layer03.forEachTile(tile => {
 
             if(tile.index == Constants.playerBlueSpawnTile)
@@ -269,6 +274,7 @@ export class World {
 
                 let index = allEnemyTypes.indexOf(tile.index);
                 //var randomNumber = 6;//this.getRandomInt(6);
+                this.totalEnemies++;
 
                 switch(index)
                 {
@@ -383,6 +389,9 @@ export class World {
                         break;
                 }
                 this.layer03.removeTileAt(tile.x, tile.y);
+            }
+            else if(allGemTiles.includes(tile.index)) {
+                this.totalGems++;
             }
         })
 

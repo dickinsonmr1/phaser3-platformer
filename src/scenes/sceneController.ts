@@ -93,6 +93,9 @@ export class SceneController extends Phaser.Scene {
         var score = this.mainScene.player.score;
         var enemiesKilled = this.mainScene.player.enemiesKilled;
 
+        var totalGems = this.mainScene.world.totalGems;
+        var totalEnemies = this.mainScene.world.totalEnemies;
+
         this.mainScene.fadeOutToWhite();
 
         //var destinationName = this.mainScene.worldName;
@@ -100,7 +103,7 @@ export class SceneController extends Phaser.Scene {
         //gameProgress.save(destinationName);
 
         
-        this.scene.launch('LevelCompleteScene', { gemCount, score, enemiesKilled });
+        this.scene.launch('LevelCompleteScene', { gemCount, totalGems, score, enemiesKilled, totalEnemies });
                  
         this.mainScene.scene.transition({
             target: 'MenuBackgroundScene',

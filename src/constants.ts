@@ -94,6 +94,8 @@ export class Constants {
     public static get enemyDrawScale(): number {return 1;}
     public static get playerOffsetX(): number {return 32;}
     public static get playerOffsetY(): number {return 128;}
+
+    public static get gemScore(): number {return 100;}
     
     public static get playerDuckingGunOffsetY(): number {return 12;}
     public static get enemyOffsetY(): number {return 10;}    
