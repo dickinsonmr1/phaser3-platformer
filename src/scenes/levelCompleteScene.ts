@@ -22,6 +22,7 @@ import { SceneController } from "./sceneController";
 
     gem: Phaser.GameObjects.Image;
 
+    worldName: string;
     gemsCollected: number;
     totalGems: number;
     gemSummaryText: Phaser.GameObjects.Text;
@@ -35,7 +36,7 @@ import { SceneController } from "./sceneController";
 
     summaryFontSize(): number {return 40;}
     summaryStartX(): number {return this.game.canvas.width / 3;}
-    summaryStartY(): number {return this.game.canvas.height / 3;}
+    summaryStartY(): number {return this.game.canvas.height / 2;}
     summaryItemDistanceY(): number {return 50;}
 
     constructor(sceneController: SceneController) {
@@ -48,6 +49,7 @@ import { SceneController } from "./sceneController";
         
     init(data): void {
         console.log(data.id);        
+        this.worldName = data.worldName;
         this.gemsCollected = data.gemCount;
         this.score = data.score;
         this.enemiesKilled = data.enemiesKilled;
@@ -67,8 +69,10 @@ import { SceneController } from "./sceneController";
         this.cursorUp = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
        
         this.menu = new Menu(this);
+        this.menu.overrideStartY(this.game.canvas.height / 3 * 2);
 
         this.menu.setTitle(this, "Level Complete");
+        this.menu.setSubtitle(this, "Summary: " + this.worldName);
         this.menu.setMarker(this, ">>");
         this.menu.addMenuItem(this, "Save and Continue");
         this.menu.addMenuItem(this, "Save and Exit");

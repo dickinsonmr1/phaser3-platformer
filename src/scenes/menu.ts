@@ -1,5 +1,6 @@
 export class Menu {
     title: Phaser.GameObjects.Text;
+    subtitle: Phaser.GameObjects.Text;
     footer: Phaser.GameObjects.Text;
     footer2: Phaser.GameObjects.Text;
     marker: Phaser.GameObjects.Text;    
@@ -8,21 +9,25 @@ export class Menu {
     items: Array<Phaser.GameObjects.Text>;
     selectedItemIndex: integer;
 
+    titleIcon: Phaser.GameObjects.Image;
+
     menuStartX: number;
     menuStartY: number;
 
     titleOffsetX(): number {return 0;}
-    titleOffsetY(): number {return -300;}
+    subtitleOffsetY(): number {return 150;}
 
     highlightedColor(): string {return "rgb(255,255,255)"};
     nonHighlightedColor(): string {return "rgb(150,150,150)"};
 
     titleStartX: number;
+    titleStartY: number;
     footerStartX: number;
     footerStartY: number;
     footer2StartY: number;
 
     titleFontSize(): number {return 72;}
+    subtitleFontSize(): number {return 48;}
     menuItemFontSize(): number {return 48;}
     footerFontSize(): number {return 32;}
 
@@ -34,6 +39,7 @@ export class Menu {
         this.selectedItemIndex = 0;
 
         this.titleStartX = scene.game.canvas.width / 2;
+        this.titleStartY = scene.game.canvas.height / 4;
 
         this.menuStartX = scene.game.canvas.width / 3;
         this.menuStartY = scene.game.canvas.height / 2;
@@ -84,8 +90,12 @@ export class Menu {
         this.refreshColorsAndMarker();        
     }
 
+    overrideStartY(startY: number) {
+        this.menuStartY = startY;
+    }
+
     setTitle(scene: Phaser.Scene, text: string) {
-        this.title = scene.add.text(this.titleStartX + this.titleOffsetX(), this.menuStartY + this.titleOffsetY(), text,
+        this.title = scene.add.text(this.titleStartX + this.titleOffsetX(), this.titleStartY, text,
         {
             fontFamily: 'KenneyRocketSquare',
             fontSize: this.titleFontSize(),
@@ -94,6 +104,24 @@ export class Menu {
         });
         this.title.setOrigin(0.5, 0.5);
         this.title.setStroke('rgb(0,0,0)', 16);
+    }
+
+    setSubtitle(scene: Phaser.Scene, text: string) {
+        this.subtitle = scene.add.text(this.titleStartX + this.titleOffsetX(), this.titleStartY + this.subtitleOffsetY(), text,
+        {
+            fontFamily: 'KenneyRocketSquare',
+            fontSize: this.subtitleFontSize(),
+            align: 'center',            
+            color: "rgb(255,255,255)",
+        });
+        this.subtitle.setOrigin(0.5, 0.5);
+        this.subtitle.setStroke('rgb(0,0,0)', 16);
+    }
+
+    setTitleIcon(scene: Phaser.Scene, texture: string, frame: string) {
+        this.titleIcon = scene.add.image(this.titleStartX - this.title.width / 2 - 100, this.titleStartY, texture, frame);
+        this.titleIcon.setScale(1.0, 1.0);
+        this.titleIcon.setDepth(1);
     }
 
     setFooter(scene: Phaser.Scene, text: string) {
@@ -220,6 +248,12 @@ export class Menu {
 
      show() {
         this.title.setVisible(true);
+        
+        if(this.titleIcon != null)
+            this.titleIcon.setVisible(true);
+
+        if(this.subtitle != null)
+            this.subtitle.setVisible(true);
 
         if(this.footer != null)
             this.footer.setVisible(true);
@@ -238,20 +272,16 @@ export class Menu {
         this.items.forEach(x => {
             x.setVisible(true);
         });
-        
-        /*
-        title: Phaser.GameObjects.Text;
-        footer: Phaser.GameObjects.Text;
-        footer2: Phaser.GameObjects.Text;
-        marker: Phaser.GameObjects.Text;    
-        subItemMarkerLeft: Phaser.GameObjects.Text;        
-        subItemMarkerRight: Phaser.GameObjects.Text;    
-        items: Array<Phaser.GameObjects.Text>;
-        */
      }
 
      hide() {
         this.title.setVisible(false);
+
+        if(this.titleIcon != null)
+            this.titleIcon.setVisible(false);
+        
+        if(this.subtitle != null)
+            this.subtitle.setVisible(false);
 
         if(this.footer != null)
             this.footer.setVisible(false);
@@ -270,17 +300,7 @@ export class Menu {
         this.items.forEach(x => {
             x.setVisible(false);
         });
-        
-        /*
-        title: Phaser.GameObjects.Text;
-        footer: Phaser.GameObjects.Text;
-        footer2: Phaser.GameObjects.Text;
-        marker: Phaser.GameObjects.Text;    
-        subItemMarkerLeft: Phaser.GameObjects.Text;        
-        subItemMarkerRight: Phaser.GameObjects.Text;    
-        items: Array<Phaser.GameObjects.Text>;
-        */
-     }
+    }
 }
 
 export class MenuItem extends Phaser.GameObjects.Text {

@@ -40,7 +40,9 @@ import { GameProgress, SaveGameFile } from "./gameProgress";
     }
 
     preload(): void {        
-    }
+
+        this.load.atlasXML('sprites', './assets/sprites/HUD/spritesheet_hud.png', './assets/sprites/HUD/spritesheet_hud.xml');
+    }    
 
     create(): void {
         this.pauseKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
@@ -55,6 +57,7 @@ import { GameProgress, SaveGameFile } from "./gameProgress";
         var menu = new Menu(this);
 
         menu.setTitle(this, "Alien Commando");
+        menu.setTitleIcon(this, 'sprites', 'hudPlayer_blue.png');
         menu.setMarker(this, ">>");
         menu.addMenuItem(this, "Start Game");
         menu.addMenuItem(this, "Continue Game");

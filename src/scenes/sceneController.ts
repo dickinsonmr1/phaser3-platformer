@@ -95,6 +95,7 @@ export class SceneController extends Phaser.Scene {
 
         var totalGems = this.mainScene.world.totalGems;
         var totalEnemies = this.mainScene.world.totalEnemies;
+        var worldName = this.mainScene.worldName;
 
         this.mainScene.fadeOutToWhite();
 
@@ -103,7 +104,7 @@ export class SceneController extends Phaser.Scene {
         //gameProgress.save(destinationName);
 
         
-        this.scene.launch('LevelCompleteScene', { gemCount, totalGems, score, enemiesKilled, totalEnemies });
+        this.scene.launch('LevelCompleteScene', { gemCount, totalGems, score, enemiesKilled, totalEnemies, worldName });
                  
         this.mainScene.scene.transition({
             target: 'MenuBackgroundScene',
@@ -141,12 +142,15 @@ export class SceneController extends Phaser.Scene {
         this.scene.sleep("MenuBackgroundScene");
         this.scene.sleep("LoadingScene");
         
+
+        this.scene.resume('MainScene');        
+        this.scene.setVisible(true, "MainScene");
+
         this.scene.bringToTop("HudScene");
         this.scene.setVisible(true, "HudScene");
         this.hudScene.setInfoText("Objective: reach portal", 5000);
         
-        this.scene.resume('MainScene');        
-        this.scene.setVisible(true, "MainScene");
+
         this.mainScene.fadeInCamera();
     }
 
