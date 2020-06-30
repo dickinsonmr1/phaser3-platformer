@@ -62,6 +62,8 @@ export class MainScene extends Phaser.Scene {
 
     worldName: string;
 
+    gameTimeStarted: number;
+
     expiringMessagesGroup: Phaser.GameObjects.Group;
      
     constructor(sceneController: SceneController) {

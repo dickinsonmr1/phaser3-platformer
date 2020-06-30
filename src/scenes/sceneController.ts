@@ -89,6 +89,11 @@ export class SceneController extends Phaser.Scene {
 
     levelComplete() {
 
+        var gameTimeStarted = this.mainScene.gameTimeStarted;
+        var gameTimeFinished = this.sys.game.loop.time;
+
+        var elapsedTime = gameTimeFinished - gameTimeStarted;
+
         var gemCount = this.mainScene.player.gemsCollected;
         var score = this.mainScene.player.score;
         var enemiesKilled = this.mainScene.player.enemiesKilled;
@@ -104,7 +109,7 @@ export class SceneController extends Phaser.Scene {
         //gameProgress.save(destinationName);
 
         
-        this.scene.launch('LevelCompleteScene', { gemCount, totalGems, score, enemiesKilled, totalEnemies, worldName });
+        this.scene.launch('LevelCompleteScene', { gemCount, totalGems, score, enemiesKilled, totalEnemies, worldName, elapsedTime });
                  
         this.mainScene.scene.transition({
             target: 'MenuBackgroundScene',
@@ -152,6 +157,7 @@ export class SceneController extends Phaser.Scene {
         
 
         this.mainScene.fadeInCamera();
+        this.mainScene.gameTimeStarted = this.sys.game.loop.time;
     }
 
     pauseGame() {

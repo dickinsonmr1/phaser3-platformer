@@ -23,12 +23,14 @@ import { SceneController } from "./sceneController";
     gem: Phaser.GameObjects.Image;
 
     worldName: string;
+    elapsedTime: number;
     gemsCollected: number;
     totalGems: number;
     gemSummaryText: Phaser.GameObjects.Text;
 
     score: number;
     scoreSummaryText: Phaser.GameObjects.Text;
+    elapsedTimeSummaryText: Phaser.GameObjects.Text;
 
     enemiesKilled: number;
     totalEnemies: number;
@@ -55,6 +57,7 @@ import { SceneController } from "./sceneController";
         this.enemiesKilled = data.enemiesKilled;
         this.totalEnemies = data.totalEnemies;
         this.totalGems = data.totalGems;
+        this.elapsedTime = data.elapsedTime;
     }
 
     preload(): void {    
@@ -69,7 +72,7 @@ import { SceneController } from "./sceneController";
         this.cursorUp = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
        
         this.menu = new Menu(this);
-        this.menu.overrideStartY(this.game.canvas.height / 3 * 2);
+        this.menu.overrideStartY(this.game.canvas.height - this.game.canvas.height / 4);
 
         this.menu.setTitle(this, "Level Complete");
         this.menu.setSubtitle(this, "Summary: " + this.worldName);
@@ -117,6 +120,20 @@ import { SceneController } from "./sceneController";
         this.scoreSummaryText.setOrigin(0, 0.5);
         this.scoreSummaryText.setStroke('rgb(0,0,0)', 16);
 
+        this.elapsedTimeSummaryText = this.add.text(
+                                    this.summaryStartX(),
+                                    this.summaryStartY() + this.summaryItemDistanceY() * 3,
+                                    "Elapsed Time: " + this.getElapsedTimeString(this.elapsedTime),
+        {
+            fontFamily: 'KenneyRocketSquare',
+            fontSize: this.summaryFontSize(),
+            align: 'left',            
+            color:"rgb(255,255,255)",
+        });
+        this.elapsedTimeSummaryText.setOrigin(0, 0.5);
+        this.elapsedTimeSummaryText.setStroke('rgb(0,0,0)', 16);
+
+
      
         //this.menu.setFooter(this, "©2020 by Mark Dickinson" );
         //this.menu.setFooter2(this, "Powered by Phaser 3  //  Assets by Kenney.nl" );
@@ -132,6 +149,33 @@ import { SceneController } from "./sceneController";
             this.menu.marker.visible = false;
         }
     }
+
+    getElapsedTimeString(milliseconds: number) {
+        
+        let dateObject = new Date(0);
+        dateObject.setMilliseconds(milliseconds);
+        
+        //return dateObject.toLocaleDateTimeString({"timeZone":"US/Eastern", "format":"mm:ss"})
+        return dateObject.toLocaleTimeString([], { minute: '2-digit', second: '2-digit',  }) + `.${dateObject.getMilliseconds()}`;
+    }
+    /*
+    getElapsedTime(milliseconds: number) {
+        let dateObject = new Date(milliseconds)
+        dateObject.setMilliseconds(milliseconds)
+        dateObject.toTimeString();
+
+        const humanDateFormat = dateObject.toLocaleString() //2019-12-9 10:30:15
+
+        dateObject.toLocaleString("en-US", {weekday: "long"}) // Monday
+        dateObject.toLocaleString("en-US", {month: "long"}) // December
+        dateObject.toLocaleString("en-US", {day: "numeric"}) // 9
+        dateObject.toLocaleString("en-US", {year: "numeric"}) // 2019
+        dateObject.toLocaleString("en-US", {hour: "numeric"}) // 10 AM
+        dateObject.toLocaleString("en-US", {minute: "numeric"}) // 30
+        dateObject.toLocaleString("en-US", {second: "numeric"}) // 15
+        dateObject.toLocaleString("en-US", {timeZoneName: "short"}) // 12/9/2019, 10:30:15 AM CST
+    }
+    */
 
     update(): void {
         if(Phaser.Input.Keyboard.JustDown(this.selectKey))  {
