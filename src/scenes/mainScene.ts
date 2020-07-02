@@ -63,6 +63,7 @@ export class MainScene extends Phaser.Scene {
     worldName: string;
 
     gameTimeStarted: number;
+    clock: Phaser.Time.Clock;
 
     expiringMessagesGroup: Phaser.GameObjects.Group;
      
@@ -518,6 +519,8 @@ export class MainScene extends Phaser.Scene {
         this.cameras.main.setBackgroundColor(this.world.backgroundColor);
 
         this.sceneController.mainSceneLoaded();
+
+        this.clock = new Phaser.Time.Clock(this);
 
         this.scene.pause();
         this.scene.setVisible(false, "MainScene");

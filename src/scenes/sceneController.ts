@@ -17,6 +17,8 @@ export class SceneController extends Phaser.Scene {
     hudScene: HudScene;
     levelCompleteScene: LevelCompleteScene;
 
+    elapsedTimeInMs: number;
+
     constructor() {
         super({
             key: "SceneManager"
@@ -54,6 +56,7 @@ export class SceneController extends Phaser.Scene {
         this.levelCompleteScene = new LevelCompleteScene(this);
         this.game.scene.add("LevelCompleteScene", this.levelCompleteScene);
 
+        this.elapsedTimeInMs = 0;
         this.loadTitleScene();        
     }
 
@@ -88,11 +91,11 @@ export class SceneController extends Phaser.Scene {
     }
 
     levelComplete() {
-
+        
         var gameTimeStarted = this.mainScene.gameTimeStarted;
-        var gameTimeFinished = this.sys.game.loop.time;
+        var gameTimePaused = this.sys.game.loop.time;
 
-        var elapsedTime = gameTimeFinished - gameTimeStarted;
+        this.elapsedTimeInMs += (gameTimePaused - gameTimeStarted);
 
         var gemCount = this.mainScene.player.gemsCollected;
         var score = this.mainScene.player.score;
@@ -108,7 +111,7 @@ export class SceneController extends Phaser.Scene {
         //var gameProgress = new GameProgress();
         //gameProgress.save(destinationName);
 
-        
+        let elapsedTime = this.elapsedTimeInMs;
         this.scene.launch('LevelCompleteScene', { gemCount, totalGems, score, enemiesKilled, totalEnemies, worldName, elapsedTime });
                  
         this.mainScene.scene.transition({
@@ -161,6 +164,13 @@ export class SceneController extends Phaser.Scene {
     }
 
     pauseGame() {
+        
+        var gameTimeStarted = this.mainScene.gameTimeStarted;
+        var gameTimePaused = this.sys.game.loop.time;
+
+        this.elapsedTimeInMs += (gameTimePaused - gameTimeStarted);
+
+
         this.scene.pause('MainScene');            
         this.scene.pause('HudScene');
         this.scene.setVisible(false, "HudScene");
@@ -172,6 +182,8 @@ export class SceneController extends Phaser.Scene {
 
     returnToGame() {
         this.scene.sleep('PauseScene');   
+
+        this.mainScene.gameTimeStarted = this.sys.game.loop.time;
         this.scene.wake('MainScene');               
         this.scene.setVisible(true, 'HudScene');
     }
