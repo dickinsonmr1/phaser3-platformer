@@ -188,7 +188,8 @@ export class SceneController extends Phaser.Scene {
 
         this.mainScene.gameTimeStarted = this.sys.game.loop.time;
         this.scene.wake('MainScene');               
-        this.scene.setVisible(true, 'HudScene');
+        this.scene.wake('HudScene');
+        this.scene.setVisible(true, 'HudScene');        
 
         this.mainScene.sound.play("resumeSound");
     }
