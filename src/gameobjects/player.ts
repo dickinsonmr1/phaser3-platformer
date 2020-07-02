@@ -544,6 +544,9 @@ export class Player extends Phaser.GameObjects.Sprite {
 
                 let scene = <MainScene>this.scene;
                 scene.sceneController.warpViaPortal(destinationName);
+
+                var sound = (<MainScene>this.getScene()).sound;
+                sound.play("healthSound");
                 //item.activate();
                 // do something
             }

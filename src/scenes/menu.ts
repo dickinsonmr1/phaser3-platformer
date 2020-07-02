@@ -213,38 +213,50 @@ export class Menu {
         */
     }
 
-    selectNextItem() {
+    selectNextItem(sound) {
         if(this.selectedItemIndex < this.items.length - 1) {
-            this.selectedItemIndex++;        
+            this.selectedItemIndex++;      
+            
+            sound.play("menuSwitchItemSound");
         }
             
         this.refreshColorsAndMarker();        
     }
 
-    selectPreviousItem() {
+    selectPreviousItem(sound) {
         if(this.selectedItemIndex > 0) {
             this.items[this.selectedItemIndex].setColor(this.nonHighlightedColor());
             this.selectedItemIndex--;        
+
+            sound.play("menuSwitchItemSound");
         }
 
         this.refreshColorsAndMarker();        
     }
 
-    trySelectNextSubItem() {
+    trySelectNextSubItem(sound) {
        var temp = this.items[this.selectedItemIndex];
        if(temp instanceof ComplexMenuItem)
        {
             var item = <ComplexMenuItem>this.items[this.selectedItemIndex];
             item.selectNextItem();
+
+            sound.play("menuSwitchItemSound");
        }       
     }
 
-    trySelectPreviousSubItem() {
+    confirmSelection(sound) {
+        sound.play("menuSelectSound");
+     }
+
+    trySelectPreviousSubItem(sound) {
         var temp = this.items[this.selectedItemIndex];
         if(temp instanceof ComplexMenuItem)
         {
              var item = <ComplexMenuItem>this.items[this.selectedItemIndex];
              item.selectPreviousItem();
+
+             sound.play("menuSwitchItemSound");
         }   
      }
 

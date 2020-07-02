@@ -29,6 +29,7 @@ export class MenuBackgroundScene extends Phaser.Scene {
         this.skySprite = this.add.tileSprite(0, 0, 20480, 1080, 'menuSky');
         this.skySprite.setX(this.skySpriteX);
         this.skySprite.setY(540);
+        this.skySprite.setScale(1.2);
 
         this.spaceship = this.add.sprite(1600, 650, 'alienShipSprites', 'shipBlue_manned.png');
         

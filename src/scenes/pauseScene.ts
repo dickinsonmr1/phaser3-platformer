@@ -65,29 +65,33 @@ import { SceneController } from "./sceneController";
 
             if(this.menu.selectedItemIndex == 0) {
                this.returnToGame();
+
+               //this.menu.confirmSelection(this.sound);
             }
             else if(this.menu.selectedItemIndex == 1) {
-                this.menu.trySelectNextSubItem();
+                this.menu.trySelectNextSubItem(this.sound);
             }
             else if(this.menu.selectedItemIndex == 2) {
                 this.endGameAndReturnToTitleMenu();
+
+                this.menu.confirmSelection(this.sound);
             }
         }
          
         if(Phaser.Input.Keyboard.JustDown(this.cursorUp)) {
-            this.menu.selectPreviousItem();
+            this.menu.selectPreviousItem(this.sound);
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.cursorDown)) {
-            this.menu.selectNextItem();
+            this.menu.selectNextItem(this.sound);
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.cursorLeft)) {
-            this.menu.trySelectPreviousSubItem();
+            this.menu.trySelectPreviousSubItem(this.sound);
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.cursorRight)) {
-            this.menu.trySelectNextSubItem();
+            this.menu.trySelectNextSubItem(this.sound);
         }
     }
 

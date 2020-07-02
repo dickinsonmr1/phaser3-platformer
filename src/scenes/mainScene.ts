@@ -100,12 +100,14 @@ export class MainScene extends Phaser.Scene {
         this.load.audio('enemyHurtSound', './assets/audio/lowRandom.ogg');
         this.load.audio('enemyDeathSound', '/assets/audio/hit3.ogg');        
         this.load.audio('batterySound', '/assets/audio/upgrade3.ogg');        
+        this.load.audio('healthSound', '/assets/audio/upgrade1.ogg');        
         this.load.audio('lowAmmoSound', '/assets/audio/hit4.ogg');       
         this.load.audio('noAmmoSound', '/assets/audio/fall3.ogg'); 
         this.load.audio('portalOpenSound', '/assets/audio/phaseJump3.ogg');      
         this.load.audio('portalCloseSound', '/assets/audio/phaserDown3.ogg');      
         this.load.audio('switchSound', '/assets/audio/switch_001.ogg');      
         this.load.audio('engineSound', '/assets/audio/engine5.ogg');      
+        //this.load.audio('warpSound', '/assets/audio/upgrade1.ogg');      
     }    
 
     private loadSprites(): void {
@@ -667,6 +669,7 @@ export class MainScene extends Phaser.Scene {
         this.world.removeTileAt(tile.x, tile.y);
         this.player.tryHeal();
 
+        this.sound.play("healthSound");
         this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
 
         return true;

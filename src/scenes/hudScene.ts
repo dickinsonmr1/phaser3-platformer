@@ -17,17 +17,17 @@
     // HUD
     hudComponent: HUDComponent;
 
-    private get PlayerIconX(): number { return 150; }
+    private get PlayerIconX(): number { return this.game.canvas.width / 2 - 64 - 50; }
     private get HeartStartX(): number { return this.PlayerIconX + 100; }
     private get HeartOffsetX(): number { return 50; }
 
     private get fontSize(): number { return 48; }
 
-    private get GemIconX(): number { return 900; }
+    private get GemIconX(): number { return 150; }
     private get GemTextOffsetX(): number { return 120; }
 
-    private get WeaponIconX(): number { return 1720; }
-    private get AmmoTextOffsetX(): number { return -120; }
+    private get WeaponIconX(): number { return 1600; }
+    private get AmmoTextOffsetX(): number { return 200; }
     
     private get HudBaseOffsetY(): number { return 100; }
     private get AmmoTextOffsetY(): number { return 0; }

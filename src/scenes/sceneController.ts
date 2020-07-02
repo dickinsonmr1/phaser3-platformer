@@ -31,6 +31,8 @@ export class SceneController extends Phaser.Scene {
 
     preload(): void {        
 
+        this.load.audio('pauseSound', '/assets/audio/maximize_006.ogg');     
+        this.load.audio('resumeSound', '/assets/audio/minimize_006.ogg');     
     }
 
     create() {
@@ -121,6 +123,7 @@ export class SceneController extends Phaser.Scene {
             remove: true,          
         });
 
+        this.elapsedTimeInMs = 0;
         this.scene.sleep('MainScene');
         this.scene.sleep('HudScene');
         this.scene.sleep('PauseScene');
@@ -150,7 +153,6 @@ export class SceneController extends Phaser.Scene {
         this.scene.sleep("MenuBackgroundScene");
         this.scene.sleep("LoadingScene");
         
-
         this.scene.resume('MainScene');        
         this.scene.setVisible(true, "MainScene");
 
@@ -158,9 +160,9 @@ export class SceneController extends Phaser.Scene {
         this.scene.setVisible(true, "HudScene");
         this.hudScene.setInfoText("Objective: reach portal", 5000);
         
-
         this.mainScene.fadeInCamera();
         this.mainScene.gameTimeStarted = this.sys.game.loop.time;
+        this.elapsedTimeInMs = 0;
     }
 
     pauseGame() {
@@ -169,8 +171,7 @@ export class SceneController extends Phaser.Scene {
         var gameTimePaused = this.sys.game.loop.time;
 
         this.elapsedTimeInMs += (gameTimePaused - gameTimeStarted);
-
-
+        
         this.scene.pause('MainScene');            
         this.scene.pause('HudScene');
         this.scene.setVisible(false, "HudScene");
@@ -178,6 +179,8 @@ export class SceneController extends Phaser.Scene {
 
         this.scene.run("PauseScene");
         this.scene.bringToTop("PauseScene")
+
+        this.pauseScene.sound.play("pauseSound");
     }
 
     returnToGame() {
@@ -186,6 +189,8 @@ export class SceneController extends Phaser.Scene {
         this.mainScene.gameTimeStarted = this.sys.game.loop.time;
         this.scene.wake('MainScene');               
         this.scene.setVisible(true, 'HudScene');
+
+        this.mainScene.sound.play("resumeSound");
     }
 
     returnToTitleScene() {

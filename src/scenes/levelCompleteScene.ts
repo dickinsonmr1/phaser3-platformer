@@ -192,11 +192,11 @@ import { SceneController } from "./sceneController";
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.cursorUp)) {
-            this.menu.selectPreviousItem();
+            this.menu.selectPreviousItem(this.sound);
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.cursorDown)) {
-            this.menu.selectNextItem();
+            this.menu.selectNextItem(this.sound);
         }
     }
 }

@@ -43,6 +43,9 @@ import { GameProgress, SaveGameFile } from "./gameProgress";
 
         this.load.atlasXML('sprites', './assets/sprites/HUD/spritesheet_hud.png', './assets/sprites/HUD/spritesheet_hud.xml');
         //this.load.atlasXML('sprites', './assets/sprites/player/spritesheet_players.png', './assets/sprites/player/spritesheet_players.xml');
+
+        this.load.audio('menuSelectSound', '/assets/audio/confirmation_002.ogg');      
+        this.load.audio('menuSwitchItemSound', '/assets/audio/drop_003.ogg');      
     }    
 
     create(): void {
@@ -108,12 +111,14 @@ import { GameProgress, SaveGameFile } from "./gameProgress";
 
             var selectedMenu = this.menus[this.menuSelectedIndex];
             if(this.menuSelectedIndex == 0) {
-
                 
                 if(selectedMenu.selectedItemIndex == 0) {
+
                     this.input.keyboard.resetKeys();
                     this.sceneController.preloadMainSceneAndDisplayLoadingScene('world-01-01');
                     this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
+
+                    selectedMenu.confirmSelection(this.sound);
                 }
                 else if(selectedMenu.selectedItemIndex == 1) {
 
@@ -124,7 +129,8 @@ import { GameProgress, SaveGameFile } from "./gameProgress";
                     this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
                     
                     this.input.keyboard.resetKeys();
-                    //this.sceneController.loadLevelSelectScene();
+
+                    selectedMenu.confirmSelection(this.sound);
                     
                 }
             }
@@ -139,6 +145,8 @@ import { GameProgress, SaveGameFile } from "./gameProgress";
                     
                     this.input.keyboard.resetKeys();
                     this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
+
+                    selectedMenu.confirmSelection(this.sound);
                 }
                 else {
                     if(this.saveGameFiles.length > 0) {
@@ -147,16 +155,18 @@ import { GameProgress, SaveGameFile } from "./gameProgress";
                         this.sceneController.preloadMainSceneAndDisplayLoadingScene(selectedFile.destinationName);
                         selectedMenu.refreshColorsAndMarker();
                     }
+
+                    selectedMenu.confirmSelection(this.sound);
                 }
             }
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.cursorUp)) {
-            this.menus[this.menuSelectedIndex].selectPreviousItem();
+            this.menus[this.menuSelectedIndex].selectPreviousItem(this.sound);
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.cursorDown)) {
-            this.menus[this.menuSelectedIndex].selectNextItem();
+            this.menus[this.menuSelectedIndex].selectNextItem(this.sound);
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.deleteAllSaveFilesKey)) {
