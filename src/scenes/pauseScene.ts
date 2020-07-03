@@ -74,7 +74,7 @@ import { SceneController } from "./sceneController";
             else if(this.menu.selectedItemIndex == 2) {
                 this.endGameAndReturnToTitleMenu();
 
-                this.menu.confirmSelection(this.sound);
+                this.sound.play("backSound");
             }
         }
          

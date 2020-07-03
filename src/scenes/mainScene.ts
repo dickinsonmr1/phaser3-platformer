@@ -516,7 +516,7 @@ export class MainScene extends Phaser.Scene {
 
         this.debugKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F2);
 
-        this.cameras.main.startFollow(this.player, true, 0.5, 1, this.player.displayWidth / 2, this.player.displayHeight / 2);
+        this.cameras.main.startFollow(this.player, true, 1, 1, this.player.displayWidth / 2, this.player.displayHeight / 2);
         this.cameras.main.zoomTo(1, 2000);
         this.cameras.main.setBackgroundColor(this.world.backgroundColor);
 
@@ -653,7 +653,7 @@ export class MainScene extends Phaser.Scene {
     collectGem (sprite, tile): boolean
     {
         this.world.collectGem(tile.x, tile.y);
-        this.sound.play("gemSound");
+        this.sound.play("gemSound", { volume: 0.5 });
         this.events.emit("gemCollected", ++this.player.gemsCollected);
 
         let scene = this.world.scene;

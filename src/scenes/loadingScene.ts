@@ -35,6 +35,8 @@
     private get loadingTextFontSize(): number { return 48; }
 
     private get titleStartX(): number { return this.game.canvas.width / 2; }
+    private get titleStartY(): number { return this.game.canvas.height / 4; }
+    subtitleOffsetY(): number {return 150;}
     
     //infoText: Phaser.GameObjects.Text;
     //infoTextAlpha: number;
@@ -67,11 +69,11 @@
         this.gameLoadedTime = 0;
         this.selectKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
 
-        this.playerIcon = this.add.image(200, 200, 'sprites', 'hudPlayer_blue.png');
-        this.playerIcon.setScale(1.0, 1.0);
+        //this.playerIcon = this.add.image(200, 200, 'sprites', 'hudPlayer_blue.png');
+        //this.playerIcon.setScale(1.0, 1.0);
 
         if(this.titleText == undefined) {
-            this.titleText = this.add.text(this.titleStartX, 150, this.worldName,
+            this.titleText = this.add.text(this.titleStartX, this.titleStartY, this.worldName,
             {
                 fontFamily: 'KenneyRocketSquare',
                 fontSize: this.titleFontSize,
@@ -80,11 +82,24 @@
             });
             this.titleText.setStroke('rgb(0,0,0)', 16);   
             this.titleText.setAlpha(1);//this.loadingTextAlpha);        
-            this.titleText.setOrigin(0.5, 0);
+            this.titleText.setOrigin(0.5, 0.5);
         }
         this.titleText.text = this.worldName;
         //var scene = <Phaser.Scene>this;
              
+        if(this.objectiveText == undefined) {
+            this.objectiveText = this.add.text(this.titleStartX, this.titleStartY + this.subtitleOffsetY(), 'Objective: ' + this.objective,
+            {
+                fontFamily: 'KenneyRocketSquare',
+                fontSize: this.objectiveTextFontSize,
+                align: 'center',            
+                color:"rgb(255,255,255)",
+            });
+            this.objectiveText.setStroke('rgb(0,0,0)', 16);
+            this.objectiveText.setOrigin(0.5, 0.5);
+        }
+        this.objectiveText.text = 'Objective: ' + this.objective;
+
         if(this.loadingText == undefined) {
             this.loadingText = this.add.text(this.titleStartX, 800, 'LOADING WORLD...',
             {
@@ -94,22 +109,9 @@
                 color:"rgb(255,255,255)",
             });
             this.loadingText.setStroke('rgb(0,0,0)', 16);
-            this.loadingText.setOrigin(0.5, 0);
+            this.loadingText.setOrigin(0.5, 0.5);
         }
         this.loadingText.setScale(1);
-
-        if(this.objectiveText == undefined) {
-            this.objectiveText = this.add.text(this.titleStartX, 300, 'Objective: ' + this.objective,
-            {
-                fontFamily: 'KenneyRocketSquare',
-                fontSize: this.objectiveTextFontSize,
-                align: 'center',            
-                color:"rgb(255,255,255)",
-            });
-            this.objectiveText.setStroke('rgb(0,0,0)', 16);
-            this.objectiveText.setOrigin(0.5, 0);
-        }
-        this.objectiveText.text = 'Objective: ' + this.objective;
 
         this.scene.bringToTop;        
     }

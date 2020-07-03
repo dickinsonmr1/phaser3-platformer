@@ -31,7 +31,7 @@ export class Menu {
     menuItemFontSize(): number {return 48;}
     footerFontSize(): number {return 32;}
 
-    markerOffsetX(): number {return -100;}
+    markerOffsetX(): number {return -50;}
     menuItemDistanceY(): number {return 60;}
 
     constructor(scene: Phaser.Scene) {        
@@ -62,6 +62,7 @@ export class Menu {
                 color: this.nonHighlightedColor(),
             }});
         temp.setStroke('rgb(0,0,0)', 16);
+        temp.setOrigin(0, 0.5);
 
         scene.add.existing(temp);
         this.items.push(temp);
@@ -83,6 +84,7 @@ export class Menu {
             },
             subItems});
         temp.setStroke('rgb(0,0,0)', 16);
+        temp.setOrigin(0, 0.5);
 
         scene.add.existing(temp);
         this.items.push(temp);
@@ -158,6 +160,7 @@ export class Menu {
             align: 'right',            
             color:"rgb(255,255,255)",
         });
+        this.marker.setOrigin(0.5, 0.5);
         this.marker.setStroke('rgb(0,0,0)', 16);  
 
         /*
@@ -247,7 +250,7 @@ export class Menu {
 
     confirmSelection(sound) {
         sound.play("menuSelectSound");
-     }
+    }
 
     trySelectPreviousSubItem(sound) {
         var temp = this.items[this.selectedItemIndex];

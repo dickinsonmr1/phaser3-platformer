@@ -31,8 +31,7 @@ export class SceneController extends Phaser.Scene {
 
     preload(): void {        
 
-        this.load.audio('pauseSound', '/assets/audio/maximize_006.ogg');     
-        this.load.audio('resumeSound', '/assets/audio/minimize_006.ogg');     
+         
     }
 
     create() {
@@ -163,6 +162,7 @@ export class SceneController extends Phaser.Scene {
         this.mainScene.fadeInCamera();
         this.mainScene.gameTimeStarted = this.sys.game.loop.time;
         this.elapsedTimeInMs = 0;
+        this.mainScene.sound.play("menuSelectSound");
     }
 
     pauseGame() {
