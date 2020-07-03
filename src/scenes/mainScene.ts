@@ -107,6 +107,9 @@ export class MainScene extends Phaser.Scene {
         this.load.audio('portalCloseSound', '/assets/audio/phaserDown3.ogg');      
         this.load.audio('switchSound', '/assets/audio/switch_001.ogg');      
         this.load.audio('engineSound', '/assets/audio/engine5.ogg');      
+        //this.load.audio('spaceshipLaserBeamSound', '/assets/audio/zapsplat_science_fiction_retro_laser_slow_rising_44827.mp3');      
+        this.load.audio('spaceshipLaserBeamSound', '/assets/audio/science_fiction_laser_hypnotic_paralysing_beam.mp3');      
+                
         //this.load.audio('warpSound', '/assets/audio/upgrade1.ogg');      
     }    
 
@@ -815,6 +818,29 @@ export class MainScene extends Phaser.Scene {
             scene.addExpiringText(scene, enemy.x, enemy.y, damage.toString())
     
             enemy.tryDamage(damage);    
+        }
+    }
+
+    spaceshipLaserBeamTouchingEnemyHandler(enemy: Enemy, laserBeam: Phaser.GameObjects.Sprite): void {
+        var scene = <MainScene>enemy.getScene();
+
+        if(scene.player.isInSpaceship && laserBeam.visible) {
+            var damage = 10;
+            var x = enemy.x;
+            var y = enemy.y;
+           
+            //scene.addExpiringText(scene, enemy.x, enemy.y, damage.toString())
+
+            var body = <Phaser.Physics.Arcade.Body>enemy.body;
+
+            body.setVelocityY(-10);
+
+            enemy.tryDamage(damage);   
+            if(enemy == null) {
+                
+                scene.sound.play("enemyHurtSound");
+                scene.addExpiringText(scene, x, y, damage.toString())            
+            }
         }
     }
 

@@ -433,6 +433,7 @@ export class World {
         if(this.scene.playerSpaceShip != null) {
             this.scene.physics.add.collider(this.scene.playerSpaceShip, this.layer02);
             this.scene.physics.add.collider(this.scene.enemies, this.scene.playerSpaceShip, this.scene.spaceshipTouchingEnemyHandler);
+            this.scene.physics.add.overlap(this.scene.enemies, this.scene.playerSpaceShip.laserBeam, this.scene.spaceshipLaserBeamTouchingEnemyHandler);
         }
             
 

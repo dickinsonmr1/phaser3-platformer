@@ -81,7 +81,12 @@ import { HealthBar } from "../scenes/healthBar";
         //this.laserBeam.alpha = 0.6;
         this.laserBeam.setAlpha(1, 1, 0, 0)        
         this.laserBeam.setOrigin(0.5, 0);
-        this.laserBeam.setScale(1, 2);
+        this.laserBeam.setDisplayOrigin(0.5, 0);
+        //this.laserBeam.setScale(1, 2);
+        this.scene.add.existing(this.laserBeam);
+        this.scene.physics.world.enable(this.laserBeam);
+        var laserBeamBody = <Phaser.Physics.Arcade.Body>this.laserBeam.body;
+        laserBeamBody.allowGravity = false;
 
         var particles = this.scene.add.particles('engineExhaust');
         particles.setDepth(4);
@@ -161,7 +166,7 @@ import { HealthBar } from "../scenes/healthBar";
             
             this.anims.play(this.mannedAnim, true);
             this.activated = true;
-            this.scene.sound.play('engineSound', { volume: 0.5, loop: true });
+            this.scene.sound.play('engineSound', { volume: 0.25, loop: true });
 
             var body = <Phaser.Physics.Arcade.Body>this.body;
             body.moves = true;
@@ -178,9 +183,16 @@ import { HealthBar } from "../scenes/healthBar";
     }
 
     tryFireWeapon() {
+        if(this.weaponTime == 0)
+            this.scene.sound.play('spaceshipLaserBeamSound', {volume: 0.5});
+        
         this.currentlyFiring = true;
+
         if(this.weaponTime < this.laserBeamMaxHeight)
-            this.weaponTime += this.laserBeamPerFrameY;        
+            this.weaponTime += this.laserBeamPerFrameY;  
+        else {
+            //this.scene.sound.stopByKey('spaceshipLaserBeamSound');
+        }      
     }
 
     preUpdate(time, delta): void {
@@ -200,17 +212,22 @@ import { HealthBar } from "../scenes/healthBar";
         this.particleEmitter.setPosition(this.x, this.y + this.emitterOffsetY);
 
         this.healthBar.updatePosition(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY);
-        this.laserBeam.setPosition(this.x + this.laserBeam0ffsetX, this.y + this.laserBeamOffsetY);
-        
-        
-            
+                
         this.laserBeam.setScale(this.weaponTime / this.laserBeamMaxHeight, 1);
         this.laserBeam.displayHeight = this.weaponTime;
-        
+        this.laserBeam.height = this.weaponTime;        
+        this.laserBeam.setPosition(this.x + this.laserBeam0ffsetX, this.y + this.laserBeamOffsetY);
+        this.laserBeam.setOrigin(0.5, 0);
+        //this.laserBeam.setDisplayOrigin(0.5, 0);
+
         if(!this.currentlyFiring && this.weaponTime > 0) {
             this.weaponTime -= this.laserBeamPerFrameY;
+            this.laserBeam.height = this.weaponTime;
             this.laserBeam.displayHeight = this.weaponTime;
+
+             this.scene.sound.stopByKey('spaceshipLaserBeamSound');
         }
+
 
         this.currentlyFiring = false;
 
