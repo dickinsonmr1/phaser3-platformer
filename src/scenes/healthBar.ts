@@ -137,6 +137,24 @@ export class HealthBar extends Phaser.GameObjects.Group {
             this.healthBarOriginY + HealthBar.healthBarShadowOffsetY);
     }
 
+    show() {
+        this.healthBarLeft.visible = true;
+        this.healthBarMid.visible = true;
+        this.healthBarRight.visible = true;
+        this.healthBarShadowLeft.visible = true;
+        this.healthBarShadowMid.visible = true;
+        this.healthBarShadowRight.visible = true;
+    }
+
+    hide() {
+        this.healthBarLeft.visible = false;
+        this.healthBarMid.visible = false;
+        this.healthBarRight.visible = false;
+        this.healthBarShadowLeft.visible = false;
+        this.healthBarShadowMid.visible = false;
+        this.healthBarShadowRight.visible = false;
+    }
+
     preUpdate() {
 
     }

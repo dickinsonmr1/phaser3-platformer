@@ -337,6 +337,7 @@ export class Player extends Phaser.GameObjects.Sprite {
             }
         } else{
             // TODO: add spaceship specific weapon
+            this.currentSpaceship.tryFireWeapon();
         }       
     }
 

@@ -463,6 +463,21 @@ export class MainScene extends Phaser.Scene {
             repeat: -1
         });
   
+        // spaceship beam
+        anims.create({
+            key: 'spaceship-beam',
+            frames:
+            [
+                {key: 'alienShipLaserSprites', frame: 'laserBlue_burst.png'},
+                {key: 'alienShipLaserSprites', frame: 'laserBlue_groundBurst.png'},
+                //{key: 'completeSprites', frame: 'slimeBlue.png'},
+                //{key: 'completeSprites', frame: 'slimeBlue_move.png'},
+                //{key: 'enemySprites2', frame: 'enemyWalking_3.png'},
+                //{key: 'enemySprites2', frame: 'enemyWalking_4.png'}
+            ],
+            frameRate: 5,
+            repeat: -1
+        });      
     }
 
     create(): void {    

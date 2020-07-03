@@ -183,11 +183,13 @@ import { SceneController } from "./sceneController";
                 this.input.keyboard.resetKeys();
                 this.sceneController.preloadMainSceneAndDisplayLoadingScene('world-00-00');
                 this.menu.refreshColorsAndMarker();
+                this.sound.play("selectSound");
             }
             else if(this.menu.selectedItemIndex == 1) {
                 this.input.keyboard.resetKeys();
                 this.sceneController.returnToTitleScene();
                 this.menu.refreshColorsAndMarker();
+                this.sound.play("backSound");
             }
         }
 

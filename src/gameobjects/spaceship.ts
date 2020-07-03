@@ -18,6 +18,10 @@ import { HealthBar } from "../scenes/healthBar";
      private mannedAnim: string;
 
      public transitionTime: number;
+     public idleTime: number;
+
+     public weaponTime: number;
+     public currentlyFiring: boolean;
 
      public healthBar: HealthBar;
 
@@ -26,8 +30,14 @@ import { HealthBar } from "../scenes/healthBar";
 
      private get healthBarOffsetX(): number {return -55;}
      private get healthBarOffsetY(): number {return -75;}
+     private get laserBeam0ffsetX(): number {return -0;}
+     private get laserBeamOffsetY(): number {return 10;}
+     private get laserBeamPerFrameY(): number {return 20;}
+     private get laserBeamMaxHeight(): number {return 300;}
 
-     public static get spaceshipVelocity(): number { return 600; }    
+     public static get spaceshipVelocity(): number { return 600; }   
+     
+     laserBeam: Phaser.GameObjects.Sprite
 
      constructor(params) {
          super(params.scene, params.x, params.y, params.key); 
@@ -66,6 +76,13 @@ import { HealthBar } from "../scenes/healthBar";
         this.transitionTime = 0;
         this.anims.play(this.unmannedAnim, true);
 
+        this.laserBeam = this.scene.add.sprite(this.x + this.laserBeam0ffsetX, this.y + this.laserBeamOffsetY, "alienShipLaserSprites", "laserBlue2.png");
+        this.laserBeam.depth = 2;
+        //this.laserBeam.alpha = 0.6;
+        this.laserBeam.setAlpha(1, 1, 0, 0)        
+        this.laserBeam.setOrigin(0.5, 0);
+        this.laserBeam.setScale(1, 2);
+
         var particles = this.scene.add.particles('engineExhaust');
         particles.setDepth(4);
 
@@ -91,8 +108,14 @@ import { HealthBar } from "../scenes/healthBar";
 
         this.healthBar.init(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY, 100, 
             100, 15);
-        this.healthBar.setVisible(false);
         this.healthBar.setDepth(4);
+
+        this.healthBar.hide();
+        this.laserBeam.setVisible(false);
+        //this.laserBeam.setVisible(false);
+
+        this.idleTime = 0;
+        this.weaponTime = 0;
         return;        
      }
 
@@ -127,7 +150,9 @@ import { HealthBar } from "../scenes/healthBar";
 
             this.activated = false;
             this.transitionTime = 60;
-            this.healthBar.setVisible(false);
+            
+            this.healthBar.hide();
+            this.laserBeam.setVisible(false);
         }        
     }
       
@@ -145,18 +170,49 @@ import { HealthBar } from "../scenes/healthBar";
             this.particleEmitter.start();
             this.particleEmitter.setPosition(this.x, this.y + this.emitterOffsetY);
 
-            this.healthBar.setVisible(true);
+            this.healthBar.show();
+            this.laserBeam.setVisible(true);
         }
         
         //this.transitionTime = 5;
     }
 
+    tryFireWeapon() {
+        this.currentlyFiring = true;
+        if(this.weaponTime < this.laserBeamMaxHeight)
+            this.weaponTime += this.laserBeamPerFrameY;        
+    }
+
     preUpdate(time, delta): void {
         super.preUpdate(time, delta);
+        
+        if(!this.activated) {
+            ++this.idleTime;
+
+            if(this.idleTime < 60)
+                this.y += 0.25;
+            else if (this.idleTime >= 60 && this.idleTime < 120)
+                this.y -= 0.25;
+            else if (this.idleTime >= 120)
+                this.idleTime = 0;
+        }
 
         this.particleEmitter.setPosition(this.x, this.y + this.emitterOffsetY);
 
         this.healthBar.updatePosition(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY);
+        this.laserBeam.setPosition(this.x + this.laserBeam0ffsetX, this.y + this.laserBeamOffsetY);
+        
+        
+            
+        this.laserBeam.setScale(this.weaponTime / this.laserBeamMaxHeight, 1);
+        this.laserBeam.displayHeight = this.weaponTime;
+        
+        if(!this.currentlyFiring && this.weaponTime > 0) {
+            this.weaponTime -= this.laserBeamPerFrameY;
+            this.laserBeam.displayHeight = this.weaponTime;
+        }
+
+        this.currentlyFiring = false;
 
         if(this.transitionTime > 0)
             this.transitionTime--;
