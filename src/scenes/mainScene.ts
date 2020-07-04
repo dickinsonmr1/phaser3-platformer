@@ -671,7 +671,7 @@ export class MainScene extends Phaser.Scene {
     collectGem (sprite, tile): boolean
     {
         this.world.collectGem(tile.x, tile.y);
-        this.sound.play("gemSound", { volume: 0.5 });
+        this.sound.play("gemSound", { volume: 0.4 });
         this.events.emit("gemCollected", ++this.player.gemsCollected);
 
         let scene = this.world.scene;
@@ -723,7 +723,7 @@ export class MainScene extends Phaser.Scene {
         };
 
         this.world.collectGem(tile.x, tile.y);
-        this.sound.play("batterySound", { volume: 0.5 });
+        this.sound.play("batterySound", { volume: 0.3 });
 
         this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
 
@@ -812,13 +812,16 @@ export class MainScene extends Phaser.Scene {
         var scene = <MainScene>enemy.getScene();
 
         if(scene.player.isInSpaceship) {
-            var damage = 1000;
+            var damageToEnemy = 1000;
             scene.sound.play("enemyHurtSound");
            
-            scene.addExpiringText(scene, enemy.x, enemy.y, damage.toString())
+            scene.addExpiringText(scene, enemy.x, enemy.y, damageToEnemy.toString())
     
-            enemy.tryDamage(damage);    
+            enemy.tryDamage(damageToEnemy);    
+            
+            spaceship.tryDamage(10);
         }
+
     }
 
     spaceshipLaserBeamTouchingEnemyHandler(enemy: Enemy, laserBeam: Phaser.GameObjects.Sprite): void {
@@ -831,16 +834,23 @@ export class MainScene extends Phaser.Scene {
            
             //scene.addExpiringText(scene, enemy.x, enemy.y, damage.toString())
 
+            var scene = <MainScene>enemy.getScene();
+
+            scene.weaponHitParticleEmitter.explode(10, enemy.x, enemy.y);
+
             var body = <Phaser.Physics.Arcade.Body>enemy.body;
 
             body.setVelocityY(-10);
 
-            enemy.tryDamage(damage);   
-            if(enemy == null) {
-                
+            if(enemy.health <= damage) {
+                var enemyDamage = 200;
                 scene.sound.play("enemyHurtSound");
-                scene.addExpiringText(scene, x, y, damage.toString())            
+                scene.addExpiringText(scene, x, y, enemyDamage.toString()) 
+                
+                scene.player.score += enemyDamage;
             }
+
+            enemy.tryDamage(damage);           
         }
     }
 

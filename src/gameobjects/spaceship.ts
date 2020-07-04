@@ -23,7 +23,9 @@ import { HealthBar } from "../scenes/healthBar";
      public weaponTime: number;
      public currentlyFiring: boolean;
 
+     public get maxHealth(): number {return 100;}
      public healthBar: HealthBar;
+     public currentHealth;
 
      private particleEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
      private get emitterOffsetY(): number {return 30;}
@@ -109,9 +111,11 @@ import { HealthBar } from "../scenes/healthBar";
         this.particleEmitter.stop();
         //this.turnOff();
         
+        this.currentHealth = this.maxHealth;
         this.healthBar = new HealthBar(this.getScene());
 
-        this.healthBar.init(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY, 100, 
+        this.healthBar.init(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY,
+            this.maxHealth, 
             100, 15);
         this.healthBar.setDepth(4);
 
@@ -138,6 +142,10 @@ import { HealthBar } from "../scenes/healthBar";
         }
     }
     */
+
+    getPhysicsBody(): Phaser.Physics.Arcade.Body {
+        return <Phaser.Physics.Arcade.Body>this.body;
+    }
 
     turnOff(): void {  
 
@@ -182,6 +190,15 @@ import { HealthBar } from "../scenes/healthBar";
         //this.transitionTime = 5;
     }
 
+    tryIdle() {
+
+    }
+
+    tryDamage(damage: number) {
+        this.currentHealth -= damage;
+        this.healthBar.updateHealth(this.currentHealth);
+    }
+
     tryFireWeapon() {
         if(this.weaponTime == 0)
             this.scene.sound.play('spaceshipLaserBeamSound', {volume: 0.5});
@@ -198,7 +215,8 @@ import { HealthBar } from "../scenes/healthBar";
     preUpdate(time, delta): void {
         super.preUpdate(time, delta);
         
-        if(!this.activated) {
+        if(!this.activated ||
+            (this.getPhysicsBody().velocity.x == 0 && this.getPhysicsBody().velocity.y == 0)) {
             ++this.idleTime;
 
             if(this.idleTime < 60)
