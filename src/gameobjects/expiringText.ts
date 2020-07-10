@@ -7,6 +7,7 @@
   /// <reference path="../dts/phaser.d.ts"/>
   import "phaser";
  import { Scene } from "phaser";
+import { Constants } from "../constants";
  
  export class ExpiringText extends Phaser.GameObjects.Text {
      public decayTimeInMs: number;
@@ -23,7 +24,7 @@
         //this.x = this.x - this.width / 4;
         //this.setOrigin(0.5, 0.5);
         this.setFontSize(24);        
-        this.setDepth(7);        
+        this.setDepth(Constants.depthExpiringMessages);        
         this.setStroke('rgb(0,0,0)', 4);       
 
         this.scene.add.existing(this); 

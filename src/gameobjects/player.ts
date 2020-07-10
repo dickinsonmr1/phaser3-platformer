@@ -177,7 +177,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.interactButtonImage = this.scene.add.image(text.x - text.width, this.y - this.GetIconOffsetY, 'buttonX');
         this.interactButtonImage.alpha = 0;
         this.interactButtonImage.setOrigin(0, 0.5);
-        this.interactButtonImage.setDepth(4);
+        this.interactButtonImage.setDepth(Constants.depthPlayer);
 
         this.activateInteractTime = 0;
         this.hideInteractTextAndImage();

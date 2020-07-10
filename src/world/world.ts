@@ -437,26 +437,26 @@ export class World {
         }
             
 
-        this.layer01.setDepth(1);
-        this.layer02.setDepth(2);
-        this.scene.springs.forEach(x => x.setDepth(2));
-        this.scene.portals.forEach(x => x.setDepth(2));        
+        this.layer01.setDepth(Constants.depthLayer01);
+        this.layer02.setDepth(Constants.depthLayer02);
+        this.scene.springs.forEach(x => x.setDepth(Constants.depthSprings));
+        this.scene.portals.forEach(x => x.setDepth(Constants.depthPortals));        
 
-        player.setDepth(3);
-        this.scene.enemies.forEach(x => x.setDepth(3));
-        player.playerGun.setDepth(4);
-        this.scene.playerSpaceShip.setDepth(3);
+        player.setDepth(Constants.depthPlayer);
+        this.scene.enemies.forEach(x => x.setDepth(Constants.depthEnemies));
+        player.playerGun.setDepth(Constants.depthPlayer);
+        this.scene.playerSpaceShip.setDepth(Constants.depthPlayer);
                         
-        this.layer03.setDepth(4);
-        this.layer04.setDepth(5);
-        this.layer05.setDepth(6);
+        this.layer03.setDepth(Constants.depthLayer03);
+        this.layer04.setDepth(Constants.depthLayer04);
+        this.layer05.setDepth(Constants.depthLayer05);
 
-        this.scene.expiringMessagesGroup.setDepth(7); 
+        this.scene.expiringMessagesGroup.setDepth(Constants.depthExpiringMessages); 
 
         player.bullets = this.scene.physics.add.group({
             allowGravity: false
         })
-        player.bullets.setDepth(4);
+        player.bullets.setDepth(Constants.depthBullets);
 
         this.scene.physics.add.collider(this.scene.enemies, player.bullets, this.scene.bulletTouchingEnemyHandler);
         this.scene.physics.add.collider(player.bullets, this.layer02, this.scene.bulletTouchingImpassableLayerHandler);                        

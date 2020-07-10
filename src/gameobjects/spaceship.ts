@@ -79,7 +79,7 @@ import { HealthBar } from "../scenes/healthBar";
         this.anims.play(this.unmannedAnim, true);
 
         this.laserBeam = this.scene.add.sprite(this.x + this.laserBeam0ffsetX, this.y + this.laserBeamOffsetY, "alienShipLaserSprites", "laserBlue2.png");
-        this.laserBeam.depth = 2;
+        this.laserBeam.setDepth(Constants.depthBullets);
         //this.laserBeam.alpha = 0.6;
         this.laserBeam.setAlpha(1, 1, 0, 0)        
         this.laserBeam.setOrigin(0.5, 0);
@@ -91,7 +91,7 @@ import { HealthBar } from "../scenes/healthBar";
         laserBeamBody.allowGravity = false;
 
         var particles = this.scene.add.particles('engineExhaust');
-        particles.setDepth(4);
+        particles.setDepth(Constants.depthParticles);
 
         this.particleEmitter = particles.createEmitter({
             x: this.x,
@@ -117,7 +117,7 @@ import { HealthBar } from "../scenes/healthBar";
         this.healthBar.init(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY,
             this.maxHealth, 
             100, 15);
-        this.healthBar.setDepth(4);
+        this.healthBar.setDepth(Constants.depthHealthBar);
 
         this.healthBar.hide();
         this.laserBeam.setVisible(false);

@@ -160,7 +160,7 @@ export class MainScene extends Phaser.Scene {
     private loadParticles(){
 
         var particles = this.add.particles('laserWhiteBurst');
-        particles.setDepth(4);
+        particles.setDepth(Constants.depthParticles);
 
         this.particleEmitter = particles.createEmitter({
             x: 0,
@@ -176,7 +176,7 @@ export class MainScene extends Phaser.Scene {
         });
 
         var weaponHitParticles = this.add.particles('laserWhiteBurst');
-        weaponHitParticles.setDepth(4);
+        weaponHitParticles.setDepth(Constants.depthParticles);
         this.weaponHitParticleEmitter = weaponHitParticles.createEmitter({
             x: 0,
             y: 0,
@@ -520,7 +520,7 @@ export class MainScene extends Phaser.Scene {
         //underSkySprite.setCrop(0, 924, 20480, 100);
         this.world.sky = this.skySprite;
         this.world.sky.setScale(1);
-        this.world.sky.setDepth(0);
+        this.world.sky.setDepth(Constants.depthSky);
 
         this.cursors = this.input.keyboard.createCursorKeys();
         this.zoomInKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);

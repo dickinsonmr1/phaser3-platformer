@@ -69,6 +69,26 @@ export class Constants {
     public static get tileRedFlagWave1(): number { return 137; }
     public static get tileRedFlagWave2(): number { return 145; }
 
+    
+    public static get depthSky(): number {return 0;}
+    public static get depthLayer01(): number {return 1;}
+    public static get depthLayer02(): number {return 2;}
+
+    public static get depthSprings(): number {return 2;}
+    public static get depthPortals(): number {return 2;}
+    
+    public static get depthEnemies(): number {return 3;}
+    public static get depthPlayer(): number  {return 3;}
+    public static get depthBullets(): number {return 3;}
+
+    public static get depthParticles(): number {return 4;}
+
+    public static get depthLayer03(): number {return 4;}
+    public static get depthLayer04(): number {return 5;}
+    public static get depthLayer05(): number {return 6;}
+    public static get depthExpiringMessages(): number {return 7;}
+    public static get depthHealthBar(): number {return 7;}
+
     //618, 617, 620, 619, 576, 575, 574, 573
     //https://labs.phaser.io/edit.html?src=src\game%20objects\tilemap\dynamic\put%20tiles.js
     public static get tileRedSwitchOn(): number { return 617; }
