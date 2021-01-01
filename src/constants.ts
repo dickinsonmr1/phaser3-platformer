@@ -120,6 +120,13 @@ export class Constants {
     public static get playerDuckingGunOffsetY(): number {return 12;}
     public static get enemyOffsetY(): number {return 10;}    
 
+    public static get gamepadIndexSelect (): number {return 0;}   
+    public static get gamepadIndexInteract (): number {return 2;}   
+    public static get gamepadIndexLeft (): number {return 14;}   
+    public static get gamepadIndexRight (): number {return 15;}   
+    public static get gamepadIndexUp (): number {return 12;}   
+    public static get gamepadIndexDown (): number {return 13;}   
+
 }
 
 export enum ForceFieldColor {

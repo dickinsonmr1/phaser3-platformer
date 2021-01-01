@@ -15,7 +15,7 @@ var config: Phaser.Types.Core.GameConfig = {
   height: 1080,
   type: Phaser.AUTO,
   parent: "game",  
-  input: { keyboard: true},
+  input: { keyboard: true, gamepad: true},
   scene: [ SceneController],
   audio: {
     //noAudio: true

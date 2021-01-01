@@ -36,6 +36,29 @@ export class SceneController extends Phaser.Scene {
 
     create() {
 
+        var pad;
+        if (this.input.gamepad.total === 0)
+        {
+            this.input.gamepad.once('connected', pad => {
+
+                pad = pad;
+                //this.sprite = this.add.image(400, 300, 'elephant');
+
+                //text.setText('Main Scene. Press Button 0 to change Scene');
+
+                pad.on('down', (index, value, button) => {
+
+                    if (index === 0)
+                    {
+                        console.log('M to A');
+                        //this.scene.start('SceneA');
+                    }
+
+                });
+
+            });
+        }
+
         this.titleScene = new TitleScene(this);
         this.game.scene.add("TitleScene", this.titleScene);
         

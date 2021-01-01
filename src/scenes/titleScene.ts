@@ -10,6 +10,7 @@
  import { Menu } from "./menu";
 import { SceneController } from "./sceneController";
 import { GameProgress, SaveGameFile } from "./gameProgress";
+import { Constants } from "../constants";
  
  export class TitleScene extends Phaser.Scene {
 
@@ -25,12 +26,19 @@ import { GameProgress, SaveGameFile } from "./gameProgress";
     cursorUp: Phaser.Input.Keyboard.Key;
     cursorDown: Phaser.Input.Keyboard.Key;
     deleteAllSaveFilesKey: Phaser.Input.Keyboard.Key;
+
+    gamepadUp: Phaser.Input.Gamepad.Button;
+    gamepadDown: Phaser.Input.Gamepad.Button;
+    gamepadSelect: Phaser.Input.Gamepad.Button;
+    gamepad: Phaser.Input.Gamepad.Gamepad;
     
     constructor(sceneController: SceneController) {
         super({
             key: "TitleScene"
         });
-
+        
+        
+        this.gamepad = null;
         this.sceneController = sceneController;
         this.gameProgress = new GameProgress();
     }
@@ -58,6 +66,51 @@ import { GameProgress, SaveGameFile } from "./gameProgress";
         this.cursorDown = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         this.cursorUp = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         this.deleteAllSaveFilesKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
+
+        //this.gamepadUp = this.input.gamepad.pad1.down;
+        //gamepadDown: Phaser.Input.Gamepad.Button;
+        //gamepadSelect: Phaser.Input.Gamepad.Button;
+
+        var temp = this.input.gamepad;
+
+        this.input.gamepad.once('connected', pad => {
+
+            this.gamepad = pad;
+
+            pad.on('down', (index, value, button) => {
+
+                switch(index) {
+                case Constants.gamepadIndexSelect:
+                    console.log('A');
+                    this.selectMenuOption();
+                    break;
+                case Constants.gamepadIndexInteract:
+                    console.log('X');
+                    break;
+                case Constants.gamepadIndexUp:
+                    console.log('Up');
+                    this.previousMenuOption();
+                    break;
+                case Constants.gamepadIndexDown:
+                    console.log('Down');
+                    this.nextMenuOption();
+                    break;
+                case Constants.gamepadIndexLeft:
+                    console.log('Left');
+                    break;
+                case Constants.gamepadIndexRight:
+                    console.log('Right');
+                    break;
+                }                
+            });
+
+        });
+
+
+        //this.gamepad = temp.pad1;
+
+        //this.gamepadDown = this.input.gamepad.pad1.down;
+        //this.gamepadDown = this.input.gamepad.pad1.down;
 
         this.saveGameFiles = this.gameProgress.loadAllSaveFiles();
 
@@ -112,72 +165,85 @@ import { GameProgress, SaveGameFile } from "./gameProgress";
     }
 
     update(): void {
-        if(Phaser.Input.Keyboard.JustDown(this.selectKey))  {
+        const pad = this.gamepad;
 
-            var selectedMenu = this.menus[this.menuSelectedIndex];
-            if(this.menuSelectedIndex == 0) {
-                
-                if(selectedMenu.selectedItemIndex == 0) {
-
-                    this.input.keyboard.resetKeys();
-                    this.sceneController.preloadMainSceneAndDisplayLoadingScene('world-01-01');
-                    this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
-
-                    this.sound.play("selectSound");
-                }
-                else if(selectedMenu.selectedItemIndex == 1) {
-
-                    selectedMenu.hide();
-                    this.menuSelectedIndex++;
-
-                    this.menus[this.menuSelectedIndex].show();
-                    this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
-                    
-                    this.input.keyboard.resetKeys();
-
-                    this.sound.play("selectSound");
-                    //selectedMenu.confirmSelection(this.sound);
-                    
-                }
-            }
-            else if(this.menuSelectedIndex == 1) {
-                if(selectedMenu.selectedItemIndex == selectedMenu.items.length - 1) {
-
-                    selectedMenu.hide();
-                    this.menuSelectedIndex = 0;
-
-                    this.menus[this.menuSelectedIndex].show();
-                    this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
-                    
-                    this.input.keyboard.resetKeys();
-                    this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
-                    this.sound.play("backSound");
-                    
-                }
-                else {
-                    if(this.saveGameFiles.length > 0) {
-                        var selectedFile = this.loadSelectedSaveGameFile();
-    
-                        this.sceneController.preloadMainSceneAndDisplayLoadingScene(selectedFile.destinationName);
-                        selectedMenu.refreshColorsAndMarker();
-
-                        selectedMenu.confirmSelection(this.sound);
-                    }                                    
-                }
-            }
+        if(Phaser.Input.Keyboard.JustDown(this.selectKey)) {
+           this.selectMenuOption();
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.cursorUp)) {
-            this.menus[this.menuSelectedIndex].selectPreviousItem(this.sound);
+            this.previousMenuOption();
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.cursorDown)) {
-            this.menus[this.menuSelectedIndex].selectNextItem(this.sound);
+            this.nextMenuOption();
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.deleteAllSaveFilesKey)) {
             this.gameProgress.deleteAll();          
         }
+    }
+
+    selectMenuOption() {
+        var selectedMenu = this.menus[this.menuSelectedIndex];
+        if(this.menuSelectedIndex == 0) {
+            
+            if(selectedMenu.selectedItemIndex == 0) {
+
+                this.input.keyboard.resetKeys();
+                this.sceneController.preloadMainSceneAndDisplayLoadingScene('world-01-01');
+                this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
+
+                this.sound.play("selectSound");
+            }
+            else if(selectedMenu.selectedItemIndex == 1) {
+
+                selectedMenu.hide();
+                this.menuSelectedIndex++;
+
+                this.menus[this.menuSelectedIndex].show();
+                this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
+                
+                this.input.keyboard.resetKeys();
+
+                this.sound.play("selectSound");
+                //selectedMenu.confirmSelection(this.sound);
+                
+            }
+        }
+        else if(this.menuSelectedIndex == 1) {
+            if(selectedMenu.selectedItemIndex == selectedMenu.items.length - 1) {
+
+                selectedMenu.hide();
+                this.menuSelectedIndex = 0;
+
+                this.menus[this.menuSelectedIndex].show();
+                this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
+                
+                this.input.keyboard.resetKeys();
+                this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
+                this.sound.play("backSound");
+                
+            }
+            else {
+                if(this.saveGameFiles.length > 0) {
+                    var selectedFile = this.loadSelectedSaveGameFile();
+
+                    this.sceneController.preloadMainSceneAndDisplayLoadingScene(selectedFile.destinationName);
+                    selectedMenu.refreshColorsAndMarker();
+
+                    selectedMenu.confirmSelection(this.sound);
+                }                                    
+            }
+        }
+    }
+
+    nextMenuOption() {
+        this.menus[this.menuSelectedIndex].selectNextItem(this.sound);
+    }
+
+    previousMenuOption() {
+        this.menus[this.menuSelectedIndex].selectPreviousItem(this.sound);
     }
 
     loadSelectedSaveGameFile(): SaveGameFile {
