@@ -103,7 +103,6 @@ import { Constants } from "../constants";
                     break;
                 }                
             });
-
         });
 
 
@@ -166,6 +165,25 @@ import { Constants } from "../constants";
 
     update(): void {
         const pad = this.gamepad;
+
+        if (pad != null && pad.axes.length)
+        {
+            var leftAxisX = pad.axes[0].getValue();
+            var leftAxisY = pad.axes[1].getValue();
+    
+            if(leftAxisX != 0)
+                console.log('Left Stick X: ' + leftAxisX);
+            if(leftAxisY != 0)
+                console.log('Left Stick Y: ' + leftAxisY);
+
+            var rightAxisX = pad.axes[2].getValue();
+            var rightAxisY = pad.axes[3].getValue();
+    
+            if(rightAxisX != 0)
+                console.log('Right Stick X: ' + rightAxisX);
+            if(rightAxisY != 0)
+                console.log('Right Stick Y: ' + rightAxisY);
+        }
 
         if(Phaser.Input.Keyboard.JustDown(this.selectKey)) {
            this.selectMenuOption();
