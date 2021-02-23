@@ -6,13 +6,13 @@
 
  /// <reference path="../dts/phaser.d.ts"/>
 
- import "phaser";
- import { Menu } from "./menu";
+import "phaser";
+import { Menu } from "./menu";
 import { SceneController } from "./sceneController";
 import { GameProgress, SaveGameFile } from "./gameProgress";
 import { Constants } from "../constants";
  
- export class TitleScene extends Phaser.Scene {
+export class TitleScene extends Phaser.Scene {
 
     sceneController: SceneController;
     menus: Array<Menu>;
@@ -31,6 +31,9 @@ import { Constants } from "../constants";
     gamepadDown: Phaser.Input.Gamepad.Button;
     gamepadSelect: Phaser.Input.Gamepad.Button;
     gamepad: Phaser.Input.Gamepad.Gamepad;
+
+    currentLeftAxisX: number;
+    currentLeftAxisY: number;
     
     constructor(sceneController: SceneController) {
         super({
@@ -67,49 +70,7 @@ import { Constants } from "../constants";
         this.cursorUp = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         this.deleteAllSaveFilesKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
 
-        //this.gamepadUp = this.input.gamepad.pad1.down;
-        //gamepadDown: Phaser.Input.Gamepad.Button;
-        //gamepadSelect: Phaser.Input.Gamepad.Button;
-
-        var temp = this.input.gamepad;
-
-        this.input.gamepad.once('connected', pad => {
-
-            this.gamepad = pad;
-
-            pad.on('down', (index, value, button) => {
-
-                switch(index) {
-                case Constants.gamepadIndexSelect:
-                    console.log('A');
-                    this.selectMenuOption();
-                    break;
-                case Constants.gamepadIndexInteract:
-                    console.log('X');
-                    break;
-                case Constants.gamepadIndexUp:
-                    console.log('Up');
-                    this.previousMenuOption();
-                    break;
-                case Constants.gamepadIndexDown:
-                    console.log('Down');
-                    this.nextMenuOption();
-                    break;
-                case Constants.gamepadIndexLeft:
-                    console.log('Left');
-                    break;
-                case Constants.gamepadIndexRight:
-                    console.log('Right');
-                    break;
-                }                
-            });
-        });
-
-
-        //this.gamepad = temp.pad1;
-
-        //this.gamepadDown = this.input.gamepad.pad1.down;
-        //this.gamepadDown = this.input.gamepad.pad1.down;
+        this.addGamepadListeners();
 
         this.saveGameFiles = this.gameProgress.loadAllSaveFiles();
 
@@ -150,7 +111,6 @@ import { Constants } from "../constants";
         menu2.hide();
         
         this.menuSelectedIndex = 0;
-    
 
         this.scene.run('MenuBackgroundScene');
         this.scene.sendToBack('MenuBackgroundScene');              
@@ -163,9 +123,44 @@ import { Constants } from "../constants";
         }
     }
 
+    addGamepadListeners() {
+        this.input.gamepad.once('connected', pad => {
+
+            this.gamepad = pad;
+
+            pad.on('down', (index, value, button) => {
+
+                switch(index) {
+                case Constants.gamepadIndexSelect:
+                    console.log('A');
+                    this.selectMenuOption();
+                    break;
+                case Constants.gamepadIndexInteract:
+                    console.log('X');
+                    break;
+                case Constants.gamepadIndexUp:
+                    console.log('Up');
+                    this.previousMenuOption();
+                    break;
+                case Constants.gamepadIndexDown:
+                    console.log('Down');
+                    this.nextMenuOption();
+                    break;
+                case Constants.gamepadIndexLeft:
+                    console.log('Left');
+                    break;
+                case Constants.gamepadIndexRight:
+                    console.log('Right');
+                    break;
+                }                
+            });
+        });
+    }
+
     update(): void {
         const pad = this.gamepad;
 
+        const threshold = 0.25;
         if (pad != null && pad.axes.length)
         {
             var leftAxisX = pad.axes[0].getValue();
@@ -175,6 +170,10 @@ import { Constants } from "../constants";
                 console.log('Left Stick X: ' + leftAxisX);
             if(leftAxisY != 0)
                 console.log('Left Stick Y: ' + leftAxisY);
+            if(leftAxisY < -1 * threshold && this.currentLeftAxisY > -1 * threshold)
+                this.previousMenuOption();
+            else if(leftAxisY > 0.25 && this.currentLeftAxisY < threshold)
+                this.nextMenuOption();
 
             var rightAxisX = pad.axes[2].getValue();
             var rightAxisY = pad.axes[3].getValue();
@@ -183,21 +182,20 @@ import { Constants } from "../constants";
                 console.log('Right Stick X: ' + rightAxisX);
             if(rightAxisY != 0)
                 console.log('Right Stick Y: ' + rightAxisY);
+
+            this.currentLeftAxisY = leftAxisY;
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.selectKey)) {
            this.selectMenuOption();
         }
-
-        if(Phaser.Input.Keyboard.JustDown(this.cursorUp)) {
+        else if(Phaser.Input.Keyboard.JustDown(this.cursorUp)) {
             this.previousMenuOption();
         }
-
-        if(Phaser.Input.Keyboard.JustDown(this.cursorDown)) {
+        else if(Phaser.Input.Keyboard.JustDown(this.cursorDown)) {
             this.nextMenuOption();
         }
-
-        if(Phaser.Input.Keyboard.JustDown(this.deleteAllSaveFilesKey)) {
+        else if(Phaser.Input.Keyboard.JustDown(this.deleteAllSaveFilesKey)) {
             this.gameProgress.deleteAll();          
         }
     }

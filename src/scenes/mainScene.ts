@@ -60,6 +60,11 @@ export class MainScene extends Phaser.Scene {
     interactKey: Phaser.Input.Keyboard.Key;
     debugKey: Phaser.Input.Keyboard.Key;
 
+    gamepadUp: Phaser.Input.Gamepad.Button;
+    gamepadDown: Phaser.Input.Gamepad.Button;
+    gamepadSelect: Phaser.Input.Gamepad.Button;
+    gamepad: Phaser.Input.Gamepad.Gamepad;
+
     worldName: string;
 
     gameTimeStarted: number;
@@ -73,6 +78,7 @@ export class MainScene extends Phaser.Scene {
             //active: true
             //map: {   events: 'events', audio: 'audio'}
         });
+        this.gamepad = null;
         this.sceneController = sceneController;
     }
 
@@ -534,6 +540,8 @@ export class MainScene extends Phaser.Scene {
 
         this.debugKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F2);
 
+        this.addGamepadListeners();
+
         this.cameras.main.startFollow(this.player, true, 1, 1, this.player.displayWidth / 2, this.player.displayHeight / 2);
         this.cameras.main.zoomTo(1, 2000);
         this.cameras.main.setBackgroundColor(this.world.backgroundColor);
@@ -560,9 +568,70 @@ export class MainScene extends Phaser.Scene {
         this.cameras.main.zoomTo(5, transitionTime);
     }
 
+    addGamepadListeners() {
+        this.input.gamepad.once('connected', pad => {
+
+            this.gamepad = pad;
+
+            pad.on('down', (index, value, button) => {
+
+                switch(index) {
+                case Constants.gamepadIndexSelect:
+                    console.log('A');
+                    //this.selectMenuOption();
+                    break;
+                case Constants.gamepadIndexInteract:
+                    console.log('X');
+                    break;
+                case Constants.gamepadIndexUp:
+                    console.log('Up');
+                    //this.previousMenuOption();
+                    break;
+                case Constants.gamepadIndexDown:
+                    console.log('Down');
+                    //this.nextMenuOption();
+                    break;
+                case Constants.gamepadIndexLeft:
+                    console.log('Left');
+                    break;
+                case Constants.gamepadIndexRight:
+                    console.log('Right');
+                    break;
+                }                
+            });
+        });
+    }
+
     update(): void {
 
         this.world.updateSky(this.cameras.main);
+
+        const pad = this.gamepad;
+        const threshold = 0.25;
+        if (pad != null && pad.axes.length)
+        {
+            var leftAxisX = pad.axes[0].getValue();
+            var leftAxisY = pad.axes[1].getValue();
+    
+            if(leftAxisX != 0)
+                console.log('Left Stick X: ' + leftAxisX);
+            if(leftAxisY != 0)
+                console.log('Left Stick Y: ' + leftAxisY);
+            //if(leftAxisY < -1 * threshold && this.currentLeftAxisY > -1 * threshold)
+                //this.previousMenuOption();
+            //else if(leftAxisY > 0.25 && this.currentLeftAxisY < threshold)
+                //this.nextMenuOption();
+
+            var rightAxisX = pad.axes[2].getValue();
+            var rightAxisY = pad.axes[3].getValue();
+    
+            if(rightAxisX != 0)
+                console.log('Right Stick X: ' + rightAxisX);
+            if(rightAxisY != 0)
+                console.log('Right Stick Y: ' + rightAxisY);
+
+            //this.currentLeftAxisY = leftAxisY;
+        }
 
         if(Phaser.Input.Keyboard.JustDown(this.pauseKey)) {
             this.input.keyboard.resetKeys();
