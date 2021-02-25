@@ -493,8 +493,7 @@ export class MainScene extends Phaser.Scene {
 
         this.createAnims(this.anims);
         this.loadParticles();
-        
-        
+                
         this.enemies = new Array<Phaser.GameObjects.Sprite>();
         this.enemiesPhysics = Array<Phaser.GameObjects.Sprite>();
         this.enemiesNonGravity = Array<Phaser.GameObjects.Sprite>();
@@ -569,88 +568,52 @@ export class MainScene extends Phaser.Scene {
     }
 
     addGamepadListeners() {
-        this.input.gamepad.once('connected', pad => {
 
-            this.gamepad = pad;
-
-            pad.on('down', (index, value, button) => {
-
-                switch(index) {
-                case Constants.gamepadIndexSelect:
-                    console.log('A');
-                    //this.selectMenuOption();
-                    break;
-                case Constants.gamepadIndexInteract:
-                    console.log('X');
-                    break;
-                case Constants.gamepadIndexUp:
-                    console.log('Up');
-                    //this.previousMenuOption();
-                    break;
-                case Constants.gamepadIndexDown:
-                    console.log('Down');
-                    //this.nextMenuOption();
-                    break;
-                case Constants.gamepadIndexLeft:
-                    console.log('Left');
-                    break;
-                case Constants.gamepadIndexRight:
-                    console.log('Right');
-                    break;
-                }                
-            });
-        });
-    }
-
-    update(): void {
-
-        this.world.updateSky(this.cameras.main);
-
-        const pad = this.gamepad;
-        const threshold = 0.25;
-        if (pad != null && pad.axes.length)
+        if (this.input.gamepad.total === 0)
         {
-            var leftAxisX = pad.axes[0].getValue();
-            var leftAxisY = pad.axes[1].getValue();
-    
-            if(leftAxisX != 0)
-                console.log('Left Stick X: ' + leftAxisX);
-            if(leftAxisY != 0)
-                console.log('Left Stick Y: ' + leftAxisY);
-            //if(leftAxisY < -1 * threshold && this.currentLeftAxisY > -1 * threshold)
-                //this.previousMenuOption();
-            //else if(leftAxisY > 0.25 && this.currentLeftAxisY < threshold)
-                //this.nextMenuOption();
+            this.input.gamepad.once('connected', pad => {
+        
+            //if(this.input.gamepad.pad1 != null) {
+                //this.gamepad = this.input.gamepad.pad1;
 
-            var rightAxisX = pad.axes[2].getValue();
-            var rightAxisY = pad.axes[3].getValue();
-    
-            if(rightAxisX != 0)
-                console.log('Right Stick X: ' + rightAxisX);
-            if(rightAxisY != 0)
-                console.log('Right Stick Y: ' + rightAxisY);
+                this.gamepad = pad;
+                pad.on('down', (index, value, button) => {
 
-            //this.currentLeftAxisY = leftAxisY;
+                    switch(index) {
+                        case Constants.gamepadIndexJump:
+                            console.log('A');
+                            //this.selectMenuOption();
+                            this.player.tryJump(this.sound);
+                            break;
+                        case Constants.gamepadIndexInteract:
+                            console.log('X');
+                            this.player.tryInteract();
+                            break;
+                        case Constants.gamepadIndexUp:
+                            console.log('Up');
+                            this.player.tryJump(this.sound);
+                            break;
+                        case Constants.gamepadIndexDown:
+                            console.log('Down');
+                            this.player.duck();
+                            break;
+                        case Constants.gamepadIndexLeft:
+                            console.log('Left');
+                            this.player.moveLeft(1);
+                            break;
+                        case Constants.gamepadIndexRight:
+                            console.log('Right');
+                            this.player.moveRight(1);
+                            break;                    
+                        //case Constants.gamepadIndexShoot:
+                            //console.log('B');
+                            //this.player.tryFireBullet(this.sys.game.loop.time, this.sound);
+                    }
+                });
+            });
         }
-
-        if(Phaser.Input.Keyboard.JustDown(this.pauseKey)) {
-            this.input.keyboard.resetKeys();
-
-            this.sceneController.pauseGame();
-        }
-             
-        if(this.zoomInKey.isDown) {
-            this.cameras.main.zoom -= 0.01;
-        }
-        if(this.zoomOutKey.isDown) {
-            this.cameras.main.zoom += 0.01;
-        }
-
-        if(this.moveWaterKey.isDown) {
-            // debug stuff here    
-        }
-
-        if(!this.player.isInSpaceship) {
+        /*
+                if(!this.player.isInSpaceship) {
 
             if(Phaser.Input.Keyboard.JustDown(this.interactKey)) {
                 this.player.tryInteract();
@@ -706,7 +669,129 @@ export class MainScene extends Phaser.Scene {
         if(this.shootKey.isDown) {
             this.player.tryFireBullet(this.sys.game.loop.time, this.sound);
         }
- 
+        */
+    }
+
+    update(): void {
+
+        this.world.updateSky(this.cameras.main);
+
+        const pad = this.gamepad;
+        const threshold = 0.25;
+        if (pad != null && pad.axes.length)
+        {
+            var leftAxisX = pad.axes[0].getValue();
+            var leftAxisY = pad.axes[1].getValue();
+    
+            if(leftAxisX != 0)
+                console.log('Left Stick X: ' + leftAxisX);
+            if(leftAxisY != 0)
+                console.log('Left Stick Y: ' + leftAxisY);
+            //if(leftAxisY < -1 * threshold && this.currentLeftAxisY > -1 * threshold)
+                //this.previousMenuOption();
+            //else if(leftAxisY > 0.25 && this.currentLeftAxisY < threshold)
+                //this.nextMenuOption();
+            if(leftAxisX > 0)
+                this.player.moveRight(Math.abs(leftAxisX));
+            else if(leftAxisX < 0)
+                this.player.moveLeft(Math.abs(leftAxisX));
+            else if (leftAxisY > 0) {
+                this.player.duck();
+            }        
+            else {
+                this.player.stand();
+            }
+            var rightAxisX = pad.axes[2].getValue();
+            var rightAxisY = pad.axes[3].getValue();
+    
+            if(rightAxisX != 0)
+                console.log('Right Stick X: ' + rightAxisX);
+            if(rightAxisY != 0)
+                console.log('Right Stick Y: ' + rightAxisY);
+
+            //this.currentLeftAxisY = leftAxisY;
+            if(pad.B) {
+                this.player.tryFireBullet(this.sys.game.loop.time, this.sound);
+            }
+        }
+
+        if(Phaser.Input.Keyboard.JustDown(this.pauseKey)) {
+            this.input.keyboard.resetKeys();
+
+            this.sceneController.pauseGame();
+        }
+             
+        if(this.zoomInKey.isDown) {
+            this.cameras.main.zoom -= 0.01;
+        }
+        if(this.zoomOutKey.isDown) {
+            this.cameras.main.zoom += 0.01;
+        }
+
+        if(this.moveWaterKey.isDown) {
+            // debug stuff here    
+        }
+
+        if (pad == null) {
+
+            if(!this.player.isInSpaceship) {
+
+                if(Phaser.Input.Keyboard.JustDown(this.interactKey)) {
+                    this.player.tryInteract();
+                }
+
+                if (this.cursors.left.isDown) {
+                    this.player.moveLeft(1);
+                }
+                else if (this.cursors.right.isDown) {
+                    this.player.moveRight(1);
+                }
+                else if (this.cursors.down.isDown) {
+                    this.player.duck();
+                }        
+                else {
+                    this.player.stand();
+                }
+                    
+                if ((this.jumpKey.isDown || this.cursors.up.isDown))
+                {
+                    this.player.tryJump(this.sound);
+                }     
+            }
+            else {
+                if (this.cursors.left.isDown) {
+                    this.player.moveLeft(1);
+                }
+                else if (this.cursors.right.isDown) {
+                    this.player.moveRight(1);
+                }
+                else {
+                    var body = <Phaser.Physics.Arcade.Body>this.player.currentSpaceship.body;
+                    body.setVelocityX(0);
+                }
+
+                if (this.cursors.down.isDown) {
+                    this.player.duck();
+                }        
+                else if (this.cursors.up.isDown)
+                {
+                    this.player.tryMoveUp();
+                }     
+                else {
+                    var body = <Phaser.Physics.Arcade.Body>this.player.currentSpaceship.body;
+                    body.setVelocityY(0);
+                }           
+                
+                if(this.jumpKey.isDown || this.shootKey2.isDown || Phaser.Input.Keyboard.JustDown(this.interactKey)) {
+                    this.player.tryExitSpaceship(this.playerSpaceShip);
+                }    
+            }
+
+            if(this.shootKey.isDown) {
+                this.player.tryFireBullet(this.sys.game.loop.time, this.sound);
+            }
+        }
+    
         //if(Phaser.Input.Keyboard.JustDown(this.debugKey) {
             //this.physics.config.Arcade.debug = false;
         //}

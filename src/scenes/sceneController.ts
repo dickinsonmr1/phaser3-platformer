@@ -36,6 +36,7 @@ export class SceneController extends Phaser.Scene {
 
     create() {
 
+        /*
         var pad;
         if (this.input.gamepad.total === 0)
         {
@@ -49,17 +50,11 @@ export class SceneController extends Phaser.Scene {
                 pad.on('down', (index, value, button) => {
 
                     console.log(index);
-                    /*
-                    if (index === 0)
-                    {
-                        console.log('M to A');
-                        //this.scene.start('SceneA');
-                    }
-                    */
                 });
 
             });
         }
+        */
 
         this.titleScene = new TitleScene(this);
         this.game.scene.add("TitleScene", this.titleScene);

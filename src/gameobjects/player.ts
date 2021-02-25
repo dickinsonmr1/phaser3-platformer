@@ -198,11 +198,11 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.jumpingKey = input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
 
-    moveLeft(): void {
+    moveLeft(multiplier: number): void {
 
         if(!this.isInSpaceship) {
             var body = <Phaser.Physics.Arcade.Body>this.body;
-            body.setVelocityX(-Player.playerRunVelocityX); // move left
+            body.setVelocityX(-Player.playerRunVelocityX * multiplier); // move left
                 
             if(this.isInWater) {
                 this.anims.play('player-swim', true);
@@ -220,15 +220,15 @@ export class Player extends Phaser.GameObjects.Sprite {
         }
         else {
             var body = <Phaser.Physics.Arcade.Body>this.currentSpaceship.body;
-            body.setVelocityX(-Spaceship.spaceshipVelocity);
+            body.setVelocityX(-Spaceship.spaceshipVelocity * multiplier);
         }
     }
 
-    moveRight(): void {
+    moveRight(multiplier: number): void {
         if(!this.isInSpaceship) {
 
             var body = <Phaser.Physics.Arcade.Body>this.body;
-            body.setVelocityX(Player.playerRunVelocityX); // move right
+            body.setVelocityX(Player.playerRunVelocityX * multiplier); // move right
 
             if(this.isInWater) {
                 this.anims.play('player-swim', true);
@@ -246,7 +246,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         }
         else {
             var body = <Phaser.Physics.Arcade.Body>this.currentSpaceship.body;
-            body.setVelocityX(Spaceship.spaceshipVelocity);
+            body.setVelocityX(Spaceship.spaceshipVelocity * multiplier);
         }
     }
 

@@ -70,7 +70,7 @@ export class TitleScene extends Phaser.Scene {
         this.cursorUp = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         this.deleteAllSaveFilesKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
 
-        this.addGamepadListeners();
+        //this.addGamepadListeners();
 
         this.saveGameFiles = this.gameProgress.loadAllSaveFiles();
 
@@ -131,27 +131,27 @@ export class TitleScene extends Phaser.Scene {
             pad.on('down', (index, value, button) => {
 
                 switch(index) {
-                case Constants.gamepadIndexSelect:
-                    console.log('A');
-                    this.selectMenuOption();
-                    break;
-                case Constants.gamepadIndexInteract:
-                    console.log('X');
-                    break;
-                case Constants.gamepadIndexUp:
-                    console.log('Up');
-                    this.previousMenuOption();
-                    break;
-                case Constants.gamepadIndexDown:
-                    console.log('Down');
-                    this.nextMenuOption();
-                    break;
-                case Constants.gamepadIndexLeft:
-                    console.log('Left');
-                    break;
-                case Constants.gamepadIndexRight:
-                    console.log('Right');
-                    break;
+                    case Constants.gamepadIndexSelect:
+                        console.log('A');
+                        this.selectMenuOption();
+                        break;
+                    case Constants.gamepadIndexInteract:
+                        console.log('X');
+                        break;
+                    case Constants.gamepadIndexUp:
+                        console.log('Up');
+                        this.previousMenuOption();
+                        break;
+                    case Constants.gamepadIndexDown:
+                        console.log('Down');
+                        this.nextMenuOption();
+                        break;
+                    case Constants.gamepadIndexLeft:
+                        console.log('Left');
+                        break;
+                    case Constants.gamepadIndexRight:
+                        console.log('Right');
+                        break;
                 }                
             });
         });
