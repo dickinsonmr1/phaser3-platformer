@@ -60,9 +60,9 @@ export class MainScene extends Phaser.Scene {
     interactKey: Phaser.Input.Keyboard.Key;
     debugKey: Phaser.Input.Keyboard.Key;
 
-    gamepadUp: Phaser.Input.Gamepad.Button;
-    gamepadDown: Phaser.Input.Gamepad.Button;
-    gamepadSelect: Phaser.Input.Gamepad.Button;
+    //gamepadUp: Phaser.Input.Gamepad.Button;
+    //gamepadDown: Phaser.Input.Gamepad.Button;
+    //gamepadSelect: Phaser.Input.Gamepad.Button;
     gamepad: Phaser.Input.Gamepad.Gamepad;
 
     worldName: string;
@@ -587,7 +587,16 @@ export class MainScene extends Phaser.Scene {
                             break;
                         case Constants.gamepadIndexInteract:
                             console.log('X');
-                            this.player.tryInteract();
+                            if(!this.player.isInSpaceship) {
+                                this.player.tryInteract();
+                            }
+                            else {
+                            //if(this.jumpKey.isDown || this.shootKey2.isDown || Phaser.Input.Keyboard.JustDown(this.interactKey)) {
+                                this.player.tryExitSpaceship(this.playerSpaceShip);
+                            }   
+                            break;
+                        case Constants.gamepadIndexPause:
+                            this.sceneController.pauseGame();
                             break;
                         case Constants.gamepadIndexUp:
                             console.log('Up');
@@ -611,65 +620,7 @@ export class MainScene extends Phaser.Scene {
                     }
                 });
             });
-        }
-        /*
-                if(!this.player.isInSpaceship) {
-
-            if(Phaser.Input.Keyboard.JustDown(this.interactKey)) {
-                this.player.tryInteract();
-            }
-
-            if (this.cursors.left.isDown) {
-                this.player.moveLeft();
-            }
-            else if (this.cursors.right.isDown) {
-                this.player.moveRight();
-            }
-            else if (this.cursors.down.isDown) {
-                this.player.duck();
-            }        
-            else {
-                this.player.stand();
-            }
-                
-            if ((this.jumpKey.isDown || this.cursors.up.isDown))
-            {
-                this.player.tryJump(this.sound);
-            }     
-        }
-        else {
-            if (this.cursors.left.isDown) {
-                this.player.moveLeft();
-            }
-            else if (this.cursors.right.isDown) {
-                this.player.moveRight();
-            }
-            else {
-                var body = <Phaser.Physics.Arcade.Body>this.player.currentSpaceship.body;
-                body.setVelocityX(0);
-            }
-
-            if (this.cursors.down.isDown) {
-                this.player.duck();
-            }        
-            else if (this.cursors.up.isDown)
-            {
-                this.player.tryMoveUp();
-            }     
-            else {
-                var body = <Phaser.Physics.Arcade.Body>this.player.currentSpaceship.body;
-                body.setVelocityY(0);
-            }           
-            
-            if(this.jumpKey.isDown || this.shootKey2.isDown || Phaser.Input.Keyboard.JustDown(this.interactKey)) {
-                this.player.tryExitSpaceship(this.playerSpaceShip);
-            }    
-        }
-
-        if(this.shootKey.isDown) {
-            this.player.tryFireBullet(this.sys.game.loop.time, this.sound);
-        }
-        */
+        }     
     }
 
     update(): void {
@@ -691,15 +642,40 @@ export class MainScene extends Phaser.Scene {
                 //this.previousMenuOption();
             //else if(leftAxisY > 0.25 && this.currentLeftAxisY < threshold)
                 //this.nextMenuOption();
-            if(leftAxisX > 0)
-                this.player.moveRight(Math.abs(leftAxisX));
-            else if(leftAxisX < 0)
-                this.player.moveLeft(Math.abs(leftAxisX));
-            else if (leftAxisY > 0) {
-                this.player.duck();
-            }        
+
+            if(!this.player.isInSpaceship) {
+                if(leftAxisX > 0)
+                    this.player.moveRight(Math.abs(leftAxisX));
+                else if(leftAxisX < 0)
+                    this.player.moveLeft(Math.abs(leftAxisX));
+                else if (leftAxisY > 0) {
+                    this.player.duck();
+                }        
+                else {
+                    this.player.stand();
+                }
+            }
             else {
-                this.player.stand();
+                if(leftAxisX > 0)
+                    this.player.moveRight(Math.abs(leftAxisX));
+                else if(leftAxisX < 0)
+                    this.player.moveLeft(Math.abs(leftAxisX));
+                else {
+                    var body = <Phaser.Physics.Arcade.Body>this.player.currentSpaceship.body;
+                    body.setVelocityX(0);
+                }
+
+                if (leftAxisY > 0) {
+                    this.player.duck();
+                }        
+                else if (leftAxisY < 0)
+                {
+                    this.player.tryMoveUp();
+                }     
+                else {
+                    var body = <Phaser.Physics.Arcade.Body>this.player.currentSpaceship.body;
+                    body.setVelocityY(0);
+                }                    
             }
             var rightAxisX = pad.axes[2].getValue();
             var rightAxisY = pad.axes[3].getValue();
@@ -710,7 +686,7 @@ export class MainScene extends Phaser.Scene {
                 console.log('Right Stick Y: ' + rightAxisY);
 
             //this.currentLeftAxisY = leftAxisY;
-            if(pad.B) {
+            if(pad.B || pad.R2) {
                 this.player.tryFireBullet(this.sys.game.loop.time, this.sound);
             }
         }

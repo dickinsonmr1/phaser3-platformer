@@ -153,6 +153,8 @@ import { HealthBar } from "../scenes/healthBar";
             this.anims.play(this.unmannedAnim, true);
 
             this.particleEmitter.stop();
+            
+            // TODO: fix exception for stopByKey() if sound is disabled
             this.scene.sound.stopByKey('engineSound')
 
             var body = <Phaser.Physics.Arcade.Body>this.body;

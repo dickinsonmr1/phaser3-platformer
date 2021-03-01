@@ -575,6 +575,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         if(this.activateInteractTime > 0)
             this.activateInteractTime--;
         else {// if(this.activateInteractTime == 0) {
+            this.currentInteractionItem = null;
             this.hideInteractTextAndImage();
         }
        
@@ -587,6 +588,6 @@ export class Player extends Phaser.GameObjects.Sprite {
             this.playerGun.setPosition(this.x + Player.playerGunOffsetXFacingRight, this.y + this.getGunOffsetY());//.setOffset(32, 128);
         }         
 
-        this.currentInteractionItem = null;
+        
     }
 }

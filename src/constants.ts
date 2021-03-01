@@ -126,6 +126,7 @@ export class Constants {
     public static get gamepadIndexRight (): number {return 15;}   
     public static get gamepadIndexUp (): number {return 12;}   
     public static get gamepadIndexDown (): number {return 13;}   
+    public static get gamepadIndexPause (): number {return 9;}   
 
     public static get gamepadIndexJump (): number {return 0;}   
     public static get gamepadIndexShoot (): number {return 1;}   
