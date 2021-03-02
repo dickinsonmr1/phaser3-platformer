@@ -198,11 +198,10 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.jumpingKey = input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
 
-    moveLeft(multiplier: number): void {
-
+    moveX(multiplier: number): void {
         if(!this.isInSpaceship) {
             var body = <Phaser.Physics.Arcade.Body>this.body;
-            body.setVelocityX(-Player.playerRunVelocityX * multiplier); // move left
+            body.setVelocityX(Player.playerRunVelocityX * multiplier); // move left
                 
             if(this.isInWater) {
                 this.anims.play('player-swim', true);
@@ -216,39 +215,13 @@ export class Player extends Phaser.GameObjects.Sprite {
                 }
             }
             
-            this.flipX = true; // flip the sprite to the left 
-        }
-        else {
-            var body = <Phaser.Physics.Arcade.Body>this.currentSpaceship.body;
-            body.setVelocityX(-Spaceship.spaceshipVelocity * multiplier);
-        }
-    }
-
-    moveRight(multiplier: number): void {
-        if(!this.isInSpaceship) {
-
-            var body = <Phaser.Physics.Arcade.Body>this.body;
-            body.setVelocityX(Player.playerRunVelocityX * multiplier); // move right
-
-            if(this.isInWater) {
-                this.anims.play('player-swim', true);
-            }
-            else {
-                if(body.onFloor()) {
-                    this.anims.play('player-walk', true);
-                }
-                else {
-                    this.anims.play('player-jump', true);
-                }
-            }
-
-            this.flipX = false; // use the original sprite looking to the right
+            this.flipX = (multiplier < 0); // flip the sprite to the left 
         }
         else {
             var body = <Phaser.Physics.Arcade.Body>this.currentSpaceship.body;
             body.setVelocityX(Spaceship.spaceshipVelocity * multiplier);
         }
-    }
+    }   
 
     duck(): void {
         if(!this.isInSpaceship) {
@@ -306,6 +279,34 @@ export class Player extends Phaser.GameObjects.Sprite {
         if(this.isInSpaceship) {
             var body = <Phaser.Physics.Arcade.Body>this.currentSpaceship.body;
             body.setVelocityY(-Spaceship.spaceshipVelocity);
+        }
+    }
+    
+    tryMoveDown(): void {
+        if(this.isInSpaceship) {
+            var body = <Phaser.Physics.Arcade.Body>this.currentSpaceship.body;
+            body.setVelocityY(Spaceship.spaceshipVelocity);
+        }
+    }
+
+    tryMoveSpaceship(leftAxisX: number, leftAxisY: number): void {
+        if(this.isInSpaceship) {
+            var body = <Phaser.Physics.Arcade.Body>this.currentSpaceship.body;
+            body.setVelocity(Spaceship.spaceshipVelocity * leftAxisX, Spaceship.spaceshipVelocity * leftAxisY);
+        }
+    }
+
+    tryStopSpaceShipX(): void {
+        if(this.isInSpaceship) {
+            var body = <Phaser.Physics.Arcade.Body>this.currentSpaceship.body;
+            body.setVelocityX(0);
+        }
+    }
+    
+    tryStopSpaceShipY(): void {
+        if(this.isInSpaceship) {
+            var body = <Phaser.Physics.Arcade.Body>this.currentSpaceship.body;
+            body.setVelocityY(0);
         }
     }
 

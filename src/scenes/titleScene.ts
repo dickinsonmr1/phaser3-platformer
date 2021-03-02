@@ -84,7 +84,7 @@ export class TitleScene extends Phaser.Scene {
         menu.addMenuItem(this, "Start Game");
         menu.addMenuItem(this, "Continue Game");
         menu.addMenuItem(this, "Exit");
-        menu.setFooter(this, "©2020 by Mark Dickinson " );
+        menu.setFooter(this, "©2021 by Mark Dickinson " );
         menu.setFooter2(this, "Powered by Phaser 3  //  Assets by Kenney.nl");
         //menu.setFooter2(this, "Powered by Phaser 3  //  Assets by Kenney.nl // Additional SFX from zapsplat.com" );
 
