@@ -1,6 +1,6 @@
 {
   "name": "phaser3-typescript",
-  "version": "1.2.2",
+  "version": "0.1.0",
   "description": "Boilerplate, Tutorials, Cheat Sheets and more for Phaser 3 in Typescript",
   "keywords": [
     "Phaser",
@@ -32,15 +32,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/digitsensitive/phaser3-typescript.git"
+    "url": "git+https://github.com/dickinsonmr1/phaser3-platformer.git"
   },
   "author": {
-    "name": "digitsensitive",
-    "email": "digit.sensitivee@gmail.com"
+    "name": "dickinsonmr1"    
   },
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/digitsensitive/phaser3-typescript/issues"
+    "url": "https://github.com/dickinsonmr1/phaser3-platformer/issues"
   },
-  "homepage": "https://github.com/digitsensitive/phaser3-typescript#readme"
+  "homepage": "https://github.com/dickinsonmr1/phaser3-platformer"
 }
