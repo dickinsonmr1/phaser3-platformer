@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en">
+  <head>
+  </head>
+  <body>
+    <h1>Server</h1>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+      socket.emit('chat message', 'test');
+    </script>
+  </body>
+</html>
