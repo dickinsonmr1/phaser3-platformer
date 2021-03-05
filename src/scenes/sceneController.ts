@@ -6,11 +6,7 @@ import { TitleScene } from "./titleScene";
 import { HudScene } from "./hudScene";
 import { GameProgress } from "./gameProgress";
 import { LevelCompleteScene } from "./levelCompleteScene";
-import { io } from "socket.io-client";
-
-// socket.io
-// https://socket.io/get-started/private-messaging-part-1/#Server-initialization
-// https://gamedevacademy.org/create-a-basic-multiplayer-game-in-phaser-3-with-socket-io-part-2/
+import { Client } from "../socketClient"
 
 export class SceneController extends Phaser.Scene {
 
@@ -39,18 +35,16 @@ export class SceneController extends Phaser.Scene {
          
     }
 
+    players: string[];
+
+    addPlayer(player) {
+            
+    }
+
     create() {
         
-        const URL = "http://localhost:3000";
-        const socket = io(URL, { autoConnect: true });
-
-        //export default socket;
-
-        socket.onAny((event, ...args) => {
-            console.log(event, args);            
-        });
-
-        socket.emit('messageFromClient', 'test');
+        const client = new Client();
+    
         /*
         var pad;
         if (this.input.gamepad.total === 0)

@@ -2,6 +2,26 @@ var path = require('path');
 var pathToPhaser = path.join(__dirname, '/node_modules/phaser/');
 var phaser = path.join(pathToPhaser, 'dist/phaser.js');
 
+/*
+var serverConfig = Object.assign({}, config, {
+  name: "a",
+  entry: "./a/app",
+  output: {
+     path: "./a",
+     filename: "bundle.js"
+  },
+});
+
+var clientConfig = Object.assign({}, config, {
+  name: "a",
+  entry: "./a/app",
+  output: {
+     path: "./a",
+     filename: "bundle.js"
+  },
+});
+*/
+
 module.exports = {
   //entry: './src/boilerplate/game.ts',
   entry: './src/game.ts',
