@@ -1,9 +1,11 @@
 
 // TO COMPILE:
-// tsc server/server.ts --outDir server/build/ --esModuleInterop true
+// tsc server/server.ts --outDir build/server --esModuleInterop true
 
 // TO SERVE:
-// node server/build/server.js
+// node build/server/server.js
+import { createServer } from "http";
+import { Server, Socket } from "socket.io";
 
 const app = require('express')();
 const http = require('http').Server(app);
@@ -18,9 +20,69 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-import { createServer } from "http";
-import { Server, Socket } from "socket.io";
+export class PlayerOnServer {
+  public x: number;  
+  public y: number;
+  public playerId: string;
+  
+  constructor(x: number, y: number, playerId: string) {
+    this.x = x;
+    this.y = y;
+    this.playerId = playerId;
+  }
+}
+var players: PlayerOnServer[] = [];
 
+io.on('connection', (socket) => {
+
+  socket.emit('testing123', 'hello world');
+  
+  console.log('player [' + socket.id + '] connected')
+             
+  var newPlayer = new PlayerOnServer(30, 30, socket.id);
+  players.push(newPlayer);
+
+  // socket.emit: send the players object to the new player ONLY
+  socket.emit('currentPlayers', players);
+  //socket.emit('myNewPlayer', newPlayer);
+
+  // socket.broadcast.emit: update all other existing players of the new player
+  socket.broadcast.emit('newPlayer', newPlayer);            
+
+  // when a player disconnects, remove them from our players object
+  socket.on('disconnect', function() {
+    console.log('user disconnected');
+
+    //var playerToRemove = players.find(item => item.playerId === socket.id);
+    const filteredPlayers = players.filter((x) => x.playerId !== socket.id);
+      
+    players = filteredPlayers;
+
+    // emit a message to all players to remove this player
+    io.emit('playerLeft', socket.id);
+  });
+
+  /*
+  socket.on('messageFromClient', msg => {
+    console.log('server received message from client');
+
+    for (var i = 0; i < this.players.length; i++)
+      console.log("Player: " + this.players[i]);
+
+    io.sockets.emit('test', socket.id)
+  });
+  */
+
+  socket.onAny((event, ...args) => {
+    console.log(event, args);            
+  });
+});
+
+http.listen(port);
+console.log(`Server listening on port ${port}.`);
+
+
+/*
 //const port: number = 3000
 class App {
     
@@ -28,48 +90,52 @@ class App {
     private server: Server;
     private io: Socket;
 
-    private players: any[] = [];
-
     constructor() {
         this.server = http;
         this.io = io;
 
-        io.on('connection', (socket) => {
+        this.io.on('connection', (socket) => {
 
             socket.emit('testing123', 'hello world');
-
             
             console.log('player [' + socket.id + '] connected')
-            /*
-            for (i = 0; i < players.length; i++)
-              console.log("Player: " + players[i]);
-            
-            players[socket.id] = {
-              rotation: 0,
+                       
+            var newPlayer = players[socket.id] = {
               x: 30,
               y: 30,
               playerId: socket.id
-            }
+            };
             
-            // socket.emit only sends to new player that conneted
-            socket.emit('currentPlayers', players)
-          
-            // update all other players of the new player
-            socket.broadcast.emit('newPlayer', players[socket.id]);
-            
-            socket.on('disconnect', function () {
-          
-              console.log('player [' + socket.id + '] disconnected')
-              delete players[socket.id]
-              io.sockets.emit('playerDisconnected', socket.id)
+
+            // socket.emit: send the players object to the new player ONLY
+            socket.emit('currentPlayers', this.players);
+            //socket.emit('myNewPlayer', newPlayer);
+
+            // socket.broadcast.emit: update all other existing players of the new player
+            socket.broadcast.emit('newPlayer', newPlayer);            
+
+            // when a player disconnects, remove them from our players object
+            socket.on('disconnect', function() {
+              console.log('user disconnected');
+
+              if(socket != null) {
+                console.log(socket.id);
+                // remove this player from our players object
+                delete this.players[socket.id];
+                // emit a message to all players to remove this player
+                io.emit('disconnect', socket.id);
+              }
             });
-          
+
             socket.on('messageFromClient', msg => {
               console.log('server received message from client');
+
+              for (var i = 0; i < this.players.length; i++)
+                console.log("Player: " + this.players[i]);
+
               io.sockets.emit('test', socket.id)
-            });
-            */
-          
+            });            
+
             socket.onAny((event, ...args) => {
               console.log(event, args);            
             });
@@ -84,3 +150,4 @@ class App {
 }
 
 new App().Start()
+*/
