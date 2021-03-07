@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "module": "CommonJs"
+  },
+  "include": [
+    "src/server"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

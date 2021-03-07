@@ -12,8 +12,8 @@ import { PlayerOnServer } from "../server/server";
 
 export class Client {
     private socket: Socket
-    private players: PlayerOnServer[] = [];
-    private player: PlayerOnServer;
+    public players: PlayerOnServer[] = [];
+    public player: PlayerOnServer;
 
     constructor() {
         const URL = "http://localhost:3000";

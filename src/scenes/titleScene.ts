@@ -11,6 +11,7 @@ import { Menu } from "./menu";
 import { SceneController } from "./sceneController";
 import { GameProgress, SaveGameFile } from "./gameProgress";
 import { Constants } from "../constants";
+import { PlayerOnServer } from "../../server/server";
  
 export class TitleScene extends Phaser.Scene {
 
@@ -34,6 +35,17 @@ export class TitleScene extends Phaser.Scene {
 
     currentLeftAxisX: number;
     currentLeftAxisY: number;
+
+    
+    public static get menuScreenIndexTitle(): number { return 0; }
+    public static get menuScreenIndexContinue(): number { return 1; }
+    public static get menuScreenIndexMultiplayer(): number { return 2; }
+
+
+    public static get menuIndexStartGame(): number { return 0; }
+    public static get menuIndexContinue(): number { return 1; }
+    public static get menuIndexMultiplayer(): number { return 2; }    
+    public static get menuIndexExit(): number { return 3; }
     
     constructor(sceneController: SceneController) {
         super({
@@ -81,8 +93,9 @@ export class TitleScene extends Phaser.Scene {
         menu.setTitleIcon(this, 'sprites', 'hudPlayer_blue.png', 1);
         //menu.setTitleIcon(this, 'sprites', 'alienBlue_front.png', 1);
         menu.setMarker(this, ">>");
-        menu.addMenuItem(this, "Start Game");
+        menu.addMenuItem(this, "Start Game");        
         menu.addMenuItem(this, "Continue Game");
+        menu.addMenuItem(this, "Multiplayer");
         menu.addMenuItem(this, "Exit");
         menu.setFooter(this, "©2021 by Mark Dickinson " );
         menu.setFooter2(this, "Powered by Phaser 3  //  Assets by Kenney.nl");
@@ -91,6 +104,7 @@ export class TitleScene extends Phaser.Scene {
         
         this.menus.push(menu);
 
+        // continue screen
         var menu2 = new Menu(this);
 
         menu2.setTitle(this, "Continue Game");
@@ -109,6 +123,25 @@ export class TitleScene extends Phaser.Scene {
         menu2.addMenuItem(this, "Exit to Title");   
         this.menus.push(menu2);
         menu2.hide();
+
+        // multiplayer screen
+        
+        var menu3 = new Menu(this);
+
+        menu3.setTitle(this, "Multiplayer Lobby");
+        menu3.setMarker(this, ">>");
+
+        this.sceneController.socketClient.players.forEach(element => {
+            var item = <PlayerOnServer>element;
+
+            menu3.addMenuItem(this, item.playerId);
+        });
+
+        //if(this.saveGameFiles.length == 0)
+        //menu3.addMenuItem(this, "No Saved Games Found");
+        menu3.addMenuItem(this, "Exit to Title");   
+        this.menus.push(menu3);
+        menu3.hide();
         
         this.menuSelectedIndex = 0;
 
@@ -202,9 +235,9 @@ export class TitleScene extends Phaser.Scene {
 
     selectMenuOption() {
         var selectedMenu = this.menus[this.menuSelectedIndex];
-        if(this.menuSelectedIndex == 0) {
+        if(this.menuSelectedIndex == TitleScene.menuScreenIndexTitle) {
             
-            if(selectedMenu.selectedItemIndex == 0) {
+            if(selectedMenu.selectedItemIndex == TitleScene.menuIndexStartGame) {
 
                 this.input.keyboard.resetKeys();
                 this.sceneController.preloadMainSceneAndDisplayLoadingScene('world-01-01');
@@ -212,10 +245,10 @@ export class TitleScene extends Phaser.Scene {
 
                 this.sound.play("selectSound");
             }
-            else if(selectedMenu.selectedItemIndex == 1) {
+            else if(selectedMenu.selectedItemIndex == TitleScene.menuIndexContinue) {
 
                 selectedMenu.hide();
-                this.menuSelectedIndex++;
+                this.menuSelectedIndex = TitleScene.menuScreenIndexContinue;
 
                 this.menus[this.menuSelectedIndex].show();
                 this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
@@ -226,12 +259,25 @@ export class TitleScene extends Phaser.Scene {
                 //selectedMenu.confirmSelection(this.sound);
                 
             }
+            else if(selectedMenu.selectedItemIndex == TitleScene.menuIndexMultiplayer) {
+                selectedMenu.hide();
+                this.menuSelectedIndex = TitleScene.menuScreenIndexMultiplayer;
+
+                this.menus[this.menuSelectedIndex].show();
+                this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
+                
+                this.input.keyboard.resetKeys();
+
+                this.sound.play("selectSound");
+                //selectedMenu.confirmSelection(this.sound);
+            }
         }
-        else if(this.menuSelectedIndex == 1) {
+        else if(this.menuSelectedIndex == TitleScene.menuScreenIndexContinue) {
+            // return to title menu
             if(selectedMenu.selectedItemIndex == selectedMenu.items.length - 1) {
 
                 selectedMenu.hide();
-                this.menuSelectedIndex = 0;
+                this.menuSelectedIndex = TitleScene.menuScreenIndexTitle;
 
                 this.menus[this.menuSelectedIndex].show();
                 this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
@@ -241,6 +287,7 @@ export class TitleScene extends Phaser.Scene {
                 this.sound.play("backSound");
                 
             }
+            // saved game slots
             else {
                 if(this.saveGameFiles.length > 0) {
                     var selectedFile = this.loadSelectedSaveGameFile();
@@ -251,6 +298,34 @@ export class TitleScene extends Phaser.Scene {
                     selectedMenu.confirmSelection(this.sound);
                 }                                    
             }
+        }
+        else if(this.menuSelectedIndex == TitleScene.menuScreenIndexMultiplayer) {
+            // return to title menu
+            if(selectedMenu.selectedItemIndex == selectedMenu.items.length - 1) {
+
+                selectedMenu.hide();
+                this.menuSelectedIndex = TitleScene.menuScreenIndexTitle;
+
+                this.menus[this.menuSelectedIndex].show();
+                this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
+                
+                this.input.keyboard.resetKeys();
+                this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
+                this.sound.play("backSound");
+                
+            }
+            // saved game slots
+            /*else {
+                if(this.saveGameFiles.length > 0) {
+                    var selectedFile = this.loadSelectedSaveGameFile();
+
+                    this.sceneController.preloadMainSceneAndDisplayLoadingScene(selectedFile.destinationName);
+                    selectedMenu.refreshColorsAndMarker();
+
+                    selectedMenu.confirmSelection(this.sound);
+                }                                    
+            }
+            */
         }
     }
 

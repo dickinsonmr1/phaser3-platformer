@@ -20,6 +20,8 @@ export class SceneController extends Phaser.Scene {
 
     elapsedTimeInMs: number;
 
+    socketClient: Client;
+
     constructor() {
         super({
             key: "SceneManager"
@@ -43,7 +45,7 @@ export class SceneController extends Phaser.Scene {
 
     create() {
         
-        const client = new Client();
+        this.socketClient = new Client();
     
         /*
         var pad;
