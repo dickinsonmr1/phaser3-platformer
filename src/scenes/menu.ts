@@ -8,6 +8,8 @@ export class Menu {
     subItemMarkerRight: Phaser.GameObjects.Text;    
     items: Array<Phaser.GameObjects.Text>;
     selectedItemIndex: integer;
+    backMenu: Menu;
+    menuIndex: number;
 
     titleIcon: Phaser.GameObjects.Image;
 
@@ -92,6 +94,48 @@ export class Menu {
         this.refreshColorsAndMarker();        
     }
 
+    addStartGameMenuItem(scene: Phaser.Scene, text: string) {              
+        var temp = new StartGameMenuItem({
+            scene: scene,
+            x: this.menuStartX,
+            y: this.menuStartY + this.menuItemDistanceY() * this.items.length,
+            text: text,
+            style: {
+                fontFamily: 'KenneyRocketSquare',
+                fontSize: this.menuItemFontSize(),
+                align: 'right',            
+                color: this.nonHighlightedColor(),
+            }});
+        temp.setStroke('rgb(0,0,0)', 16);
+        temp.setOrigin(0, 0.5);
+
+        scene.add.existing(temp);
+        this.items.push(temp);
+
+        this.refreshColorsAndMarker();        
+    }
+    
+    addContinueGameMenuItem(scene: Phaser.Scene, text: string) {              
+        var temp = new ContinueGameMenuItem({
+            scene: scene,
+            x: this.menuStartX,
+            y: this.menuStartY + this.menuItemDistanceY() * this.items.length,
+            text: text,
+            style: {
+                fontFamily: 'KenneyRocketSquare',
+                fontSize: this.menuItemFontSize(),
+                align: 'right',            
+                color: this.nonHighlightedColor(),
+            }});
+        temp.setStroke('rgb(0,0,0)', 16);
+        temp.setOrigin(0, 0.5);
+
+        scene.add.existing(temp);
+        this.items.push(temp);
+
+        this.refreshColorsAndMarker();        
+    }
+
     addMenuComplexItem(scene: Phaser.Scene, text: string, subItems: Array<string>) {
         var temp = new ComplexMenuItem({
             scene: scene,
@@ -114,8 +158,16 @@ export class Menu {
         this.refreshColorsAndMarker();        
     }
 
+    setBackMenu(scene: Phaser.Scene, currentMenu: Menu) {
+        // TODO: implement        
+    }
+
     overrideStartY(startY: number) {
         this.menuStartY = startY;
+    }
+
+    setMenuIndex(index: number){
+        this.menuIndex = index;
     }
 
     setTitle(scene: Phaser.Scene, text: string) {
@@ -359,6 +411,28 @@ export class MenuLinkItem extends Phaser.GameObjects.Text {
         this.menuDestinationLink = params.menuDestinationLink;
         this.text = params.text;
     }
+
+    getDestinationMenu(): Menu {
+        return this.menuDestinationLink;
+    }
+}
+
+export class StartGameMenuItem extends Phaser.GameObjects.Text {
+
+    constructor(params) {
+        super(params.scene, params.x, params.y, params.text, params.style);
+
+        this.text = params.text;
+    }    
+}
+
+export class ContinueGameMenuItem extends Phaser.GameObjects.Text {
+
+    constructor(params) {
+        super(params.scene, params.x, params.y, params.text, params.style);
+
+        this.text = params.text;
+    }    
 }
 
 export class ComplexMenuItem extends Phaser.GameObjects.Text {
