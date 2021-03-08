@@ -70,6 +70,28 @@ export class Menu {
         this.refreshColorsAndMarker();        
     }
 
+    addMenuLinkItem(scene: Phaser.Scene, text: string, menuDestinationLink: Menu) {              
+        var temp = new MenuLinkItem({
+            scene: scene,
+            x: this.menuStartX,
+            y: this.menuStartY + this.menuItemDistanceY() * this.items.length,
+            text: text,
+            menuDestinationLink: menuDestinationLink,
+            style: {
+                fontFamily: 'KenneyRocketSquare',
+                fontSize: this.menuItemFontSize(),
+                align: 'right',            
+                color: this.nonHighlightedColor(),
+            }});
+        temp.setStroke('rgb(0,0,0)', 16);
+        temp.setOrigin(0, 0.5);
+
+        scene.add.existing(temp);
+        this.items.push(temp);
+
+        this.refreshColorsAndMarker();        
+    }
+
     addMenuComplexItem(scene: Phaser.Scene, text: string, subItems: Array<string>) {
         var temp = new ComplexMenuItem({
             scene: scene,
@@ -324,6 +346,17 @@ export class MenuItem extends Phaser.GameObjects.Text {
     constructor(params) {
         super(params.scene, params.x, params.y, params.text, params.style);
 
+        this.text = params.text;
+    }
+}
+
+export class MenuLinkItem extends Phaser.GameObjects.Text {
+    menuDestinationLink: Menu;
+
+    constructor(params) {
+        super(params.scene, params.x, params.y, params.text, params.style);
+
+        this.menuDestinationLink = params.menuDestinationLink;
         this.text = params.text;
     }
 }
