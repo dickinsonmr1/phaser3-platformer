@@ -38,6 +38,7 @@ export class MainScene extends Phaser.Scene {
     
     // player stuff
     player: Player;
+    player2: Player;
     playerSpaceShip: Spaceship;
 
     enemies: Array<Phaser.GameObjects.Sprite>;
@@ -516,9 +517,17 @@ export class MainScene extends Phaser.Scene {
             });        
         this.player.init();
 
+        this.player2 = new Player({
+            scene: this,
+            x: 20,
+            y: 600,
+            key: "player3"
+            });        
+        this.player2.init();
+
         //var color = '#CFEFFC';
         this.world = new World(this);
-        this.world.createWorld(this.worldName, this.player);
+        this.world.createWorld(this.worldName, this.player, this.player2);
         
         this.skySprite = this.add.tileSprite(0, 0, 20480, 1024, this.world.skyName);            
         //var underSkySprite = this.add.tileSprite(0, 1024, 20480, 1024, this.world.skyName);            
@@ -736,6 +745,7 @@ export class MainScene extends Phaser.Scene {
             }
         }
     
+        this.player2.stand();
         //if(Phaser.Input.Keyboard.JustDown(this.debugKey) {
             //this.physics.config.Arcade.debug = false;
         //}

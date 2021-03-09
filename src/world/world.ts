@@ -42,7 +42,7 @@ export class World {
         return Math.floor(Math.random() * Math.floor(max));
     }
 
-    createWorld(worldName: string, player: Player): void {
+    createWorld(worldName: string, player: Player, player2: Player): void {
         // using the Tiled map editor, here is the order of the layers from back to front:
         
         // layer00-image (not currently used)
@@ -74,6 +74,7 @@ export class World {
         this.layer02 = this.map.createDynamicLayer('layer02-nonpassable', tileSets, 0, 0);
         this.layer02.alpha = 1.0;
         this.scene.physics.add.collider(player, this.layer02);        
+        this.scene.physics.add.collider(player2, this.layer02);        
         this.layer02.setCollisionByExclusion([-1],true);//, Constants.tileLockBlue]);
         this.layer02.setTileIndexCallback(Constants.tileLockBlue, this.scene.unlockDoor, this.scene);
         //this.layer02.setCollisionBetween(581, 625, false);
@@ -84,6 +85,7 @@ export class World {
         this.layer04 = this.map.createStaticLayer('layer04-foreground-passable-opaque', tileSets, 0, 0);
         this.layer04.alpha = 1.0;
         this.scene.physics.add.overlap(player, this.layer04);
+        this.scene.physics.add.overlap(player2, this.layer04);
         this.layer04.setTileIndexCallback(Constants.tileTwoSpikesCeiling, this.scene.playerTouchingSpikesHandler, this.scene);
         this.layer04.setTileIndexCallback(Constants.tileTwoSpikesGround, this.scene.playerTouchingSpikesHandler, this.scene);
         this.layer04.setTileIndexCallback(Constants.tileThreeSpikesFloor, this.scene.playerTouchingSpikesHandler, this.scene);
@@ -94,6 +96,7 @@ export class World {
         this.layer05 = this.map.createStaticLayer('layer05-foreground-passable-semitransparent', tileSets, 0, 0);
         this.layer05.alpha = 0.5;
         this.scene.physics.add.overlap(player, this.layer05);
+        this.scene.physics.add.overlap(player2, this.layer05);
         this.layer05.setTileIndexCallback(Constants.tileWater, this.scene.inWater, this.scene);
         this.layer05.setTileIndexCallback(Constants.tileWaterTop, this.scene.inWater, this.scene);
 
@@ -420,7 +423,9 @@ export class World {
         this.layer03.setTileIndexCallback(Constants.tileOpenDoor, this.scene.activateDoorIcon, this.scene);
         this.layer03.setTileIndexCallback(Constants.tileHealth, this.scene.collectHealth, this.scene);
       
+        this.scene.physics.add.collider(player, player2);
         this.scene.physics.add.overlap(player, this.scene.enemies, this.scene.playerTouchingEnemiesHandler);
+        this.scene.physics.add.overlap(player2, this.scene.enemies, this.scene.playerTouchingEnemiesHandler);
         this.scene.physics.add.overlap(player, this.scene.springs, this.scene.playerTouchingSpringHandler);
         this.scene.physics.add.overlap(player, this.scene.flags, this.scene.playerTouchingCheckpointHandler);
         this.scene.physics.add.overlap(player, this.scene.portals, this.scene.playerTouchingPortalHandler);
@@ -443,8 +448,13 @@ export class World {
         this.scene.portals.forEach(x => x.setDepth(Constants.depthPortals));        
 
         player.setDepth(Constants.depthPlayer);
+        player2.setDepth(Constants.depthPlayer);
+
         this.scene.enemies.forEach(x => x.setDepth(Constants.depthEnemies));
+        
         player.playerGun.setDepth(Constants.depthPlayer);
+        player2.playerGun.setDepth(Constants.depthPlayer);
+
         this.scene.playerSpaceShip.setDepth(Constants.depthPlayer);
                         
         this.layer03.setDepth(Constants.depthLayer03);
