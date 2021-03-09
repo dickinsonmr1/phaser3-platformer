@@ -9,7 +9,7 @@
  import "phaser";
  import { Player } from "../gameobjects/player";
  import { Constants } from "../constants";
- import { Menu } from "./menu";
+ import { Menu, IconValueMapping } from "./menu";
 import { SceneController } from "./sceneController";
  
  export class PauseScene extends Phaser.Scene {
@@ -50,7 +50,12 @@ import { SceneController } from "./sceneController";
         this.menu.setTitle(this, "Game Paused");
         this.menu.setMarker(this, ">>");
         this.menu.addMenuItem(this, "Resume");
-        this.menu.addMenuComplexItem(this, "Toggle Sound", ['On', 'Off']);
+
+        // TODO: temporary fix
+        var temp = new Array<IconValueMapping>();
+        temp.push(new IconValueMapping({description: 'On', texture: 'sprites', frame: 'hudPlayer_blue.png', scale: 1}));
+        temp.push(new IconValueMapping({description: 'Off', texture: 'sprites', frame: 'hudPlayer_pink.png', scale: 1}));
+        this.menu.addMenuComplexItemWithIcons(this, "Toggle Sound", temp);
         this.menu.addMenuItem(this, "Save and Exit");     
         
         this.scene.bringToTop;

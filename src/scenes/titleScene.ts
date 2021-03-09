@@ -7,7 +7,7 @@
  /// <reference path="../dts/phaser.d.ts"/>
 
 import "phaser";
-import { Menu, MenuLinkItem, StartGameMenuItem, ContinueGameMenuItem } from "./menu";
+import { Menu, MenuLinkItem, StartGameMenuItem, ContinueGameMenuItem, IconValueMapping } from "./menu";
 import { SceneController } from "./sceneController";
 import { GameProgress, SaveGameFile } from "./gameProgress";
 import { Constants } from "../constants";
@@ -137,18 +137,43 @@ export class TitleScene extends Phaser.Scene {
         multiplayerMenu.setMenuIndex(TitleScene.menuScreenIndexMultiplayer);
         multiplayerMenu.setTitle(this, "Multiplayer Lobby");
         multiplayerMenu.setMarker(this, ">>");
+
+        /*
+        var temp1 = new Array<IconValueMapping>();
+        temp1.push(new IconValueMapping({description: 'Blue', texture: 'sprites', frame: 'hudPlayer_blue.png', scale: 1}));
+        temp1.push(new IconValueMapping({description: 'Pink', texture: 'sprites', frame: 'hudPlayer_link.png', scale: 1}));
+        temp1.push(new IconValueMapping({description: 'Yellow', texture: 'sprites', frame: 'hudPlayer_yellow.png', scale: 1}));
+        temp1.push(new IconValueMapping({description: 'Green', texture: 'sprites', frame: 'hudPlayer_green.png', scale: 1}));
+        temp1.push(new IconValueMapping({description: 'Beige', texture: 'sprites', frame: 'hudPlayer_beige.png', scale: 1}));
         multiplayerMenu.addMenuComplexItem(this, 'Level', ['Grass', 'Forest', 'Moon', 'Castle']);        
+
+        var temp2 = new Array<IconValueMapping>();
+        temp2.push(new IconValueMapping({description: 'Blue', texture: 'sprites', frame: 'hudPlayer_blue.png', scale: 1}));
+        temp2.push(new IconValueMapping({description: 'Pink', texture: 'sprites', frame: 'hudPlayer_link.png', scale: 1}));
+        temp2.push(new IconValueMapping({description: 'Yellow', texture: 'sprites', frame: 'hudPlayer_yellow.png', scale: 1}));
+        temp2.push(new IconValueMapping({description: 'Green', texture: 'sprites', frame: 'hudPlayer_green.png', scale: 1}));
+        temp2.push(new IconValueMapping({description: 'Beige', texture: 'sprites', frame: 'hudPlayer_beige.png', scale: 1}));
         multiplayerMenu.addMenuComplexItem(this, 'Weapons', ['All', 'Rockets']);     
-        
+        */
+
         this.sceneController.socketClient.players.forEach(element => {
             var item = <PlayerOnServer>element;
 
             var myPlayerId = this.sceneController.socketClient.getMyPlayer().playerId;
             
-            if(item.playerId == myPlayerId)
-                multiplayerMenu.addMenuComplexItem(this, item.playerId + ' (me)', ['Blue', 'Pink', 'Yellow', 'Tan']);
+            if(item.playerId == myPlayerId) {
+
+               var temp = new Array<IconValueMapping>();
+               temp.push(new IconValueMapping({description: 'Blue', texture: 'sprites', frame: 'hudPlayer_blue.png', scale: 1}));
+               temp.push(new IconValueMapping({description: 'Pink', texture: 'sprites', frame: 'hudPlayer_pink.png', scale: 1}));
+               temp.push(new IconValueMapping({description: 'Yellow', texture: 'sprites', frame: 'hudPlayer_yellow.png', scale: 1}));
+               temp.push(new IconValueMapping({description: 'Green', texture: 'sprites', frame: 'hudPlayer_green.png', scale: 1}));
+               temp.push(new IconValueMapping({description: 'Beige', texture: 'sprites', frame: 'hudPlayer_beige.png', scale: 1}));
+
+               multiplayerMenu.addMenuComplexItemWithIcons(this, item.playerId + ' (me)', temp);
+            }
             else
-            multiplayerMenu.addMenuItem(this, item.playerId);
+                multiplayerMenu.addMenuItem(this, item.playerId);
         });
         multiplayerMenu.addMenuItem(this, "Refresh Players");   
         multiplayerMenu.addMenuLinkItem(this, "Exit to Title", titleMenu);   
