@@ -742,7 +742,7 @@ export class MainScene extends Phaser.Scene {
 
         this.player.update();
         this.updateExpiringText();
-
+        
         this.enemies.forEach(enemy => {
             enemy.update(this.player.x, this.player.y);
         });

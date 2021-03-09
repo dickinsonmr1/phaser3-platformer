@@ -62,6 +62,14 @@ io.on('connection', (socket) => {
     io.emit('playerLeft', socket.id);
   });
 
+  socket.on('playerMovement', function(player: PlayerOnServer) {
+    //var playerToRemove = players.find(item => item.playerId === socket.id);
+    //const filteredPlayers = players.filter((x) => x.playerId !== socket.id);
+      
+    //players = filteredPlayers;
+  });
+
+
   /*
   socket.on('messageFromClient', msg => {
     console.log('server received message from client');

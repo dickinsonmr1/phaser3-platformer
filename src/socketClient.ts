@@ -2,6 +2,7 @@
 import { io } from "socket.io-client";
 import { Socket } from "socket.io-client";
 import { PlayerOnServer } from "../server/server";
+import { Player } from "./gameobjects/player";
 
 // socket.io
 // https://socket.io/get-started/private-messaging-part-1/#Server-initialization
@@ -11,7 +12,7 @@ import { PlayerOnServer } from "../server/server";
 // https://sbcode.net/tssock/client-emit/
 
 export class Client {
-    private socket: Socket
+    public socket: Socket
     public players: PlayerOnServer[] = [];
     public player: PlayerOnServer;
 
@@ -78,4 +79,8 @@ export class Client {
                 console.log("- Player: " + this.players[i].playerId);     
         }
     }    
+
+    playerMovement(x: number, y: number) {
+        //this.socket.emit('playerMovement', new PlayerOnServer(x, y, this.socket.id));//{ x: player.x, y: player.y });
+    }
 }

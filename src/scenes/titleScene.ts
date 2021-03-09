@@ -346,6 +346,13 @@ export class TitleScene extends Phaser.Scene {
         this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
 
         this.sound.play("selectSound");
+
+        //playerMovement(x: number, y: number) {
+            ////this.socket.emit('playerMovement', new PlayerOnServer(x, y, this.socket.id));//{ x: player.x, y: player.y });
+        //}
+        var socket = this.sceneController.socketClient.socket;
+        //socket.emit('playerMovement', new PlayerOnServer(50, 50, socket.id));//{ x: player.x, y: player.y });
+        socket.emit('playerMovement', { x: 50, y: 50});
     }
 
     tryContinueGame() {

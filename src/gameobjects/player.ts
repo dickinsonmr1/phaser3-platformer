@@ -111,6 +111,9 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     public currentSpaceship: Spaceship;
 
+    public xPrevious: number;
+    public yPrevious: number;
+
     public getScene(): Scene {
         return this.scene;
     }
@@ -185,6 +188,9 @@ export class Player extends Phaser.GameObjects.Sprite {
 
         this.currentWeapon = new LaserRepeater();
         this.playerGun = this.scene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, 'playerGun')        
+
+        this.xPrevious = this.x;
+        this.yPrevious = this.y;
 
         return;        
     }
@@ -555,6 +561,10 @@ export class Player extends Phaser.GameObjects.Sprite {
         }            
     }
 
+    anythingChanged(): boolean {
+        return this.xPrevious != this.x || this.yPrevious != this.y;
+    }
+
     update(): void {
 
         if(this.isInSpaceship) {
@@ -587,8 +597,17 @@ export class Player extends Phaser.GameObjects.Sprite {
         else {
             this.playerGun.setFlipX(false);
             this.playerGun.setPosition(this.x + Player.playerGunOffsetXFacingRight, this.y + this.getGunOffsetY());//.setOffset(32, 128);
-        }         
-
+        }   
         
+        
+        if(this.anythingChanged()) {
+            let scene = <MainScene>this.scene;            
+            var socket = scene.sceneController.socketClient.socket;
+            //socket.emit('playerMovement', new PlayerOnServer(50, 50, socket.id));//{ x: player.x, y: player.y });
+            if(socket != null)
+                socket.emit('playerMovement', { x: this.x, y: this.y});
+        }
+        this.xPrevious = this.x;
+        this.yPrevious = this.y;
     }
 }

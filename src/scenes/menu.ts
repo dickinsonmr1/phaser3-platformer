@@ -136,6 +136,7 @@ export class Menu {
         this.refreshColorsAndMarker();        
     }
 
+    // TODO: fix
     addMenuComplexItem(scene: Phaser.Scene, text: string, subItems: Array<string>) {
         var temp = new ComplexMenuItem({
             scene: scene,
