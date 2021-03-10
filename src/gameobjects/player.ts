@@ -14,6 +14,7 @@ import { Spaceship } from "./spaceship";
 import { Portal } from "./portal";
 import { Weapon, LaserRepeater } from "./weapon";
 import { MainScene } from "../scenes/mainScene";
+import { Socket } from "socket.io-client";
 
 // TODO: fix and move implementation here once basic player functionality is working in main scene
 export class Player extends Phaser.GameObjects.Sprite {
@@ -39,6 +40,8 @@ export class Player extends Phaser.GameObjects.Sprite {
     private get GetIconOffsetY(): number { return this.GetTextOffsetY + 2; }
 
     private interactText: Phaser.GameObjects.Text;
+    private playerNameText: Phaser.GameObjects.Text;
+
     private interactButtonImage: Phaser.GameObjects.Image;
     private activateInteractTime: number;
     private currentInteractionItem: Phaser.GameObjects.Sprite;
@@ -118,8 +121,12 @@ export class Player extends Phaser.GameObjects.Sprite {
         return this.scene;
     }
 
+    public playerId: string;
+
     constructor(params) {
         super(params.scene, params.x, params.y, params.key, params.frame);
+
+        this.playerId = params.playerId;
     } 
 
     public init(): void {
@@ -185,6 +192,23 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.activateInteractTime = 0;
         this.hideInteractTextAndImage();
         this.currentInteractionItem = null;
+
+        
+        // player name text
+        var text2 = this.scene.add.text(this.x, this.y - this.GetTextOffsetY, this.playerId,
+        {
+            fontFamily: 'KenneyRocketSquare',
+            fontSize: 24,
+            //align: 'right',            
+            color:"rgb(255,255,255)",
+        });
+        text2.setAlpha(0.5);
+        text2.setOrigin(0, 0.5);
+        text2.setDepth(7);
+        text2.setStroke('rgb(0,0,0)', 4);     
+        
+        this.playerNameText = text2;
+        this.alignPlayerNameText(this.x, this.y);
 
         this.currentWeapon = new LaserRepeater();
         this.playerGun = this.scene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, 'playerGun')        
@@ -498,6 +522,12 @@ export class Player extends Phaser.GameObjects.Sprite {
         image.setY(y + this.GetIconOffsetY);    
     }
 
+    alignPlayerNameText(x: number, y: number) {
+        var text = this.playerNameText;
+        text.setX(x);
+        text.setY(y);// + this.GetTextOffsetY);
+    }
+
     displayInteractTextAndImage(x: number, y: number) {
         
         this.alignInteractTextAndImage(x, y);
@@ -560,6 +590,11 @@ export class Player extends Phaser.GameObjects.Sprite {
             }
         }            
     }
+    
+    getSocket(): Socket {
+        let scene = <MainScene>this.scene;            
+        return scene.sceneController.socketClient.socket;
+    }
 
     anythingChanged(): boolean {
         return this.xPrevious != this.x || this.yPrevious != this.y;
@@ -601,13 +636,14 @@ export class Player extends Phaser.GameObjects.Sprite {
         
         
         if(this.anythingChanged()) {
-            let scene = <MainScene>this.scene;            
-            var socket = scene.sceneController.socketClient.socket;
+            var socket = this.getSocket();
             //socket.emit('playerMovement', new PlayerOnServer(50, 50, socket.id));//{ x: player.x, y: player.y });
             if(socket != null)
-                socket.emit('playerMovement', { x: this.x, y: this.y});
+                socket.emit('playerMovement', { x: this.x, y: this.y, facingRight: this.flipX});
         }
         this.xPrevious = this.x;
         this.yPrevious = this.y;
+
+        this.alignPlayerNameText(this.x, this.y);
     }
 }

@@ -23,6 +23,7 @@ import { Switch } from "../gameobjects/switch";
 import { Spaceship } from "../gameobjects/spaceship";
 import { RocketLauncher, PulseCharge, LaserRepeater, LaserPistol } from "../gameobjects/weapon";
 import { SceneController } from "./sceneController";
+import { Animations } from "./animations";
 
 export class MainScene extends Phaser.Scene {
   
@@ -38,7 +39,8 @@ export class MainScene extends Phaser.Scene {
     
     // player stuff
     player: Player;
-    player2: Player;
+    //player2: Player;
+    otherPlayers: Array<Player>;
     playerSpaceShip: Spaceship;
 
     enemies: Array<Phaser.GameObjects.Sprite>;
@@ -206,293 +208,12 @@ export class MainScene extends Phaser.Scene {
 
     private createAnims(anims) {
         
-        // player
-        anims.create({
-            key: 'player-walk',
-            frames: anims.generateFrameNames('playerSprites', { prefix: 'alienBlue_walk', start: 1, end: 2, zeroPad: 1, suffix: '.png' }),
-            frameRate: 10,
-            repeat: -1
-        });
-
-        anims.create({
-            key: 'player-swim',
-            frames: anims.generateFrameNames('playerSprites', { prefix: 'alienBlue_swim', start: 1, end: 2, zeroPad: 1, suffix: '.png' }),
-            frameRate: 10,
-            repeat: -1
-        });
-        // idle with only one frame, so repeat is not neaded
-        anims.create({
-            key: 'player-idle',
-            frames: [{key: 'playerSprites', frame: 'alienBlue_stand.png'}],
-            frameRate: 10,
-        });
-
-        anims.create({
-            key: 'player-jump',
-            frames: [{key: 'playerSprites', frame: 'alienBlue_jump.png'}],
-            frameRate: 10,
-        });
-
-        anims.create({
-            key: 'player-duck',
-            frames: [{key: 'playerSprites', frame: 'alienBlue_duck.png'}],
-            frameRate: 10,
-        });
-
-        // player spaceship
-        anims.create({
-            key: 'spaceshipBlue',
-            frames: [{key: 'alienShipSprites', frame: 'shipBlue.png'}],
-            frameRate: 10,
-        });   
-        anims.create({
-            key: 'spaceshipBlue_manned',
-            frames: [{key: 'alienShipSprites', frame: 'shipBlue_manned.png'}],
-            frameRate: 10,
-        });    
-
-        ////////////////////////////////////////////////////////////////
-        // enemy 1: walking abstract
-        ////////////////////////////////////////////////////////////////
-        anims.create({
-            key: 'enemy01-Idle',
-            frames: [{key: 'enemySprites2', frame: 'enemyWalking_1.png', }],
-            frameRate: 10,
-        });
-        anims.create({
-            key: 'enemy01-Walk',
-            frames:
-            [
-                {key: 'enemySprites2', frame: 'enemyWalking_1.png'},
-                {key: 'enemySprites2', frame: 'enemyWalking_2.png'},
-                //{key: 'completeSprites', frame: 'slimeBlue.png'},
-                //{key: 'completeSprites', frame: 'slimeBlue_move.png'},
-                //{key: 'enemySprites2', frame: 'enemyWalking_3.png'},
-                //{key: 'enemySprites2', frame: 'enemyWalking_4.png'}
-            ],
-            frameRate: 5,
-            repeat: -1
-        });        
-        anims.create({
-            key: 'enemy01-Dead',
-            frames: [{key: 'enemySprites2', frame: 'enemyWalking_1.png'}],
-            frameRate: 10,
-        });
-
-        ////////////////////////////////////////////////////////////////
-        // enemy 2: blue slime
-        ////////////////////////////////////////////////////////////////
-        anims.create({
-            key: 'enemy02-Idle',
-            frames: [{key: 'completeSprites', frame: 'slimeBlue.png', }],
-            frameRate: 10,
-        });        
-        anims.create({
-            key: 'enemy02-Walk',
-            frames:
-            [
-                {key: 'completeSprites', frame: 'slimeBlue.png'},
-                {key: 'completeSprites', frame: 'slimeBlue_move.png'},                
-            ],
-            frameRate: 10,
-            repeat: -1
-        });
-        anims.create({
-            key: 'enemy02-Dead',
-            frames: [{key: 'completeSprites', frame: 'slimeBlue_dead.png'}],
-            frameRate: 10,
-        });
-
-        ////////////////////////////////////////////////////////////////
-        // enemy 3
-        ////////////////////////////////////////////////////////////////
-        anims.create({
-            key: 'enemy03-Idle',
-            frames: [{key: 'enemySprites3', frame: 'playerRed_stand.png', }],
-            frameRate: 10,
-        });
-        
-        anims.create({
-            key: 'enemy03-Walk',
-            frames:
-            [
-                {key: 'enemySprites3', frame: 'playerRed_walk1.png'},
-                {key: 'enemySprites3', frame: 'playerRed_walk2.png'},
-                {key: 'enemySprites3', frame: 'playerRed_walk3.png'},
-                {key: 'enemySprites3', frame: 'playerRed_walk2.png'},
-                //{key: 'enemySprites3', frame: 'playerRed_walk4.png'},
-                //{key: 'enemySprites3', frame: 'playerRed_walk5.png'},
-                //{key: 'completeSprites', frame: 'slimeBlue.png'},
-                //{key: 'completeSprites', frame: 'slimeBlue_move.png'},
-                //{key: 'enemySprites2', frame: 'enemyWalking_3.png'},
-                //{key: 'enemySprites2', frame: 'enemyWalking_4.png'}
-            ],
-            frameRate: 20,
-            repeat: -1
-        });
-        
-        anims.create({
-            key: 'enemy03-Dead',
-            frames: [{key: 'enemySprites3', frame: 'playerRed_dead.png'}],
-            frameRate: 10,
-        });
-
-        ////////////////////////////////////////////////////////////////
-        // enemy 4: green worm
-        ////////////////////////////////////////////////////////////////
-        anims.create({
-            key: 'enemy04-Idle',
-            frames: [{key: 'completeSprites', frame: 'wormGreen.png', }],
-            frameRate: 10,
-        });        
-        anims.create({
-            key: 'enemy04-Walk',
-            frames:
-            [
-                {key: 'completeSprites', frame: 'wormGreen.png'},
-                {key: 'completeSprites', frame: 'wormGreen_move.png'},                
-            ],
-            frameRate: 10,
-            repeat: -1
-        });
-        anims.create({
-            key: 'enemy04-Dead',
-            frames: [{key: 'completeSprites', frame: 'wormGreen_dead.png'}],
-            frameRate: 10,
-        });
-
-        
-        ////////////////////////////////////////////////////////////////
-        // enemy 5: saw
-        ////////////////////////////////////////////////////////////////
-        anims.create({
-            key: 'enemy05-Idle',
-            frames: [{key: 'completeSprites', frame: 'saw.png', }],
-            frameRate: 10,
-        });        
-        anims.create({
-            key: 'enemy05-Walk',
-            frames:
-            [
-                {key: 'completeSprites', frame: 'saw.png'},
-                {key: 'completeSprites', frame: 'saw_move.png'},                
-            ],
-            frameRate: 10,
-            repeat: -1
-        });
-        anims.create({
-            key: 'enemy05-Dead',
-            frames: [{key: 'completeSprites', frame: 'saw_dead.png'}],
-            frameRate: 10,
-        });
-
-        ////////////////////////////////////////////////////////////////
-        // enemy 6: floating with spikes
-        ////////////////////////////////////////////////////////////////
-        anims.create({
-            key: 'enemy06-Idle',
-            frames: [{key: 'enemySprites2', frame: 'enemyFloating_1.png', }],
-            frameRate: 10,
-        });
-        anims.create({
-            key: 'enemy06-Walk',
-            frames:
-            [
-                {key: 'enemySprites2', frame: 'enemyFloating_1.png'},
-                {key: 'enemySprites2', frame: 'enemyFloating_2.png'},
-                {key: 'enemySprites2', frame: 'enemyFloating_3.png'},               
-            ],
-            frameRate: 5,
-            repeat: -1
-        });        
-        anims.create({
-            key: 'enemy06-Dead',
-            frames: [{key: 'enemySprites2', frame: 'enemyFloating_1.png'}],
-            frameRate: 10,
-        });
-
-        ////////////////////////////////////////////////////////////////
-        // enemy 7
-        ////////////////////////////////////////////////////////////////
-        anims.create({
-            key: 'enemy07-Idle',
-            frames: [{key: 'enemySprites3', frame: 'playerGreen_walk1.png', }],
-            frameRate: 10,
-        });
-        
-        anims.create({
-            key: 'enemy07-Walk',
-            frames:
-            [
-                {key: 'enemySprites3', frame: 'playerGreen_walk1.png'},
-                {key: 'enemySprites3', frame: 'playerGreen_walk2.png'},
-                {key: 'enemySprites3', frame: 'playerGreen_walk3.png'},
-                //{key: 'enemySprites3', frame: 'playerGreen_walk4.png'},
-            ],
-            frameRate: 20,
-            repeat: -1
-        });
-        
-        anims.create({
-            key: 'enemy07-Dead',
-            frames: [{key: 'enemySprites3', frame: 'playerGreen_dead.png'}],
-            frameRate: 10,
-        });
-
-        ////////////////////////////////////////////////////////////////
-        // springs
-        ////////////////////////////////////////////////////////////////
-        anims.create({
-            key: 'spring0',
-            frames: [{key: 'completeSprites', frame: 'spring0.png'}],
-            frameRate: 10,
-        });
-
-        anims.create({
-            key: 'spring1',
-            frames: [{key: 'completeSprites', frame: 'spring1.png'}],
-            frameRate: 10,
-        });
-
-        ////////////////////////////////////////////////////////////////
-        // checkpoints
-        ////////////////////////////////////////////////////////////////
-        anims.create({
-            key: 'flagGreenIdle',
-            frames: [{key: 'completeSprites', frame: 'flagGreen_down.png'}],
-            frameRate: 10,
-        });
-
-        anims.create({
-            key: 'flagGreenWave',
-            frames: [
-                {key: 'completeSprites', frame: 'flagGreen1.png'},
-                {key: 'completeSprites', frame: 'flagGreen2.png'}
-            ],
-            frameRate: 2,
-            repeat: -1
-        });
-  
-        // spaceship beam
-        anims.create({
-            key: 'spaceship-beam',
-            frames:
-            [
-                {key: 'alienShipLaserSprites', frame: 'laserBlue_burst.png'},
-                {key: 'alienShipLaserSprites', frame: 'laserBlue_groundBurst.png'},
-                //{key: 'completeSprites', frame: 'slimeBlue.png'},
-                //{key: 'completeSprites', frame: 'slimeBlue_move.png'},
-                //{key: 'enemySprites2', frame: 'enemyWalking_3.png'},
-                //{key: 'enemySprites2', frame: 'enemyWalking_4.png'}
-            ],
-            frameRate: 5,
-            repeat: -1
-        });      
+       
     }
 
     create(): void {    
 
-        this.createAnims(this.anims);
+        Animations.createAnims(this.anims);
         this.loadParticles();
                 
         this.enemies = new Array<Phaser.GameObjects.Sprite>();
@@ -508,26 +229,40 @@ export class MainScene extends Phaser.Scene {
         this.flags = new Array<Phaser.GameObjects.Sprite>();
         this.portals = new Array<Phaser.GameObjects.Sprite>();
         this.switches = new Array<Phaser.GameObjects.Sprite>();
-        
+        this.otherPlayers = new Array<Player>();
+       
+        var mySocketPlayer = this.sceneController.socketClient.getMyPlayer();
+        var otherSocketPlayers = this.sceneController.socketClient.getOtherPlayers(mySocketPlayer.playerId);
+
         this.player = new Player({
             scene: this,
             x: 20,
             y: 600,
-            key: "player2"
+            key: "player1",
+            playerId: mySocketPlayer.playerId
             });        
         this.player.init();
 
-        this.player2 = new Player({
-            scene: this,
-            x: 20,
-            y: 600,
-            key: "player3"
-            });        
-        this.player2.init();
+        var offsetX = 0;
+        for (var i = 0; i < otherSocketPlayers.length; i++) {
+            
+            offsetX += 100;
+            var tempPlayer = new Player({
+                scene: this,
+                x: 100 + offsetX,
+                y: 600,
+                key: "player"+(i+1),
+                playerId: otherSocketPlayers[i].playerId
+                });        
+            tempPlayer.init();
+
+            this.otherPlayers.push(tempPlayer);            
+        }
+        
 
         //var color = '#CFEFFC';
         this.world = new World(this);
-        this.world.createWorld(this.worldName, this.player, this.player2);
+        this.world.createWorld(this.worldName, this.player, this.otherPlayers);
         
         this.skySprite = this.add.tileSprite(0, 0, 20480, 1024, this.world.skyName);            
         //var underSkySprite = this.add.tileSprite(0, 1024, 20480, 1024, this.world.skyName);            
@@ -536,6 +271,21 @@ export class MainScene extends Phaser.Scene {
         this.world.sky.setScale(1);
         this.world.sky.setDepth(Constants.depthSky);
 
+        this.setUpInput();
+     
+        this.cameras.main.startFollow(this.player, true, 1, 1, this.player.displayWidth / 2, this.player.displayHeight / 2);
+        this.cameras.main.zoomTo(1, 2000);
+        this.cameras.main.setBackgroundColor(this.world.backgroundColor);
+
+        this.sceneController.mainSceneLoaded();
+
+        this.clock = new Phaser.Time.Clock(this);
+
+        this.scene.pause();
+        this.scene.setVisible(false, "MainScene");
+    }
+
+    setUpInput() {
         this.cursors = this.input.keyboard.createCursorKeys();
         this.zoomInKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
         this.zoomOutKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
@@ -549,17 +299,6 @@ export class MainScene extends Phaser.Scene {
         this.debugKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F2);
 
         this.addGamepadListeners();
-
-        this.cameras.main.startFollow(this.player, true, 1, 1, this.player.displayWidth / 2, this.player.displayHeight / 2);
-        this.cameras.main.zoomTo(1, 2000);
-        this.cameras.main.setBackgroundColor(this.world.backgroundColor);
-
-        this.sceneController.mainSceneLoaded();
-
-        this.clock = new Phaser.Time.Clock(this);
-
-        this.scene.pause();
-        this.scene.setVisible(false, "MainScene");
     }
 
     fadeInCamera() {
@@ -636,6 +375,31 @@ export class MainScene extends Phaser.Scene {
 
         this.world.updateSky(this.cameras.main);
 
+        this.processInput();
+    
+        for (var i = 0; i < this.otherPlayers.length; i++) 
+            this.otherPlayers[i].stand();
+
+        //if(Phaser.Input.Keyboard.JustDown(this.debugKey) {
+            //this.physics.config.Arcade.debug = false;
+        //}
+
+        this.player.update();        
+        this.updateExpiringText();
+        
+        for (var i = 0; i < this.otherPlayers.length; i++) 
+            this.otherPlayers[i].update();
+
+        this.enemies.forEach(enemy => { enemy.update(this.player.x, this.player.y); });
+        this.springs.forEach(spring => { spring.update(); });
+        this.portals.forEach(portal => { portal.update(); });
+    }
+
+    updatePhysics(): void {
+
+    }
+
+    processInput(): void {
         const pad = this.gamepad;
         const threshold = 0.25;
         if (pad != null && pad.axes.length)
@@ -744,36 +508,6 @@ export class MainScene extends Phaser.Scene {
                 this.player.tryFireBullet(this.sys.game.loop.time, this.sound);
             }
         }
-    
-        this.player2.stand();
-        //if(Phaser.Input.Keyboard.JustDown(this.debugKey) {
-            //this.physics.config.Arcade.debug = false;
-        //}
-
-        this.player.update();
-        this.updateExpiringText();
-        
-        this.enemies.forEach(enemy => {
-            enemy.update(this.player.x, this.player.y);
-        });
-
-        this.springs.forEach(spring => 
-        {
-            spring.update();
-        });
-
-        this.portals.forEach(portal => 
-        {
-            portal.update();
-        });
-    }
-
-    updatePhysics(): void {
-
-    }
-
-    processInput(): void {
-
     }
 
     collectGem (sprite, tile): boolean
@@ -844,6 +578,7 @@ export class MainScene extends Phaser.Scene {
 
         return true;
     }
+
     activateCheckpoint (sprite, tile): boolean
     {
         this.world.collectGem(tile.x, tile.y);
@@ -962,22 +697,19 @@ export class MainScene extends Phaser.Scene {
         }
     }
 
-    playerTouchingEnemiesHandler(player: Player, enemy: Enemy): void
-    {
+    playerTouchingEnemiesHandler(player: Player, enemy: Enemy): void {
         player.tryDamage();
         player.getScene().cameras.main.shake(100, 0.01, false);
     }
     
-    playerTouchingSpikesHandler(sprite, tile): boolean
-    {
+    playerTouchingSpikesHandler(sprite, tile): boolean {
         this.player.tryDamage();
         this.player.getScene().cameras.main.shake(100, 0.01, false);
 
         return true;
     }
 
-    playerTouchingSpaceshipHandler(player: Player, spaceship: Spaceship): void
-    {       
+    playerTouchingSpaceshipHandler(player: Player, spaceship: Spaceship): void {       
         if(!player.isInSpaceship && spaceship.transitionTime == 0) {
             player.displayInteractTextAndImage(spaceship.x, spaceship.y);
             player.setAvailableInteraction(spaceship);
@@ -985,7 +717,6 @@ export class MainScene extends Phaser.Scene {
     }
 
     enemyTouchingEnemyHandler(enemy1: Enemy, enemy2: Enemy): void {
-
         var body1 = <Phaser.Physics.Arcade.Body>enemy1.body;
         var body2 = <Phaser.Physics.Arcade.Body>enemy2.body;
 
@@ -1010,18 +741,16 @@ export class MainScene extends Phaser.Scene {
     bulletTouchingEnemyHandler(enemy: Enemy, bullet: Bullet): void {
                 
         var scene = <MainScene>enemy.getScene();
-
         scene.weaponHitParticleEmitter.explode(10, enemy.x, enemy.y);
-
+              
         var damage = bullet.damage;
-
-        scene.sound.play("enemyHurtSound");
-       
         scene.addExpiringText(scene, enemy.x, enemy.y, damage.toString())
 
         enemy.tryDamage(damage);
         scene.player.score += damage;
-        
+
+        scene.sound.play("enemyHurtSound");
+
         bullet.destroy();
     }
 

@@ -70,6 +70,10 @@ export class Client {
                 return this.players[i];
     }
 
+    getOtherPlayers(myPlayerId: string): Array<PlayerOnServer> {
+        return this.players.filter((x) => x.playerId !== myPlayerId);
+    }
+
     debugAllCurrentPlayers() {
         console.log('ALL PLAYERS:');
         for (var i = 0; i < this.players.length; i++) {
