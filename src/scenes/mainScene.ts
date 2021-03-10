@@ -24,6 +24,7 @@ import { Spaceship } from "../gameobjects/spaceship";
 import { RocketLauncher, PulseCharge, LaserRepeater, LaserPistol } from "../gameobjects/weapon";
 import { SceneController } from "./sceneController";
 import { Animations } from "./animations";
+import { Socket } from "socket.io-client";
 
 export class MainScene extends Phaser.Scene {
   
@@ -239,7 +240,8 @@ export class MainScene extends Phaser.Scene {
             x: 20,
             y: 600,
             key: "player1",
-            playerId: mySocketPlayer.playerId
+            playerId: mySocketPlayer.playerId,
+            isMyPlayer: true
             });        
         this.player.init();
 
@@ -252,7 +254,8 @@ export class MainScene extends Phaser.Scene {
                 x: 100 + offsetX,
                 y: 600,
                 key: "player"+(i+1),
-                playerId: otherSocketPlayers[i].playerId
+                playerId: otherSocketPlayers[i].playerId,
+                isMyPlayer: false
                 });        
             tempPlayer.init();
 
@@ -376,6 +379,18 @@ export class MainScene extends Phaser.Scene {
         this.world.updateSky(this.cameras.main);
 
         this.processInput();
+        
+        // process input from other players / sockets
+        var otherPlayersFromSocketClient = this.sceneController.socketClient.players;
+        
+        for (var i = 0; i < otherPlayersFromSocketClient.length; i++) {
+
+            var otherPlayer = this.otherPlayers.find(item => item.playerId === otherPlayersFromSocketClient[i].playerId);            
+            if(otherPlayer != null) {
+                otherPlayer.x = otherPlayersFromSocketClient[i].x;
+                otherPlayer.y = otherPlayersFromSocketClient[i].y;
+            }
+        }
     
         for (var i = 0; i < this.otherPlayers.length; i++) 
             this.otherPlayers[i].stand();
@@ -393,6 +408,10 @@ export class MainScene extends Phaser.Scene {
         this.enemies.forEach(enemy => { enemy.update(this.player.x, this.player.y); });
         this.springs.forEach(spring => { spring.update(); });
         this.portals.forEach(portal => { portal.update(); });
+    }
+
+    getSocket(): Socket {
+        return this.sceneController.socketClient.socket;
     }
 
     updatePhysics(): void {
@@ -512,7 +531,7 @@ export class MainScene extends Phaser.Scene {
 
     collectGem (sprite, tile): boolean
     {
-        this.world.collectGem(tile.x, tile.y);
+        this.world.removeTile(tile.x, tile.y);
         this.sound.play("gemSound", { volume: 0.4 });
         this.events.emit("gemCollected", ++this.player.gemsCollected);
 
@@ -537,7 +556,7 @@ export class MainScene extends Phaser.Scene {
 
     collectBattery (sprite, tile): boolean
     {
-        this.world.collectGem(tile.x, tile.y);
+        this.world.removeTile(tile.x, tile.y);
         this.sound.play("batterySound");        
 
         return true;
@@ -564,7 +583,7 @@ export class MainScene extends Phaser.Scene {
                 break;
         };
 
-        this.world.collectGem(tile.x, tile.y);
+        this.world.removeTile(tile.x, tile.y);
         this.sound.play("batterySound", { volume: 0.3 });
 
         this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
@@ -574,6 +593,7 @@ export class MainScene extends Phaser.Scene {
 
         this.sceneController.hudScene.setInfoText(weapon.weaponDisplayName + " acquired", 2000);
 
+        this.getSocket().emit("weaponCollectedByPlayer");
         //this.addExpiringText(this, this.player.x, this.player.y, weapon.weaponDisplayName);
 
         return true;
@@ -581,7 +601,7 @@ export class MainScene extends Phaser.Scene {
 
     activateCheckpoint (sprite, tile): boolean
     {
-        this.world.collectGem(tile.x, tile.y);
+        this.world.removeTile(tile.x, tile.y);
         this.sound.play("gemSound");
         this.events.emit("gemCollected", this.player.gemsCollected++);
 

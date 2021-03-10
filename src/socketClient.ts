@@ -47,6 +47,16 @@ export class Client {
             this.debugAllCurrentPlayers();
         });
 
+        // all other players get this
+        this.socket.on('playerMoved', (player: PlayerOnServer) => {
+            console.log('other player moved: ' + player.playerId + '(' + player.x + ',' + player.y + ')');
+            var otherPlayer = this.players.find(item => item.playerId === player.playerId);            
+            if(otherPlayer != null) {
+                otherPlayer.x = player.x;
+                otherPlayer.y = player.y;
+            }
+        });
+
         this.socket.on('playerLeft', (socketId) => {
             console.log('player [' + socketId + '] disconnected')
 

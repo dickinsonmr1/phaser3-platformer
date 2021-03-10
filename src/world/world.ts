@@ -507,6 +507,7 @@ export class World {
     removeTileAt (tileX: number, tileY: number): void
     {
         this.layer03.removeTileAt(tileX, tileY);
+        this.scene.sceneController.socketClient.socket.emit("tileRemoved", {tileX: tileX, tileY: tileY, layer: 3});
     }
 
     toggleForceFields(color: ForceFieldColor, enabled: boolean) {
@@ -567,16 +568,18 @@ export class World {
     }
     */
 
-    collectGem (tileX: number, tileY: number): void
-    {
+    removeTile (tileX: number, tileY: number): void {
         this.layer03.removeTileAt(tileX, tileY);
+        this.scene.sceneController.socketClient.socket.emit("tileRemoved", {tileX: tileX, tileY: tileY, layer: 3});
     }
 
     collectKey(tileX: number, tileY: number): void {
         this.layer03.removeTileAt(tileX, tileY);
+        this.scene.sceneController.socketClient.socket.emit("tileRemoved", {tileX: tileX, tileY: tileY, layer: 3});
     }
 
     unlockDoor(tileX: number, tileY: number): void {
         this.layer02.removeTileAt(tileX, tileY);
+        this.scene.sceneController.socketClient.socket.emit("tileRemoved", {tileX: tileX, tileY: tileY, layer: 2});
     }
 }

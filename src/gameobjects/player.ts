@@ -21,13 +21,6 @@ export class Player extends Phaser.GameObjects.Sprite {
     
     public playerGun: any;//Phaser.Physics.Arcade.Image;
 
-    private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-
-    private moveKeyLeft: Phaser.Input.Keyboard.Key;
-    private moveKeyRight: Phaser.Input.Keyboard.Key;
-    private shootingKey: Phaser.Input.Keyboard.Key;
-    private jumpingKey: Phaser.Input.Keyboard.Key;
-
     private static get playerGunOffsetXFacingLeft(): number {return -5;}
     private static get playerGunOffsetY(): number {return 100;}
     private static get playerGunOffsetXFacingRight(): number {return 70;}  
@@ -116,6 +109,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     public xPrevious: number;
     public yPrevious: number;
+    public isMyPlayer: boolean;
 
     public getScene(): Scene {
         return this.scene;
@@ -127,6 +121,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         super(params.scene, params.x, params.y, params.key, params.frame);
 
         this.playerId = params.playerId;
+        this.isMyPlayer = params.isMyPlayer;
     } 
 
     public init(): void {
@@ -217,15 +212,6 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.yPrevious = this.y;
 
         return;        
-    }
-
-    private initImage(input: Phaser.Input.InputPlugin) {       
-        // input
-        this.cursors = input.keyboard.createCursorKeys();
-        this.moveKeyLeft = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-        this.moveKeyRight = input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-        this.shootingKey = input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);
-        this.jumpingKey = input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
 
     moveX(multiplier: number): void {
@@ -635,11 +621,13 @@ export class Player extends Phaser.GameObjects.Sprite {
         }   
         
         
-        if(this.anythingChanged()) {
+        if(this.isMyPlayer && this.anythingChanged()) {
             var socket = this.getSocket();
             //socket.emit('playerMovement', new PlayerOnServer(50, 50, socket.id));//{ x: player.x, y: player.y });
-            if(socket != null)
+            if(socket != null) {
+                // sends back to server
                 socket.emit('playerMovement', { x: this.x, y: this.y, facingRight: this.flipX});
+            }
         }
         this.xPrevious = this.x;
         this.yPrevious = this.y;

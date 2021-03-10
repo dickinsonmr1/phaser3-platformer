@@ -3,7 +3,7 @@
 // tsc server/server.ts --outDir build/server --esModuleInterop true
 
 // TO SERVE:
-// node build/server/server.js
+// node server/build/server.js 
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
 
@@ -62,11 +62,14 @@ io.on('connection', (socket) => {
     io.emit('playerLeft', socket.id);
   });
 
-  socket.on('playerMovement', function(player: PlayerOnServer) {
-    //var playerToRemove = players.find(item => item.playerId === socket.id);
-    //const filteredPlayers = players.filter((x) => x.playerId !== socket.id);
-      
-    //players = filteredPlayers;
+  socket.on('playerMovement', function(functionData) { //player: PlayerOnServer) {
+    console.log("player moved: " + socket.id);
+    var player = players.find(item => item.playerId === socket.id);
+    player.x = functionData.x;
+    player.y = functionData.y;
+    //const filteredPlayers = players.filter((x) => x.playerId !== socket.id);      
+    //players = filteredPlayers;    
+    socket.broadcast.emit('playerMoved', player);
   });
 
 
@@ -82,7 +85,7 @@ io.on('connection', (socket) => {
   */
 
   socket.onAny((event, ...args) => {
-    console.log(event, args);            
+      console.log(event, args);            
   });
 });
 
