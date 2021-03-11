@@ -389,6 +389,7 @@ export class MainScene extends Phaser.Scene {
             if(otherPlayer != null) {
                 otherPlayer.x = otherPlayersFromSocketClient[i].x;
                 otherPlayer.y = otherPlayersFromSocketClient[i].y;
+                otherPlayer.flipX = otherPlayersFromSocketClient[i].flipX;
             }
         }
     

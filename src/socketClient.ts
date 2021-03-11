@@ -3,6 +3,7 @@ import { io } from "socket.io-client";
 import { Socket } from "socket.io-client";
 import { PlayerOnServer } from "../server/server";
 import { Player } from "./gameobjects/player";
+import { SceneController } from "./scenes/sceneController";
 
 // socket.io
 // https://socket.io/get-started/private-messaging-part-1/#Server-initialization
@@ -15,8 +16,12 @@ export class Client {
     public socket: Socket
     public players: PlayerOnServer[] = [];
     public player: PlayerOnServer;
+    private sceneController: SceneController;
 
-    constructor() {
+    constructor(sceneController: SceneController) {
+
+        this.sceneController = sceneController;
+
         const URL = "http://localhost:3000";
         this.socket = io(URL, { autoConnect: true });
         
@@ -54,7 +59,12 @@ export class Client {
             if(otherPlayer != null) {
                 otherPlayer.x = player.x;
                 otherPlayer.y = player.y;
+                otherPlayer.flipX = player.flipX;
             }
+        });
+
+        this.socket.on('tileRemoved', (data: any) => {
+            this.sceneController.mainScene.world.removeTileFromOtherClient(data.tileX, data.tileY, data.layer);
         });
 
         this.socket.on('playerLeft', (socketId) => {

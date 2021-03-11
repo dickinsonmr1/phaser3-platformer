@@ -24,11 +24,13 @@ export class PlayerOnServer {
   public x: number;  
   public y: number;
   public playerId: string;
+  public flipX: boolean;
   
-  constructor(x: number, y: number, playerId: string) {
+  constructor(x: number, y: number, playerId: string, flipX: boolean) {
     this.x = x;
     this.y = y;
     this.playerId = playerId;
+    this.flipX = flipX;
   }
 }
 var players: PlayerOnServer[] = [];
@@ -39,7 +41,7 @@ io.on('connection', (socket) => {
   
   console.log('player [' + socket.id + '] connected')
              
-  var newPlayer = new PlayerOnServer(30, 30, socket.id);
+  var newPlayer = new PlayerOnServer(30, 30, socket.id, false);
   players.push(newPlayer);
 
   // socket.emit: send the players object to the new player ONLY
@@ -67,9 +69,13 @@ io.on('connection', (socket) => {
     var player = players.find(item => item.playerId === socket.id);
     player.x = functionData.x;
     player.y = functionData.y;
-    //const filteredPlayers = players.filter((x) => x.playerId !== socket.id);      
-    //players = filteredPlayers;    
+    player.flipX = functionData.flipX;
+
     socket.broadcast.emit('playerMoved', player);
+  });
+
+  socket.on('tileRemoval', function(functionData) {
+      socket.broadcast.emit('tileRemoved', {tileX: functionData.tileX, tileY: functionData.tileY, layer: functionData.layer});
   });
 
 

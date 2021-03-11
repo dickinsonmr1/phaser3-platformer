@@ -45,7 +45,7 @@ export class SceneController extends Phaser.Scene {
 
     create() {
         
-        this.socketClient = new Client();
+        this.socketClient = new Client(this);
     
         /*
         var pad;

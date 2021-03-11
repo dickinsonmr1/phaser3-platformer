@@ -507,7 +507,17 @@ export class World {
     removeTileAt (tileX: number, tileY: number): void
     {
         this.layer03.removeTileAt(tileX, tileY);
-        this.scene.sceneController.socketClient.socket.emit("tileRemoved", {tileX: tileX, tileY: tileY, layer: 3});
+        this.scene.sceneController.socketClient.socket.emit("tileRemoval", {tileX: tileX, tileY: tileY, layer: 3});
+    }
+
+    removeTileFromOtherClient (tileX: number, tileY: number, layer: number): void
+    {
+        if(layer == 2)
+            this.layer02.removeTileAt(tileX, tileY);
+        else if(layer == 3)
+            this.layer03.removeTileAt(tileX, tileY);
+
+        console.log('removeTileFromOtherClient');
     }
 
     toggleForceFields(color: ForceFieldColor, enabled: boolean) {
@@ -570,16 +580,16 @@ export class World {
 
     removeTile (tileX: number, tileY: number): void {
         this.layer03.removeTileAt(tileX, tileY);
-        this.scene.sceneController.socketClient.socket.emit("tileRemoved", {tileX: tileX, tileY: tileY, layer: 3});
+        this.scene.sceneController.socketClient.socket.emit("tileRemoval", {tileX: tileX, tileY: tileY, layer: 3});
     }
 
     collectKey(tileX: number, tileY: number): void {
         this.layer03.removeTileAt(tileX, tileY);
-        this.scene.sceneController.socketClient.socket.emit("tileRemoved", {tileX: tileX, tileY: tileY, layer: 3});
+        this.scene.sceneController.socketClient.socket.emit("tileRemoval", {tileX: tileX, tileY: tileY, layer: 3});
     }
 
     unlockDoor(tileX: number, tileY: number): void {
         this.layer02.removeTileAt(tileX, tileY);
-        this.scene.sceneController.socketClient.socket.emit("tileRemoved", {tileX: tileX, tileY: tileY, layer: 2});
+        this.scene.sceneController.socketClient.socket.emit("tileRemoval", {tileX: tileX, tileY: tileY, layer: 2});
     }
 }
