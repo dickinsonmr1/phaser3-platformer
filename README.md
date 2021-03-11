@@ -14,8 +14,8 @@ socket.io reference:
 - https://gamedevacademy.org/create-a-basic-multiplayer-game-in-phaser-3-with-socket-io-part-1/
 - https://gamedevacademy.org/create-a-basic-multiplayer-game-in-phaser-3-with-socket-io-part-2/
 
-To run server:
-node server/index.js
+To compile and run server:
+npm run clientServer
 
 To compile and run client:
-npm run dev
+npm run clientDev
