@@ -11,7 +11,7 @@ import { Menu, MenuLinkItem, StartGameMenuItem, ContinueGameMenuItem, IconValueM
 import { SceneController } from "./sceneController";
 import { GameProgress, SaveGameFile } from "./gameProgress";
 import { Constants } from "../constants";
-import { PlayerOnServer } from "../../server/server";
+import { PlayerOnServer } from "../../server/playerOnServer";
  
 export class TitleScene extends Phaser.Scene {
 

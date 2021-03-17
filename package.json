@@ -15,6 +15,7 @@
     "expose-loader": "0.7.5",
     "npm-run-all": "^4.1.5",
     "ts-loader": "5.3.2",
+    "tsc-watch": "^4.2.9",
     "typescript": "3.2.2",
     "webpack": "4.28.3",
     "webpack-cli": "^3.3.11",
@@ -22,6 +23,7 @@
   },
   "dependencies": {
     "@types/socket.io": "^2.1.13",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "phaser": "^3.23.0",
     "socket.io": "^3.1.2",
@@ -30,7 +32,9 @@
   "scripts": {
     "dev": "webpack --mode development && webpack-dev-server --mode development",
     "clientDev": "webpack --mode development && webpack-dev-server --mode development",
-    "serverDev": "(tsc server/server.ts --outDir server/build --esModuleInterop true) & (node server/build/server.js)",
+    "serverDev": "(tsc -p server/ --outDir server/build --esModuleInterop true) & (node server/build/socketServer.js)",
+    "serverDevWatch": "tsc-watch ./server/socketServer.ts --outDir ./server/build --onSuccess 'node server/build/socketServer.js'",
+    "serverDev2": "(tsc -p server2/ --outDir server2/build --esModuleInterop true) & (node server2/build/index.js)",
     "build": "webpack --mode production && webpack-dev-server --mode production"
   },
   "repository": {

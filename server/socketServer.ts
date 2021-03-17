@@ -6,6 +6,9 @@
 // node server/build/server.js 
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
+import { GameServer } from "./gameServer";
+import { PlayerOnServer } from "./playerOnServer";
+import { WorldOnServer } from "./worldOnServer";
 
 const app = require('express')();
 const http = require('http').Server(app);
@@ -20,20 +23,10 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-export class PlayerOnServer {
-  public x: number;  
-  public y: number;
-  public playerId: string;
-  public flipX: boolean;
-  
-  constructor(x: number, y: number, playerId: string, flipX: boolean) {
-    this.x = x;
-    this.y = y;
-    this.playerId = playerId;
-    this.flipX = flipX;
-  }
-}
 var players: PlayerOnServer[] = [];
+
+const gameServer: GameServer = new GameServer();
+const worldOnServer: WorldOnServer = new WorldOnServer();
 
 io.on('connection', (socket) => {
 
@@ -71,11 +64,14 @@ io.on('connection', (socket) => {
     player.y = functionData.y;
     player.flipX = functionData.flipX;
 
-    socket.broadcast.emit('playerMoved', player);
+    worldOnServer.movePlayer();
+    socket.broadcast.emit('playerMoved', player);    
   });
 
   socket.on('tileRemoval', function(functionData) {
-      socket.broadcast.emit('tileRemoved', {tileX: functionData.tileX, tileY: functionData.tileY, layer: functionData.layer});
+    
+    worldOnServer.removeTile();
+    socket.broadcast.emit('tileRemoved', {tileX: functionData.tileX, tileY: functionData.tileY, layer: functionData.layer});      
   });
 
 
