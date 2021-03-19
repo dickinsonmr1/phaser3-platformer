@@ -68,6 +68,17 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('playerMoved', player);    
   });
 
+  socket.on('newBullet', function(functionData) { //player: PlayerOnServer) {
+    console.log("new bullet from player: " + socket.id);
+    var player = players.find(item => item.playerId === socket.id);
+    player.x = functionData.x;
+    player.y = functionData.y;
+    player.flipX = functionData.flipX;
+
+    worldOnServer.movePlayer();
+    socket.broadcast.emit('playerMoved', player);    
+  });
+
   socket.on('tileRemoval', function(functionData) {
     
     worldOnServer.removeTile();
