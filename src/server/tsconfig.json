@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "module": "CommonJs",
+    "skipLibCheck": true,
+    "types": [],    
+  },
+  "include": [
+    "server2.ts"
+  ],
+  /*"exclude": [
+    "../node_modules",
+    "*.d.ts"
+  ],
+  */
+}

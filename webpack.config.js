@@ -24,9 +24,9 @@ var clientConfig = Object.assign({}, config, {
 
 module.exports = {
   //entry: './src/boilerplate/game.ts',
-  entry: './src/game.ts',
+  entry: './src/client/game.ts',
   output: {
-    path: path.resolve(__dirname, 'build'),
+    path: path.resolve(__dirname, 'dist/client'),
     filename: 'bundle.js',
   },
   module: {

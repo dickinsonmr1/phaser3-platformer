@@ -33,7 +33,8 @@
   "scripts": {
     "dev": "webpack --mode development && webpack-dev-server --mode development",
     "clientDev": "webpack --mode development && webpack-dev-server --mode development",
-    "serverDev": "(tsc -p server/ --outDir server/build --esModuleInterop true) & (node server/build/socketServer.js)",
+    "serverDev": "(tsc -p src/server/ --outDir dist/server --esModuleInterop true) & (node dist/server/server2.js)",
+    
     "serverDevWatch": "tsc-watch ./server/socketServer.ts --outDir ./server/build --onSuccess 'node server/build/socketServer.js'",
     "serverDev2": "(tsc -p server2/ --outDir server2/build --esModuleInterop true) & (node server2/build/index.js)",
     "build": "webpack --mode production && webpack-dev-server --mode production"
