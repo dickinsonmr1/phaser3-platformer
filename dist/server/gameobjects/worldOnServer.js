@@ -12,6 +12,9 @@ class WorldOnServer {
     movePlayer() {
         console.log("WorldOnServer.movePlayer()");
     }
+    playerFiredBullet() {
+        console.log("WorldOnServer.playerFiredBullet()");
+    }
     removeTile() {
         console.log("WorldOnServer.removeTile()");
     }

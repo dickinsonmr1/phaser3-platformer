@@ -24,17 +24,20 @@
   "dependencies": {
     "@types/node": "^14.14.35",
     "@types/socket.io": "^2.1.13",
+    "canvas": "^2.7.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "jsdom": "^16.5.1",
     "phaser": "^3.23.0",
     "socket.io": "^3.1.2",
-    "socket.io-client": "^3.1.2"
+    "socket.io-client": "^3.1.2",
+    "uuid": "^8.3.2"
   },
   "scripts": {
     "dev": "webpack --mode development && webpack-dev-server --mode development",
     "clientDev": "webpack --mode development && webpack-dev-server --mode development",
     "serverDev": "(tsc -p src/server/ --outDir dist/server --esModuleInterop true) & (node dist/server/server2.js)",
-    
+    "serverDevHttpServer": "(tsc -p src/server/ --outDir dist/server --esModuleInterop true) & (http-server src/index.html -p 3000)",
     "serverDevWatch": "tsc-watch ./server/socketServer.ts --outDir ./server/build --onSuccess 'node server/build/socketServer.js'",
     "serverDev2": "(tsc -p server2/ --outDir server2/build --esModuleInterop true) & (node server2/build/index.js)",
     "build": "webpack --mode production && webpack-dev-server --mode production"

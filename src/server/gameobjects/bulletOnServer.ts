@@ -1,3 +1,5 @@
+import {v4 as uuidv4} from 'uuid';
+
 export class BulletOnServer {
     public x: number;  
     public y: number;
@@ -5,8 +7,10 @@ export class BulletOnServer {
     public flipX: boolean;
     public damage: number;
     public velocityX: number;
-    
-    constructor(x: number, y: number, playerId: string, flipX: boolean, damage: number, velocityX: number) {
+    public bulletId: uuidv4;
+
+    constructor(bulletId: uuidv4, x: number, y: number, playerId: string, flipX: boolean, damage: number, velocityX: number) {
+      this.bulletId = bulletId;
       this.x = x;
       this.y = y;
       this.playerId = playerId;

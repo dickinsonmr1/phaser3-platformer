@@ -127,6 +127,12 @@ export class Player extends Phaser.GameObjects.Sprite {
     public init(): void {
         this.setFlipX(false);
 
+        //this.bullets = this.scene.add.group({            
+            //runChildUpdate: true,            
+            //active: true
+        //});
+    
+        //this.bullets.runChildUpdate = true;
         // physics
         this.width = 128;
         this.height = 256;
@@ -337,12 +343,19 @@ export class Player extends Phaser.GameObjects.Sprite {
             if (gameTime > this.bulletTime) {
 
                 if(this.currentWeapon.currentAmmo > 0 ) {
-                    this.createBullet();
+                    var bullet = this.createBullet();
                     this.bulletTime = gameTime + this.bulletTimeInterval;
                     this.currentWeapon.currentAmmo--;
                     sound.play(this.currentWeaponSoundName);
                     this.scene.events.emit("weaponFired", this.currentWeapon.currentAmmo);
-    
+
+                    var socket = this.getSocket();
+                    //socket.emit('playerMovement', new PlayerOnServer(50, 50, socket.id));//{ x: player.x, y: player.y });
+                    if(socket != null) {
+                        // sends back to server
+                        socket.emit('newBullet', bullet);
+                    }
+                    
                     //if(this.ammoCount < 3) 
                         //this.scene.sound.play("lowAmmoSound");            
     
@@ -412,7 +425,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
 
-    private createBullet() : void {
+    private createBullet() : Bullet {
 
         var body = <Phaser.Physics.Arcade.Body>this.body;
 
@@ -435,6 +448,8 @@ export class Player extends Phaser.GameObjects.Sprite {
 
         this.bullets.add(bullet);
 
+        return bullet;
+
         /*
         if (this.flipX) {
             var bullet = this.bullets
@@ -456,7 +471,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         */
     }
 
-    getBullets(): Phaser.GameObjects.Group {
+    getBullets(): Phaser.GameObjects.Group {        
         return this.bullets;
     }
 
@@ -634,5 +649,11 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.yPrevious = this.y;
 
         this.alignPlayerNameText(this.x, this.y);
+
+        //var temp = this.bullets.children.getArray();
+        //temp.forEach(item => {
+            //let bullet = <Bullet>item;      
+            //bullet.update(0, 0);
+        //});
     }
 }

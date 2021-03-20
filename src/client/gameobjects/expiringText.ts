@@ -4,9 +4,9 @@
  * @license      none
  */
 
-  /// <reference path="../../dts/phaser.d.ts"/>
-  import "phaser";
- import { Scene } from "phaser";
+/// <reference path="../../dts/phaser.d.ts"/>
+import "phaser";
+import { Scene } from "phaser";
 import { Constants } from "../constants";
  
  export class ExpiringText extends Phaser.GameObjects.Text {
@@ -37,9 +37,7 @@ import { Constants } from "../constants";
      public init(decayTimeInMs: number): void {
 
         // not used yet
-        this.decayTimeInMs = decayTimeInMs;
-
-       
+        this.decayTimeInMs = decayTimeInMs;       
 
         this.setAlpha(1.0);
         

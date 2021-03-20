@@ -771,6 +771,12 @@ export class MainScene extends Phaser.Scene {
         scene.player.score += damage;
 
         scene.sound.play("enemyHurtSound");
+        
+        var socket = scene.getSocket();        
+        if(socket != null) {
+            // sends back to server
+            socket.emit('bulletDestruction', {bulletId: bullet.bulletId});                
+        }
 
         bullet.destroy();
     }
@@ -779,6 +785,12 @@ export class MainScene extends Phaser.Scene {
 
         var scene = <MainScene>bullet.getScene();
         scene.weaponHitParticleEmitter.explode(2, bullet.x, bullet.y);
+
+        var socket = scene.getSocket();        
+        if(socket != null) {
+            // sends back to server
+            socket.emit('bulletDestruction', {bulletId: bullet.bulletId});                
+        }
 
         bullet.destroy();
     }

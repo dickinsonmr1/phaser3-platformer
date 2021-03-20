@@ -2,8 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const http_1 = require("http");
 const socket_io_1 = require("socket.io");
-const gameServer_1 = require("./gameServer");
+//import { GameServer } from "./gameServer";
 const playerOnServer_1 = require("./gameobjects/playerOnServer");
+const bulletOnServer_1 = require("./gameobjects/bulletOnServer");
 const worldOnServer_1 = require("./gameobjects/worldOnServer");
 const port = 3000;
 // to compile:
@@ -12,7 +13,8 @@ const port = 3000;
 // node server/build/server2.js
 // https://sbcode.net/tssock/server-emit-specific-socket/
 var players = [];
-const gameServer = new gameServer_1.GameServer();
+var bullets = [];
+//const gameServer: GameServer = new GameServer(config);
 const worldOnServer = new worldOnServer_1.WorldOnServer();
 class App {
     //private io: SocketIoServer
@@ -28,7 +30,7 @@ class App {
             },
         });
         io.on('connection', (socket) => {
-            console.log('a user definitely connected : ' + socket.id);
+            console.log('User connected: ' + socket.id);
             var newPlayer = new playerOnServer_1.PlayerOnServer(30, 30, socket.id, false);
             players.push(newPlayer);
             // socket.emit: send the players object to the new player ONLY
@@ -55,12 +57,29 @@ class App {
             });
             socket.on('newBullet', function (functionData) {
                 console.log("new bullet from player: " + socket.id);
+                var bulletOnServer = new bulletOnServer_1.BulletOnServer(functionData.bulletId, functionData.x, functionData.y, socket.id, functionData.flipX, functionData.damage, functionData.velocityX);
+                /*
                 var player = players.find(item => item.playerId === socket.id);
                 player.x = functionData.x;
                 player.y = functionData.y;
                 player.flipX = functionData.flipX;
-                worldOnServer.movePlayer();
-                socket.broadcast.emit('playerMoved', player);
+                */
+                worldOnServer.playerFiredBullet();
+                //socket.broadcast.emit('playerMoved', player);    
+            });
+            socket.on('bulletMovement', function (functionData) {
+                console.log("bullet moved: " + functionData.bulletId);
+                var bullet = bullets.find(item => item.bulletId === functionData.bulletId);
+                if (bullet != null) {
+                    bullet.x = functionData.x;
+                    bullet.y = functionData.y;
+                    bullet.velocityX = functionData.velocityX;
+                }
+            });
+            socket.on('bulletDestruction', function (functionData) {
+                console.log("bulletDestruction: " + functionData.bulletId);
+                const filteredBullets = bullets.filter((x) => x.bulletId !== functionData.bulletId);
+                bullets = filteredBullets;
             });
             socket.on('tileRemoval', function (functionData) {
                 worldOnServer.removeTile();
@@ -78,3 +97,35 @@ class App {
     }
 }
 new App(port).Start();
+// main game configuration
+/*
+var config: Phaser.Types.Core.GameConfig = {
+ //width: 1920,
+ //height: 1080,
+ type: Phaser.HEADLESS,
+ physics: {
+   default: "arcade",
+   arcade: {
+     gravity: { y: 500 },
+   }
+ }
+};
+*/
+//var game = new GameServer(config);
+/*
+const path = require('path');
+const jsdom = require('jsdom');
+const { JSDOM } = jsdom;
+function setupAuthoritativePhaser() {
+  JSDOM.fromFile(path.join(__dirname, 'authoritative_server/index.html'), {
+    // To run the scripts in the html file
+    runScripts: "dangerously",
+    // Also load supported external resources
+    resources: "usable",
+    // So requestAnimatinFrame events fire
+    pretendToBeVisual: true
+  });
+}
+ 
+setupAuthoritativePhaser();
+*/ 
