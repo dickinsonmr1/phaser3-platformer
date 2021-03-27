@@ -25,6 +25,7 @@ import { RocketLauncher, PulseCharge, LaserRepeater, LaserPistol } from "../game
 import { SceneController } from "./sceneController";
 import { Animations } from "./animations";
 import { Socket } from "socket.io-client";
+import { BulletOnServer } from "../../server/gameobjects/bulletOnServer";
 
 export class MainScene extends Phaser.Scene {
   
@@ -43,6 +44,7 @@ export class MainScene extends Phaser.Scene {
     //player2: Player;
     otherPlayers: Array<Player>;
     playerSpaceShip: Spaceship;
+    public otherBullets: Phaser.GameObjects.Group;//<Bullet>;
 
     enemies: Array<Phaser.GameObjects.Sprite>;
     enemiesPhysics: Array<Phaser.GameObjects.Sprite>;
@@ -230,7 +232,12 @@ export class MainScene extends Phaser.Scene {
         this.flags = new Array<Phaser.GameObjects.Sprite>();
         this.portals = new Array<Phaser.GameObjects.Sprite>();
         this.switches = new Array<Phaser.GameObjects.Sprite>();
+
         this.otherPlayers = new Array<Player>();
+        this.otherBullets = this.physics.add.group({
+            allowGravity: false
+        })
+        this.otherBullets.setDepth(Constants.depthBullets);
        
         var mySocketPlayer = this.sceneController.socketClient.getMyPlayer();
         var otherSocketPlayers = this.sceneController.socketClient.getOtherPlayers(mySocketPlayer.playerId);
@@ -405,6 +412,19 @@ export class MainScene extends Phaser.Scene {
         
         for (var i = 0; i < this.otherPlayers.length; i++) 
             this.otherPlayers[i].update();
+
+        /*
+        var otherBulletsFromSocketClient = this.sceneController.socketClient.bullets;
+        for (var i = 0; i < otherBulletsFromSocketClient.length; i++) {
+
+            var otherPlayersBullets = this.otherPlayers.find(item => item.playerId === otherBulletsFromSocketClient[i].playerId);            
+            if(otherPlayer != null) {
+                otherPlayer.x = otherPlayersFromSocketClient[i].x;
+                otherPlayer.y = otherPlayersFromSocketClient[i].y;
+                otherPlayer.flipX = otherPlayersFromSocketClient[i].flipX;
+            }
+        }
+        */
 
         this.enemies.forEach(enemy => { enemy.update(this.player.x, this.player.y); });
         this.springs.forEach(spring => { spring.update(); });
@@ -826,5 +846,23 @@ export class MainScene extends Phaser.Scene {
             if(message.alpha <= 0)
                 message.destroy();
         });
+    }
+
+    addBulletFromServer(bulletFromServer: any): void {
+
+        var tempBullet = new Bullet({
+            scene: this,
+            x: bulletFromServer.x,
+            y: bulletFromServer.y,
+            key: "playerGunLaser2",//bulletFromServer.key,
+            flipX: bulletFromServer.flipX,
+            damage: bulletFromServer.damage,
+            velocityX: bulletFromServer.velocityX
+        });
+        tempBullet.init();
+
+        console.log("bullet from server: (" +tempBullet.x + "," + tempBullet.y + ")");
+
+        this.otherBullets.add(tempBullet);
     }
 }

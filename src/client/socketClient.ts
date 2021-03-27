@@ -2,6 +2,7 @@
 import { io } from "socket.io-client";
 import { Socket } from "socket.io-client";
 import { PlayerOnServer } from "../server/gameobjects/playerOnServer";
+import { BulletOnServer } from "../server/gameobjects/bulletOnServer";
 import { Player } from "./gameobjects/player";
 import { SceneController } from "./scenes/sceneController";
 
@@ -15,6 +16,7 @@ import { SceneController } from "./scenes/sceneController";
 export class Client {
     public socket: Socket
     public players: PlayerOnServer[] = [];
+    public bullets: BulletOnServer[] = [];
     public player: PlayerOnServer;
     private sceneController: SceneController;
 
@@ -25,9 +27,10 @@ export class Client {
         const URL = "http://localhost:3000";
         this.socket = io(URL, { autoConnect: true });
         
+        
         this.socket.onAny((event, ...args) => {
             console.log(event, args);            
-        });        
+        });                
 
         this.socket.on("connect", () => {
             console.log("connected to server");
@@ -61,6 +64,18 @@ export class Client {
                 otherPlayer.y = player.y;
                 otherPlayer.flipX = player.flipX;
             }
+        });
+
+        this.socket.on('newBullet', (bullet: any) => {
+            console.log('newBullet handled')                        
+            this.bullets.push(bullet);
+
+            this.sceneController.mainScene.addBulletFromServer(bullet);
+            //this.debugAllCurrentPlayers();
+        });
+
+        this.socket.on('bulletMoved', (bullet: BulletOnServer) => {
+            //console.log('bullet ' + bullet.bulletId + 'moved from other player ' + bullet.playerId);
         });
 
         this.socket.on('tileRemoved', (data: any) => {

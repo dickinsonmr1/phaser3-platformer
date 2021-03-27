@@ -81,9 +81,10 @@ class App {
             });
           
             socket.on('newBullet', function(functionData) { //player: PlayerOnServer) {
-              console.log("new bullet from player: " + socket.id);
+              //console.log("new bullet from player: " + socket.id);
 
-              var bulletOnServer = new BulletOnServer(functionData.bulletId, functionData.x, functionData.y, socket.id, functionData.flipX, functionData.damage, functionData.velocityX);
+              var bulletOnServer = new BulletOnServer(functionData.bulletId, functionData.x, functionData.y, socket.id, functionData.flipX, functionData.damage, functionData.velocityX, functionData.key);
+              bullets.push(bulletOnServer);
               /*
               var player = players.find(item => item.playerId === socket.id);
               player.x = functionData.x;
@@ -92,11 +93,11 @@ class App {
               */
 
               worldOnServer.playerFiredBullet();
-              //socket.broadcast.emit('playerMoved', player);    
+              socket.broadcast.emit('newBullet', bulletOnServer);    
             });
 
             socket.on('bulletMovement', function(functionData) { //player: PlayerOnServer) {
-              console.log("bullet moved: " + functionData.bulletId);
+              //console.log("bullet moved: " + functionData.bulletId);
                             
               var bullet = bullets.find(item => item.bulletId === functionData.bulletId);
               if(bullet != null) {
@@ -104,11 +105,13 @@ class App {
                 bullet.y = functionData.y
                 bullet.velocityX = functionData.velocityX;
               }
+
+              socket.broadcast.emit('bulletMoved', bullet);   
             });
 
             
             socket.on('bulletDestruction', function(functionData) { //player: PlayerOnServer) {
-              console.log("bulletDestruction: " + functionData.bulletId);
+              //console.log("bulletDestruction: " + functionData.bulletId);
                             
               const filteredBullets = bullets.filter((x) => x.bulletId !== functionData.bulletId);                
               bullets = filteredBullets;

@@ -8,8 +8,9 @@ export class BulletOnServer {
     public damage: number;
     public velocityX: number;
     public bulletId: uuidv4;
+    public key: string;
 
-    constructor(bulletId: uuidv4, x: number, y: number, playerId: string, flipX: boolean, damage: number, velocityX: number) {
+    constructor(bulletId: uuidv4, x: number, y: number, playerId: string, flipX: boolean, damage: number, velocityX: number, key: string) {
       this.bulletId = bulletId;
       this.x = x;
       this.y = y;
@@ -17,5 +18,6 @@ export class BulletOnServer {
       this.flipX = flipX;
       this.damage = damage;
       this.velocityX = velocityX;
+      this.key = key;
     }
 }

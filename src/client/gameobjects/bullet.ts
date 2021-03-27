@@ -48,6 +48,7 @@ export class Bullet extends Phaser.GameObjects.Sprite {
         body.setVelocityX(this.velocityX);
         body.setVelocityY(0);
         
+        /*
         console.log('bulletMovement');
 
         var socket = this.getSocket();        
@@ -55,6 +56,7 @@ export class Bullet extends Phaser.GameObjects.Sprite {
             // sends back to server
             socket.emit('bulletMovement', {bulletId: this.bulletId, x: this.x, y: this.y, velocityX: this.velocityX});                
         }
+        */
     }
     getSocket(): Socket {
         let scene = <MainScene>this.scene;            
