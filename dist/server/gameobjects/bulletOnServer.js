@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.BulletOnServer = void 0;
 class BulletOnServer {
     constructor(bulletId, x, y, playerId, flipX, damage, velocityX, key) {
         this.bulletId = bulletId;

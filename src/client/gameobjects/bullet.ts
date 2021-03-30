@@ -27,9 +27,7 @@ export class Bullet extends Phaser.GameObjects.Sprite {
         this.scene.physics.world.enable(this);
        
         this.setAlpha(1.0);
-        this.setDepth(Constants.depthBullets);
-
-        console.log('bulletCreated');
+        this.setDepth(1);//Constants.depthBullets);
     }
 
     public getScene(): Scene {

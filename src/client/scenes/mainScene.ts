@@ -237,7 +237,7 @@ export class MainScene extends Phaser.Scene {
         this.otherBullets = this.physics.add.group({
             allowGravity: false
         })
-        this.otherBullets.setDepth(Constants.depthBullets);
+        this.otherBullets.setDepth(1);//Constants.depthBullets);
        
         var mySocketPlayer = this.sceneController.socketClient.getMyPlayer();
         var otherSocketPlayers = this.sceneController.socketClient.getOtherPlayers(mySocketPlayer.playerId);
@@ -861,7 +861,7 @@ export class MainScene extends Phaser.Scene {
         });
         tempBullet.init();
 
-        console.log("bullet from server: (" +tempBullet.x + "," + tempBullet.y + ")");
+        console.log(`bullet from server: (${tempBullet.x},${tempBullet.y}) alpha:${tempBullet.alpha} depth:${tempBullet.depth} scale:${tempBullet.scale} width:${tempBullet.width} height:${tempBullet.height}`);
 
         this.otherBullets.add(tempBullet);
     }

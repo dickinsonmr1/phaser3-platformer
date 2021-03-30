@@ -31,13 +31,13 @@ module.exports = {
   },
   module: {
     rules: [
-      { test: /\.ts$/, loader: 'ts-loader', exclude: ['/node_modules/'] },
+      { test: /\.ts$/, loader: 'ts-loader', exclude: /node_modules/ },
       { test: /phaser\.js$/, loader: 'expose-loader?Phaser' }
     ]
   },
   devServer: {
     contentBase: path.resolve(__dirname, './'),
-    publicPath: '/build/',
+    publicPath: '/dist/',
     host: '127.0.0.1',
     port: 8080,
     open: true

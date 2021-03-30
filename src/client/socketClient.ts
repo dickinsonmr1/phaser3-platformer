@@ -12,6 +12,7 @@ import { SceneController } from "./scenes/sceneController";
 // https://stackoverflow.com/questions/32674391/io-emit-vs-socket-emit
 // https://www.stackbuilders.com/news/strongly-typed-realtime-programming-with-typescript
 // https://sbcode.net/tssock/client-emit/
+// https://github.com/socketio/socket.io/tree/master/examples/typescript
 
 export class Client {
     public socket: Socket

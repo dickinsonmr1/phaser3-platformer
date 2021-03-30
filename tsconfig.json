@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
-    "module": "CommonJs"
+    "target": "es5",
+    "module": "es6",
+    "moduleResolution": "node"
   },
   "include": [
     "src"
   ],
   "exclude": [
-    "node_modules",
-    "src/server"
+    "node_modules"
   ]
 }
