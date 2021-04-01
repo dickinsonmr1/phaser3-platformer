@@ -6,7 +6,8 @@ import { PlayerOnServer } from "./gameobjects/playerOnServer";
 import { BulletOnServer } from "./gameobjects/bulletOnServer";
 import { WorldOnServer } from "./gameobjects/worldOnServer";
 
-const port: number = 3000
+
+ const port: number = 3000
 
 // to compile:
 // tsc server/server2.ts --outDir server/build/ --esModuleInterop true
@@ -137,6 +138,46 @@ class App {
 }
 
 new App(port).Start()
+
+/*
+// main game configuration
+var config: Phaser.Types.Core.GameConfig = {
+  width: 1920,
+  height: 1080,
+  type: Phaser.AUTO,
+  parent: "game",  
+  input: { keyboard: true, gamepad: true},
+  audio: {
+    //noAudio: true
+  },
+  physics: {
+    default: "arcade",
+    arcade: {
+      gravity: { y: 500 },
+      debug: true,
+      debugShowBody: true,
+      debugShowStaticBody: true,
+      debugShowVelocity: true,
+      debugVelocityColor: 0xffff00,
+      debugBodyColor: 0x0000ff,
+      debugStaticBodyColor: 0xffffff
+    }
+  }
+};
+
+// game class
+export class GameServer extends Phaser.Game {
+  constructor(config: Phaser.Types.Core.GameConfig) {
+    super(config);
+  }
+}
+
+// when the page is loaded, create our game instance
+window.addEventListener("load", () => {
+  var game = new GameServer(config);
+});
+
+*/
 
  // main game configuration
  /*

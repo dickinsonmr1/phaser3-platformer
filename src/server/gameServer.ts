@@ -11,10 +11,34 @@
 
  /// <reference path="../dts/phaser.d.ts"/>
 
- /*
+
  import "phaser";
  
+ var config: Phaser.Types.Core.GameConfig = {
+    width: 1920,
+    height: 1080,
+    type: Phaser.AUTO,
+    parent: "game",  
+    input: { keyboard: true, gamepad: true},
+    audio: {
+      //noAudio: true
+    },
+    physics: {
+      default: "arcade",
+      arcade: {
+        gravity: { y: 500 },
+        debug: true,
+        debugShowBody: true,
+        debugShowStaticBody: true,
+        debugShowVelocity: true,
+        debugVelocityColor: 0xffff00,
+        debugBodyColor: 0x0000ff,
+        debugStaticBodyColor: 0xffffff
+      }
+    }
+  };
 
+  
  // game class
  export class GameServer extends Phaser.Game {
     constructor(config: Phaser.Types.Core.GameConfig) {
@@ -37,4 +61,3 @@
         console.log("GameServer.movePlayer()");
     }
 }
-*/

@@ -67,7 +67,7 @@ export class Client {
             }
         });
 
-        this.socket.on('newBullet', (bullet: any) => {
+        this.socket.on('newBullet', (bullet: BulletOnServer) => {
             console.log('newBullet handled')                        
             this.bullets.push(bullet);
 

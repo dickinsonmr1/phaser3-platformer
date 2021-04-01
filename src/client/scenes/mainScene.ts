@@ -28,7 +28,7 @@ import { Socket } from "socket.io-client";
 import { BulletOnServer } from "../../server/gameobjects/bulletOnServer";
 
 export class MainScene extends Phaser.Scene {
-  
+    
     sceneController: SceneController;
     public skySprite: Phaser.GameObjects.TileSprite;
 
