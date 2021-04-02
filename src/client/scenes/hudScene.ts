@@ -7,7 +7,7 @@
  /// <reference path="../../dts/phaser.d.ts"/>
 
  import "phaser";
- import { Player } from "../gameobjects/player";
+ import { Player } from "../../gameobjects/player";
  import { Constants } from "../constants";
  import { HealthBar } from "./healthBar";
  import { SceneController } from "./sceneController";

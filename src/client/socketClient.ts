@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 import { Socket } from "socket.io-client";
 import { PlayerOnServer } from "../server/gameobjects/playerOnServer";
 import { BulletOnServer } from "../server/gameobjects/bulletOnServer";
-import { Player } from "./gameobjects/player";
+import { Player } from "../gameobjects/player";
 import { SceneController } from "./scenes/sceneController";
 
 // socket.io

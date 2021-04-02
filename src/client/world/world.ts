@@ -4,13 +4,13 @@
 import { Constants, ForceFieldColor } from "../constants";
 import "phaser";
 import { MainScene } from "../scenes/mainScene";
-import { Player } from "../gameobjects/player";
-import { Enemy } from "../gameobjects/enemy";
-import { Spring } from "../gameobjects/spring";
-import { Portal } from "../gameobjects/portal";
-import { Checkpoint } from "../gameobjects/checkpoint";
-import { Switch } from "../gameobjects/switch";
-import { Spaceship } from "../gameobjects/spaceship";
+import { Player } from "../../gameobjects/player";
+import { Enemy } from "../../gameobjects/enemy";
+import { Spring } from "../../gameobjects/spring";
+import { Portal } from "../../gameobjects/portal";
+import { Checkpoint } from "../../gameobjects/checkpoint";
+import { Switch } from "../../gameobjects/switch";
+import { Spaceship } from "../../gameobjects/spaceship";
 
 export class World {
     map: Phaser.Tilemaps.Tilemap;

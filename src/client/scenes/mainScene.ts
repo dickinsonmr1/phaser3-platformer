@@ -7,25 +7,26 @@
  /// <reference path="../../dts/phaser.d.ts"/>
 
 import "phaser";
-import { Player } from "../gameobjects/player";
-import { WeaponType } from "../gameObjects/weapon";
-import { Weapon } from "../gameObjects/weapon";
+import { Player } from "../../gameobjects/player";
+import { WeaponType } from "../../gameobjects/weapon";
+import { Weapon } from "../../gameobjects/weapon";
 import { HudScene } from "./hudScene";
-import { Enemy } from "../gameobjects/enemy";
-import { Spring } from "../gameobjects/spring";
-import { Portal } from "../gameobjects/portal";
-import { Checkpoint } from "../gameobjects/checkpoint";
+import { Enemy } from "../../gameobjects/enemy";
+import { Spring } from "../../gameobjects/spring";
+import { Portal } from "../../gameobjects/portal";
+import { Checkpoint } from "../../gameobjects/checkpoint";
 import { Constants } from "../constants";
-import { Bullet } from "../gameobjects/bullet";
+import { Bullet } from "../../gameobjects/bullet";
 import { World } from "../world/world";
-import { ExpiringText } from "../gameobjects/expiringText";
-import { Switch } from "../gameobjects/switch";
-import { Spaceship } from "../gameobjects/spaceship";
-import { RocketLauncher, PulseCharge, LaserRepeater, LaserPistol } from "../gameobjects/weapon";
+import { ExpiringText } from "../../gameobjects/expiringText";
+import { Switch } from "../../gameobjects/switch";
+import { Spaceship } from "../../gameobjects/spaceship";
+import { RocketLauncher, PulseCharge, LaserRepeater, LaserPistol } from "../../gameobjects/weapon";
 import { SceneController } from "./sceneController";
 import { Animations } from "./animations";
 import { Socket } from "socket.io-client";
 import { BulletOnServer } from "../../server/gameobjects/bulletOnServer";
+import { PlayerInterface } from "../../gameobjects/playerInterface";
 
 export class MainScene extends Phaser.Scene {
     
@@ -41,6 +42,7 @@ export class MainScene extends Phaser.Scene {
     
     // player stuff
     player: Player;
+    playerInterface: PlayerInterface;
     //player2: Player;
     otherPlayers: Array<Player>;
     playerSpaceShip: Spaceship;
@@ -251,6 +253,7 @@ export class MainScene extends Phaser.Scene {
             isMyPlayer: true
             });        
         this.player.init();
+        this.playerInterface = new PlayerInterface({player: this.player, socket: this.getSocket()});
 
         var offsetX = 0;
         for (var i = 0; i < otherSocketPlayers.length; i++) {
@@ -307,8 +310,8 @@ export class MainScene extends Phaser.Scene {
         this.interactKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
 
         this.debugKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F2);
-
-        this.addGamepadListeners();
+        
+        this.playerInterface.addGamepadListeners(this);
     }
 
     fadeInCamera() {
@@ -323,62 +326,6 @@ export class MainScene extends Phaser.Scene {
         let transitionTime = 1000;
         this.cameras.main.fadeOut(transitionTime, 255, 255, 255);
         this.cameras.main.zoomTo(5, transitionTime);
-    }
-
-    addGamepadListeners() {
-
-        if (this.input.gamepad.total === 0)
-        {
-            this.input.gamepad.once('connected', pad => {
-        
-            //if(this.input.gamepad.pad1 != null) {
-                //this.gamepad = this.input.gamepad.pad1;
-
-                this.gamepad = pad;
-                pad.on('down', (index, value, button) => {
-
-                    switch(index) {
-                        case Constants.gamepadIndexJump:
-                            console.log('A');
-                            //this.selectMenuOption();
-                            this.player.tryJump(this.sound);
-                            break;
-                        case Constants.gamepadIndexInteract:
-                            console.log('X');
-                            if(!this.player.isInSpaceship) {
-                                this.player.tryInteract();
-                            }
-                            else {
-                            //if(this.jumpKey.isDown || this.shootKey2.isDown || Phaser.Input.Keyboard.JustDown(this.interactKey)) {
-                                this.player.tryExitSpaceship(this.playerSpaceShip);
-                            }   
-                            break;
-                        case Constants.gamepadIndexPause:
-                            this.sceneController.pauseGame();
-                            break;
-                        case Constants.gamepadIndexUp:
-                            console.log('Up');
-                            this.player.tryJump(this.sound);
-                            break;
-                        case Constants.gamepadIndexDown:
-                            console.log('Down');
-                            this.player.duck();
-                            break;
-                        case Constants.gamepadIndexLeft:
-                            console.log('Left');
-                            this.player.moveX(-1);
-                            break;
-                        case Constants.gamepadIndexRight:
-                            console.log('Right');
-                            this.player.moveX(1);
-                            break;                    
-                        //case Constants.gamepadIndexShoot:
-                            //console.log('B');
-                            //this.player.tryFireBullet(this.sys.game.loop.time, this.sound);
-                    }
-                });
-            });
-        }     
     }
 
     update(): void {
@@ -440,39 +387,7 @@ export class MainScene extends Phaser.Scene {
     }
 
     processInput(): void {
-        const pad = this.gamepad;
-        const threshold = 0.25;
-        if (pad != null && pad.axes.length)
-        {
-            var leftAxisX = pad.axes[0].getValue();
-            var leftAxisY = pad.axes[1].getValue();
-
-            if(!this.player.isInSpaceship) {
-                if(leftAxisX != 0)
-                    this.player.moveX(leftAxisX);
-                else if (leftAxisY > 0) {
-                    this.player.duck();
-                }        
-                else {
-                    this.player.stand();
-                }
-            }
-            else {
-
-                if(leftAxisX != 0 || leftAxisY != 0) {
-                    this.player.tryMoveSpaceship(leftAxisX, leftAxisY);                    
-                }
-                else {
-                    this.player.tryStopSpaceShipX();
-                    this.player.tryStopSpaceShipY();
-                }                    
-            }
-
-            if(pad.B || pad.R2) {
-                this.player.tryFireBullet(this.sys.game.loop.time, this.sound);
-            }
-        }
-
+        
         if(Phaser.Input.Keyboard.JustDown(this.pauseKey)) {
             this.input.keyboard.resetKeys();
 
@@ -490,64 +405,7 @@ export class MainScene extends Phaser.Scene {
             // debug stuff here    
         }
 
-        if (pad == null) {
-
-            // keyboard
-            if(!this.player.isInSpaceship) {
-
-                if(Phaser.Input.Keyboard.JustDown(this.interactKey)) {
-                    this.player.tryInteract();
-                }
-
-                if (this.cursors.left.isDown) {
-                    this.player.moveX(-1);
-                }
-                else if (this.cursors.right.isDown) {
-                    this.player.moveX(1);
-                }
-                else if (this.cursors.down.isDown) {
-                    this.player.duck();
-                }        
-                else {
-                    this.player.stand();
-                }
-                    
-                if ((this.jumpKey.isDown || this.cursors.up.isDown))
-                {
-                    this.player.tryJump(this.sound);
-                }     
-            }
-            else {
-                if (this.cursors.left.isDown) {
-                    this.player.tryMoveSpaceship(-1, 0);
-                }
-                else if (this.cursors.right.isDown) {
-                    this.player.tryMoveSpaceship(1, 0);
-                }
-                else {
-                    this.player.tryStopSpaceShipX();
-                }
-
-                if (this.cursors.down.isDown) {
-                    this.player.tryMoveDown();
-                }        
-                else if (this.cursors.up.isDown)
-                {
-                    this.player.tryMoveUp();
-                }     
-                else {
-                    this.player.tryStopSpaceShipY();
-                }           
-                
-                if(this.jumpKey.isDown || this.shootKey2.isDown || Phaser.Input.Keyboard.JustDown(this.interactKey)) {
-                    this.player.tryExitSpaceship(this.playerSpaceShip);
-                }    
-            }
-
-            if(this.shootKey.isDown) {
-                this.player.tryFireBullet(this.sys.game.loop.time, this.sound);
-            }
-        }
+        this.playerInterface.processInput(this);
     }
 
     collectGem (sprite, tile): boolean
