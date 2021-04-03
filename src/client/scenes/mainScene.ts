@@ -8,9 +8,7 @@
 
 import "phaser";
 import { Player } from "../../gameobjects/player";
-import { WeaponType } from "../../gameobjects/weapon";
 import { Weapon } from "../../gameobjects/weapon";
-import { HudScene } from "./hudScene";
 import { Enemy } from "../../gameobjects/enemy";
 import { Spring } from "../../gameobjects/spring";
 import { Portal } from "../../gameobjects/portal";
@@ -25,7 +23,6 @@ import { RocketLauncher, PulseCharge, LaserRepeater, LaserPistol } from "../../g
 import { SceneController } from "./sceneController";
 import { Animations } from "./animations";
 import { Socket } from "socket.io-client";
-import { BulletOnServer } from "../../server/gameobjects/bulletOnServer";
 import { PlayerInterface } from "../../gameobjects/playerInterface";
 
 export class MainScene extends Phaser.Scene {
@@ -36,21 +33,16 @@ export class MainScene extends Phaser.Scene {
     world: World;    
     particleEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
     weaponHitParticleEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
-
-    // player selection
-    selectedPlayerIndex = 0;
-    
-    // player stuff
+   
     player: Player;
     playerInterface: PlayerInterface;
-    //player2: Player;
+
     otherPlayers: Array<Player>;
-    playerSpaceShip: Spaceship;
+    spaceShips: Array<Spaceship>;
+
     public otherBullets: Phaser.GameObjects.Group;//<Bullet>;
 
     enemies: Array<Phaser.GameObjects.Sprite>;
-    enemiesPhysics: Array<Phaser.GameObjects.Sprite>;
-    enemiesNonGravity: Array<Phaser.GameObjects.Sprite>;
 
     springs: Array<Phaser.GameObjects.Sprite>;
     flags: Array<Phaser.GameObjects.Sprite>;
@@ -68,9 +60,6 @@ export class MainScene extends Phaser.Scene {
     interactKey: Phaser.Input.Keyboard.Key;
     debugKey: Phaser.Input.Keyboard.Key;
 
-    //gamepadUp: Phaser.Input.Gamepad.Button;
-    //gamepadDown: Phaser.Input.Gamepad.Button;
-    //gamepadSelect: Phaser.Input.Gamepad.Button;
     gamepad: Phaser.Input.Gamepad.Gamepad;
 
     worldName: string;
@@ -211,19 +200,12 @@ export class MainScene extends Phaser.Scene {
         this.load.image('compiledTiles', './assets/tilemaps/tiles/compiled_64x64.png');
     }
 
-    private createAnims(anims) {
-        
-       
-    }
-
     create(): void {    
 
         Animations.createAnims(this.anims);
         this.loadParticles();
                 
         this.enemies = new Array<Phaser.GameObjects.Sprite>();
-        this.enemiesPhysics = Array<Phaser.GameObjects.Sprite>();
-        this.enemiesNonGravity = Array<Phaser.GameObjects.Sprite>();
 
         this.expiringMessagesGroup = this.physics.add.group({
             allowGravity: false,
@@ -239,7 +221,7 @@ export class MainScene extends Phaser.Scene {
         this.otherBullets = this.physics.add.group({
             allowGravity: false
         })
-        this.otherBullets.setDepth(1);//Constants.depthBullets);
+        this.otherBullets.setDepth(Constants.depthBullets);
        
         var mySocketPlayer = this.sceneController.socketClient.getMyPlayer();
         var otherSocketPlayers = this.sceneController.socketClient.getOtherPlayers(mySocketPlayer.playerId);
@@ -272,17 +254,9 @@ export class MainScene extends Phaser.Scene {
             this.otherPlayers.push(tempPlayer);            
         }
         
-
         //var color = '#CFEFFC';
         this.world = new World(this);
-        this.world.createWorld(this.worldName, this.player, this.otherPlayers);
-        
-        this.skySprite = this.add.tileSprite(0, 0, 20480, 1024, this.world.skyName);            
-        //var underSkySprite = this.add.tileSprite(0, 1024, 20480, 1024, this.world.skyName);            
-        //underSkySprite.setCrop(0, 924, 20480, 100);
-        this.world.sky = this.skySprite;
-        this.world.sky.setScale(1);
-        this.world.sky.setDepth(Constants.depthSky);
+        this.world.createWorld(this.worldName, this.player, this.otherPlayers, this.enemies);
 
         this.setUpInput();
      
@@ -390,16 +364,14 @@ export class MainScene extends Phaser.Scene {
         
         if(Phaser.Input.Keyboard.JustDown(this.pauseKey)) {
             this.input.keyboard.resetKeys();
-
             this.sceneController.pauseGame();
         }
              
-        if(this.zoomInKey.isDown) {
+        if(this.zoomInKey.isDown)
             this.cameras.main.zoom -= 0.01;
-        }
-        if(this.zoomOutKey.isDown) {
-            this.cameras.main.zoom += 0.01;
-        }
+        
+        if(this.zoomOutKey.isDown)
+            this.cameras.main.zoom += 0.01;        
 
         if(this.moveWaterKey.isDown) {
             // debug stuff here    
@@ -408,9 +380,8 @@ export class MainScene extends Phaser.Scene {
         this.playerInterface.processInput(this);
     }
 
-    collectGem (sprite, tile): boolean
-    {
-        this.world.removeTile(tile.x, tile.y);
+    collectGem (sprite, tile): boolean {
+        this.world.removeTileAndNotifyServer(tile.x, tile.y);
         this.sound.play("gemSound", { volume: 0.4 });
         this.events.emit("gemCollected", ++this.player.gemsCollected);
 
@@ -421,10 +392,9 @@ export class MainScene extends Phaser.Scene {
         return true;
     }
 
-    
     collectHealth (sprite, tile): boolean
     {
-        this.world.removeTileAt(tile.x, tile.y);
+        this.world.removeTileAndNotifyServer(tile.x, tile.y);
         this.player.tryHeal();
 
         this.sound.play("healthSound");
@@ -435,7 +405,7 @@ export class MainScene extends Phaser.Scene {
 
     collectBattery (sprite, tile): boolean
     {
-        this.world.removeTile(tile.x, tile.y);
+        this.world.removeTileAndNotifyServer(tile.x, tile.y);
         this.sound.play("batterySound");        
 
         return true;
@@ -462,7 +432,7 @@ export class MainScene extends Phaser.Scene {
                 break;
         };
 
-        this.world.removeTile(tile.x, tile.y);
+        this.world.removeTileAndNotifyServer(tile.x, tile.y);
         this.sound.play("batterySound", { volume: 0.3 });
 
         this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
@@ -478,17 +448,15 @@ export class MainScene extends Phaser.Scene {
         return true;
     }
 
-    activateCheckpoint (sprite, tile): boolean
-    {
-        this.world.removeTile(tile.x, tile.y);
+    activateCheckpoint (sprite, tile): boolean {
+        this.world.removeTileAndNotifyServer(tile.x, tile.y);
         this.sound.play("gemSound");
         this.events.emit("gemCollected", this.player.gemsCollected++);
 
         return true;
     }
 
-    activateDoorIcon (sprite, tile): boolean
-    {
+    activateDoorIcon (sprite, tile): boolean {
         //this.world.collectGem(tile.x, tile.y);
         this.sound.play("gemSound");
         //this.events.emit("gemCollected", this.player.gemsCollected++);
@@ -496,15 +464,13 @@ export class MainScene extends Phaser.Scene {
         return true;
     }
 
-    inWater (player: Player, tile): boolean
-    {
+    inWater (player: Player, tile): boolean {
         player.isInWater = true;
 
         return true;
     }
 
-    collectKey (sprite, tile): boolean
-    {
+    collectKey (sprite, tile): boolean {
         this.player.hasBlueKey = true;
         this.world.collectKey(tile.x, tile.y);
         this.sound.play("keySound");
@@ -512,8 +478,7 @@ export class MainScene extends Phaser.Scene {
         return true;
     }
      
-    unlockDoor (player: Player, tile): boolean
-    {
+    unlockDoor (player: Player, tile): boolean {
         if(player.hasBlueKey) {
             this.world.unlockDoor(tile.x, tile.y);
             this.sound.play("keySound");
@@ -536,11 +501,9 @@ export class MainScene extends Phaser.Scene {
 
         player.setAvailableInteraction(portal);
         player.displayInteractTextAndImage(portal.x, portal.y);
-
     }
 
-    playerTouchingSwitchHandler(player: Player, switchItem: Switch): void {        
-                
+    playerTouchingSwitchHandler(player: Player, switchItem: Switch): void {                
         player.setAvailableInteraction(switchItem);
         player.displayInteractTextAndImage(switchItem.x, switchItem.y);
     }
@@ -563,7 +526,6 @@ export class MainScene extends Phaser.Scene {
             
             spaceship.tryDamage(10);
         }
-
     }
 
     spaceshipLaserBeamTouchingEnemyHandler(enemy: Enemy, laserBeam: Phaser.GameObjects.Sprite): void {
@@ -637,8 +599,7 @@ export class MainScene extends Phaser.Scene {
         }            
     }
 
-    bulletTouchingEnemyHandler(enemy: Enemy, bullet: Bullet): void {
-                
+    bulletTouchingEnemyHandler(enemy: Enemy, bullet: Bullet): void {                
         var scene = <MainScene>enemy.getScene();
         scene.weaponHitParticleEmitter.explode(10, enemy.x, enemy.y);
               
@@ -660,7 +621,6 @@ export class MainScene extends Phaser.Scene {
     }
 
     bulletTouchingImpassableLayerHandler(bullet: Bullet, layer): void {        
-
         var scene = <MainScene>bullet.getScene();
         scene.weaponHitParticleEmitter.explode(2, bullet.x, bullet.y);
 
@@ -677,8 +637,7 @@ export class MainScene extends Phaser.Scene {
         return now > time;
     }
 
-    private addExpiringText(scene: MainScene, x: number, y: number, text: string, ) {
-                
+    private addExpiringText(scene: MainScene, x: number, y: number, text: string, ) {                
         var expiringText = new ExpiringText({
             scene: scene,
             x: x,
@@ -707,7 +666,6 @@ export class MainScene extends Phaser.Scene {
     }
 
     addBulletFromServer(bulletFromServer: any): void {
-
         var tempBullet = new Bullet({
             scene: this,
             x: bulletFromServer.x,

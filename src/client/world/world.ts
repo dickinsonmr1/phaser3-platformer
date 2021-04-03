@@ -42,7 +42,7 @@ export class World {
         return Math.floor(Math.random() * Math.floor(max));
     }
 
-    createWorld(worldName: string, player: Player, otherPlayers: Array<Player>): void {
+    createWorld(worldName: string, player: Player, otherPlayers: Array<Player>, enemies: Array<Phaser.GameObjects.Sprite>): void {
         // using the Tiled map editor, here is the order of the layers from back to front:
         
         // layer00-image (not currently used)
@@ -62,7 +62,9 @@ export class World {
 
         this.backgroundColor = this.map.properties[0].value;
         this.skyName = this.map.properties[1].value;
-        //console.log(this.map.properties[0].value);
+        this.sky = this.scene.add.tileSprite(0, 0, 20480, 1024, this.skyName);  
+        this.sky.setScale(1);
+        this.sky.setDepth(Constants.depthSky);          
 
         var tileSets = [compiledTileSet, completeTileSet];
         
@@ -143,7 +145,7 @@ export class World {
                     key: "spaceshipBlue"
                     });        
                     spaceship.init("spaceshipBlue", "spaceshipBlue_manned");
-                this.scene.playerSpaceShip = spaceship;
+                this.scene.spaceShips.push(spaceship);
 
                 this.layer03.removeTileAt(tile.x, tile.y);
             }
@@ -444,17 +446,21 @@ export class World {
         this.scene.physics.add.overlap(player, this.scene.flags, this.scene.playerTouchingCheckpointHandler);
         this.scene.physics.add.overlap(player, this.scene.portals, this.scene.playerTouchingPortalHandler);
         this.scene.physics.add.overlap(player, this.scene.switches, this.scene.playerTouchingSwitchHandler);
-        this.scene.physics.add.overlap(player, this.scene.playerSpaceShip, this.scene.playerTouchingSpaceshipHandler);
+        this.scene.physics.add.overlap(player, this.scene.spaceShips, this.scene.playerTouchingSpaceshipHandler);
         this.scene.physics.add.overlap(this.scene.enemies, this.scene.springs, this.scene.enemyTouchingSpringHandler);
         this.scene.physics.add.collider(this.scene.enemies, this.layer02);
         this.scene.physics.add.collider(this.scene.enemies, this.scene.enemies, this.scene.enemyTouchingEnemyHandler);        
         
-        if(this.scene.playerSpaceShip != null) {
-            this.scene.physics.add.collider(this.scene.playerSpaceShip, this.layer02);
-            this.scene.physics.add.collider(this.scene.enemies, this.scene.playerSpaceShip, this.scene.spaceshipTouchingEnemyHandler);
-            this.scene.physics.add.overlap(this.scene.enemies, this.scene.playerSpaceShip.laserBeam, this.scene.spaceshipLaserBeamTouchingEnemyHandler);
-        }
-            
+        if(this.scene.spaceShips != null) {
+            this.scene.physics.add.collider(this.scene.spaceShips, this.layer02);
+            this.scene.physics.add.collider(this.scene.enemies, this.scene.spaceShips, this.scene.spaceshipTouchingEnemyHandler);
+
+            var spaceShipLaserBeams = new Array<Phaser.GameObjects.Sprite>();
+            for(var i = 0; i < this.scene.spaceShips.length; i++) {
+                spaceShipLaserBeams.push(this.scene.spaceShips[i].laserBeam);
+            }
+            this.scene.physics.add.overlap(this.scene.enemies, spaceShipLaserBeams, this.scene.spaceshipLaserBeamTouchingEnemyHandler);
+        }            
 
         this.layer01.setDepth(Constants.depthLayer01);
         this.layer02.setDepth(Constants.depthLayer02);
@@ -473,7 +479,8 @@ export class World {
         for (var i = 0; i < otherPlayers.length; i++) 
             otherPlayers[i].playerGun.setDepth(Constants.depthPlayer);
 
-        this.scene.playerSpaceShip.setDepth(Constants.depthPlayer);
+        for (var i = 0; i < this.scene.spaceShips.length; i++) 
+            this.scene.spaceShips[i].setDepth(Constants.depthPlayer);
                         
         this.layer03.setDepth(Constants.depthLayer03);
         this.layer04.setDepth(Constants.depthLayer04);
@@ -490,28 +497,13 @@ export class World {
         this.scene.physics.add.collider(player.bullets, this.layer02, this.scene.bulletTouchingImpassableLayerHandler);                        
     }
 
-    private addColliderWithDynamicLayer(player: Player, layer: Phaser.Tilemaps.DynamicTilemapLayer) {
-        this.scene.physics.add.collider(player, layer);
-    }
-
-    private addColliderWithStaticLayer(player: Player, layer: Phaser.Tilemaps.StaticTilemapLayer) {
-        this.scene.physics.add.collider(player, layer);
-    }
-
     updateSky(camera: Phaser.Cameras.Scene2D.Camera): void {
         this.sky.setX(camera.x);
         this.sky.setY(camera.y + World.skyOffsetY);
         this.sky.setTilePosition(-(camera.scrollX * 0.25), -(camera.scrollY * 0.00));
     }
 
-    removeTileAt (tileX: number, tileY: number): void
-    {
-        this.layer03.removeTileAt(tileX, tileY);
-        this.scene.sceneController.socketClient.socket.emit("tileRemoval", {tileX: tileX, tileY: tileY, layer: 3});
-    }
-
-    removeTileFromOtherClient (tileX: number, tileY: number, layer: number): void
-    {
+    removeTileFromOtherClient (tileX: number, tileY: number, layer: number): void {
         if(layer == 2)
             this.layer02.removeTileAt(tileX, tileY);
         else if(layer == 3)
@@ -578,7 +570,7 @@ export class World {
     }
     */
 
-    removeTile (tileX: number, tileY: number): void {
+    removeTileAndNotifyServer (tileX: number, tileY: number): void {
         this.layer03.removeTileAt(tileX, tileY);
         this.scene.sceneController.socketClient.socket.emit("tileRemoval", {tileX: tileX, tileY: tileY, layer: 3});
     }

@@ -402,7 +402,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         }        
     }
 
-    tryExitSpaceship(spaceship: Spaceship) {
+    tryExitSpaceship() {
 
         if(this.currentSpaceship != null) {
             

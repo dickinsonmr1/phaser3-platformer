@@ -36,7 +36,7 @@ export class PlayerInterface {
             this.player.tryInteract();
         }
         else {
-            this.player.tryExitSpaceship(this.player.currentSpaceship);
+            this.player.tryExitSpaceship();
         }   
     }
 
@@ -176,7 +176,7 @@ export class PlayerInterface {
                 }           
                 
                 if(scene.jumpKey.isDown || scene.shootKey2.isDown || Phaser.Input.Keyboard.JustDown(scene.interactKey)) {
-                    this.player.tryExitSpaceship(scene.playerSpaceShip);
+                    this.player.tryExitSpaceship();
                 }    
             }
 
