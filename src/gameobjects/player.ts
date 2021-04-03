@@ -642,7 +642,7 @@ export class Player extends Phaser.GameObjects.Sprite {
             //socket.emit('playerMovement', new PlayerOnServer(50, 50, socket.id));//{ x: player.x, y: player.y });
             if(socket != null) {
                 // sends back to server
-                socket.emit('playerMovement', { x: this.x, y: this.y, flipX: this.flipX});
+                socket.emit('playerMovement', { x: this.x, y: this.y, flipX: this.flipX, animKey: this.anims.getCurrentKey()});
             }
         }
         this.xPrevious = this.x;

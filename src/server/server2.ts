@@ -48,7 +48,7 @@ class App {
         io.on('connection', (socket: Socket) => {
             console.log('User connected: ' + socket.id);
 
-            var newPlayer = new PlayerOnServer(30, 30, socket.id, false);
+            var newPlayer = new PlayerOnServer(30, 30, socket.id, false, 'player-idle');
             players.push(newPlayer);
           
             // socket.emit: send the players object to the new player ONLY
@@ -76,6 +76,7 @@ class App {
               player.x = functionData.x;
               player.y = functionData.y;
               player.flipX = functionData.flipX;
+              player.animKey = functionData.animKey;
           
               worldOnServer.movePlayer();
               socket.broadcast.emit('playerMoved', player);    

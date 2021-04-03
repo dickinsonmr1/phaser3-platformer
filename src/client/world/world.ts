@@ -61,10 +61,11 @@ export class World {
         var completeTileSet = this.map.addTilesetImage('complete_64x64', 'completeTiles');
 
         this.backgroundColor = this.map.properties[0].value;
+                
         this.skyName = this.map.properties[1].value;
         this.sky = this.scene.add.tileSprite(0, 0, 20480, 1024, this.skyName);  
         this.sky.setScale(1);
-        this.sky.setDepth(Constants.depthSky);          
+        this.sky.setDepth(Constants.depthSky);     
 
         var tileSets = [compiledTileSet, completeTileSet];
         
@@ -494,7 +495,7 @@ export class World {
         player.bullets.setDepth(Constants.depthBullets);
 
         this.scene.physics.add.collider(this.scene.enemies, player.bullets, this.scene.bulletTouchingEnemyHandler);
-        this.scene.physics.add.collider(player.bullets, this.layer02, this.scene.bulletTouchingImpassableLayerHandler);                        
+        this.scene.physics.add.collider(player.bullets, this.layer02, this.scene.bulletTouchingImpassableLayerHandler);    
     }
 
     updateSky(camera: Phaser.Cameras.Scene2D.Camera): void {

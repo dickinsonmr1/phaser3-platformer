@@ -101,12 +101,12 @@ export class SceneController extends Phaser.Scene {
         this.scene.launch("MenuBackgroundScene");
     }
 
-    preloadMainSceneAndDisplayLoadingScene(destinationName: string) {
+    preloadMainSceneAndDisplayLoadingScene(destinationName: string, isMultiplayer: boolean) {
         this.scene.stop('TitleScene');             
         
-        this.scene.launch('MainScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
+        this.scene.launch('MainScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems", isMultiplayer: isMultiplayer });
         this.scene.launch("HudScene");
-        this.scene.launch('LoadingScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems" });
+        this.scene.launch('LoadingScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems", isMultiplayer: isMultiplayer });
         //this.scene.launch('HudScene');        
     }
 

@@ -64,6 +64,7 @@ export class Client {
                 otherPlayer.x = player.x;
                 otherPlayer.y = player.y;
                 otherPlayer.flipX = player.flipX;
+                otherPlayer.animKey = player.animKey;
             }
         });
 

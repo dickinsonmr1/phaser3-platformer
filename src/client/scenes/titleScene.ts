@@ -7,7 +7,7 @@
  /// <reference path="../../dts/phaser.d.ts"/>
 
 import "phaser";
-import { Menu, MenuLinkItem, StartGameMenuItem, ContinueGameMenuItem, IconValueMapping } from "./menu";
+import { Menu, MenuLinkItem, StartGameMenuItem, StartMultiplayerGameMenuItem, ContinueGameMenuItem, IconValueMapping } from "./menu";
 import { SceneController } from "./sceneController";
 import { GameProgress, SaveGameFile } from "./gameProgress";
 import { Constants } from "../constants";
@@ -137,7 +137,6 @@ export class TitleScene extends Phaser.Scene {
         multiplayerMenu.setMenuIndex(TitleScene.menuScreenIndexMultiplayer);
         multiplayerMenu.setTitle(this, "Multiplayer Lobby");
         multiplayerMenu.setMarker(this, ">>");
-
         /*
         var temp1 = new Array<IconValueMapping>();
         temp1.push(new IconValueMapping({description: 'Blue', texture: 'sprites', frame: 'hudPlayer_blue.png', scale: 1}));
@@ -176,6 +175,7 @@ export class TitleScene extends Phaser.Scene {
                 multiplayerMenu.addMenuItem(this, item.playerId);
         });
         multiplayerMenu.addMenuItem(this, "Refresh Players");   
+        multiplayerMenu.addStartMultiplayerGameMenuItem(this, "Start Game");        
         multiplayerMenu.addMenuLinkItem(this, "Exit to Title", titleMenu);   
         this.menus.push(multiplayerMenu);
         multiplayerMenu.hide();
@@ -294,7 +294,10 @@ export class TitleScene extends Phaser.Scene {
              this.switchMenuScreen(selectedMenu, destinationMenu);  
         }  
         else if(selectedMenuItem instanceof StartGameMenuItem) {
-            this.startNewGame();                    
+            this.startNewGame(false);                    
+        }
+        else if(selectedMenuItem instanceof StartMultiplayerGameMenuItem) {
+            this.startNewGame(true);                    
         }
         else if(selectedMenuItem instanceof ContinueGameMenuItem) {
             this.tryContinueGame();
@@ -340,9 +343,9 @@ export class TitleScene extends Phaser.Scene {
         this.sound.play("backSound");
     }
 
-    startNewGame() {
+    startNewGame(isMultiplayer: boolean) {
         this.input.keyboard.resetKeys();
-        this.sceneController.preloadMainSceneAndDisplayLoadingScene('world-01-01');
+        this.sceneController.preloadMainSceneAndDisplayLoadingScene('world-01-01', isMultiplayer);
         this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
 
         this.sound.play("selectSound");
@@ -360,7 +363,7 @@ export class TitleScene extends Phaser.Scene {
         if(this.saveGameFiles.length > 0) {
             var selectedFile = this.loadSelectedSaveGameFile();
 
-            this.sceneController.preloadMainSceneAndDisplayLoadingScene(selectedFile.destinationName);
+            this.sceneController.preloadMainSceneAndDisplayLoadingScene(selectedFile.destinationName, false);
             selectedMenu.refreshColorsAndMarker();
 
             selectedMenu.confirmSelection(this.sound);

@@ -114,6 +114,28 @@ export class Menu {
 
         this.refreshColorsAndMarker();        
     }
+
+    addStartMultiplayerGameMenuItem(scene: Phaser.Scene, text: string) {              
+        var temp = new StartMultiplayerGameMenuItem({
+            scene: scene,
+            x: this.menuStartX,
+            y: this.menuStartY + this.menuItemDistanceY() * this.items.length,
+            text: text,
+            style: {
+                fontFamily: 'KenneyRocketSquare',
+                fontSize: this.menuItemFontSize(),
+                align: 'right',            
+                color: this.nonHighlightedColor(),
+            }});
+        temp.setStroke('rgb(0,0,0)', 16);
+        temp.setOrigin(0, 0.5);
+
+        scene.add.existing(temp);
+        this.items.push(temp);
+
+        this.refreshColorsAndMarker();        
+    }
+    
     
     addContinueGameMenuItem(scene: Phaser.Scene, text: string) {              
         var temp = new ContinueGameMenuItem({
@@ -460,6 +482,15 @@ export class MenuLinkItem extends Phaser.GameObjects.Text {
 }
 
 export class StartGameMenuItem extends Phaser.GameObjects.Text {
+
+    constructor(params) {
+        super(params.scene, params.x, params.y, params.text, params.style);
+
+        this.text = params.text;
+    }    
+}
+
+export class StartMultiplayerGameMenuItem extends Phaser.GameObjects.Text {
 
     constructor(params) {
         super(params.scene, params.x, params.y, params.text, params.style);

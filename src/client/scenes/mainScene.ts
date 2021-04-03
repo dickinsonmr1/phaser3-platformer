@@ -63,6 +63,7 @@ export class MainScene extends Phaser.Scene {
     gamepad: Phaser.Input.Gamepad.Gamepad;
 
     worldName: string;
+    isMultiplayer: boolean;
 
     gameTimeStarted: number;
     clock: Phaser.Time.Clock;
@@ -82,6 +83,7 @@ export class MainScene extends Phaser.Scene {
     init(data): void {
         console.log(data.id);
         this.worldName = data.worldName;
+        this.isMultiplayer = data.isMultiplayer;
     }
 
     preload(): void {
@@ -216,6 +218,7 @@ export class MainScene extends Phaser.Scene {
         this.flags = new Array<Phaser.GameObjects.Sprite>();
         this.portals = new Array<Phaser.GameObjects.Sprite>();
         this.switches = new Array<Phaser.GameObjects.Sprite>();
+        this.spaceShips = new Array<Spaceship>();
 
         this.otherPlayers = new Array<Player>();
         this.otherBullets = this.physics.add.group({
@@ -318,11 +321,12 @@ export class MainScene extends Phaser.Scene {
                 otherPlayer.x = otherPlayersFromSocketClient[i].x;
                 otherPlayer.y = otherPlayersFromSocketClient[i].y;
                 otherPlayer.flipX = otherPlayersFromSocketClient[i].flipX;
+                otherPlayer.play(otherPlayersFromSocketClient[i].animKey, true);
             }
         }
     
-        for (var i = 0; i < this.otherPlayers.length; i++) 
-            this.otherPlayers[i].stand();
+        //for (var i = 0; i < this.otherPlayers.length; i++) 
+            //this.otherPlayers[i].stand();
 
         //if(Phaser.Input.Keyboard.JustDown(this.debugKey) {
             //this.physics.config.Arcade.debug = false;
@@ -362,7 +366,7 @@ export class MainScene extends Phaser.Scene {
 
     processInput(): void {
         
-        if(Phaser.Input.Keyboard.JustDown(this.pauseKey)) {
+        if(Phaser.Input.Keyboard.JustDown(this.pauseKey) && !this.isMultiplayer) {
             this.input.keyboard.resetKeys();
             this.sceneController.pauseGame();
         }
