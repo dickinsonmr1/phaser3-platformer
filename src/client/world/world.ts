@@ -438,31 +438,29 @@ export class World {
         for (var i = 0; i < otherPlayers.length; i++) 
             this.scene.physics.add.collider(player, otherPlayers[i]);
 
-        //this.scene.physics.add.overlap(player, this.scene.enemies, this.scene.playerTouchingEnemiesHandler);
+        this.scene.physics.add.overlap(player, this.scene.enemies, (player, enemy) => this.scene.playerTouchingEnemiesHandler(player, enemy));
         
-        //for (var i = 0; i < otherPlayers.length; i++) 
-            //this.scene.physics.add.overlap(otherPlayers[i], this.scene.enemies, this.scene.playerTouchingEnemiesHandler);
+        for (var i = 0; i < otherPlayers.length; i++) 
+            this.scene.physics.add.overlap(otherPlayers[i], this.scene.enemies, (player, enemy) => this.scene.playerTouchingEnemiesHandler(player, enemy));
 
-            /*
-        this.scene.physics.add.overlap(player, this.scene.springs, this.scene.playerTouchingSpringHandler);
-        this.scene.physics.add.overlap(player, this.scene.flags, this.scene.playerTouchingCheckpointHandler);
-        this.scene.physics.add.overlap(player, this.scene.portals, this.scene.playerTouchingPortalHandler);
-        this.scene.physics.add.overlap(player, this.scene.switches, this.scene.playerTouchingSwitchHandler);
-        this.scene.physics.add.overlap(player, this.scene.spaceShips, this.scene.playerTouchingSpaceshipHandler);
-        this.scene.physics.add.overlap(this.scene.enemies, this.scene.springs, this.scene.enemyTouchingSpringHandler);
+        this.scene.physics.add.overlap(player, this.scene.springs, (player, spring) => this.scene.playerTouchingSpringHandler(player, spring));
+        this.scene.physics.add.overlap(player, this.scene.flags, (player, flag) => this.scene.playerTouchingCheckpointHandler(player, flag));
+        this.scene.physics.add.overlap(player, this.scene.portals, (player, portal) => this.scene.playerTouchingPortalHandler(player, portal));
+        this.scene.physics.add.overlap(player, this.scene.switches, (player, item) => this.scene.playerTouchingSwitchHandler(player, item));
+        this.scene.physics.add.overlap(player, this.scene.spaceShips, (player, spaceship) => this.scene.playerTouchingSpaceshipHandler(player, spaceship));
+        this.scene.physics.add.overlap(this.scene.enemies, this.scene.springs, (player, spring) => this.scene.enemyTouchingSpringHandler(player, spring));
         this.scene.physics.add.collider(this.scene.enemies, this.layer02);
-        this.scene.physics.add.collider(this.scene.enemies, this.scene.enemies, this.scene.enemyTouchingEnemyHandler);        
-        */
-
+        this.scene.physics.add.collider(this.scene.enemies, this.scene.enemies, (enemy1, enemy2) => this.scene.enemyTouchingEnemyHandler(enemy1, enemy2));        
+        
         if(this.scene.spaceShips != null) {
             this.scene.physics.add.collider(this.scene.spaceShips, this.layer02);
-            //this.scene.physics.add.collider(this.scene.enemies, this.scene.spaceShips, this.scene.spaceshipTouchingEnemyHandler);
+            this.scene.physics.add.collider(this.scene.enemies, this.scene.spaceShips, (enemy, spaceship) => this.scene.spaceshipTouchingEnemyHandler(enemy, spaceship));
 
             var spaceShipLaserBeams = new Array<Phaser.GameObjects.Sprite>();
             for(var i = 0; i < this.scene.spaceShips.length; i++) {
                 spaceShipLaserBeams.push(this.scene.spaceShips[i].laserBeam);
             }
-            //this.scene.physics.add.overlap(this.scene.enemies, spaceShipLaserBeams, this.scene.spaceshipLaserBeamTouchingEnemyHandler);
+            this.scene.physics.add.overlap(this.scene.enemies, spaceShipLaserBeams, (enemy, laserBeam) => this.scene.spaceshipLaserBeamTouchingEnemyHandler(enemy, laserBeam));
         }            
 
         this.layer01.setDepth(Constants.depthLayer01);
@@ -496,8 +494,8 @@ export class World {
         })
         player.bullets.setDepth(Constants.depthBullets);
 
-        //this.scene.physics.add.collider(this.scene.enemies, player.bullets, this.scene.bulletTouchingEnemyHandler);
-        //this.scene.physics.add.collider(player.bullets, this.layer02, this.scene.bulletTouchingImpassableLayerHandler);    
+        this.scene.physics.add.collider(this.scene.enemies, player.bullets, (enemy, bullet) => this.scene.bulletTouchingEnemyHandler(enemy, bullet));
+        this.scene.physics.add.collider(player.bullets, this.layer02, (bullet, layer) => this.scene.bulletTouchingImpassableLayerHandler(bullet, layer));    
     }
 
     updateSky(camera: Phaser.Cameras.Scene2D.Camera): void {

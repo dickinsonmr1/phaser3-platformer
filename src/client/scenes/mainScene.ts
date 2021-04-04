@@ -490,34 +490,34 @@ export class MainScene extends Phaser.Scene {
         return true;
     }
 
-    playerTouchingSpringHandler(player: Player, spring: Spring): void {
+    playerTouchingSpringHandler(player: any, spring: any): void {
         spring.tryBounce(player.getScene().sound);
         player.tryBounce();       
     }
 
-    playerTouchingCheckpointHandler(player: Player, flag: Checkpoint): void {
+    playerTouchingCheckpointHandler(player: any, flag: any): void {
         flag.activate(player.getScene().sound);
         //player.tryBounce();       
     }
 
-    playerTouchingPortalHandler(player: Player, portal: Portal): void {                        
+    playerTouchingPortalHandler(player: any, portal: any): void {                        
         portal.activate();
 
         player.setAvailableInteraction(portal);
         player.displayInteractTextAndImage(portal.x, portal.y);
     }
 
-    playerTouchingSwitchHandler(player: Player, switchItem: Switch): void {                
+    playerTouchingSwitchHandler(player: any, switchItem: any): void {                
         player.setAvailableInteraction(switchItem);
         player.displayInteractTextAndImage(switchItem.x, switchItem.y);
     }
 
-    enemyTouchingSpringHandler(enemy: Enemy, spring: Spring): void {
+    enemyTouchingSpringHandler(enemy: any, spring: any): void {
         spring.tryBounce(enemy.getScene().sound);
         enemy.tryBounce();        
     }
 
-    spaceshipTouchingEnemyHandler(enemy: Enemy, spaceship: Spaceship): void {
+    spaceshipTouchingEnemyHandler(enemy: any, spaceship: any): void {
         var scene = <MainScene>enemy.getScene();
 
         if(scene.player.isInSpaceship) {
@@ -532,7 +532,7 @@ export class MainScene extends Phaser.Scene {
         }
     }
 
-    spaceshipLaserBeamTouchingEnemyHandler(enemy: Enemy, laserBeam: Phaser.GameObjects.Sprite): void {
+    spaceshipLaserBeamTouchingEnemyHandler(enemy: any, laserBeam: any): void {
         var scene = <MainScene>enemy.getScene();
 
         if(scene.player.isInSpaceship && laserBeam.visible) {
@@ -562,7 +562,7 @@ export class MainScene extends Phaser.Scene {
         }
     }
 
-    playerTouchingEnemiesHandler(player: Player, enemy: Enemy): void {
+    playerTouchingEnemiesHandler(player: any, enemy: any): void {
         player.tryDamage();
         player.getScene().cameras.main.shake(100, 0.01, false);
     }
@@ -574,14 +574,14 @@ export class MainScene extends Phaser.Scene {
         return true;
     }
 
-    playerTouchingSpaceshipHandler(player: Player, spaceship: Spaceship): void {       
+    playerTouchingSpaceshipHandler(player: any, spaceship: any): void {       
         if(!player.isInSpaceship && spaceship.transitionTime == 0) {
             player.displayInteractTextAndImage(spaceship.x, spaceship.y);
             player.setAvailableInteraction(spaceship);
         }        
     }
 
-    enemyTouchingEnemyHandler(enemy1: Enemy, enemy2: Enemy): void {
+    enemyTouchingEnemyHandler(enemy1: any, enemy2: any): void {
         var body1 = <Phaser.Physics.Arcade.Body>enemy1.body;
         var body2 = <Phaser.Physics.Arcade.Body>enemy2.body;
 
@@ -603,7 +603,7 @@ export class MainScene extends Phaser.Scene {
         }            
     }
 
-    bulletTouchingEnemyHandler(enemy: Enemy, bullet: Bullet): void {                
+    bulletTouchingEnemyHandler(enemy: any, bullet: any): void {                
         var scene = <MainScene>enemy.getScene();
         scene.weaponHitParticleEmitter.explode(10, enemy.x, enemy.y);
               
@@ -624,7 +624,7 @@ export class MainScene extends Phaser.Scene {
         bullet.destroy();
     }
 
-    bulletTouchingImpassableLayerHandler(bullet: Bullet, layer): void {        
+    bulletTouchingImpassableLayerHandler(bullet: any, layer: any): void {        
         var scene = <MainScene>bullet.getScene();
         scene.weaponHitParticleEmitter.explode(2, bullet.x, bullet.y);
 
