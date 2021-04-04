@@ -4,7 +4,7 @@
  * @license      none
  */
 
- /// <reference path="../../dts/phaser.d.ts"/>
+ /// <reference path="../../../node_modules/phaser/types/phaser.d.ts"/>
 
  import "phaser";
  import { Menu } from "./menu";
@@ -87,7 +87,7 @@ import { SceneController } from "./sceneController";
         this.gemSummaryText = this.add.text(this.summaryStartX(), this.summaryStartY(), "Gems: " + this.gemsCollected + "/" + this.totalGems,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: this.summaryFontSize(),
+            fontSize: this.summaryFontSize().toString(),
             align: 'left',            
             color:"rgb(255,255,255)",
         });
@@ -100,7 +100,7 @@ import { SceneController } from "./sceneController";
                                     "Enemies: "  + this.enemiesKilled  + "/" + this.totalEnemies,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: this.summaryFontSize(),
+            fontSize: this.summaryFontSize().toString(),
             align: 'left',            
             color:"rgb(255,255,255)",
         });
@@ -113,7 +113,7 @@ import { SceneController } from "./sceneController";
                                     "Score: " +  + this.score,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: this.summaryFontSize(),
+            fontSize: this.summaryFontSize().toString(),
             align: 'left',            
             color:"rgb(255,255,255)",
         });
@@ -126,7 +126,7 @@ import { SceneController } from "./sceneController";
                                     "Elapsed Time: " + this.getElapsedTimeString(this.elapsedTime),
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: this.summaryFontSize(),
+            fontSize: this.summaryFontSize().toString(),
             align: 'left',            
             color:"rgb(255,255,255)",
         });

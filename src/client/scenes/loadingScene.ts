@@ -4,7 +4,7 @@
  * @license      none
  */
 
- /// <reference path="../../dts/phaser.d.ts"/>
+ /// <reference path="../../../node_modules/phaser/types/phaser.d.ts"/>
 
  import "phaser";
  import { SceneController } from "./sceneController";
@@ -75,14 +75,14 @@
         if(this.titleText == undefined) {
             this.titleText = this.add.text(this.titleStartX, this.titleStartY, this.worldName,
             {
-                fontFamily: 'KenneyRocketSquare',
-                fontSize: this.titleFontSize,
+                fontFamily: 'KenneyRocketSquare', 
                 align: 'center',            
                 color:"rgb(255,255,255)",
             });
             this.titleText.setStroke('rgb(0,0,0)', 16);   
             this.titleText.setAlpha(1);//this.loadingTextAlpha);        
             this.titleText.setOrigin(0.5, 0.5);
+            this.titleText.setFontSize(this.titleFontSize);
         }
         this.titleText.text = this.worldName;
         //var scene = <Phaser.Scene>this;
@@ -91,12 +91,12 @@
             this.objectiveText = this.add.text(this.titleStartX, this.titleStartY + this.subtitleOffsetY(), 'Objective: ' + this.objective,
             {
                 fontFamily: 'KenneyRocketSquare',
-                fontSize: this.objectiveTextFontSize,
                 align: 'center',            
                 color:"rgb(255,255,255)",
             });
             this.objectiveText.setStroke('rgb(0,0,0)', 16);
             this.objectiveText.setOrigin(0.5, 0.5);
+            this.objectiveText.setFontSize(this.objectiveTextFontSize);
         }
         this.objectiveText.text = 'Objective: ' + this.objective;
 
@@ -104,12 +104,12 @@
             this.loadingText = this.add.text(this.titleStartX, 800, 'LOADING WORLD...',
             {
                 fontFamily: 'KenneyRocketSquare',
-                fontSize: this.loadingTextFontSize,
                 align: 'center',            
                 color:"rgb(255,255,255)",
             });
             this.loadingText.setStroke('rgb(0,0,0)', 16);
             this.loadingText.setOrigin(0.5, 0.5);
+            this.loadingText.setFontSize(this.loadingTextFontSize);
         }
         this.loadingText.setScale(1);
 

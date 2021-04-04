@@ -1,3 +1,6 @@
+
+/// <reference path="../../node_modules/socket.io/dist/socket.d.ts"/>
+
 import { Server as HttpServer } from "http"
 import { Socket, Server as SocketIoServer } from "socket.io"
 

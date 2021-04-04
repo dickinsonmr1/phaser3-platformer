@@ -4,7 +4,7 @@
  * @license      none
  */
  
- /// <reference path="../dts/phaser.d.ts"/>
+/// <reference path="../../node_modules/phaser/types/phaser.d.ts"/>
 
  import { Constants } from "../client/constants";
  import "phaser";
@@ -66,7 +66,7 @@
         var text = this.scene.add.text(this.x, this.y - this.GetTextOffsetY, this.destinationName,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: 36,
+            fontSize: "36",
             align: 'center',            
             color:"rgb(255,255,255)",
         });

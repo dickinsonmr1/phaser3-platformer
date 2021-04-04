@@ -4,8 +4,9 @@
  * @license      none
  */
 
-/// <reference path="../dts/phaser.d.ts"/>
+/// <reference path="../../node_modules/phaser/types/phaser.d.ts"/>
 import "phaser";
+
 import { Scene } from "phaser";
 import { Constants } from "../client/constants";
  

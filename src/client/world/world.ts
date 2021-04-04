@@ -1,5 +1,5 @@
 
-/// <reference path="../../dts/phaser.d.ts"/>
+/// <reference path="../../../node_modules/phaser/types/phaser.d.ts"/>
 
 import { Constants, ForceFieldColor } from "../constants";
 import "phaser";
@@ -15,11 +15,11 @@ import { Spaceship } from "../../gameobjects/spaceship";
 export class World {
     map: Phaser.Tilemaps.Tilemap;
     
-    private layer01: Phaser.Tilemaps.StaticTilemapLayer;
-    private layer02: Phaser.Tilemaps.DynamicTilemapLayer;
-    private layer03: Phaser.Tilemaps.DynamicTilemapLayer;
-    private layer04: Phaser.Tilemaps.StaticTilemapLayer;
-    private layer05: Phaser.Tilemaps.StaticTilemapLayer;
+    private layer01: Phaser.Tilemaps.TilemapLayer;
+    private layer02: Phaser.Tilemaps.TilemapLayer;
+    private layer03: Phaser.Tilemaps.TilemapLayer;
+    private layer04: Phaser.Tilemaps.TilemapLayer;
+    private layer05: Phaser.Tilemaps.TilemapLayer;
 
     public backgroundColor: string;
 
@@ -70,11 +70,11 @@ export class World {
         var tileSets = [compiledTileSet, completeTileSet];
         
         // background layer
-        this.layer01 = this.map.createStaticLayer('layer01-background-passable', tileSets, 0, 0);
+        this.layer01 = this.map.createLayer('layer01-background-passable', tileSets, 0, 0);
         this.layer01.alpha = 1.0;
 
         // non-passable blocks layer
-        this.layer02 = this.map.createDynamicLayer('layer02-nonpassable', tileSets, 0, 0);
+        this.layer02 = this.map.createLayer('layer02-nonpassable', tileSets, 0, 0);
         this.layer02.alpha = 1.0;
         this.scene.physics.add.collider(player, this.layer02);       
         
@@ -88,7 +88,7 @@ export class World {
         //---------------------------------------------------------------------------------------------------
         // FOREGROUND PASSABLE OPAQUE LAYER (front wall of a cave, plant, etc.)
         //---------------------------------------------------------------------------------------------------
-        this.layer04 = this.map.createStaticLayer('layer04-foreground-passable-opaque', tileSets, 0, 0);
+        this.layer04 = this.map.createLayer('layer04-foreground-passable-opaque', tileSets, 0, 0);
         this.layer04.alpha = 1.0;
         this.scene.physics.add.overlap(player, this.layer04);
 
@@ -102,7 +102,7 @@ export class World {
         //---------------------------------------------------------------------------------------------------
         // foreground semi-transparent layer (water, lava, clouds, etc.)
         //---------------------------------------------------------------------------------------------------
-        this.layer05 = this.map.createStaticLayer('layer05-foreground-passable-semitransparent', tileSets, 0, 0);
+        this.layer05 = this.map.createLayer('layer05-foreground-passable-semitransparent', tileSets, 0, 0);
         this.layer05.alpha = 0.5;
         this.scene.physics.add.overlap(player, this.layer05);
         
@@ -115,7 +115,7 @@ export class World {
         //---------------------------------------------------------------------------------------------------
         // gameobjects
         //---------------------------------------------------------------------------------------------------
-        this.layer03 = this.map.createDynamicLayer('layer03-gameobjects', tileSets, 0, 0);
+        this.layer03 = this.map.createLayer('layer03-gameobjects', tileSets, 0, 0);
         this.layer03.alpha = 1.0;//0.75;
 
         var allEnemyTypes = [2967, 2953, 2939, 2925, 2911, 2924, 2910, 2896, 3077, 3063];
@@ -438,11 +438,12 @@ export class World {
         for (var i = 0; i < otherPlayers.length; i++) 
             this.scene.physics.add.collider(player, otherPlayers[i]);
 
-        this.scene.physics.add.overlap(player, this.scene.enemies, this.scene.playerTouchingEnemiesHandler);
+        //this.scene.physics.add.overlap(player, this.scene.enemies, this.scene.playerTouchingEnemiesHandler);
         
-        for (var i = 0; i < otherPlayers.length; i++) 
-            this.scene.physics.add.overlap(otherPlayers[i], this.scene.enemies, this.scene.playerTouchingEnemiesHandler);
+        //for (var i = 0; i < otherPlayers.length; i++) 
+            //this.scene.physics.add.overlap(otherPlayers[i], this.scene.enemies, this.scene.playerTouchingEnemiesHandler);
 
+            /*
         this.scene.physics.add.overlap(player, this.scene.springs, this.scene.playerTouchingSpringHandler);
         this.scene.physics.add.overlap(player, this.scene.flags, this.scene.playerTouchingCheckpointHandler);
         this.scene.physics.add.overlap(player, this.scene.portals, this.scene.playerTouchingPortalHandler);
@@ -451,16 +452,17 @@ export class World {
         this.scene.physics.add.overlap(this.scene.enemies, this.scene.springs, this.scene.enemyTouchingSpringHandler);
         this.scene.physics.add.collider(this.scene.enemies, this.layer02);
         this.scene.physics.add.collider(this.scene.enemies, this.scene.enemies, this.scene.enemyTouchingEnemyHandler);        
-        
+        */
+
         if(this.scene.spaceShips != null) {
             this.scene.physics.add.collider(this.scene.spaceShips, this.layer02);
-            this.scene.physics.add.collider(this.scene.enemies, this.scene.spaceShips, this.scene.spaceshipTouchingEnemyHandler);
+            //this.scene.physics.add.collider(this.scene.enemies, this.scene.spaceShips, this.scene.spaceshipTouchingEnemyHandler);
 
             var spaceShipLaserBeams = new Array<Phaser.GameObjects.Sprite>();
             for(var i = 0; i < this.scene.spaceShips.length; i++) {
                 spaceShipLaserBeams.push(this.scene.spaceShips[i].laserBeam);
             }
-            this.scene.physics.add.overlap(this.scene.enemies, spaceShipLaserBeams, this.scene.spaceshipLaserBeamTouchingEnemyHandler);
+            //this.scene.physics.add.overlap(this.scene.enemies, spaceShipLaserBeams, this.scene.spaceshipLaserBeamTouchingEnemyHandler);
         }            
 
         this.layer01.setDepth(Constants.depthLayer01);
@@ -494,8 +496,8 @@ export class World {
         })
         player.bullets.setDepth(Constants.depthBullets);
 
-        this.scene.physics.add.collider(this.scene.enemies, player.bullets, this.scene.bulletTouchingEnemyHandler);
-        this.scene.physics.add.collider(player.bullets, this.layer02, this.scene.bulletTouchingImpassableLayerHandler);    
+        //this.scene.physics.add.collider(this.scene.enemies, player.bullets, this.scene.bulletTouchingEnemyHandler);
+        //this.scene.physics.add.collider(player.bullets, this.layer02, this.scene.bulletTouchingImpassableLayerHandler);    
     }
 
     updateSky(camera: Phaser.Cameras.Scene2D.Camera): void {

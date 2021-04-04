@@ -4,7 +4,7 @@
  * @license      none
  */
 
- /// <reference path="../../dts/phaser.d.ts"/>
+ /// <reference path="../../../node_modules/phaser/types/phaser.d.ts"/>
 
  import "phaser";
  import { Player } from "../../gameobjects/player";
@@ -106,34 +106,34 @@
         this.hudComponent.gemCountText = this.add.text(this.GemIconX + this.GemTextOffsetX, this.HudBaseOffsetY + this.AmmoTextOffsetY, '0',
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: this.fontSize,
             align: 'right',            
             color:"rgb(255,255,255)",
         });
         this.hudComponent.gemCountText.setOrigin(0, 0.5);
         this.hudComponent.gemCountText.setStroke('rgb(0,0,0)', 16);
+        this.hudComponent.gemCountText.setFontSize(this.fontSize);
 
         this.hudComponent.weapon = this.add.image(this.WeaponIconX, this.HudBaseOffsetY, 'weaponIcon');
         this.hudComponent.weapon.setScale(2.0, 2.0);
         this.hudComponent.ammoText = this.add.text(this.WeaponIconX + this.AmmoTextOffsetX, this.HudBaseOffsetY + this.AmmoTextOffsetY, '5',
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: this.fontSize,
             align: 'right',            
             color:"rgb(255,255,255)",
         });
         this.hudComponent.ammoText.setStroke('rgb(0,0,0)', 16);
         this.hudComponent.ammoText.setOrigin(1, 0.5);
+        this.hudComponent.ammoText.setFontSize(this.fontSize);
 
         this.hudComponent.infoText = this.add.text(this.InfoTextStartX, this.InfoTextStartY, 'test',
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: this.infoTextFontSize,
             align: 'center',            
             color:"rgb(255,255,255)",
         });
         this.hudComponent.infoText.setOrigin(0.5, 0.5);
         this.hudComponent.infoText.setStroke('rgb(0,0,0)', 16);
+        this.hudComponent.infoText.setFontSize(this.infoTextFontSize);
         this.hudComponent.infoTextExpiryGameTime = this.game.getTime();
         
         //  Grab a reference to the Game Scene

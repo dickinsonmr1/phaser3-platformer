@@ -1,3 +1,9 @@
+
+/// <reference path="../../../node_modules/phaser/types/phaser.d.ts"/>
+
+import "phaser";
+
+
 export class Menu {
     title: Phaser.GameObjects.Text;
     subtitle: Phaser.GameObjects.Text;
@@ -59,12 +65,12 @@ export class Menu {
             text: text,
             style: {
                 fontFamily: 'KenneyRocketSquare',
-                fontSize: this.menuItemFontSize(),
                 align: 'right',            
                 color: this.nonHighlightedColor(),
             }});
         temp.setStroke('rgb(0,0,0)', 16);
         temp.setOrigin(0, 0.5);
+        temp.setFontSize(this.menuItemFontSize());
 
         scene.add.existing(temp);
         this.items.push(temp);
@@ -81,12 +87,12 @@ export class Menu {
             menuDestinationLink: menuDestinationLink,
             style: {
                 fontFamily: 'KenneyRocketSquare',
-                fontSize: this.menuItemFontSize(),
                 align: 'right',            
                 color: this.nonHighlightedColor(),
             }});
         temp.setStroke('rgb(0,0,0)', 16);
         temp.setOrigin(0, 0.5);
+        temp.setFontSize(this.menuItemFontSize());
 
         scene.add.existing(temp);
         this.items.push(temp);
@@ -102,12 +108,12 @@ export class Menu {
             text: text,
             style: {
                 fontFamily: 'KenneyRocketSquare',
-                fontSize: this.menuItemFontSize(),
                 align: 'right',            
                 color: this.nonHighlightedColor(),
             }});
         temp.setStroke('rgb(0,0,0)', 16);
         temp.setOrigin(0, 0.5);
+        temp.setFontSize(this.menuItemFontSize());
 
         scene.add.existing(temp);
         this.items.push(temp);
@@ -123,12 +129,12 @@ export class Menu {
             text: text,
             style: {
                 fontFamily: 'KenneyRocketSquare',
-                fontSize: this.menuItemFontSize(),
                 align: 'right',            
                 color: this.nonHighlightedColor(),
             }});
         temp.setStroke('rgb(0,0,0)', 16);
         temp.setOrigin(0, 0.5);
+        temp.setFontSize(this.menuItemFontSize());
 
         scene.add.existing(temp);
         this.items.push(temp);
@@ -145,12 +151,12 @@ export class Menu {
             text: text,
             style: {
                 fontFamily: 'KenneyRocketSquare',
-                fontSize: this.menuItemFontSize(),
                 align: 'right',            
                 color: this.nonHighlightedColor(),
             }});
         temp.setStroke('rgb(0,0,0)', 16);
         temp.setOrigin(0, 0.5);
+        temp.setFontSize(this.menuItemFontSize());
 
         scene.add.existing(temp);
         this.items.push(temp);
@@ -167,13 +173,13 @@ export class Menu {
             text: text,
             style: {
                 fontFamily: 'KenneyRocketSquare',
-                fontSize: this.menuItemFontSize(),
                 align: 'right',            
                 color: this.nonHighlightedColor(),
             },
             subItems});
         temp.setStroke('rgb(0,0,0)', 16);
         temp.setOrigin(0, 0.5);
+        temp.setFontSize(this.menuItemFontSize());
 
         scene.add.existing(temp);
         this.items.push(temp);
@@ -196,13 +202,13 @@ export class Menu {
             text: text,
             style: {
                 fontFamily: 'KenneyRocketSquare',
-                fontSize: this.menuItemFontSize(),
                 align: 'right',            
                 color: this.nonHighlightedColor(),
             },
             subItems: iconMappings});
         temp.setStroke('rgb(0,0,0)', 16);
         temp.setOrigin(0, 0.5);
+        temp.setFontSize(this.menuItemFontSize());
         if(iconMappings.length > 0 && iconMappings[0].description != null && iconMappings[0].frame != null)
             temp.setIcon(scene, iconMappings[0].texture, iconMappings[0].frame, iconMappings[0].scale);
 
@@ -228,24 +234,24 @@ export class Menu {
         this.title = scene.add.text(this.titleStartX + this.titleOffsetX(), this.titleStartY, text,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: this.titleFontSize(),
             align: 'center',            
             color: "rgb(255,255,255)",
         });
         this.title.setOrigin(0.5, 0.5);
         this.title.setStroke('rgb(0,0,0)', 16);
+        this.title.setFontSize(this.titleFontSize());
     }
 
     setSubtitle(scene: Phaser.Scene, text: string) {
         this.subtitle = scene.add.text(this.titleStartX + this.titleOffsetX(), this.titleStartY + this.subtitleOffsetY(), text,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: this.subtitleFontSize(),
             align: 'center',            
             color: "rgb(255,255,255)",
         });
         this.subtitle.setOrigin(0.5, 0.5);
         this.subtitle.setStroke('rgb(0,0,0)', 16);
+        this.subtitle.setFontSize(this.subtitleFontSize());
     }
 
     setTitleIcon(scene: Phaser.Scene, texture: string, frame: string, scale: number) {
@@ -260,37 +266,37 @@ export class Menu {
         this.footer = scene.add.text(this.footerStartX, this.footerStartY, text,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: this.footerFontSize(),
             align: 'center',            
             color:"rgb(255,255,255)",
         });
         this.footer.setOrigin(0.5, 0.5);
         this.footer.setStroke('rgb(0,0,0)', 16);
+        this.footer.setFontSize(this.footerFontSize());
     }
 
     setFooter2(scene: Phaser.Scene, text: string) {
         this.footer2 = scene.add.text(this.footerStartX, this.footer2StartY, text,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: this.footerFontSize(),
+            fontSize: this.footerFontSize().toString(),
             align: 'center',            
             color:"rgb(255,255,255)",
         });
         this.footer2.setOrigin(0.5, 0.5);
         this.footer2.setStroke('rgb(0,0,0)', 16);
+        this.footer2.setFontSize(this.footerFontSize());
     }
 
     setMarker(scene: Phaser.Scene, text: string) {
         this.marker = scene.add.text(this.menuStartX + this.markerOffsetX(), this.menuStartY, text,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: this.menuItemFontSize(),
             align: 'right',            
             color:"rgb(255,255,255)",
         });
         this.marker.setOrigin(0.5, 0.5);
         this.marker.setStroke('rgb(0,0,0)', 16);  
-
+        this.marker.setFontSize(this.menuItemFontSize());
         /*
         this.subItemMarkerLeft = scene.add.text(this.menuStartX + this.markerOffsetX(), this.menuStartY, "<<",
         {

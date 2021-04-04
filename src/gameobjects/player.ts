@@ -4,7 +4,8 @@
  * @license      none
  */
 
- /// <reference path="../dts/phaser.d.ts"/>
+/// <reference path="../../node_modules/phaser/types/phaser.d.ts"/>
+
 import { Constants } from "../client/constants";
 import "phaser";
 import { Scene } from "phaser";
@@ -174,7 +175,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         var text = this.scene.add.text(this.x, this.y - this.GetTextOffsetY, "Interact",
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: 24,
+            fontSize: "24",
             //align: 'right',            
             color:"rgb(255,255,255)",
         });
@@ -199,7 +200,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         var text2 = this.scene.add.text(this.x, this.y - this.GetTextOffsetY, this.playerId,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: 24,
+            fontSize: "24",
             //align: 'right',            
             color:"rgb(255,255,255)",
         });
@@ -642,7 +643,7 @@ export class Player extends Phaser.GameObjects.Sprite {
             //socket.emit('playerMovement', new PlayerOnServer(50, 50, socket.id));//{ x: player.x, y: player.y });
             if(socket != null) {
                 // sends back to server
-                socket.emit('playerMovement', { x: this.x, y: this.y, flipX: this.flipX, animKey: this.anims.getCurrentKey()});
+                socket.emit('playerMovement', { x: this.x, y: this.y, flipX: this.flipX, animKey: this.anims.currentAnim});
             }
         }
         this.xPrevious = this.x;

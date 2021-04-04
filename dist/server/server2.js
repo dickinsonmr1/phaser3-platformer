@@ -1,4 +1,5 @@
 "use strict";
+/// <reference path="../../node_modules/socket.io/dist/socket.d.ts"/>
 Object.defineProperty(exports, "__esModule", { value: true });
 const http_1 = require("http");
 const socket_io_1 = require("socket.io");
