@@ -32,7 +32,7 @@
     "uuid": "^8.3.2"
   },
   "scripts": {
-    "clientDev": "webpack-dev-server --mode development",
+    "clientDev": "webpack --mode development && webpack-dev-server --mode development",
     "serverDev": "(tsc -p src/server/ --outDir dist/server --esModuleInterop true) & (node dist/server/server2.js)"
   },
   "repository": {
