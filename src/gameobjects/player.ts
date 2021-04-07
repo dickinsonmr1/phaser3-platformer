@@ -174,15 +174,14 @@ export class Player extends Phaser.GameObjects.Sprite {
 
         var text = this.scene.add.text(this.x, this.y - this.GetTextOffsetY, "Interact",
         {
-            fontFamily: 'KenneyRocketSquare',
-            fontSize: "24",
-            //align: 'right',            
+            fontFamily: 'KenneyRocketSquare',        
             color:"rgb(255,255,255)",
         });
         text.setAlpha(0);
         text.setOrigin(0, 0.5);
         text.setDepth(7);
         text.setStroke('rgb(0,0,0)', 4);        
+        text.setFontSize(24);        
 
         this.interactText = text;
 
@@ -199,18 +198,19 @@ export class Player extends Phaser.GameObjects.Sprite {
         // player name text
         var text2 = this.scene.add.text(this.x, this.y - this.GetTextOffsetY, this.playerId,
         {
-            fontFamily: 'KenneyRocketSquare',
-            fontSize: "24",
-            //align: 'right',            
+            fontFamily: 'KenneyRocketSquare',         
             color:"rgb(255,255,255)",
         });
         text2.setAlpha(0.5);
         text2.setOrigin(0, 0.5);
         text2.setDepth(7);
         text2.setStroke('rgb(0,0,0)', 4);     
+        text2.setFontSize(24); 
         
         this.playerNameText = text2;
         this.alignPlayerNameText(this.x, this.y);
+        this.playerNameText.setOrigin(0, 0.5);
+        this.playerNameText.setFontSize(16);
 
         this.currentWeapon = new LaserRepeater();
         this.playerGun = this.scene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, 'playerGun')        
@@ -528,14 +528,13 @@ export class Player extends Phaser.GameObjects.Sprite {
         var text = this.playerNameText;
         text.setX(x);
         text.setY(y);// + this.GetTextOffsetY);
+        text.setOrigin(0, 0.5);
     }
 
     displayInteractTextAndImage(x: number, y: number) {
         
         this.alignInteractTextAndImage(x, y);
 
-        //this.interactText.alpha = 1;
-        //this.interactButtonImage.alpha = 1;
         this.activateInteractTime = 10;
 
         if(this.interactText.alpha < 1)

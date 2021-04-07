@@ -84,16 +84,16 @@ export class TitleScene extends Phaser.Scene {
         this.cursorRight = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
 
         this.deleteAllSaveFilesKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
-
+        
         //this.addGamepadListeners();
-
+        
         this.saveGameFiles = this.gameProgress.loadAllSaveFiles();
 
         this.menus = new Array<Menu>();
         var titleMenu = new Menu(this);
         var continueMenu = new Menu(this);
         var multiplayerMenu = new Menu(this);
-
+        
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // title menu
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////

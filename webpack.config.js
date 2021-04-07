@@ -27,6 +27,7 @@ module.exports = {
   entry: './src/client/game.ts',
   output: {
     path: path.resolve(__dirname, 'dist/client'),
+    publicPath: "/dist/client/",
     filename: 'bundle.js',
   },
   module: {
@@ -37,8 +38,9 @@ module.exports = {
   },
   devServer: {
     contentBase: path.resolve(__dirname, './'),
-    publicPath: '/dist/',
+    publicPath: '/dist/client',
     host: '127.0.0.1',
+    hot: true,
     port: 8080,
     open: true
   },
