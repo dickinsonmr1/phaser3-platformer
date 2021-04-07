@@ -480,7 +480,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         if(this.hurtTime == 0) {
             if(this.health > 0) {
                 this.health--;
-                this.scene.events.emit("playerHealthUpdated", this.health);
+                this.scene.events.emit("playerHealthUpdated", this.playerId, this.health);
                 this.scene.sound.play("hurtSound");
                 this.hurtTime = 60;
             }
@@ -490,7 +490,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     tryHeal(): void {
         if(this.health < Player.maxHealth) {
             this.health++;
-            this.scene.events.emit("playerHealthUpdated", this.health);
+            this.scene.events.emit("playerHealthUpdated", this.playerId, this.health);
             //this.scene.sound.play("hurtSound");
             //this.hurtTime = 60;
         }

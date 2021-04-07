@@ -495,6 +495,7 @@ export class World {
         player.bullets.setDepth(Constants.depthBullets);
 
         this.scene.physics.add.collider(this.scene.enemies, player.bullets, (enemy, bullet) => this.scene.bulletTouchingEnemyHandler(enemy, bullet));
+        this.scene.physics.add.collider(this.scene.otherPlayers, player.bullets, (otherPlayer, bullet) => this.scene.bulletTouchingOtherPlayerHandler(otherPlayer, bullet));
         this.scene.physics.add.collider(player.bullets, this.layer02, (bullet, layer) => this.scene.bulletTouchingImpassableLayerHandler(bullet, layer));    
     }
 

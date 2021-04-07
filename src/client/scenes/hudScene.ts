@@ -36,6 +36,8 @@
     private get InfoTextStartY(): number {return this.game.canvas.height - this.game.canvas.height / 4; }   
     private get infoTextFontSize(): number { return 48; }
 
+    private playerId: string;
+
     constructor(sceneController: SceneController) {
         super({
             key: "HudScene"
@@ -140,9 +142,11 @@
         let ourGame = this.scene.get('MainScene');
 
         //  Listen for events from it
-        ourGame.events.on('playerHealthUpdated', function (health) {
-            this.setHealth(health);
-            this.updateHealthBar(health);
+        ourGame.events.on('playerHealthUpdated', function (playerId, health) {
+            if(this.playerId == playerId) {
+                this.setHealth(health);
+                this.updateHealthBar(health);
+            }
         }, this);
 
         //  Listen for events from it
@@ -182,6 +186,10 @@
         this.healthBar.updateHealth(maxHealth);
 
         this.scene.setVisible(false);
+    }
+
+    setPlayerId(playerId: string) {
+        this.playerId = playerId;
     }
 
     setHealth(health: number): void {        

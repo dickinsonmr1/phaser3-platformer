@@ -240,6 +240,8 @@ export class MainScene extends Phaser.Scene {
         this.player.init();
         this.playerInterface = new PlayerInterface({player: this.player, socket: this.getSocket()});
 
+        this.sceneController.hudScene.setPlayerId(this.player.playerId);
+        
         var offsetX = 0;
         for (var i = 0; i < otherSocketPlayers.length; i++) {
             
@@ -620,6 +622,28 @@ export class MainScene extends Phaser.Scene {
             // sends back to server
             socket.emit('bulletDestruction', {bulletId: bullet.bulletId});                
         }
+
+        bullet.destroy();
+    }
+
+    bulletTouchingOtherPlayerHandler(otherPlayer: any, bullet: any): void {                
+        var scene = <MainScene>otherPlayer.getScene();
+        scene.weaponHitParticleEmitter.explode(10, bullet.x, bullet.y);
+              
+        var damage = bullet.damage;
+        scene.addExpiringText(scene, otherPlayer.x, otherPlayer.y, damage.toString())
+
+        otherPlayer.tryDamage(damage);
+        scene.player.score += damage;
+        //scene.sound.play("enemyHurtSound");
+        
+        var socket = scene.getSocket();        
+        if(socket != null) {
+            // sends back to server
+            socket.emit('bulletDestruction', {bulletId: bullet.bulletId});                
+        }
+
+
 
         bullet.destroy();
     }
