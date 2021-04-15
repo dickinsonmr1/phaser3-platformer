@@ -320,10 +320,13 @@ export class MainScene extends Phaser.Scene {
 
             var otherPlayer = this.otherPlayers.find(item => item.playerId === otherPlayersFromSocketClient[i].playerId);            
             if(otherPlayer != null) {
+                // TODO: figure out how to indicate dirty bit for other player change
                 otherPlayer.x = otherPlayersFromSocketClient[i].x;
                 otherPlayer.y = otherPlayersFromSocketClient[i].y;
                 otherPlayer.flipX = otherPlayersFromSocketClient[i].flipX;
-                otherPlayer.play(otherPlayersFromSocketClient[i].animKey, true);
+                console.log('other player anim key: ' + otherPlayersFromSocketClient[i].animKey);
+                if(otherPlayersFromSocketClient[i].animKey != null)
+                    otherPlayer.play(otherPlayersFromSocketClient[i].animKey, true);
             }
         }
     
