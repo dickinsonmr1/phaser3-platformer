@@ -226,15 +226,18 @@ export class MainScene extends Phaser.Scene {
         })
         this.otherBullets.setDepth(Constants.depthBullets);
        
-        var mySocketPlayer = this.sceneController.socketClient.getMyPlayer();
-        var otherSocketPlayers = this.sceneController.socketClient.getOtherPlayers(mySocketPlayer.playerId);
+        var playerId = 'player1';
+        if(this.isMultiplayer) {
+            var mySocketPlayer = this.sceneController.socketClient.getMyPlayer();
+            playerId = mySocketPlayer.playerId;
+        }
 
         this.player = new Player({
             scene: this,
             x: 20,
             y: 600,
             key: "player1",
-            playerId: mySocketPlayer.playerId,
+            playerId: playerId,
             isMyPlayer: true
             });        
         this.player.init();
@@ -242,21 +245,24 @@ export class MainScene extends Phaser.Scene {
 
         this.sceneController.hudScene.setPlayerId(this.player.playerId);
         
-        var offsetX = 0;
-        for (var i = 0; i < otherSocketPlayers.length; i++) {
-            
-            offsetX += 100;
-            var tempPlayer = new Player({
-                scene: this,
-                x: 100 + offsetX,
-                y: 600,
-                key: "player"+(i+1),
-                playerId: otherSocketPlayers[i].playerId,
-                isMyPlayer: false
-                });        
-            tempPlayer.init();
+        if(this.isMultiplayer) {
+            var otherSocketPlayers = this.sceneController.socketClient.getOtherPlayers(mySocketPlayer.playerId);
+            var offsetX = 0;
+            for (var i = 0; i < otherSocketPlayers.length; i++) {
+                
+                offsetX += 100;
+                var tempPlayer = new Player({
+                    scene: this,
+                    x: 100 + offsetX,
+                    y: 600,
+                    key: "player"+(i+1),
+                    playerId: otherSocketPlayers[i].playerId,
+                    isMyPlayer: false
+                    });        
+                tempPlayer.init();
 
-            this.otherPlayers.push(tempPlayer);            
+                this.otherPlayers.push(tempPlayer);            
+            }
         }
         
         //var color = '#CFEFFC';
@@ -312,23 +318,25 @@ export class MainScene extends Phaser.Scene {
         this.world.updateSky(this.cameras.main);
 
         this.processInput();
-        
-        // process input from other players / sockets
-        var otherPlayersFromSocketClient = this.sceneController.socketClient.players;
-        
-        for (var i = 0; i < otherPlayersFromSocketClient.length; i++) {
 
-            var otherPlayer = this.otherPlayers.find(item => item.playerId === otherPlayersFromSocketClient[i].playerId);            
-            if(otherPlayer != null) {
-                // TODO: figure out how to indicate dirty bit for other player change
-                otherPlayer.x = otherPlayersFromSocketClient[i].x;
-                otherPlayer.y = otherPlayersFromSocketClient[i].y;
-                otherPlayer.flipX = otherPlayersFromSocketClient[i].flipX;
-                console.log('other player anim key: ' + otherPlayersFromSocketClient[i].animKey);
-                if(otherPlayersFromSocketClient[i].animKey != null)
-                    otherPlayer.play(otherPlayersFromSocketClient[i].animKey, true);
-            }
+        if(this.isMultiplayer) {            
+            // process input from other players / sockets
+            var otherPlayersFromSocketClient = this.sceneController.socketClient.players;        
+            for (var i = 0; i < otherPlayersFromSocketClient.length; i++) {
+
+                var otherPlayer = this.otherPlayers.find(item => item.playerId === otherPlayersFromSocketClient[i].playerId);            
+                if(otherPlayer != null) {
+                    // TODO: figure out how to indicate dirty bit for other player change
+                    otherPlayer.x = otherPlayersFromSocketClient[i].x;
+                    otherPlayer.y = otherPlayersFromSocketClient[i].y;
+                    otherPlayer.flipX = otherPlayersFromSocketClient[i].flipX;
+                    console.log('other player anim key: ' + otherPlayersFromSocketClient[i].animKey);
+                    if(otherPlayersFromSocketClient[i].animKey != null)
+                        otherPlayer.play(otherPlayersFromSocketClient[i].animKey, true);
+                }
+            }            
         }
+        
     
         //for (var i = 0; i < this.otherPlayers.length; i++) 
             //this.otherPlayers[i].stand();
@@ -340,9 +348,10 @@ export class MainScene extends Phaser.Scene {
         this.player.update();        
         this.updateExpiringText();
         
-        for (var i = 0; i < this.otherPlayers.length; i++) 
-            this.otherPlayers[i].update();
-
+        if(this.isMultiplayer) {
+            for (var i = 0; i < this.otherPlayers.length; i++) 
+                this.otherPlayers[i].update();
+        }
         /*
         var otherBulletsFromSocketClient = this.sceneController.socketClient.bullets;
         for (var i = 0; i < otherBulletsFromSocketClient.length; i++) {
@@ -451,7 +460,9 @@ export class MainScene extends Phaser.Scene {
 
         this.sceneController.hudScene.setInfoText(weapon.weaponDisplayName + " acquired", 2000);
 
-        this.getSocket().emit("weaponCollectedByPlayer");
+        if(this.isMultiplayer)
+            this.getSocket().emit("weaponCollectedByPlayer");
+
         //this.addExpiringText(this, this.player.x, this.player.y, weapon.weaponDisplayName);
 
         return true;
@@ -620,10 +631,12 @@ export class MainScene extends Phaser.Scene {
 
         scene.sound.play("enemyHurtSound");
         
-        var socket = scene.getSocket();        
-        if(socket != null) {
-            // sends back to server
-            socket.emit('bulletDestruction', {bulletId: bullet.bulletId});                
+        if(this.isMultiplayer) {
+            var socket = scene.getSocket();        
+            if(socket != null) {
+                // sends back to server
+                socket.emit('bulletDestruction', {bulletId: bullet.bulletId});                
+            }
         }
 
         bullet.destroy();
@@ -640,13 +653,13 @@ export class MainScene extends Phaser.Scene {
         scene.player.score += damage;
         //scene.sound.play("enemyHurtSound");
         
-        var socket = scene.getSocket();        
-        if(socket != null) {
-            // sends back to server
-            socket.emit('bulletDestruction', {bulletId: bullet.bulletId});                
+        if(this.isMultiplayer) {
+            var socket = scene.getSocket();        
+            if(socket != null) {
+                // sends back to server
+                socket.emit('bulletDestruction', {bulletId: bullet.bulletId});                
+            }
         }
-
-
 
         bullet.destroy();
     }
@@ -655,10 +668,12 @@ export class MainScene extends Phaser.Scene {
         var scene = <MainScene>bullet.getScene();
         scene.weaponHitParticleEmitter.explode(2, bullet.x, bullet.y);
 
-        var socket = scene.getSocket();        
-        if(socket != null) {
-            // sends back to server
-            socket.emit('bulletDestruction', {bulletId: bullet.bulletId});                
+        if(this.isMultiplayer) {
+            var socket = scene.getSocket();        
+            if(socket != null) {
+                // sends back to server
+                socket.emit('bulletDestruction', {bulletId: bullet.bulletId});                
+            }
         }
 
         bullet.destroy();

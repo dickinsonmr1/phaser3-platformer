@@ -124,4 +124,8 @@ export class Client {
     playerMovement(x: number, y: number) {
         //this.socket.emit('playerMovement', new PlayerOnServer(x, y, this.socket.id));//{ x: player.x, y: player.y });
     }
+
+    isConnectedToServer() {
+        return this.socket.connected;
+    }
 }
