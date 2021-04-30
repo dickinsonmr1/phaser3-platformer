@@ -507,8 +507,10 @@ export class MainScene extends Phaser.Scene {
     }
 
     playerTouchingSpringHandler(player: any, spring: any): void {
-        spring.tryBounce(player.getScene().sound);
-        player.tryBounce();       
+        if(!player.isInSpaceship) {
+            spring.tryBounce(player.getScene().sound);
+            player.tryBounce();       
+        }
     }
 
     playerTouchingCheckpointHandler(player: any, flag: any): void {
@@ -516,16 +518,19 @@ export class MainScene extends Phaser.Scene {
         //player.tryBounce();       
     }
 
-    playerTouchingPortalHandler(player: any, portal: any): void {                        
-        portal.activate();
-
-        player.setAvailableInteraction(portal);
-        player.displayInteractTextAndImage(portal.x, portal.y);
+    playerTouchingPortalHandler(player: any, portal: any): void {   
+        if(!player.isInSpaceship) {                     
+            portal.activate();
+            player.setAvailableInteraction(portal);
+            player.displayInteractTextAndImage(portal.x, portal.y);
+        }
     }
 
-    playerTouchingSwitchHandler(player: any, switchItem: any): void {                
-        player.setAvailableInteraction(switchItem);
-        player.displayInteractTextAndImage(switchItem.x, switchItem.y);
+    playerTouchingSwitchHandler(player: any, switchItem: any): void {      
+        if(!player.isInSpaceship) {
+            player.setAvailableInteraction(switchItem);
+            player.displayInteractTextAndImage(switchItem.x, switchItem.y);
+        }
     }
 
     enemyTouchingSpringHandler(enemy: any, spring: any): void {
@@ -590,7 +595,8 @@ export class MainScene extends Phaser.Scene {
         return true;
     }
 
-    playerTouchingSpaceshipHandler(player: any, spaceship: any): void {       
+    playerTouchingSpaceshipHandler(player: any, spaceship: any): void {  
+             
         if(!player.isInSpaceship && spaceship.transitionTime == 0) {
             player.displayInteractTextAndImage(spaceship.x, spaceship.y);
             player.setAvailableInteraction(spaceship);
