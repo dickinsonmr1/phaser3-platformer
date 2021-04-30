@@ -66,13 +66,13 @@
         var text = this.scene.add.text(this.x, this.y - this.GetTextOffsetY, this.destinationName,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: "36",
             align: 'center',            
             color:"rgb(255,255,255)",
         });
         text.setAlpha(0.9);
         text.setOrigin(0.5, 0);
         text.setDepth(7);
+        text.setFontSize(36);
         text.setStroke('rgb(0,0,0)', 4);        
 
         this.portalText = text;

@@ -87,12 +87,12 @@ import { SceneController } from "./sceneController";
         this.gemSummaryText = this.add.text(this.summaryStartX(), this.summaryStartY(), "Gems: " + this.gemsCollected + "/" + this.totalGems,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: this.summaryFontSize().toString(),
             align: 'left',            
             color:"rgb(255,255,255)",
         });
         this.gemSummaryText.setOrigin(0, 0.5);
         this.gemSummaryText.setStroke('rgb(0,0,0)', 16);
+        this.gemSummaryText.setFontSize(this.summaryFontSize());
 
         this.enemySummaryText = this.add.text(
                                     this.summaryStartX(),
@@ -106,6 +106,7 @@ import { SceneController } from "./sceneController";
         });
         this.enemySummaryText.setOrigin(0, 0.5);
         this.enemySummaryText.setStroke('rgb(0,0,0)', 16);
+        this.enemySummaryText.setFontSize(this.summaryFontSize());
 
         this.scoreSummaryText = this.add.text(
                                     this.summaryStartX(),
@@ -113,12 +114,12 @@ import { SceneController } from "./sceneController";
                                     "Score: " +  + this.score,
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: this.summaryFontSize().toString(),
             align: 'left',            
             color:"rgb(255,255,255)",
         });
         this.scoreSummaryText.setOrigin(0, 0.5);
         this.scoreSummaryText.setStroke('rgb(0,0,0)', 16);
+        this.scoreSummaryText.setFontSize(this.summaryFontSize());
 
         this.elapsedTimeSummaryText = this.add.text(
                                     this.summaryStartX(),
@@ -126,15 +127,13 @@ import { SceneController } from "./sceneController";
                                     "Elapsed Time: " + this.getElapsedTimeString(this.elapsedTime),
         {
             fontFamily: 'KenneyRocketSquare',
-            fontSize: this.summaryFontSize().toString(),
             align: 'left',            
             color:"rgb(255,255,255)",
         });
         this.elapsedTimeSummaryText.setOrigin(0, 0.5);
         this.elapsedTimeSummaryText.setStroke('rgb(0,0,0)', 16);
-
-
-     
+        this.elapsedTimeSummaryText.setFontSize(this.summaryFontSize());
+    
         //this.menu.setFooter(this, "©2020 by Mark Dickinson" );
         //this.menu.setFooter2(this, "Powered by Phaser 3  //  Assets by Kenney.nl" );
 

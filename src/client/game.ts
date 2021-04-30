@@ -24,8 +24,8 @@ var config: Phaser.Types.Core.GameConfig = {
     default: "arcade",
     arcade: {
       gravity: { y: 500 },
-      debug: true,
-      debugShowBody: true,
+      debug: false,
+      debugShowBody: false,
       debugShowStaticBody: true,
       debugShowVelocity: true,
       debugVelocityColor: 0xffff00,
