@@ -49,7 +49,7 @@ export class LaserPistol extends Weapon {
             'playerGunLaser1',
            'laser1Sound',
            50,
-           45,
+           35,
            300,
            10);
     }
@@ -63,7 +63,7 @@ export class LaserRepeater extends Weapon {
             'playerGunLaser2',
            'laser2Sound',
            100,
-           45,
+           35,
            200,
            30);
     }
@@ -77,7 +77,7 @@ export class PulseCharge extends Weapon {
             'playerGunLaser3',
            'laser3Sound',
            150,
-           70,
+           30,
            500,
            10);
     }
@@ -91,7 +91,7 @@ export class RocketLauncher extends Weapon {
             'playerRocket2',
            'laser4Sound',
            500,
-           45,
+           35,
            750,
            5);
     }
