@@ -18,8 +18,8 @@
     hudComponent: HUDComponent;
 
     private get PlayerIconX(): number { return this.game.canvas.width / 2 - 64 - 50; }
-    private get HeartStartX(): number { return this.PlayerIconX + 100; }
-    private get HeartOffsetX(): number { return 50; }
+    private get HealthBarStartX(): number { return this.PlayerIconX + 100; }
+    private get HealthBarOffsetX(): number { return 50; }
 
     private get fontSize(): number { return 48; }
 
@@ -65,42 +65,6 @@
         this.hudComponent = new HUDComponent();
         this.hudComponent.playerHudIcon = this.add.sprite(this.PlayerIconX, this.HudBaseOffsetY, 'hudSprites', 'hudPlayer_blue.png');
         this.hudComponent.playerHudIcon.setScrollFactor(0);
-
-        this.hudComponent.heart1 = this.add.image(this.HeartStartX, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_full.png');
-        this.hudComponent.heart1.setScale(0.5);
-
-        this.hudComponent.heart2 = this.add.sprite(this.HeartStartX + this.HeartOffsetX, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_full.png');
-        this.hudComponent.heart2.setScale(0.5);
-        
-        this.hudComponent.heart3 = this.add.sprite(this.HeartStartX + this.HeartOffsetX * 2, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_full.png');
-        this.hudComponent.heart3.setScale(0.5);
-        
-        this.hudComponent.heart4 = this.add.sprite(this.HeartStartX + this.HeartOffsetX * 3, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_full.png');
-        this.hudComponent.heart4.setScale(0.5);
-
-        this.hudComponent.heartHalf1 = this.add.image(this.HeartStartX, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_half.png');
-        this.hudComponent.heartHalf1.setScale(0.5);
-
-        this.hudComponent.heartHalf2 = this.add.sprite(this.HeartStartX + this.HeartOffsetX, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_half.png');
-        this.hudComponent.heartHalf2.setScale(0.5);
-        
-        this.hudComponent.heartHalf3 = this.add.sprite(this.HeartStartX + this.HeartOffsetX * 2, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_half.png');
-        this.hudComponent.heartHalf3.setScale(0.5);
-        
-        this.hudComponent.heartHalf4 = this.add.sprite(this.HeartStartX + this.HeartOffsetX * 3, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_half.png');
-        this.hudComponent.heartHalf4.setScale(0.5);
-               
-        this.hudComponent.heartEmpty1 = this.add.image(this.HeartStartX, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_empty.png');
-        this.hudComponent.heartEmpty1.setScale(0.5);
-
-        this.hudComponent.heartEmpty2 = this.add.image(this.HeartStartX + this.HeartOffsetX, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_empty.png');
-        this.hudComponent.heartEmpty2.setScale(0.5);
-
-        this.hudComponent.heartEmpty3 = this.add.image(this.HeartStartX + this.HeartOffsetX * 2, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_empty.png');
-        this.hudComponent.heartEmpty3.setScale(0.5);
-
-        this.hudComponent.heartEmpty4 = this.add.image(this.HeartStartX + this.HeartOffsetX * 3, this.HudBaseOffsetY, 'hudSprites', 'hudHeart_empty.png');
-        this.hudComponent.heartEmpty4.setScale(0.5);
 
         this.hudComponent.gem = this.add.image(this.GemIconX, this.HudBaseOffsetY, 'hudSprites', 'hudJewel_green.png');
         this.hudComponent.gem.setScale(1.0);
@@ -180,7 +144,7 @@
         this.setHealth(maxHealth);
         
         this.healthBar = new HealthBar(this);
-        this.healthBar.init(this.HeartStartX - 20, this.HudBaseOffsetY + 50, maxHealth,
+        this.healthBar.init(this.HealthBarStartX - 20, this.HudBaseOffsetY - 10, maxHealth,
             200, 30);
 
         this.healthBar.updateHealth(maxHealth);
@@ -193,19 +157,7 @@
     }
 
     setHealth(health: number): void {        
-        this.hudComponent.heartHalf1.visible = (health == 1);
-        this.hudComponent.heart1.visible = (health >= 2);        
-        this.hudComponent.heartHalf2.visible = (health == 3);
-        this.hudComponent.heart2.visible = (health >= 4);        
-        this.hudComponent.heartHalf3.visible = (health == 5);
-        this.hudComponent.heart3.visible = (health >= 6);
-        this.hudComponent.heartHalf4.visible = (health == 7);
-        this.hudComponent.heart4.visible = (health == 8);   
 
-        this.hudComponent.heartEmpty1.visible = (health == 0);
-        this.hudComponent.heartEmpty2.visible = (health < 3);
-        this.hudComponent.heartEmpty3.visible = (health < 5);
-        this.hudComponent.heartEmpty4.visible = (health < 7);
     }
 
     updateHealthBar(health: number) {
@@ -245,18 +197,7 @@
 export class HUDComponent {
     hudGroup: Phaser.GameObjects.Group;
     playerHudIcon: Phaser.GameObjects.Image;
-    heart1: Phaser.GameObjects.Image;
-    heart2: Phaser.GameObjects.Image;
-    heart3: Phaser.GameObjects.Image;
-    heart4: Phaser.GameObjects.Image;
-    heartHalf1: Phaser.GameObjects.Image;
-    heartHalf2: Phaser.GameObjects.Image;
-    heartHalf3: Phaser.GameObjects.Image;
-    heartHalf4: Phaser.GameObjects.Image;
-    heartEmpty1: Phaser.GameObjects.Image;
-    heartEmpty2: Phaser.GameObjects.Image;
-    heartEmpty3: Phaser.GameObjects.Image;
-    heartEmpty4: Phaser.GameObjects.Image;
+
     gem: Phaser.GameObjects.Image;
     digit10000: Phaser.GameObjects.Image;
     digit1000: Phaser.GameObjects.Image;
