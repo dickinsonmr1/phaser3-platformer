@@ -14,6 +14,7 @@ import { Switch } from "./switch";
 import { Spaceship } from "./spaceship";
 import { Portal } from "./portal";
 import { Weapon, LaserRepeater } from "./weapon";
+import { HealthBar } from "../client/scenes/healthBar";
 import { MainScene } from "../client/scenes/mainScene";
 import { Socket } from "socket.io-client";
 
@@ -35,6 +36,8 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     private interactText: Phaser.GameObjects.Text;
     private playerNameText: Phaser.GameObjects.Text;
+    private get GetPlayerNameOffsetX(): number { return -20; }
+    private get GetPlayerNameOffsetY(): number { return -10; }
 
     private interactButtonImage: Phaser.GameObjects.Image;
     private activateInteractTime: number;
@@ -93,6 +96,10 @@ export class Player extends Phaser.GameObjects.Sprite {
     public isDucking: boolean;
     public hurtTime: number;
     public health: number;
+
+    public healthBar: HealthBar;
+    private get healthBarOffsetX(): number {return -20;}
+    private get healthBarOffsetY(): number {return 10;}
 
     public static get maxHealth(): number { return 8; }
 
@@ -163,6 +170,13 @@ export class Player extends Phaser.GameObjects.Sprite {
 
         this.hurtTime = 0;
         this.health = Player.maxHealth;
+        this.healthBar = new HealthBar(this.getScene());
+        this.healthBar.init(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY,
+            Player.maxHealth, 
+            100, 15);
+        this.healthBar.setDepth(Constants.depthHealthBar);
+
+
         this.gemsCollected = 0;
         this.score = 0;
         this.enemiesKilled = 0;
@@ -208,7 +222,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         text2.setFontSize(24); 
         
         this.playerNameText = text2;
-        this.alignPlayerNameText(this.x, this.y);
+        this.alignPlayerNameText(this.x + this.GetPlayerNameOffsetX, this.y + this.GetPlayerNameOffsetY);
         this.playerNameText.setOrigin(0, 0.5);
         this.playerNameText.setFontSize(16);
 
@@ -400,6 +414,8 @@ export class Player extends Phaser.GameObjects.Sprite {
             this.playerGun.visible = false;
             body.x = this.currentSpaceship.x + Player.playerOffsetXInSpaceship;
             body.y = this.currentSpaceship.y + Player.playerOffsetYInSpaceship;
+
+            this.healthBar.hide();
         }        
     }
 
@@ -423,6 +439,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         body.setVelocityY(-Player.playerJumpVelocityY);
         this.anims.play('player-jump', true);
         sound.play("jumpSound");
+        this.healthBar.show();
     }
 
 
@@ -483,6 +500,7 @@ export class Player extends Phaser.GameObjects.Sprite {
                 this.scene.events.emit("playerHealthUpdated", this.playerId, this.health);
                 this.scene.sound.play("hurtSound");
                 this.hurtTime = 60;
+                this.healthBar.updateHealth(this.health);
             }
         }
     }
@@ -610,6 +628,9 @@ export class Player extends Phaser.GameObjects.Sprite {
             body.x = this.currentSpaceship.x + Player.playerOffsetXInSpaceship;
             body.y = this.currentSpaceship.y + Player.playerOffsetYInSpaceship;
         }
+        else {
+            this.healthBar.updatePosition(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY);
+        }
 
         this.isInWater = false;
         if(this.hurtTime > 0) {
@@ -648,7 +669,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.xPrevious = this.x;
         this.yPrevious = this.y;
 
-        this.alignPlayerNameText(this.x, this.y);
+        this.alignPlayerNameText(this.x + this.GetPlayerNameOffsetX, this.y + this.GetPlayerNameOffsetY);
 
         //var temp = this.bullets.children.getArray();
         //temp.forEach(item => {

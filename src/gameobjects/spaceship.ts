@@ -33,7 +33,7 @@ import { HealthBar } from "../client/scenes/healthBar";
      private get healthBarOffsetX(): number {return -55;}
      private get healthBarOffsetY(): number {return -75;}
      private get laserBeam0ffsetX(): number {return -0;}
-     private get laserBeamOffsetY(): number {return 10;}
+     private get laserBeamOffsetY(): number {return 20;}
      private get laserBeamPerFrameY(): number {return 20;}
      private get laserBeamMaxHeight(): number {return 300;}
 
@@ -79,7 +79,7 @@ import { HealthBar } from "../client/scenes/healthBar";
         this.anims.play(this.unmannedAnim, true);
 
         this.laserBeam = this.scene.add.sprite(this.x + this.laserBeam0ffsetX, this.y + this.laserBeamOffsetY, "alienShipLaserSprites", "laserBlue2.png");
-        this.laserBeam.setDepth(Constants.depthBullets);
+        this.laserBeam.setDepth(Constants.depthSpaceshipLaserBeam);
         //this.laserBeam.alpha = 0.6;
         this.laserBeam.setAlpha(1, 1, 0, 0)        
         this.laserBeam.setOrigin(0.5, 0);
@@ -214,6 +214,16 @@ import { HealthBar } from "../client/scenes/healthBar";
         }      
     }
 
+    trySetLaserBeamPosition() {
+        /*
+        this.laserBeam.setScale(this.weaponTime / this.laserBeamMaxHeight, 1);
+        this.laserBeam.displayHeight = this.weaponTime;
+        this.laserBeam.height = this.weaponTime;        
+        this.laserBeam.setPosition(this.x + this.laserBeam0ffsetX, this.y + this.laserBeamOffsetY);
+        this.laserBeam.setOrigin(0.5, 0);
+        */
+    }
+
     preUpdate(time, delta): void {
         super.preUpdate(time, delta);
         
@@ -236,8 +246,9 @@ import { HealthBar } from "../client/scenes/healthBar";
         this.laserBeam.setScale(this.weaponTime / this.laserBeamMaxHeight, 1);
         this.laserBeam.displayHeight = this.weaponTime;
         this.laserBeam.height = this.weaponTime;        
-        this.laserBeam.setPosition(this.x + this.laserBeam0ffsetX, this.y + this.laserBeamOffsetY);
         this.laserBeam.setOrigin(0.5, 0);
+        this.laserBeam.setPosition(this.x + this.laserBeam0ffsetX, this.y + this.laserBeamOffsetY);
+        
         //this.laserBeam.setDisplayOrigin(0.5, 0);
 
         if(!this.currentlyFiring && this.weaponTime > 0) {

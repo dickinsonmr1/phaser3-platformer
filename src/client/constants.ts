@@ -76,6 +76,8 @@ export class Constants {
 
     public static get depthSprings(): number {return 2;}
     public static get depthPortals(): number {return 2;}
+    public static get depthSpaceshipLaserBeam(): number {return 2;}
+
     
     public static get depthEnemies(): number {return 3;}
     public static get depthPlayer(): number  {return 3;}
