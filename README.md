@@ -1,3 +1,5 @@
+![Alt text](/docs/images/platformer-screenshot.png?raw=true "Screenshot")
+
 Porting code from my Phaser 2 sample game here:
 - https://github.com/dickinsonmr1/phaserjs-platformer2
 
