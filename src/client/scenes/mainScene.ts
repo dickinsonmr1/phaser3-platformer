@@ -9,21 +9,17 @@
 import "phaser";
 import { Player } from "../../gameobjects/player";
 import { Weapon } from "../../gameobjects/weapon";
-import { Enemy } from "../../gameobjects/enemy";
-import { Spring } from "../../gameobjects/spring";
-import { Portal } from "../../gameobjects/portal";
-import { Checkpoint } from "../../gameobjects/checkpoint";
 import { Constants } from "../constants";
 import { Bullet } from "../../gameobjects/bullet";
 import { World } from "../world/world";
 import { ExpiringText } from "../../gameobjects/expiringText";
-import { Switch } from "../../gameobjects/switch";
 import { Spaceship } from "../../gameobjects/spaceship";
 import { RocketLauncher, PulseCharge, LaserRepeater, LaserPistol } from "../../gameobjects/weapon";
 import { SceneController } from "./sceneController";
 import { Animations } from "./animations";
 import { Socket } from "socket.io-client";
 import { PlayerInterface } from "../../gameobjects/playerInterface";
+import { ExpiringMessagesComponent } from "../../gameobjects/expiringMessagesComponent";
 
 export class MainScene extends Phaser.Scene {
     
@@ -68,7 +64,8 @@ export class MainScene extends Phaser.Scene {
     gameTimeStarted: number;
     clock: Phaser.Time.Clock;
 
-    expiringMessagesGroup: Phaser.GameObjects.Group;
+    //expiringMessagesGroup: Phaser.GameObjects.Group;
+    expiringMessagesComponent: ExpiringMessagesComponent;
      
     constructor(sceneController: SceneController) {
         super({
@@ -209,11 +206,9 @@ export class MainScene extends Phaser.Scene {
                 
         this.enemies = new Array<Phaser.GameObjects.Sprite>();
 
-        this.expiringMessagesGroup = this.physics.add.group({
-            allowGravity: false,
-            velocityY: 100
-        })
-
+        this.expiringMessagesComponent = new ExpiringMessagesComponent(this);
+        this.expiringMessagesComponent.init();
+        
         this.springs = new Array<Phaser.GameObjects.Sprite>();
         this.flags = new Array<Phaser.GameObjects.Sprite>();
         this.portals = new Array<Phaser.GameObjects.Sprite>();
@@ -346,7 +341,7 @@ export class MainScene extends Phaser.Scene {
         //}
 
         this.player.update();        
-        this.updateExpiringText();
+        this.expiringMessagesComponent.update();
         
         if(this.isMultiplayer) {
             for (var i = 0; i < this.otherPlayers.length; i++) 
@@ -399,14 +394,18 @@ export class MainScene extends Phaser.Scene {
     }
 
     collectGem (sprite, tile): boolean {
+        
+        let scene = this.world.scene;
+        scene.addExpiringText(scene, sprite.x, sprite.y + 64, Constants.gemScore.toString());
+        //this.events.emit("expiringTextEmitted", sprite.x, sprite.y + 64, Constants.gemScore.toString());
+        this.player.score += Constants.gemScore;
+        
         this.world.removeTileAndNotifyServer(tile.x, tile.y);
         this.sound.play("gemSound", { volume: 0.4 });
         this.events.emit("gemCollected", ++this.player.gemsCollected);
+        
 
-        let scene = this.world.scene;
-        scene.addExpiringText(scene, sprite.x, sprite.y + 64, Constants.gemScore.toString());
-        this.player.score += Constants.gemScore;
-
+        
         return true;
     }
 
@@ -690,33 +689,9 @@ export class MainScene extends Phaser.Scene {
     }
 
     private addExpiringText(scene: MainScene, x: number, y: number, text: string, ) {                
-        var expiringText = new ExpiringText({
-            scene: scene,
-            x: x,
-            y: y,
-            text: text
-            });       
-
-        expiringText.init(1000);
-        scene.expiringMessagesGroup.add(expiringText);
+        this.expiringMessagesComponent.emitExpiringText(x, y, text);
     }
     
-    updateExpiringText(): void {
-        this.expiringMessagesGroup.getChildren().forEach(x => {
-
-            var message = <Phaser.GameObjects.Text> x;
-            message.setAlpha(message.alpha);
-
-            var body = <Phaser.Physics.Arcade.Body>x.body;
-
-            body.setVelocity(0, -200);
-            message.alpha -= 0.02;
-
-            if(message.alpha <= 0)
-                message.destroy();
-        });
-    }
-
     addBulletFromServer(bulletFromServer: any): void {
         var tempBullet = new Bullet({
             scene: this,

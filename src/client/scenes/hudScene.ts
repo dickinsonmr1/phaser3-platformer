@@ -7,6 +7,7 @@
  /// <reference path="../../../node_modules/phaser/types/phaser.d.ts"/>
 
  import "phaser";
+import { ExpiringText } from "../../gameobjects/expiringText";
  import { Player } from "../../gameobjects/player";
  import { Constants } from "../constants";
  import { HealthBar } from "./healthBar";
@@ -101,7 +102,7 @@
         this.hudComponent.infoText.setStroke('rgb(0,0,0)', 16);
         this.hudComponent.infoText.setFontSize(this.infoTextFontSize);
         this.hudComponent.infoTextExpiryGameTime = this.game.getTime();
-        
+
         //  Grab a reference to the Game Scene
         let ourGame = this.scene.get('MainScene');
 
@@ -127,12 +128,16 @@
             this.setammoCount(playerAmmoCount);
         }, this);
 
+        ourGame.events.on('expiringTextEmitted', function (x, y, amount) {
+            //this.emitExpiringText(x, y, amount);
+        }, this);
+
         ourGame.events.on('weaponCollected', function (ammoCount) {
             this.setammoCount(ammoCount);
         }, this);
 
         ourGame.events.on('enemyDamage', function (x, y, damage) {
-            this.emitExpiringText(x, y, damage);
+            //this.emitExpiringText(x, y, damage);
         }, this);
         
         //  Listen for events from it
@@ -183,6 +188,8 @@
 
         this.hudComponent.infoText.setAlpha(this.hudComponent.infoTextAlpha);
     }
+
+    
    
     update(): void {
         if(this.game.getTime() > this.hudComponent.infoTextExpiryGameTime) {
@@ -191,6 +198,8 @@
                 this.hudComponent.infoText.setAlpha(this.hudComponent.infoTextAlpha);
             }
         } 
+
+       
     }
 }
 
@@ -223,4 +232,6 @@ export class HUDComponent {
     infoText: Phaser.GameObjects.Text;
     infoTextAlpha: number;
     infoTextExpiryGameTime: number;
+
+
 }

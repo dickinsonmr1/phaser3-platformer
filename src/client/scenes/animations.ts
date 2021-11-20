@@ -44,7 +44,7 @@ export class Animations {
             key: 'spaceshipBlue_manned',
             frames: [{key: 'alienShipSprites', frame: 'shipBlue_manned.png'}],
             frameRate: 10,
-        });    
+        });
 
         ////////////////////////////////////////////////////////////////
         // enemy 1: walking abstract

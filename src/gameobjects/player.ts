@@ -328,8 +328,11 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     tryMoveSpaceship(leftAxisX: number, leftAxisY: number): void {
         if(this.isInSpaceship) {
-            var body = <Phaser.Physics.Arcade.Body>this.currentSpaceship.body;
-            body.setVelocity(Spaceship.spaceshipVelocity * leftAxisX, Spaceship.spaceshipVelocity * leftAxisY);
+            var spaceShipBody = <Phaser.Physics.Arcade.Body>this.currentSpaceship.body;
+            spaceShipBody.setVelocity(Spaceship.spaceshipVelocity * leftAxisX, Spaceship.spaceshipVelocity * leftAxisY);
+            
+            var playerBody = <Phaser.Physics.Arcade.Body>this.body;
+            playerBody.setVelocity(spaceShipBody.velocity.x, spaceShipBody.velocity.y);            
         }
     }
 
@@ -627,6 +630,8 @@ export class Player extends Phaser.GameObjects.Sprite {
             var body = <Phaser.Physics.Arcade.Body>this.body;
             body.x = this.currentSpaceship.x + Player.playerOffsetXInSpaceship;
             body.y = this.currentSpaceship.y + Player.playerOffsetYInSpaceship;
+
+            body.setVelocity(this.currentSpaceship.body.velocity.x, this.currentSpaceship.body.velocity.y);
         }
         else {
             this.healthBar.updatePosition(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY);

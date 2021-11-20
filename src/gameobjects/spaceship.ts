@@ -10,6 +10,7 @@
  import "phaser";
  import { Scene } from "phaser";
 import { HealthBar } from "../client/scenes/healthBar";
+import { throws } from "assert";
  
  export class Spaceship extends Phaser.GameObjects.Sprite {
      public activated: boolean;
@@ -59,7 +60,6 @@ import { HealthBar } from "../client/scenes/healthBar";
 
         //this.displayWidth = 93;
         //this.displayHeight = 68;
-
  
         this.scene.physics.world.enable(this, 0);   
 
@@ -248,6 +248,8 @@ import { HealthBar } from "../client/scenes/healthBar";
         this.laserBeam.height = this.weaponTime;        
         this.laserBeam.setOrigin(0.5, 0);
         this.laserBeam.setPosition(this.x + this.laserBeam0ffsetX, this.y + this.laserBeamOffsetY);
+        this.laserBeam.body.velocity.x = this.body.velocity.x;
+        this.laserBeam.body.velocity.y = this.body.velocity.y;
         
         //this.laserBeam.setDisplayOrigin(0.5, 0);
 

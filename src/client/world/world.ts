@@ -487,7 +487,7 @@ export class World {
         this.layer04.setDepth(Constants.depthLayer04);
         this.layer05.setDepth(Constants.depthLayer05);
 
-        this.scene.expiringMessagesGroup.setDepth(Constants.depthExpiringMessages); 
+        //this.scene.expiringMessagesGroup.setDepth(Constants.depthExpiringMessages); 
 
         player.bullets = this.scene.physics.add.group({
             allowGravity: false
