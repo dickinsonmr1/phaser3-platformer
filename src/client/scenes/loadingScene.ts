@@ -59,6 +59,10 @@
         this.load.atlasXML('sprites', './assets/sprites/HUD/spritesheet_hud.png', './assets/sprites/HUD/spritesheet_hud.xml');
     }
 
+    restart(): void {
+        this.scene.restart();
+    }
+
     create(): void {
 
         this.input.keyboard.resetKeys();
@@ -134,7 +138,7 @@
 
         if(this.loadingTextAlpha < 1) {
 
-            this.loadingTextAlpha += 0.05;
+            this.loadingTextAlpha += 0.2;
             this.loadingText.setAlpha(this.loadingTextAlpha);
         }        
 

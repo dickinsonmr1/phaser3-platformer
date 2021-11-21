@@ -180,7 +180,8 @@ import { SceneController } from "./sceneController";
         if(Phaser.Input.Keyboard.JustDown(this.selectKey))  {
             if(this.menu.selectedItemIndex == 0) {
                 this.input.keyboard.resetKeys();
-                this.sceneController.preloadMainSceneAndDisplayLoadingScene('world-00-00', false);
+                this.sceneController.removeGameScenes();
+                this.sceneController.preloadGameScenes('world-00-00', false);
                 this.menu.refreshColorsAndMarker();
                 this.sound.play("selectSound");
             }

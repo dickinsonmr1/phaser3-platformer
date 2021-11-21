@@ -7,6 +7,8 @@ import { HudScene } from "./hudScene";
 import { GameProgress } from "./gameProgress";
 import { LevelCompleteScene } from "./levelCompleteScene";
 import { Client } from "../socketClient"
+import { throws } from "assert";
+import { timeStamp } from "console";
 
 export class SceneController extends Phaser.Scene {
 
@@ -72,42 +74,45 @@ export class SceneController extends Phaser.Scene {
         
         this.menuBackgroundScene = new MenuBackgroundScene(this);
         this.game.scene.add("MenuBackgroundScene", this.menuBackgroundScene);
-                
-        this.loadingScene = new LoadingScene(this);
-        this.game.scene.add("LoadingScene", this.loadingScene);
-
-        this.mainScene = new MainScene(this);
-        this.game.scene.add("MainScene", this.mainScene);
-
-        this.pauseScene = new PauseScene(this);
-        this.game.scene.add("PauseScene", this.pauseScene);
-
-        this.hudScene = new HudScene(this);
-        this.game.scene.add("HudScene", this.hudScene);     
-        
-        this.levelCompleteScene = new LevelCompleteScene(this);
-        this.game.scene.add("LevelCompleteScene", this.levelCompleteScene);
 
         this.elapsedTimeInMs = 0;
-        this.loadTitleScene();        
+        this.launchMenuScenes();        
     }
 
     update(): void {
 
     }
 
-    loadTitleScene() {
+    launchMenuScenes() {
         this.scene.launch("TitleScene");
         this.scene.launch("MenuBackgroundScene");
     }
 
-    preloadMainSceneAndDisplayLoadingScene(destinationName: string, isMultiplayer: boolean) {
-        this.scene.stop('TitleScene');             
+    preloadGameScenes(destinationName: string, isMultiplayer: boolean) {
+
+        this.scene.sleep('TitleScene');             
+        var objectiveText = "Collect 100 gems";
+
+        this.loadingScene = new LoadingScene(this);
+        this.game.scene.add("LoadingScene", this.loadingScene);
+        // scene.launch calls init(data)
+        this.scene.launch('LoadingScene', { id: 0, worldName: destinationName, objective: objectiveText, isMultiplayer: false });
+        this.scene.bringToTop("LoadingScene");      
         
-        this.scene.launch('MainScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems", isMultiplayer: isMultiplayer });
-        this.scene.launch("HudScene");
-        this.scene.launch('LoadingScene', { id: 0, worldName: destinationName, objective: "Collect 100 gems", isMultiplayer: isMultiplayer });
-        //this.scene.launch('HudScene');        
+        this.mainScene = new MainScene(this);
+        this.game.scene.add("MainScene", this.mainScene);
+        // scene.launch calls init(data)
+        this.scene.launch('MainScene', { id: 0, worldName: destinationName, objective: objectiveText, isMultiplayer: isMultiplayer });
+
+        this.pauseScene = new PauseScene(this);
+        this.game.scene.add("PauseScene", this.pauseScene);
+
+        this.hudScene = new HudScene(this);
+        this.game.scene.add("HudScene", this.hudScene);    
+        this.scene.launch('HudScene');
+        
+        this.levelCompleteScene = new LevelCompleteScene(this);
+        this.game.scene.add("LevelCompleteScene", this.levelCompleteScene);       
     }
 
     warpViaPortal(destinationName: string) {
@@ -137,6 +142,8 @@ export class SceneController extends Phaser.Scene {
         var totalEnemies = this.mainScene.world.totalEnemies;
         var worldName = this.mainScene.worldName;
 
+        this.scene.sendToBack("HudScene");      
+        this.scene.sleep('hudScene');
         this.mainScene.fadeOutToWhite();
 
         //var destinationName = this.mainScene.worldName;
@@ -145,7 +152,8 @@ export class SceneController extends Phaser.Scene {
 
         let elapsedTime = this.elapsedTimeInMs;
         this.scene.launch('LevelCompleteScene', { gemCount, totalGems, score, enemiesKilled, totalEnemies, worldName, elapsedTime });
-                 
+        
+
         this.mainScene.scene.transition({
             target: 'MenuBackgroundScene',
             duration: 2000,
@@ -154,23 +162,11 @@ export class SceneController extends Phaser.Scene {
         });
 
         this.elapsedTimeInMs = 0;
-        this.scene.sleep('MainScene');
-        this.scene.sleep('HudScene');
-        this.scene.sleep('PauseScene');
 
-        /*
-        this.mainScene.fadeOutCamera();
-
-        var destinationName = this.mainScene.worldName;
-        var gameProgress = new GameProgress();
-        gameProgress.save(destinationName);
-
-        this.scene.stop('MainScene');
-        this.scene.stop('HudScene');
-        this.scene.stop('PauseScene');
-
-        this.loadTitleScene();
-        */
+        this.scene.remove('LoadingScene');
+        this.scene.remove('MainScene');
+        this.scene.remove('HudScene');
+        this.scene.remove('PauseScene');
     }
 
     mainSceneLoaded() {
@@ -231,11 +227,17 @@ export class SceneController extends Phaser.Scene {
         var gameProgress = new GameProgress();
         gameProgress.save(destinationName);
 
-        this.scene.stop('MainScene');
-        this.scene.stop('HudScene');
-        this.scene.stop('PauseScene');
-        this.scene.stop('LevelCompleteScene');
+        this.removeGameScenes();
 
-        this.loadTitleScene();
+        this.scene.wake('TitleScene');
+        this.scene.wake('MenuBackgroundScene');
+    }
+
+    removeGameScenes(): void {
+        this.scene.remove('LoadingScene');
+        this.scene.remove('MainScene');
+        this.scene.remove('HudScene');
+        this.scene.remove('PauseScene');
+        this.scene.remove('LevelCompleteScene');
     }
 }

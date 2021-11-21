@@ -198,6 +198,10 @@ export class MainScene extends Phaser.Scene {
         this.load.image('completeTiles', './assets/tilemaps/tiles/complete_64x64.png');
         this.load.image('compiledTiles', './assets/tilemaps/tiles/compiled_64x64.png');
     }
+    
+    restart(): void {
+        this.scene.restart();
+    }
 
     create(): void {    
 

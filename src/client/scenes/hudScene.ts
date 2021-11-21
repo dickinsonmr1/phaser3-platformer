@@ -45,6 +45,10 @@ import { ExpiringText } from "../../gameobjects/expiringText";
         });
         this.sceneController = sceneController;
     }
+
+    restart(): void {
+        this.scene.restart();
+    }
         
     preload(): void {
         this.load.atlasXML('hudSprites', './assets/sprites/HUD/spritesheet_hud.png', './assets/sprites/HUD/spritesheet_hud.xml');        

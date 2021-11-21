@@ -18,6 +18,10 @@ export class MenuBackgroundScene extends Phaser.Scene {
         this.sceneController = sceneController;
     }
 
+    restart(): void {
+        this.scene.restart();
+    }
+
     preload(): void {
         this.load.image('menuSky', './assets/sprites/backgrounds/backgroundEmpty.png');
         this.load.atlasXML('alienShipSprites', './assets/sprites/ships/spritesheet_spaceships.png', './assets/sprites/ships/spritesheet_spaceships.xml');

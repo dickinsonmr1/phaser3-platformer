@@ -31,6 +31,10 @@ import { SceneController } from "./sceneController";
         });
         this.sceneController = sceneController;
     }
+
+    restart(): void {
+        this.scene.restart();
+    }
         
     preload(): void {
 

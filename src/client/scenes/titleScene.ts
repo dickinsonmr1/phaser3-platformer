@@ -345,7 +345,7 @@ export class TitleScene extends Phaser.Scene {
 
     startNewGame(isMultiplayer: boolean) {
         this.input.keyboard.resetKeys();
-        this.sceneController.preloadMainSceneAndDisplayLoadingScene('world-01-01', isMultiplayer);
+        this.sceneController.preloadGameScenes('world-01-01', isMultiplayer);
         this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
 
         this.sound.play("selectSound");
@@ -363,7 +363,7 @@ export class TitleScene extends Phaser.Scene {
         if(this.saveGameFiles.length > 0) {
             var selectedFile = this.loadSelectedSaveGameFile();
 
-            this.sceneController.preloadMainSceneAndDisplayLoadingScene(selectedFile.destinationName, false);
+            this.sceneController.preloadGameScenes(selectedFile.destinationName, false);
             selectedMenu.refreshColorsAndMarker();
 
             selectedMenu.confirmSelection(this.sound);
