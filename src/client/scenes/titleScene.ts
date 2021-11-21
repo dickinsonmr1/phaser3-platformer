@@ -22,7 +22,7 @@ export class TitleScene extends Phaser.Scene {
     gameProgress: GameProgress;
     saveGameFiles: Array<SaveGameFile>;
 
-    pauseKey: Phaser.Input.Keyboard.Key;
+    backKey: Phaser.Input.Keyboard.Key;
     selectKey: Phaser.Input.Keyboard.Key;
     cursorUp: Phaser.Input.Keyboard.Key;
     cursorDown: Phaser.Input.Keyboard.Key;
@@ -76,7 +76,7 @@ export class TitleScene extends Phaser.Scene {
     }    
 
     create(): void {
-        this.pauseKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        this.backKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
         this.selectKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         this.cursorDown = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
         this.cursorUp = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -262,6 +262,11 @@ export class TitleScene extends Phaser.Scene {
 
             this.currentLeftAxisX = leftAxisX;
             this.currentLeftAxisY = leftAxisY;
+        }
+        if(Phaser.Input.Keyboard.JustDown(this.backKey)) {                  
+            if(this.menuSelectedIndex != TitleScene.menuScreenIndexTitle) {
+                this.returnToTitle(this.menus[this.menuSelectedIndex]);
+            }
         }
 
         if(Phaser.Input.Keyboard.JustDown(this.selectKey)) {
