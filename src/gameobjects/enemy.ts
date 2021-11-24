@@ -39,6 +39,10 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
     public idleTime: number;
 
+    public patrolMoveRight: boolean;
+
+    public homingSitance
+
     constructor(params) {
         super(params.scene, params.x, params.y, params.key, params.frame);
 
@@ -49,6 +53,12 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.widthOverride = params.widthOverride;
         this.heightOverride = params.heightOverride;
         this.enemyType = params.enemyType;
+        if(params.homingDistance != null) {
+            this.followDistance = params.homingDistance;
+        }
+        else {
+            this.followDistance = 500;
+        }
     } 
     
     public getScene(): Scene {
@@ -60,6 +70,8 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     public init(idleAnim: string, walkAnim: string, deadAnim: string): void {
 
         this.setFlipX(this.defaultFacingRight);
+
+        this.patrolMoveRight = true;
 
         this.idleAnim = idleAnim;
         this.walkAnim = walkAnim;
@@ -77,6 +89,10 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         //this.displayHeight = 64;            
 
         var body = <Phaser.Physics.Arcade.Body>this.body;
+        
+        if(this.enemyType == EnemyType.Homing) {
+            body.allowGravity = false;
+        }
 
         if(this.widthOverride != undefined && this.heightOverride != undefined)
             body.setSize(this.width, this.height)    
@@ -99,7 +115,6 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.idleTime = 0;
         this.health = 100;
         this.springTime = 0;
-        this.followDistance = 500;
 
         this.anims.play(this.idleAnim, true);
 
@@ -143,6 +158,15 @@ export class Enemy extends Phaser.GameObjects.Sprite {
             else {
                 this.idle();
             }
+        }
+    }
+
+    homeTowardsPlayer(playerX: number, playerY: number): void {        
+        if(this.scene != undefined) {
+
+            var scene = <MainScene>this.scene;
+            var body = <Phaser.Physics.Arcade.Body>this.body;            
+            this.scene.physics.moveToObject(this, scene.player, 150);
         }
     }
 
@@ -212,20 +236,56 @@ export class Enemy extends Phaser.GameObjects.Sprite {
                 switch(this.enemyType){
                     case EnemyType.Stalker:
 
-                        var tileAtEnemyPosition = scene.world.getLayer02().getTileAtWorldXY(body.center.x, body.center.y, true, null);
-                        var walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x - 1, tileAtEnemyPosition.y + 1, false);
-            
-                        if(Math.abs(playerX - body.x) < this.followDistance && Math.abs(playerY - body.y) < this.followDistance)
-                        if(playerX < this.x) {
+                        if(Math.abs(playerX - body.x) < this.followDistance && Math.abs(playerY - body.y) < this.followDistance) {
+                            if(playerX < this.x) {
+                                var tileAtEnemyPosition = scene.world.getLayer02().getTileAtWorldXY(body.center.x, body.center.y, true, null);
+                                var walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x - 1, tileAtEnemyPosition.y + 1, false);
+                    
+                                if(!body.onWall() && body.onFloor() && walkOffEdgeTile != null)
+                                    this.moveLeft();
+                                else
+                                {
+                                    this.idle();
+                                }
+                            }
+                            else if (playerX > this.x) {
+                                var tileAtEnemyPosition = scene.world.getLayer02().getTileAtWorldXY(body.center.x, body.center.y, true, null);
+                                var walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x + 1, tileAtEnemyPosition.y + 1, false);
+                    
+                                if(!body.onWall() && body.onFloor() && walkOffEdgeTile != null)
+                                    this.moveRight();
+                                else
+                                {
+                                    this.idle();
+                                }
+                            }
+                        }
+                        else {
+                            this.idle();
+                        }              
+                        break;
+                    case EnemyType.Homing:
+                        if(Math.abs(playerX - body.x) < this.followDistance && Math.abs(playerY - body.y) < this.followDistance) {
+                            this.homeTowardsPlayer(playerX, playerY);
+                        }
+                        else {
+                            this.idle();
+                        }              
+                        break;
+                    case EnemyType.Patrol:
+           
+                        if(!this.patrolMoveRight) {
+                            var tileAtEnemyPosition = scene.world.getLayer02().getTileAtWorldXY(body.center.x, body.center.y, true, null);
+                            var walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x - 1, tileAtEnemyPosition.y + 1, false);
+
                             if(!body.onWall() && body.onFloor() && walkOffEdgeTile != null)
                                 this.moveLeft();
                             else
                             {
-                                this.idle();
+                                this.patrolMoveRight = true;
                             }
                         }
-                        else if (playerX > this.x) {
-
+                        else if (this.patrolMoveRight) {
                             var tileAtEnemyPosition = scene.world.getLayer02().getTileAtWorldXY(body.center.x, body.center.y, true, null);
                             var walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x + 1, tileAtEnemyPosition.y + 1, false);
                 
@@ -233,19 +293,9 @@ export class Enemy extends Phaser.GameObjects.Sprite {
                                 this.moveRight();
                             else
                             {
-                                this.idle();
+                                this.patrolMoveRight = false;
                             }
-                        }
-                        else {
-                            this.idle();
-                        }              
-                        break;
-
-                    case EnemyType.Homing:
-                        
-                        //if(!body.onWall() && body.checkCollision.)
-                        break;
-                    case EnemyType.Patrol:
+                        }                    
                         break;
                     case EnemyType.Spectre:
                         break;
@@ -263,7 +313,6 @@ export class Enemy extends Phaser.GameObjects.Sprite {
             if(this.idleTime > 0) {
                 this.idleTime--;
             }    
-
         }
     }
 }

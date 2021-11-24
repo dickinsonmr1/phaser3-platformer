@@ -315,7 +315,7 @@ export class World {
                     case 1:
                         var enemy = new Enemy({
                             scene: this.scene,
-                            enemyType: EnemyType.Stalker,
+                            enemyType: EnemyType.Patrol,
                             x: x,
                             y: y,
                             widthOverride: 128,
@@ -349,7 +349,7 @@ export class World {
                     case 3:
                         var enemy = new Enemy({
                             scene: this.scene,
-                            enemyType: EnemyType.Stalker,
+                            enemyType: EnemyType.Patrol,
                             x: x,
                             y: y - 50,
                             widthOverride: 128,
@@ -366,7 +366,7 @@ export class World {
                     case 4:
                         var enemy = new Enemy({
                             scene: this.scene,
-                            enemyType: EnemyType.Stalker,
+                            enemyType: EnemyType.Patrol,
                             x: x,
                             y: y - 50,
                             widthOverride: 128,
@@ -383,7 +383,7 @@ export class World {
                     case 5:
                         var enemy = new Enemy({
                             scene: this.scene,
-                            enemyType: EnemyType.Stalker,
+                            enemyType: EnemyType.Homing,
                             x: x,
                             y: y - 50,
                             widthOverride: 48,
@@ -392,6 +392,7 @@ export class World {
                             drawScale: 1.5,
                             enemyOffsetY: 2,
                             defaultFacingRight: true,
+                            homingDistance: 1000
                             });        
                         enemy.init("enemy06-Idle", "enemy06-Walk", "enemy06-Dead");
                         this.scene.enemies.push(enemy);
@@ -400,7 +401,7 @@ export class World {
                     default:
                         var enemy = new Enemy({
                             scene: this.scene,
-                            enemyType: EnemyType.Stalker,
+                            enemyType: EnemyType.Patrol,
                             x: x,
                             y: y - 50,
                             widthOverride: 48,
