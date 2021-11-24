@@ -10,6 +10,14 @@ import { Constants } from "../client/constants";
 import "phaser";
 import { Scene } from "phaser";
 import { MainScene } from "../client/scenes/mainScene";
+import { METHODS } from "http";
+
+export enum EnemyType {
+    Stalker,
+    Patrol,
+    Homing,
+    Spectre
+}
 
 export class Enemy extends Phaser.GameObjects.Sprite {
     public hurtTime: number;
@@ -25,6 +33,10 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     private widthOverride: number;
     private heightOverride: number;
 
+    private enemyType: EnemyType;
+
+    private followDistance: number;
+
     public idleTime: number;
 
     constructor(params) {
@@ -36,6 +48,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.defaultFacingRight = params.defaultFacingRight;
         this.widthOverride = params.widthOverride;
         this.heightOverride = params.heightOverride;
+        this.enemyType = params.enemyType;
     } 
     
     public getScene(): Scene {
@@ -86,6 +99,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.idleTime = 0;
         this.health = 100;
         this.springTime = 0;
+        this.followDistance = 500;
 
         this.anims.play(this.idleAnim, true);
 
@@ -104,23 +118,30 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     moveLeft(): void {
         if(this.scene != undefined) {
             var body = <Phaser.Physics.Arcade.Body>this.body;
+            var scene = <MainScene>this.scene;
             if(body.onFloor()) {
                 var body = <Phaser.Physics.Arcade.Body>this.body;
                 body.setVelocityX(-150);            
                 this.anims.play(this.walkAnim, true);
                 this.flipX = !this.defaultFacingRight;
             }
+            else {
+                this.idle();
+            }
         }
     }
 
     moveRight(): void {        
         if(this.scene != undefined) {
-            var body = <Phaser.Physics.Arcade.Body>this.body;
+            var body = <Phaser.Physics.Arcade.Body>this.body;            
             if(body.onFloor()) {
                 var body = <Phaser.Physics.Arcade.Body>this.body;
                 body.setVelocityX(150);            
                 this.anims.play(this.walkAnim, true);
                 this.flipX = this.defaultFacingRight;
+            }
+            else {
+                this.idle();
             }
         }
     }
@@ -185,27 +206,50 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     update(playerX: number, playerY: number): void {
         if(this.scene != undefined) {
             if(this.idleTime == 0)
-            {
+            {                
+                var scene = <MainScene>this.scene;
                 var body = <Phaser.Physics.Arcade.Body>this.body;
-                if(playerX < this.x) {
-                    if(!body.onWall())
-                        this.moveLeft();
-                    else
-                    {
-                        this.idle();
-                    }
-                }
-                else if (playerX > this.x) {
-                    if(!body.onWall())
-                        this.moveRight();
-                    else
-                    {
-                        this.idle();
-                    }
-                }
-                else {
-                    this.idle();
-                }      
+                switch(this.enemyType){
+                    case EnemyType.Stalker:
+
+                        var tileAtEnemyPosition = scene.world.getLayer02().getTileAtWorldXY(body.center.x, body.center.y, true, null);
+                        var walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x - 1, tileAtEnemyPosition.y + 1, false);
+            
+                        if(Math.abs(playerX - body.x) < this.followDistance && Math.abs(playerY - body.y) < this.followDistance)
+                        if(playerX < this.x) {
+                            if(!body.onWall() && body.onFloor() && walkOffEdgeTile != null)
+                                this.moveLeft();
+                            else
+                            {
+                                this.idle();
+                            }
+                        }
+                        else if (playerX > this.x) {
+
+                            var tileAtEnemyPosition = scene.world.getLayer02().getTileAtWorldXY(body.center.x, body.center.y, true, null);
+                            var walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x + 1, tileAtEnemyPosition.y + 1, false);
+                
+                            if(!body.onWall() && body.onFloor() && walkOffEdgeTile != null)
+                                this.moveRight();
+                            else
+                            {
+                                this.idle();
+                            }
+                        }
+                        else {
+                            this.idle();
+                        }              
+                        break;
+
+                    case EnemyType.Homing:
+                        
+                        //if(!body.onWall() && body.checkCollision.)
+                        break;
+                    case EnemyType.Patrol:
+                        break;
+                    case EnemyType.Spectre:
+                        break;
+                }                
             }
 
             if(this.hurtTime > 0) {

@@ -5,7 +5,7 @@ import { Constants, ForceFieldColor } from "../constants";
 import "phaser";
 import { MainScene } from "../scenes/mainScene";
 import { Player } from "../../gameobjects/player";
-import { Enemy } from "../../gameobjects/enemy";
+import { Enemy, EnemyType } from "../../gameobjects/enemy";
 import { Spring } from "../../gameobjects/spring";
 import { Portal } from "../../gameobjects/portal";
 import { Checkpoint } from "../../gameobjects/checkpoint";
@@ -37,6 +37,10 @@ export class World {
     constructor(scene: MainScene){
         this.scene = scene;
     }
+
+    getLayer02(): Phaser.Tilemaps.TilemapLayer {
+        return this.layer02;
+    } 
 
     getRandomInt(max) {
         return Math.floor(Math.random() * Math.floor(max));
@@ -296,6 +300,7 @@ export class World {
                     case 0:
                         var enemy = new Enemy({
                             scene: this.scene,
+                            enemyType: EnemyType.Stalker,
                             x: x,
                             y: y - 50,
                             key: "enemy01-Idle",
@@ -310,6 +315,7 @@ export class World {
                     case 1:
                         var enemy = new Enemy({
                             scene: this.scene,
+                            enemyType: EnemyType.Stalker,
                             x: x,
                             y: y,
                             widthOverride: 128,
@@ -326,6 +332,7 @@ export class World {
                     case 2:                                
                         var enemy = new Enemy({
                             scene: this.scene,
+                            enemyType: EnemyType.Stalker,
                             x: x,
                             y: y - 50,
                             //widthOverride: 128,
@@ -342,6 +349,7 @@ export class World {
                     case 3:
                         var enemy = new Enemy({
                             scene: this.scene,
+                            enemyType: EnemyType.Stalker,
                             x: x,
                             y: y - 50,
                             widthOverride: 128,
@@ -358,6 +366,7 @@ export class World {
                     case 4:
                         var enemy = new Enemy({
                             scene: this.scene,
+                            enemyType: EnemyType.Stalker,
                             x: x,
                             y: y - 50,
                             widthOverride: 128,
@@ -374,6 +383,7 @@ export class World {
                     case 5:
                         var enemy = new Enemy({
                             scene: this.scene,
+                            enemyType: EnemyType.Stalker,
                             x: x,
                             y: y - 50,
                             widthOverride: 48,
@@ -390,6 +400,7 @@ export class World {
                     default:
                         var enemy = new Enemy({
                             scene: this.scene,
+                            enemyType: EnemyType.Stalker,
                             x: x,
                             y: y - 50,
                             widthOverride: 48,
