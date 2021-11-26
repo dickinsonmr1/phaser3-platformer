@@ -236,7 +236,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
                 switch(this.enemyType){
                     case EnemyType.Stalker:
 
-                        if(Math.abs(playerX - body.x) < this.followDistance && Math.abs(playerY - body.y) < this.followDistance) {
+                        if(Math.abs(playerX - body.center.x) < this.followDistance && Math.abs(playerY - body.center.y) < this.followDistance) {
                             if(playerX < this.x) {
                                 var tileAtEnemyPosition = scene.world.getLayer02().getTileAtWorldXY(body.center.x, body.center.y, true, null);
                                 var walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x - 1, tileAtEnemyPosition.y + 1, false);
@@ -265,7 +265,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
                         }              
                         break;
                     case EnemyType.Homing:
-                        if(Math.abs(playerX - body.x) < this.followDistance && Math.abs(playerY - body.y) < this.followDistance) {
+                        if(Math.abs(playerX - body.center.x) < this.followDistance && Math.abs(playerY - body.center.y) < this.followDistance) {
                             this.homeTowardsPlayer(playerX, playerY);
                         }
                         else {

@@ -199,6 +199,10 @@ export class MainScene extends Phaser.Scene {
         this.load.image('compiledTiles', './assets/tilemaps/tiles/compiled_64x64.png');
     }
     
+    removeScene(): void {
+        this.scene.remove('MainScene');
+    }
+    
     restart(): void {
         this.scene.restart();
     }
@@ -364,7 +368,7 @@ export class MainScene extends Phaser.Scene {
         }
         */
 
-        this.enemies.forEach(enemy => { enemy.update(this.player.x, this.player.y); });
+        this.enemies.forEach(enemy => { enemy.update(this.player.body.position.x, this.player.body.position.y) });
         this.springs.forEach(spring => { spring.update(); });
         this.portals.forEach(portal => { portal.update(); });
     }

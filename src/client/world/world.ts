@@ -332,7 +332,7 @@ export class World {
                     case 2:                                
                         var enemy = new Enemy({
                             scene: this.scene,
-                            enemyType: EnemyType.Stalker,
+                            enemyType: EnemyType.Patrol,
                             x: x,
                             y: y - 50,
                             //widthOverride: 128,
