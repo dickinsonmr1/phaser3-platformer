@@ -128,7 +128,11 @@ export class MainScene extends Phaser.Scene {
 
         this.load.image('engineExhaust', './assets/sprites/ships/laserblue3.png');
 
-        this.load.image('playerGun', './assets/sprites/player/raygunPurpleBig.png');
+        this.load.image('playerGunLaserPistol', './assets/sprites/player/raygun.png');
+        this.load.image('playerGunLaserRepeater', './assets/sprites/player/raygunBig.png');
+        this.load.image('playerGunPulseCharge', './assets/sprites/player/raygunPurple.png');
+        this.load.image('playerGunRocketLauncher', './assets/sprites/player/raygunPurpleBig.png');
+
         this.load.image('playerGunLaser1', './assets/sprites/player/laserPurpleDot15x15.png');
         this.load.image('playerGunLaser2', './assets/sprites/player/laserPurple2.png');
         this.load.image('playerGunLaser3', './assets/sprites/player/laserGreenBurst.png');
@@ -463,7 +467,7 @@ export class MainScene extends Phaser.Scene {
         this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
 
         this.player.reload(weapon);
-        this.events.emit("weaponCollected", weapon.currentAmmo);
+        this.events.emit("weaponCollected", weapon.currentAmmo, weapon.weaponTextureName);
 
         this.sceneController.hudScene.setInfoText(weapon.weaponDisplayName + " acquired", 2000);
 

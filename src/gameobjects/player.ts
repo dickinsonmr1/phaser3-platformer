@@ -13,7 +13,7 @@ import { Bullet } from "./bullet";
 import { Switch } from "./switch";
 import { Spaceship } from "./spaceship";
 import { Portal } from "./portal";
-import { Weapon, LaserRepeater } from "./weapon";
+import { Weapon, LaserRepeater, RocketLauncher } from "./weapon";
 import { HealthBar } from "../client/scenes/healthBar";
 import { MainScene } from "../client/scenes/mainScene";
 import { Socket } from "socket.io-client";
@@ -61,6 +61,11 @@ export class Player extends Phaser.GameObjects.Sprite {
     }  
 
     private get currentWeaponDamage(): number
+    {
+        return this.currentWeapon.weaponDamage;
+    }  
+
+    private get currentWeaponTint(): number
     {
         return this.currentWeapon.weaponDamage;
     }  
@@ -226,8 +231,14 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.playerNameText.setOrigin(0, 0.5);
         this.playerNameText.setFontSize(16);
 
-        this.currentWeapon = new LaserRepeater();
-        this.playerGun = this.scene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, 'playerGun')        
+        this.currentWeapon = new RocketLauncher();
+        this.playerGun = this.scene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, this.currentWeapon.weaponTextureName);
+        
+        this.reload(this.currentWeapon);
+        let scene = <MainScene>this.scene;
+        scene.events.emit("weaponCollected", this.currentWeapon.currentAmmo, this.currentWeapon.weaponTextureName);    
+        
+        //.setTint(0xff0000);
 
         this.xPrevious = this.x;
         this.yPrevious = this.y;
@@ -354,6 +365,9 @@ export class Player extends Phaser.GameObjects.Sprite {
         //this.ammoCount = ammoCount;
         this.currentWeapon = weapon;
         this.playerGun.alpha = 1.0;
+
+        var temp  = <Phaser.GameObjects.Sprite> this.playerGun;
+        temp.setTexture(this.currentWeapon.weaponTextureName);
     }
 
     tryFireBullet(gameTime: number, sound): void {

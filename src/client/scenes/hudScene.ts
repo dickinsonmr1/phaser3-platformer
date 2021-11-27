@@ -55,7 +55,10 @@ import { ExpiringText } from "../../gameobjects/expiringText";
         this.load.atlasXML('uiSpaceSprites', './assets/sprites/HUD/uipackSpace_sheet.png', './assets/sprites/HUD/uipackSpace_sheet.xml');        
         this.load.atlasXML('redUISprites', './assets/sprites/HUD/redSheet.png', './assets/sprites/HUD/redSheet.xml');        
         this.load.atlasXML('greyUISprites', './assets/sprites/HUD/greySheet.png', './assets/sprites/HUD/greySheet.xml');        
-        this.load.image('weaponIcon', './assets/sprites/player/raygunPurpleBig.png');
+        this.load.image('weaponIconLaserPistol', './assets/sprites/player/raygun.png');
+        this.load.image('weaponIconLaserRepeater', './assets/sprites/player/raygunBig.png');
+        this.load.image('weaponIconPulseCharge', './assets/sprites/player/raygunPurple.png');
+        this.load.image('weaponIconRocketLauncher', './assets/sprites/player/raygunPurpleBig.png');
 
         this.load.image('healthBarLeft', './assets/sprites/HUD/barHorizontal_red_left.png');
         this.load.image('healthBarMid', './assets/sprites/HUD/barHorizontal_red_mid.png');
@@ -84,7 +87,7 @@ import { ExpiringText } from "../../gameobjects/expiringText";
         this.hudComponent.gemCountText.setStroke('rgb(0,0,0)', 16);
         this.hudComponent.gemCountText.setFontSize(this.fontSize);
 
-        this.hudComponent.weapon = this.add.image(this.WeaponIconX, this.HudBaseOffsetY, 'weaponIcon');
+        this.hudComponent.weapon = this.add.image(this.WeaponIconX, this.HudBaseOffsetY, 'weaponIconLaserPistol');
         this.hudComponent.weapon.setScale(2.0, 2.0);
         this.hudComponent.ammoText = this.add.text(this.WeaponIconX + this.AmmoTextOffsetX, this.HudBaseOffsetY + this.AmmoTextOffsetY, '5',
         {
@@ -136,8 +139,9 @@ import { ExpiringText } from "../../gameobjects/expiringText";
             //this.emitExpiringText(x, y, amount);
         }, this);
 
-        ourGame.events.on('weaponCollected', function (ammoCount) {
+        ourGame.events.on('weaponCollected', function (ammoCount, weaponTextureName) {
             this.setammoCount(ammoCount);
+            this.setWeaponIcon(weaponTextureName);
         }, this);
 
         ourGame.events.on('enemyDamage', function (x, y, damage) {
@@ -183,6 +187,11 @@ import { ExpiringText } from "../../gameobjects/expiringText";
             this.hudComponent.ammoText.setColor("rgb(255,50,50)")
         else
             this.hudComponent.ammoText.setColor("rgb(255,255,255)")
+    }
+        
+    setWeaponIcon(textureName: string): void {
+        var temp  = <Phaser.GameObjects.Sprite> this.hudComponent.weapon;
+        temp.setTexture(textureName);
     }
 
     setInfoText(text: string, infoTextDurationInMs: number): void {
