@@ -178,7 +178,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.healthBar = new HealthBar(this.getScene());
         this.healthBar.init(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY,
             Player.maxHealth, 
-            100, 15);
+            100, 15, true);
         this.healthBar.setDepth(Constants.depthHealthBar);
 
 

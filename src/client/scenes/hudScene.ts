@@ -63,6 +63,10 @@ import { ExpiringText } from "../../gameobjects/expiringText";
         this.load.image('healthBarLeft', './assets/sprites/HUD/barHorizontal_red_left.png');
         this.load.image('healthBarMid', './assets/sprites/HUD/barHorizontal_red_mid.png');
         this.load.image('healthBarRight', './assets/sprites/HUD/barHorizontal_red_right.png');
+
+        this.load.image('shieldBarLeft', './assets/sprites/HUD/barHorizontal_blue_left.png');
+        this.load.image('shieldBarMid', './assets/sprites/HUD/barHorizontal_blue_mid.png');
+        this.load.image('shieldBarRight', './assets/sprites/HUD/barHorizontal_blue_right.png');
     }
 
     public healthBarHealth = 100;
@@ -158,7 +162,7 @@ import { ExpiringText } from "../../gameobjects/expiringText";
         
         this.healthBar = new HealthBar(this);
         this.healthBar.init(this.HealthBarStartX - 20, this.HudBaseOffsetY - 10, maxHealth,
-            200, 30);
+            200, 30, false);
 
         this.healthBar.updateHealth(maxHealth);
 

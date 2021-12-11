@@ -116,7 +116,7 @@ import { throws } from "assert";
 
         this.healthBar.init(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY,
             this.maxHealth, 
-            100, 15);
+            100, 15, false);
         this.healthBar.setDepth(Constants.depthHealthBar);
 
         this.healthBar.hide();
