@@ -20,7 +20,10 @@ import { ExpiringText } from "../../gameobjects/expiringText";
 
     private get PlayerIconX(): number { return this.game.canvas.width / 2 - 64 - 50; }
     private get HealthBarStartX(): number { return this.PlayerIconX + 100; }
-    private get HealthBarOffsetX(): number { return 50; }
+    //private get HealthBarOffsetX(): number { return 50; }
+
+    private get ShieldBarStartX(): number { return this.PlayerIconX + 80; }
+    //private get ShieldBarOffsetX(): number { return 40; }
 
     private get fontSize(): number { return 48; }
 
@@ -71,6 +74,7 @@ import { ExpiringText } from "../../gameobjects/expiringText";
 
     public healthBarHealth = 100;
     public healthBar: HealthBar;
+    public shieldBar: HealthBar;
 
     create(): void {
 
@@ -125,6 +129,13 @@ import { ExpiringText } from "../../gameobjects/expiringText";
             }
         }, this);
 
+        ourGame.events.on('playerShieldUpdated', function (playerId, health) {
+            if(this.playerId == playerId) {
+                //this.setHealth(health);
+                this.updateShieldBar(health);
+            }
+        }, this);
+
         //  Listen for events from it
         ourGame.events.on('playerHurt', function () {
             this.setHealth(1);
@@ -166,6 +177,13 @@ import { ExpiringText } from "../../gameobjects/expiringText";
 
         this.healthBar.updateHealth(maxHealth);
 
+        var maxShield = 8;
+        this.shieldBar = new HealthBar(this);
+        this.shieldBar.init(this.ShieldBarStartX - 10, this.HudBaseOffsetY - 20, maxShield,
+            220, 50, true);
+
+        this.shieldBar.updateHealth(maxShield);
+
         this.scene.setVisible(false);
     }
 
@@ -179,6 +197,10 @@ import { ExpiringText } from "../../gameobjects/expiringText";
 
     updateHealthBar(health: number) {
         this.healthBar.updateHealth(health);
+    }
+    
+    updateShieldBar(shieldHealth: number) {
+        this.shieldBar.updateHealth(shieldHealth);
     }
 
     setGemCount(gemCount: number): void {

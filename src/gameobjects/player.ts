@@ -101,6 +101,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     public isDucking: boolean;
     public hurtTime: number;
     public health: number;
+    public shieldHealth: number;
 
     public healthBar: HealthBar;
     private get healthBarOffsetX(): number {return -20;}
@@ -180,6 +181,8 @@ export class Player extends Phaser.GameObjects.Sprite {
             Player.maxHealth, 
             100, 15, true);
         this.healthBar.setDepth(Constants.depthHealthBar);
+
+        this.shieldHealth = Player.maxHealth;
 
 
         this.gemsCollected = 0;
@@ -515,6 +518,9 @@ export class Player extends Phaser.GameObjects.Sprite {
             if(this.health > 0) {
                 this.health--;
                 this.scene.events.emit("playerHealthUpdated", this.playerId, this.health);
+
+                this.shieldHealth--;
+                this.scene.events.emit("playerShieldUpdated", this.playerId, this.shieldHealth);
                 this.scene.sound.play("hurtSound");
                 this.hurtTime = 60;
                 this.healthBar.updateHealth(this.health);

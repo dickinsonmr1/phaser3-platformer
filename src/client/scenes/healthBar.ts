@@ -31,6 +31,9 @@ export class HealthBar extends Phaser.GameObjects.Group {
 
     init(originX: number, originY: number, healthMax: number, healthMaxWidthInPixels: number, healthBarHeight: number, isShield: boolean): void {
         
+        var shadowAlpha = isShield ? 0.2 : 0.2;
+        var barAlpha = isShield ? 0.2 : 0.9;
+
         this.isShield = isShield;
         this.healthMax = healthMax;
         this.currentHealth = healthMax;
@@ -47,7 +50,7 @@ export class HealthBar extends Phaser.GameObjects.Group {
         this.healthBarShadowLeft.setOrigin(0,0);
         this.healthBarShadowLeft.setDisplayOrigin(0,0);
         this.healthBarShadowLeft.setDisplaySize(HealthBar.healthBarShadowLeftSegmentWidth, this.healthBarShadowHeight());
-        this.healthBarShadowLeft.alpha = 0.4;    
+        this.healthBarShadowLeft.alpha = shadowAlpha;    
         this.healthBarShadowLeft.setDepth(Constants.depthHealthBar);
 
         this.healthBarShadowMid = this.scene.add.image(
@@ -57,7 +60,7 @@ export class HealthBar extends Phaser.GameObjects.Group {
         this.healthBarShadowMid.setOrigin(0, 0);
         this.healthBarShadowMid.setDisplayOrigin(0,0);// = 0;
         this.healthBarShadowMid.setDisplaySize(this.healthMaxWidthInPixels, this.healthBarShadowHeight());
-        this.healthBarShadowMid.alpha = 0.4;    
+        this.healthBarShadowMid.alpha = shadowAlpha;    
         this.healthBarShadowMid.setDepth(Constants.depthHealthBar);
 
         this.healthBarShadowRight = this.scene.add.image(
@@ -67,7 +70,7 @@ export class HealthBar extends Phaser.GameObjects.Group {
         this.healthBarShadowRight.setOrigin(0,0);
         this.healthBarShadowRight.setDisplayOrigin(0,0);
         this.healthBarShadowRight.setDisplaySize(HealthBar.healthBarShadowRightSegmentWidth, this.healthBarShadowHeight());
-        this.healthBarShadowRight.alpha = 0.4;    
+        this.healthBarShadowRight.alpha = shadowAlpha;    
         this.healthBarShadowRight.setDepth(Constants.depthHealthBar);
 
         let barLeftTextureName = isShield ? 'shieldBarLeft' : 'healthBarLeft';
@@ -76,6 +79,7 @@ export class HealthBar extends Phaser.GameObjects.Group {
         this.healthBarLeft.setOrigin(0,0);
         this.healthBarLeft.setDisplayOrigin(0,0);
         this.healthBarLeft.setDisplaySize(HealthBar.healthBarLeftSegmentWidth, this.healthBarHeight);
+        this.healthBarLeft.alpha = barAlpha;    
         this.healthBarLeft.setDepth(Constants.depthHealthBar);
 
         let barMidTextureName = isShield ? 'shieldBarMid' : 'healthBarMid';
@@ -85,6 +89,7 @@ export class HealthBar extends Phaser.GameObjects.Group {
         this.healthBarMid.setOrigin(0,0);
         this.healthBarMid.setDisplayOrigin(0,0);
         this.healthBarMid.setDisplaySize(this.calculateCurrentHealthBarWidthInPixels(), this.healthBarHeight);
+        this.healthBarMid.alpha = barAlpha;    
         this.healthBarMid.setDepth(Constants.depthHealthBar);
 
         let barRightTextureName = isShield ? 'shieldBarRight' : 'healthBarRight';
@@ -94,6 +99,7 @@ export class HealthBar extends Phaser.GameObjects.Group {
         this.healthBarRight.setOrigin(0,0);
         this.healthBarRight.setDisplayOrigin(0,0);
         this.healthBarRight.setDisplaySize(HealthBar.healthBarRightSegmentWidth, this.healthBarHeight);
+        this.healthBarRight.alpha = barAlpha;    
         this.healthBarRight.setDepth(Constants.depthHealthBar);
     }
 
