@@ -515,12 +515,19 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     tryDamage(): void {
         if(this.hurtTime == 0) {
-            if(this.health > 0) {
+            if(this.shieldHealth > 0) {
+                
+                this.shieldHealth--;
+                this.scene.events.emit("playerShieldUpdated", this.playerId, this.shieldHealth);
+                //this.healthBar.updateHealth(this.health);
+
+                this.scene.sound.play("hurtSound");
+                this.hurtTime = 60;
+            }
+            else if(this.health > 0) {
                 this.health--;
                 this.scene.events.emit("playerHealthUpdated", this.playerId, this.health);
 
-                this.shieldHealth--;
-                this.scene.events.emit("playerShieldUpdated", this.playerId, this.shieldHealth);
                 this.scene.sound.play("hurtSound");
                 this.hurtTime = 60;
                 this.healthBar.updateHealth(this.health);

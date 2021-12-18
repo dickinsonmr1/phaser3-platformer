@@ -32,7 +32,7 @@ export class HealthBar extends Phaser.GameObjects.Group {
     init(originX: number, originY: number, healthMax: number, healthMaxWidthInPixels: number, healthBarHeight: number, isShield: boolean): void {
         
         var shadowAlpha = isShield ? 0.2 : 0.2;
-        var barAlpha = isShield ? 0.2 : 0.9;
+        var barAlpha = isShield ? 0.8 : 0.9;
 
         this.isShield = isShield;
         this.healthMax = healthMax;
@@ -115,12 +115,20 @@ export class HealthBar extends Phaser.GameObjects.Group {
             this.healthBarLeft.visible = false;
             this.healthBarMid.visible = false;
             this.healthBarRight.visible = false;
+
+            this.healthBarShadowLeft.visible = false;
+            this.healthBarShadowMid.visible = false;
+            this.healthBarShadowRight.visible = false;
         }
         else {
 
             this.healthBarLeft.visible = true;
             this.healthBarMid.visible = true;
             this.healthBarRight.visible = true;
+
+            this.healthBarShadowLeft.visible = true;
+            this.healthBarShadowMid.visible = true;
+            this.healthBarShadowRight.visible = true;
 
             this.updatePosition(this.healthBarOriginX, this.healthBarOriginY);        
         }

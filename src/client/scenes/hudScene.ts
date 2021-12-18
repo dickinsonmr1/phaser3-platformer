@@ -19,10 +19,10 @@ import { ExpiringText } from "../../gameobjects/expiringText";
     hudComponent: HUDComponent;
 
     private get PlayerIconX(): number { return this.game.canvas.width / 2 - 64 - 50; }
-    private get HealthBarStartX(): number { return this.PlayerIconX + 100; }
+    private get HealthBarStartX(): number { return this.PlayerIconX + 80; }
     //private get HealthBarOffsetX(): number { return 50; }
 
-    private get ShieldBarStartX(): number { return this.PlayerIconX + 80; }
+    private get ShieldBarStartX(): number { return this.PlayerIconX + 95; }
     //private get ShieldBarOffsetX(): number { return 40; }
 
     private get fontSize(): number { return 48; }
@@ -172,15 +172,17 @@ import { ExpiringText } from "../../gameobjects/expiringText";
         this.setHealth(maxHealth);
         
         this.healthBar = new HealthBar(this);
-        this.healthBar.init(this.HealthBarStartX - 20, this.HudBaseOffsetY - 10, maxHealth,
+        this.healthBar.init(this.HealthBarStartX, this.HudBaseOffsetY - 10, maxHealth,
             200, 30, false);
+        this.healthBar.setDepth(HUDComponent.depthHealthBar);
 
         this.healthBar.updateHealth(maxHealth);
 
         var maxShield = 8;
         this.shieldBar = new HealthBar(this);
-        this.shieldBar.init(this.ShieldBarStartX - 10, this.HudBaseOffsetY - 20, maxShield,
-            220, 50, true);
+        this.shieldBar.init(this.ShieldBarStartX, this.HudBaseOffsetY, maxShield,
+            200, 30, true);
+        this.shieldBar.setDepth(HUDComponent.depthShieldBar);
 
         this.shieldBar.updateHealth(maxShield);
 
@@ -266,11 +268,12 @@ export class HUDComponent {
     weapon: Phaser.GameObjects.Image;
     ammoText: Phaser.GameObjects.Text;
 
+    public static get depthHealthBar(): number {return 2;}
+    public static get depthShieldBar(): number {return 3;}
+
     healthBar: HealthBar;
    
     infoText: Phaser.GameObjects.Text;
     infoTextAlpha: number;
     infoTextExpiryGameTime: number;
-
-
 }
