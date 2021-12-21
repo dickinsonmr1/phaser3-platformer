@@ -17,6 +17,7 @@ import { Weapon, LaserRepeater, RocketLauncher } from "./weapon";
 import { HealthBar } from "../client/scenes/healthBar";
 import { MainScene } from "../client/scenes/mainScene";
 import { Socket } from "socket.io-client";
+import { timeStamp } from "console";
 
 // TODO: fix and move implementation here once basic player functionality is working in main scene
 export class Player extends Phaser.GameObjects.Sprite {
@@ -34,6 +35,9 @@ export class Player extends Phaser.GameObjects.Sprite {
     private get GetIconOffsetX(): number { return -60; }
     private get GetIconOffsetY(): number { return this.GetTextOffsetY + 2; }
 
+    private get GetShieldOffsetX(): number { return 32; }
+    private get GetShieldOffsetY(): number { return 80; }
+
     private interactText: Phaser.GameObjects.Text;
     private playerNameText: Phaser.GameObjects.Text;
     private get GetPlayerNameOffsetX(): number { return -20; }
@@ -42,6 +46,8 @@ export class Player extends Phaser.GameObjects.Sprite {
     private interactButtonImage: Phaser.GameObjects.Image;
     private activateInteractTime: number;
     private currentInteractionItem: Phaser.GameObjects.Sprite;
+
+    private shieldBubble: Phaser.GameObjects.Sprite;
 
     private static get playerJumpVelocityY(): number {return 400;}  
     private static get playerRunVelocityX(): number{return 400;}  
@@ -237,6 +243,11 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.currentWeapon = new RocketLauncher();
         this.playerGun = this.scene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, this.currentWeapon.weaponTextureName);
         
+        this.shieldBubble = this.scene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, "playerShield");
+        this.shieldBubble.setScale(0.8, 0.8);
+        this.shieldBubble.setDepth(Constants.depthHealthBar);
+        this.shieldBubble.setTint(0x32ABFA);
+
         this.reload(this.currentWeapon);
         let scene = <MainScene>this.scene;
         scene.events.emit("weaponCollected", this.currentWeapon.currentAmmo, this.currentWeapon.weaponTextureName);    
@@ -523,6 +534,9 @@ export class Player extends Phaser.GameObjects.Sprite {
 
                 this.scene.sound.play("hurtSound");
                 this.hurtTime = 60;
+
+                if(this.shieldHealth <= 0)
+                    this.shieldBubble.setVisible(false);
             }
             else if(this.health > 0) {
                 this.health--;
@@ -659,18 +673,30 @@ export class Player extends Phaser.GameObjects.Sprite {
             body.y = this.currentSpaceship.y + Player.playerOffsetYInSpaceship;
 
             body.setVelocity(this.currentSpaceship.body.velocity.x, this.currentSpaceship.body.velocity.y);
+
+            this.shieldBubble.setVisible(false);
         }
         else {
             this.healthBar.updatePosition(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY);
+
+            this.shieldBubble.setVisible(this.shieldHealth > 0);
         }
+
 
         this.isInWater = false;
         if(this.hurtTime > 0) {
+            
             this.hurtTime--;
             if(this.hurtTime > 30)
-                this.setAlpha(0.5);
+                if(this.shieldHealth > 0)
+                    this.shieldBubble.setAlpha(0.5);                    
+                else   
+                    this.setAlpha(0.5);    
             else
-                this.setAlpha(1);
+                if(this.shieldHealth > 0)
+                    this.shieldBubble.setAlpha(1);
+                else   
+                    this.setAlpha(1);    
         }
 
         if(this.activateInteractTime > 0)
@@ -688,7 +714,7 @@ export class Player extends Phaser.GameObjects.Sprite {
             this.playerGun.setFlipX(false);
             this.playerGun.setPosition(this.x + Player.playerGunOffsetXFacingRight, this.y + this.getGunOffsetY());//.setOffset(32, 128);
         }   
-        
+        this.shieldBubble.setPosition(this.x + this.GetShieldOffsetX, this.y + this.GetShieldOffsetY);
         
         if(this.isMyPlayer && this.anythingChanged()) {
             var socket = this.getSocket();
