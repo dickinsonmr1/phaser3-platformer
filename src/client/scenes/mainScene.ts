@@ -111,6 +111,8 @@ export class MainScene extends Phaser.Scene {
         this.load.audio('engineSound', '/assets/audio/engine5.ogg');     
         
         this.load.audio('shieldSound', '/assets/audio/mixkit-sci-fi-positive-notification-266.wav');     
+        this.load.audio('shieldDrainSound', '/assets/audio/mixkit-game-warning-quick-notification-267.wav');     
+        
         
         //this.load.audio('spaceshipLaserBeamSound', '/assets/audio/zapsplat_science_fiction_retro_laser_slow_rising_44827.mp3');      
         this.load.audio('spaceshipLaserBeamSound', '/assets/audio/science_fiction_laser_hypnotic_paralysing_beam.mp3');      
@@ -432,6 +434,7 @@ export class MainScene extends Phaser.Scene {
         this.player.tryHeal();
 
         this.sound.play("healthSound");
+        this.sceneController.hudScene.setInfoText("health restored", 2000);
         this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
 
         return true;
@@ -443,6 +446,7 @@ export class MainScene extends Phaser.Scene {
         this.player.tryRechargeShield();
 
         this.sound.play("shieldSound");
+        this.sceneController.hudScene.setInfoText("shield recharged", 2000);
         //this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
 
         return true;

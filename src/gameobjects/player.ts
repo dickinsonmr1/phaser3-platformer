@@ -107,6 +107,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     public isDucking: boolean;
     public hurtTime: number;
     public shieldReloadTime: number;
+    public shieldDrainTime: number;
     public health: number;
     public shieldHealth: number;
 
@@ -114,8 +115,8 @@ export class Player extends Phaser.GameObjects.Sprite {
     private get healthBarOffsetX(): number {return -20;}
     private get healthBarOffsetY(): number {return 10;}
 
-    public static get maxHealth(): number { return 8; }
-    public static get maxShield(): number { return 8; }
+    public static get maxHealth(): number { return 4; }
+    public static get maxShield(): number { return 4; }
 
     public gemsCollected: number;
     public score: number;
@@ -192,6 +193,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
         this.shieldHealth = 0;//Player.maxHealth;
         this.shieldReloadTime = 0;
+        this.shieldDrainTime = 0;
 
 
         this.gemsCollected = 0;
@@ -535,12 +537,13 @@ export class Player extends Phaser.GameObjects.Sprite {
                 this.shieldHealth--;
                 this.scene.events.emit("playerShieldUpdated", this.playerId, this.shieldHealth);
                 //this.healthBar.updateHealth(this.health);
-
-                this.scene.sound.play("hurtSound");
+                
                 this.hurtTime = 60;
 
-                if(this.shieldHealth <= 0)
-                    this.shieldBubble.setVisible(false);
+                if(this.shieldHealth <= 0) {
+                    this.scene.sound.play("shieldDrainSound");
+                    this.shieldDrainTime = 20;
+                }
             }
             else if(this.health > 0) {
                 this.health--;
@@ -692,7 +695,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         else {
             this.healthBar.updatePosition(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY);
 
-            this.shieldBubble.setVisible(this.shieldHealth > 0);
+            this.shieldBubble.setVisible(this.shieldHealth > 0 || (this.shieldHealth == 0 && this.shieldDrainTime > 0));
         }
 
 
@@ -716,6 +719,13 @@ export class Player extends Phaser.GameObjects.Sprite {
             this.shieldReloadTime--;
 
             let scale = 0.8 - (this.shieldReloadTime) * .03;
+            this.shieldBubble.setScale(scale, scale);
+        }
+
+        if(this.shieldDrainTime > 0) {
+            this.shieldDrainTime--;
+
+            let scale = 0.8 * (this.shieldDrainTime / 20);
             this.shieldBubble.setScale(scale, scale);
         }
 
