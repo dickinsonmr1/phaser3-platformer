@@ -39,7 +39,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     private get GetShieldOffsetY(): number { return 80; }
 
     private interactText: Phaser.GameObjects.Text;
-    private playerNameText: Phaser.GameObjects.Text;
+    private multiplayerNameText: Phaser.GameObjects.Text;
     private get GetPlayerNameOffsetX(): number { return -20; }
     private get GetPlayerNameOffsetY(): number { return -10; }
 
@@ -111,7 +111,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     public health: number;
     public shieldHealth: number;
 
-    public healthBar: HealthBar;
+    public multiplayerHealthBar: HealthBar;
     private get healthBarOffsetX(): number {return -20;}
     private get healthBarOffsetY(): number {return 10;}
 
@@ -133,6 +133,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     public xPrevious: number;
     public yPrevious: number;
     public isMyPlayer: boolean;
+    public isMultiplayer: boolean;
 
     public getScene(): Scene {
         return this.scene;
@@ -145,6 +146,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
         this.playerId = params.playerId;
         this.isMyPlayer = params.isMyPlayer;
+        this.isMultiplayer = params.isMultiplayer;
     } 
 
     public init(): void {
@@ -185,11 +187,35 @@ export class Player extends Phaser.GameObjects.Sprite {
 
         this.hurtTime = 0;
         this.health = Player.maxHealth;
-        this.healthBar = new HealthBar(this.getScene());
-        this.healthBar.init(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY,
+
+        // multiplayer health bar
+        this.multiplayerHealthBar = new HealthBar(this.getScene());
+        this.multiplayerHealthBar.init(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY,
             Player.maxHealth, 
-            100, 15, true);
-        this.healthBar.setDepth(Constants.depthHealthBar);
+            100, 15, false);
+        this.multiplayerHealthBar.setDepth(Constants.depthHealthBar);
+        if(this.isMultiplayer)
+            this.multiplayerHealthBar.show();
+        else
+            this.multiplayerHealthBar.hide();
+
+        // multiplayer player name text
+        var playerNameText = this.scene.add.text(this.x, this.y - this.GetTextOffsetY, this.playerId,
+            {
+                fontFamily: 'KenneyRocketSquare',         
+                color:"rgb(255,255,255)",
+            });
+        playerNameText.setAlpha(0.5);
+        playerNameText.setOrigin(0, 0.5);
+        playerNameText.setDepth(7);
+        playerNameText.setStroke('rgb(0,0,0)', 4);     
+        playerNameText.setFontSize(24); 
+        
+        this.multiplayerNameText = playerNameText;
+        this.alignPlayerNameText(this.x + this.GetPlayerNameOffsetX, this.y + this.GetPlayerNameOffsetY);
+        this.multiplayerNameText.setOrigin(0, 0.5);
+        this.multiplayerNameText.setFontSize(16);
+        this.multiplayerNameText.setVisible(this.isMultiplayer);
 
         this.shieldHealth = 0;//Player.maxHealth;
         this.shieldReloadTime = 0;
@@ -227,23 +253,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.hideInteractTextAndImage();
         this.currentInteractionItem = null;
 
-        
-        // player name text
-        var text2 = this.scene.add.text(this.x, this.y - this.GetTextOffsetY, this.playerId,
-        {
-            fontFamily: 'KenneyRocketSquare',         
-            color:"rgb(255,255,255)",
-        });
-        text2.setAlpha(0.5);
-        text2.setOrigin(0, 0.5);
-        text2.setDepth(7);
-        text2.setStroke('rgb(0,0,0)', 4);     
-        text2.setFontSize(24); 
-        
-        this.playerNameText = text2;
-        this.alignPlayerNameText(this.x + this.GetPlayerNameOffsetX, this.y + this.GetPlayerNameOffsetY);
-        this.playerNameText.setOrigin(0, 0.5);
-        this.playerNameText.setFontSize(16);
+    
 
         this.currentWeapon = new RocketLauncher();
         this.playerGun = this.scene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, this.currentWeapon.weaponTextureName);
@@ -423,7 +433,8 @@ export class Player extends Phaser.GameObjects.Sprite {
         }       
     }
 
-    tryBounce() {
+    tryBounceUp() {
+        
         var gameTime = this.scene.game.loop.time;
         var body = <Phaser.Physics.Arcade.Body>this.body;
         //if (gameTime > this.springTime) { //} && !this.body.onFloor()) {
@@ -432,11 +443,46 @@ export class Player extends Phaser.GameObjects.Sprite {
                     //if (!player.isTouchingSpring) {
                         //if(springSound.)
                         //if (tile.alpha > 0) {
-                body.velocity.y = -650;
+        body.velocity.y = -650;
 
-                this.springTime = gameTime + 1000;
-            //}        
-        //}
+        if(this.springTime == 0)
+            this.scene.sound.play("springSound");     
+  
+        this.springTime = 30; //gameTime + 1000;        
+    }
+
+    tryBounceDown() {
+
+        var gameTime = this.scene.game.loop.time;
+        var body = <Phaser.Physics.Arcade.Body>this.body;        
+        body.velocity.y = 650;
+
+        if(this.springTime == 0)          
+            this.scene.sound.play("springSound");                   
+
+        this.springTime = 30; //gameTime + 1000;
+    }
+
+    tryBounceLeft() {
+        var gameTime = this.scene.game.loop.time;
+        var body = <Phaser.Physics.Arcade.Body>this.body;        
+        body.velocity.x = -650;
+
+        if(this.springTime == 0)          
+            this.scene.sound.play("springSound");                   
+            
+        this.springTime = 30; //gameTime + 1000;
+    }
+
+    tryBounceRight() {
+        var gameTime = this.scene.game.loop.time;
+        var body = <Phaser.Physics.Arcade.Body>this.body;        
+        body.velocity.x = 650;
+
+        if(this.springTime == 0)          
+            this.scene.sound.play("springSound");                   
+            
+        this.springTime = 30; //gameTime + 1000;
     }
 
     tryEnterSpaceship(spaceship: Spaceship) {
@@ -452,7 +498,8 @@ export class Player extends Phaser.GameObjects.Sprite {
             body.x = this.currentSpaceship.x + Player.playerOffsetXInSpaceship;
             body.y = this.currentSpaceship.y + Player.playerOffsetYInSpaceship;
 
-            this.healthBar.hide();
+            if(this.isMultiplayer)            
+                this.multiplayerHealthBar.hide();
         }        
     }
 
@@ -476,7 +523,9 @@ export class Player extends Phaser.GameObjects.Sprite {
         body.setVelocityY(-Player.playerJumpVelocityY);
         this.anims.play('player-jump', true);
         sound.play("jumpSound");
-        this.healthBar.show();
+
+        if(this.isMultiplayer)
+            this.multiplayerHealthBar.show();
     }
 
 
@@ -551,7 +600,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
                 this.scene.sound.play("hurtSound");
                 this.hurtTime = 60;
-                this.healthBar.updateHealth(this.health);
+                this.multiplayerHealthBar.updateHealth(this.health);
             }
         }
     }
@@ -603,7 +652,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     alignPlayerNameText(x: number, y: number) {
-        var text = this.playerNameText;
+        var text = this.multiplayerNameText;
         text.setX(x);
         text.setY(y);// + this.GetTextOffsetY);
         text.setOrigin(0, 0.5);
@@ -693,7 +742,7 @@ export class Player extends Phaser.GameObjects.Sprite {
             this.shieldBubble.setVisible(false);
         }
         else {
-            this.healthBar.updatePosition(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY);
+            this.multiplayerHealthBar.updatePosition(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY);
 
             this.shieldBubble.setVisible(this.shieldHealth > 0 || (this.shieldHealth == 0 && this.shieldDrainTime > 0));
         }
@@ -735,6 +784,9 @@ export class Player extends Phaser.GameObjects.Sprite {
             this.currentInteractionItem = null;
             this.hideInteractTextAndImage();
         }
+
+        if(this.springTime > 0)
+            this.springTime--;
        
         if(this.flipX) {
             this.playerGun.setFlipX(true);          

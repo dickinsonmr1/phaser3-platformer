@@ -20,6 +20,7 @@ import { Animations } from "./animations";
 import { Socket } from "socket.io-client";
 import { PlayerInterface } from "../../gameobjects/playerInterface";
 import { ExpiringMessagesComponent } from "../../gameobjects/expiringMessagesComponent";
+import { timeEnd } from "console";
 
 export class MainScene extends Phaser.Scene {
     
@@ -163,7 +164,7 @@ export class MainScene extends Phaser.Scene {
         this.load.image('switchRedOff', './assets/sprites/objects/switchRedOff.png');
         this.load.image('switchRedOn', './assets/sprites/objects/switchRedOn.png');
 
-        this.load.image('buttonX', './assets/sprites/hud/buttonX.png');
+        this.load.image('buttonX', './assets/sprites/hud/buttonX_black.png');
 
         this.load.image('world-01-03-sky', './assets/sprites/backgrounds/blue_grass.png');
         //this.load.image('world-02-01-sky', './assets/sprites/backgrounds/backgroundCastles.png');              
@@ -254,7 +255,8 @@ export class MainScene extends Phaser.Scene {
             y: 600,
             key: "player1",
             playerId: playerId,
-            isMyPlayer: true
+            isMyPlayer: true,
+            isMultiplayer: this.isMultiplayer
             });        
         this.player.init();
         this.playerInterface = new PlayerInterface({player: this.player, socket: this.getSocket()});
@@ -273,7 +275,8 @@ export class MainScene extends Phaser.Scene {
                     y: 600,
                     key: "player"+(i+1),
                     playerId: otherSocketPlayers[i].playerId,
-                    isMyPlayer: false
+                    isMyPlayer: false,
+                    isMultiplayer: this.isMultiplayer
                     });        
                 tempPlayer.init();
 
@@ -454,6 +457,49 @@ export class MainScene extends Phaser.Scene {
         return true;
     }
 
+    bouncePlayerUp (sprite, tile): boolean
+    {        
+        if(!this.player.isInSpaceship) {
+            //spring.tryBounce(player.getScene().sound);
+            //var arrowTile = this.world.getLayer03().getTileAt(tile.x, tile.y);//body.center.x, body.center.y, true, null);
+            //arrowTile.setAlpha(1, 0.5, 0.5, 1);
+            this.player.tryBounceUp();       
+        }
+        /*
+        this.world.removeTileAndNotifyServer(tile.x, tile.y);
+        this.player.tryRechargeShield();
+
+        this.sound.play("shieldSound");
+        this.sceneController.hudScene.setInfoText("shield recharged", 2000);
+        //this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
+        */
+        return true;
+    }
+
+    bouncePlayerDown (sprite, tile): boolean
+    {        
+        if(!this.player.isInSpaceship) {
+            this.player.tryBounceDown();       
+        }
+        return true;
+    }
+
+    bouncePlayerLeft (sprite, tile): boolean
+    {        
+        if(!this.player.isInSpaceship) {
+            this.player.tryBounceLeft();       
+        }
+        return true;
+    }
+
+    bouncePlayerRight (sprite, tile): boolean
+    {        
+        if(!this.player.isInSpaceship) {
+            this.player.tryBounceRight();       
+        }
+        return true;
+    }
+
     collectBattery (sprite, tile): boolean
     {
         this.world.removeTileAndNotifyServer(tile.x, tile.y);
@@ -542,7 +588,7 @@ export class MainScene extends Phaser.Scene {
     playerTouchingSpringHandler(player: any, spring: any): void {
         if(!player.isInSpaceship) {
             spring.tryBounce(player.getScene().sound);
-            player.tryBounce();       
+            player.tryBounceUp();       
         }
     }
 

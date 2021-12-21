@@ -145,7 +145,8 @@ export class PlayerInterface {
                     this.player.duck();
                 }        
                 else {
-                    this.player.stand();
+                    if(this.player.springTime == 0)
+                        this.player.stand();
                 }
                     
                 if ((scene.jumpKey.isDown || scene.cursors.up.isDown))

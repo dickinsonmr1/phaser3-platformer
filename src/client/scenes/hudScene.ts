@@ -183,6 +183,7 @@ import { ExpiringText } from "../../gameobjects/expiringText";
         this.shieldBar.init(this.ShieldBarStartX, this.HudBaseOffsetY, maxShield,
             200, 30, true);
         this.shieldBar.setDepth(HUDComponent.depthShieldBar);
+        this.shieldBar.isVisible = true;
 
         this.shieldBar.updateHealth(0);
 

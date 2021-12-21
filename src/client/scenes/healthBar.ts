@@ -8,6 +8,7 @@ export class HealthBar extends Phaser.GameObjects.Group {
     private static get healthBarRightSegmentWidth(): number {return 6;}  
     private healthBarHeight: number;
     private isShield: boolean;
+    public isVisible: boolean;
 
     private static get healthBarShadowBuffer(): number {return 4;}
     private static get healthBarShadowOffsetX(): number {return -2;}  
@@ -112,6 +113,7 @@ export class HealthBar extends Phaser.GameObjects.Group {
         this.currentHealth = health;
 
         if(health <= 0) {
+
             this.healthBarLeft.visible = false;
             this.healthBarMid.visible = false;
             this.healthBarRight.visible = false;
@@ -121,15 +123,15 @@ export class HealthBar extends Phaser.GameObjects.Group {
             this.healthBarShadowRight.visible = false;
         }
         else {
+            if(this.isVisible) {
+                this.healthBarLeft.visible = true;
+                this.healthBarMid.visible = true;
+                this.healthBarRight.visible = true;
 
-            this.healthBarLeft.visible = true;
-            this.healthBarMid.visible = true;
-            this.healthBarRight.visible = true;
-
-            this.healthBarShadowLeft.visible = true;
-            this.healthBarShadowMid.visible = true;
-            this.healthBarShadowRight.visible = true;
-
+                this.healthBarShadowLeft.visible = true;
+                this.healthBarShadowMid.visible = true;
+                this.healthBarShadowRight.visible = true;
+            }
             this.updatePosition(this.healthBarOriginX, this.healthBarOriginY);        
         }
     }
@@ -158,6 +160,8 @@ export class HealthBar extends Phaser.GameObjects.Group {
     }
 
     show() {
+        this.isVisible = true;
+
         this.healthBarLeft.visible = true;
         this.healthBarMid.visible = true;
         this.healthBarRight.visible = true;
@@ -167,6 +171,8 @@ export class HealthBar extends Phaser.GameObjects.Group {
     }
 
     hide() {
+        this.isVisible = false;
+
         this.healthBarLeft.visible = false;
         this.healthBarMid.visible = false;
         this.healthBarRight.visible = false;

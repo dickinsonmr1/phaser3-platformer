@@ -42,6 +42,10 @@ export class World {
         return this.layer02;
     } 
 
+    getLayer03(): Phaser.Tilemaps.TilemapLayer {
+        return this.layer03;
+    } 
+
     getRandomInt(max) {
         return Math.floor(Math.random() * Math.floor(max));
     }
@@ -447,6 +451,10 @@ export class World {
         this.layer03.setTileIndexCallback(Constants.tileOpenDoor, this.scene.activateDoorIcon, this.scene);
         this.layer03.setTileIndexCallback(Constants.tileHealth, this.scene.collectHealth, this.scene);
         this.layer03.setTileIndexCallback(Constants.tileShield, this.scene.collectShield, this.scene);
+        this.layer03.setTileIndexCallback(Constants.tileArrowUp, this.scene.bouncePlayerUp, this.scene);
+        this.layer03.setTileIndexCallback(Constants.tileArrowDown, this.scene.bouncePlayerDown, this.scene);
+        this.layer03.setTileIndexCallback(Constants.tileArrowLeft, this.scene.bouncePlayerLeft, this.scene);
+        this.layer03.setTileIndexCallback(Constants.tileArrowRight, this.scene.bouncePlayerRight, this.scene);
       
         for (var i = 0; i < otherPlayers.length; i++) 
             this.scene.physics.add.collider(player, otherPlayers[i]);

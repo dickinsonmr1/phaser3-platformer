@@ -9,6 +9,12 @@ export class Constants {
     public static get tileKeyBattery(): number { return 233; }
     public static get tileKeySpring1(): number { return 1898; }
     public static get tileKeySpring2(): number { return 1930; }
+    
+    public static get tileArrowUp(): number { return 234; }
+    public static get tileArrowDown(): number { return 322; }
+    public static get tileArrowLeft(): number { return 278; }
+    public static get tileArrowRight(): number { return 190; }
+
     public static get tileLockYellow(): number { return 1771; }
     public static get tileLockRed(): number { return 1803; }
     public static get tileLockGreen(): number { return 1835; }

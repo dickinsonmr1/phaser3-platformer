@@ -62,7 +62,7 @@
         if(this.bounceTime == 0) {
             if(this.scene != undefined) {
                 this.anims.play(this.sprungAnim, true);
-                sound.play("springSound");
+                //sound.play("springSound");
             }
             this.bounceTime = 30;
         }        
