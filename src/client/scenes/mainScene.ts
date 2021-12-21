@@ -108,7 +108,10 @@ export class MainScene extends Phaser.Scene {
         this.load.audio('portalOpenSound', '/assets/audio/phaseJump3.ogg');      
         this.load.audio('portalCloseSound', '/assets/audio/phaserDown3.ogg');      
         this.load.audio('switchSound', '/assets/audio/switch_001.ogg');      
-        this.load.audio('engineSound', '/assets/audio/engine5.ogg');      
+        this.load.audio('engineSound', '/assets/audio/engine5.ogg');     
+        
+        this.load.audio('shieldSound', '/assets/audio/mixkit-sci-fi-positive-notification-266.wav');     
+        
         //this.load.audio('spaceshipLaserBeamSound', '/assets/audio/zapsplat_science_fiction_retro_laser_slow_rising_44827.mp3');      
         this.load.audio('spaceshipLaserBeamSound', '/assets/audio/science_fiction_laser_hypnotic_paralysing_beam.mp3');      
                 
@@ -430,6 +433,17 @@ export class MainScene extends Phaser.Scene {
 
         this.sound.play("healthSound");
         this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
+
+        return true;
+    }
+    
+    collectShield (sprite, tile): boolean
+    {
+        this.world.removeTileAndNotifyServer(tile.x, tile.y);
+        this.player.tryRechargeShield();
+
+        this.sound.play("shieldSound");
+        //this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
 
         return true;
     }

@@ -19,6 +19,7 @@ export class Constants {
     public static get tileDoorTitle(): number { return 217; }
 
     public static get tileHealth(): number { return 848; }
+    public static get tileShield(): number { return 756; }
     
     public static get tileGun1(): number { return 357; }
     public static get tileGun2(): number { return 358; }

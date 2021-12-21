@@ -106,6 +106,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
     public isDucking: boolean;
     public hurtTime: number;
+    public shieldReloadTime: number;
     public health: number;
     public shieldHealth: number;
 
@@ -114,6 +115,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     private get healthBarOffsetY(): number {return 10;}
 
     public static get maxHealth(): number { return 8; }
+    public static get maxShield(): number { return 8; }
 
     public gemsCollected: number;
     public score: number;
@@ -188,7 +190,8 @@ export class Player extends Phaser.GameObjects.Sprite {
             100, 15, true);
         this.healthBar.setDepth(Constants.depthHealthBar);
 
-        this.shieldHealth = Player.maxHealth;
+        this.shieldHealth = 0;//Player.maxHealth;
+        this.shieldReloadTime = 0;
 
 
         this.gemsCollected = 0;
@@ -244,7 +247,8 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.playerGun = this.scene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, this.currentWeapon.weaponTextureName);
         
         this.shieldBubble = this.scene.add.sprite(Constants.playerOffsetX, Constants.playerOffsetY, "playerShield");
-        this.shieldBubble.setScale(0.8, 0.8);
+        this.shieldBubble.setScale(0.2, 0.2);
+        this.shieldBubble.setOrigin(0.5, 0.5);
         this.shieldBubble.setDepth(Constants.depthHealthBar);
         this.shieldBubble.setTint(0x32ABFA);
 
@@ -558,6 +562,15 @@ export class Player extends Phaser.GameObjects.Sprite {
         }
     }
 
+    tryRechargeShield(): void {
+        
+        if(this.shieldHealth < Player.maxShield) {
+            this.shieldHealth = Player.maxShield;
+            this.scene.events.emit("playerShieldUpdated", this.playerId, this.shieldHealth);
+            this.shieldReloadTime = 20;
+        }
+    }
+
     getGunOffsetY() : number {
         var offsetY = Player.playerGunOffsetY;
         if(this.isDucking) {
@@ -697,6 +710,13 @@ export class Player extends Phaser.GameObjects.Sprite {
                     this.shieldBubble.setAlpha(1);
                 else   
                     this.setAlpha(1);    
+        }
+
+        if(this.shieldReloadTime > 0) {
+            this.shieldReloadTime--;
+
+            let scale = 0.8 - (this.shieldReloadTime) * .03;
+            this.shieldBubble.setScale(scale, scale);
         }
 
         if(this.activateInteractTime > 0)

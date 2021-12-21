@@ -446,6 +446,7 @@ export class World {
         //open door 236
         this.layer03.setTileIndexCallback(Constants.tileOpenDoor, this.scene.activateDoorIcon, this.scene);
         this.layer03.setTileIndexCallback(Constants.tileHealth, this.scene.collectHealth, this.scene);
+        this.layer03.setTileIndexCallback(Constants.tileShield, this.scene.collectShield, this.scene);
       
         for (var i = 0; i < otherPlayers.length; i++) 
             this.scene.physics.add.collider(player, otherPlayers[i]);

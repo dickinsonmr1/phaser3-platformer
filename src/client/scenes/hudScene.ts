@@ -168,7 +168,7 @@ import { ExpiringText } from "../../gameobjects/expiringText";
             this.setInfoText(text);
         }, this);
 
-        var maxHealth = 8;
+        var maxHealth = Player.maxHealth;
         this.setHealth(maxHealth);
         
         this.healthBar = new HealthBar(this);
@@ -178,13 +178,13 @@ import { ExpiringText } from "../../gameobjects/expiringText";
 
         this.healthBar.updateHealth(maxHealth);
 
-        var maxShield = 8;
+        var maxShield = Player.maxShield;
         this.shieldBar = new HealthBar(this);
         this.shieldBar.init(this.ShieldBarStartX, this.HudBaseOffsetY, maxShield,
             200, 30, true);
         this.shieldBar.setDepth(HUDComponent.depthShieldBar);
 
-        this.shieldBar.updateHealth(maxShield);
+        this.shieldBar.updateHealth(0);
 
         this.scene.setVisible(false);
     }
