@@ -167,7 +167,9 @@ export class MainScene extends Phaser.Scene {
 
         this.load.image('world-01-03-sky', './assets/sprites/backgrounds/blue_grass.png');
         //this.load.image('world-02-01-sky', './assets/sprites/backgrounds/backgroundCastles.png');              
-        this.load.image('world-02-01-sky', './assets/sprites/backgrounds/backgroundForest.png');              
+        //this.load.image('world-02-01-sky', './assets/sprites/backgrounds/backgroundForest.png');              
+        //this.load.image('world-02-01-sky', './assets/sprites/backgrounds/blue_shroom.png');   
+        this.load.image('world-02-01-sky', './assets/sprites/backgrounds/purple_shroom.png');
     }
 
     private loadParticles(){

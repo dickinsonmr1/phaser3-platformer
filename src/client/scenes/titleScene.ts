@@ -350,7 +350,7 @@ export class TitleScene extends Phaser.Scene {
 
     startNewGame(isMultiplayer: boolean) {
         this.input.keyboard.resetKeys();
-        this.sceneController.preloadGameScenes('world-01-01', isMultiplayer);
+        this.sceneController.preloadGameScenes('world-02-01', isMultiplayer);
         this.menus[this.menuSelectedIndex].refreshColorsAndMarker();
 
         this.sound.play("selectSound");
