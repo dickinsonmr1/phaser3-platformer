@@ -225,23 +225,25 @@ import { ExpiringText } from "../../gameobjects/expiringText";
 
     setInfoText(text: string, infoTextDurationInMs: number): void {
         this.hudComponent.infoText.setText(text);
-        this.hudComponent.infoTextAlpha = 1;
+        this.hudComponent.infoTextAlpha = 0.1;
         this.hudComponent.infoTextExpiryGameTime = this.game.getTime() + infoTextDurationInMs;
 
         this.hudComponent.infoText.setAlpha(this.hudComponent.infoTextAlpha);
     }
-
-    
-   
+       
     update(): void {
-        if(this.game.getTime() > this.hudComponent.infoTextExpiryGameTime) {
-            if(this.hudComponent.infoTextAlpha > 0) {
-                this.hudComponent.infoTextAlpha -= 0.01;
+        if(this.game.getTime() < this.hudComponent.infoTextExpiryGameTime) {
+            if(this.hudComponent.infoTextAlpha < 1) {
+                this.hudComponent.infoTextAlpha += 0.1;
                 this.hudComponent.infoText.setAlpha(this.hudComponent.infoTextAlpha);
             }
-        } 
-
-       
+        }
+        if(this.game.getTime() > this.hudComponent.infoTextExpiryGameTime) {
+            if(this.hudComponent.infoTextAlpha > 0) {
+                this.hudComponent.infoTextAlpha -= 0.05;
+                this.hudComponent.infoText.setAlpha(this.hudComponent.infoTextAlpha);
+            }
+        }       
     }
 }
 

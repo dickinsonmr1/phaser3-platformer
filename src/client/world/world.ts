@@ -523,7 +523,7 @@ export class World {
     updateSky(camera: Phaser.Cameras.Scene2D.Camera): void {
         this.sky.setX(camera.x);
         this.sky.setY(camera.y + World.skyOffsetY);
-        this.sky.setTilePosition(-(camera.scrollX * 0.25), -(camera.scrollY * 0.00));
+        this.sky.setTilePosition(-(camera.scrollX * 0.25), -(camera.scrollY * 0.10));
     }
 
     removeTileFromOtherClient (tileX: number, tileY: number, layer: number): void {
