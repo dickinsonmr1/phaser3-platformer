@@ -532,7 +532,7 @@ export class MainScene extends Phaser.Scene {
         this.world.removeTileAndNotifyServer(tile.x, tile.y);
         this.sound.play("batterySound", { volume: 0.3 });
 
-        this.particleEmitter.explode(20, tile.pixelX + 32, tile.pixelY + 32);
+        this.particleEmitter.explode(4, tile.pixelX + 32, tile.pixelY + 32);
 
         this.player.reload(weapon);
         this.events.emit("weaponCollected", weapon.currentAmmo, weapon.weaponTextureName);

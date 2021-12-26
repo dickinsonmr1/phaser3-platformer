@@ -127,6 +127,12 @@ export class World {
         this.layer03.alpha = 1.0;//0.75;
 
         var allEnemyTypes = [2967, 2953, 2939, 2925, 2911, 2924, 2910, 2896, 3077, 3063];
+        // index 0: brown with red eye
+        // index 1:
+        // index 2:
+        // index 3:
+        // index 4: 
+        // index 5: saw blade: 2924
         var allPortalTiles = [Constants.portalBlueTile, Constants.portalGreenTile, Constants.portalYellowTile, Constants.portalRedTile];
         var allGemTiles = [Constants.tileKeyGemRed, Constants.tileKeyGemGreen, Constants.tileKeyGemYellow, Constants.tileKeyGemBlue];
         
@@ -301,7 +307,7 @@ export class World {
 
                 switch(index)
                 {
-                    case 0:
+                    case 0: // walking brown abstract
                         var enemy = new Enemy({
                             scene: this.scene,
                             enemyType: EnemyType.Stalker,
@@ -311,12 +317,14 @@ export class World {
                             drawScale: 1.25,
                             enemyOffsetY: 10,
                             defaultFacingRight: false,
+                            showHealthBar: true,
+                            enemyName: "Walker"
                             });        
                         enemy.init("enemy01-Idle", "enemy01-Walk", "enemy01-Dead");
                         this.scene.enemies.push(enemy);
                         break;
                         
-                    case 1:
+                    case 1: // blue slime
                         var enemy = new Enemy({
                             scene: this.scene,
                             enemyType: EnemyType.Patrol,
@@ -328,12 +336,14 @@ export class World {
                             drawScale: 0.5,
                             enemyOffsetY: 0,
                             defaultFacingRight: true,
+                            showHealthBar: true,
+                            enemyName: "Slime"
                             });        
                         enemy.init("enemy02-Idle", "enemy02-Walk", "enemy02-Dead");
                         this.scene.enemies.push(enemy);
                         break;
 
-                    case 2:                                
+                    case 2: // walking red abstract                               
                         var enemy = new Enemy({
                             scene: this.scene,
                             enemyType: EnemyType.Patrol,
@@ -350,7 +360,7 @@ export class World {
                         this.scene.enemies.push(enemy);
                         break;
 
-                    case 3:
+                    case 3: // green worm
                         var enemy = new Enemy({
                             scene: this.scene,
                             enemyType: EnemyType.Patrol,
@@ -367,7 +377,7 @@ export class World {
                         this.scene.enemies.push(enemy);
                         break;
 
-                    case 4:
+                    case 4: // saw
                         var enemy = new Enemy({
                             scene: this.scene,
                             enemyType: EnemyType.Patrol,
@@ -384,7 +394,7 @@ export class World {
                         this.scene.enemies.push(enemy);
                         break;
 
-                    case 5:
+                    case 5: // floating with spikes
                         var enemy = new Enemy({
                             scene: this.scene,
                             enemyType: EnemyType.Homing,

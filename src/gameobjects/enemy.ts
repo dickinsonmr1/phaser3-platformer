@@ -6,11 +6,13 @@
 
 /// <reference path="../../node_modules/phaser/types/phaser.d.ts"/>
 
-import { Constants } from "../client/constants";
 import "phaser";
 import { Scene } from "phaser";
 import { MainScene } from "../client/scenes/mainScene";
 import { METHODS } from "http";
+import { HealthBar } from "../client/scenes/healthBar";
+import { Constants } from "../client/constants";
+import { timeStamp } from "console";
 
 export enum EnemyType {
     Stalker,
@@ -41,7 +43,20 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
     public patrolMoveRight: boolean;
 
-    public homingSitance
+    public homingDistance: number;
+    public showHealthBar: boolean;
+
+    public multiplayerHealthBar: HealthBar;
+    private get healthBarOffsetX(): number {return -50;}
+    private get healthBarOffsetY(): number {return -50;}
+
+    private get GetTextOffsetY(): number { return -100; }
+
+    private multiplayerNameText: Phaser.GameObjects.Text;
+    private get GetPlayerNameOffsetX(): number { return -50; }
+    private get GetPlayerNameOffsetY(): number { return -70; }
+
+    public enemyName: string;
 
     constructor(params) {
         super(params.scene, params.x, params.y, params.key, params.frame);
@@ -53,11 +68,20 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.widthOverride = params.widthOverride;
         this.heightOverride = params.heightOverride;
         this.enemyType = params.enemyType;
+        this.enemyName = params.enemyName;
+
         if(params.homingDistance != null) {
             this.followDistance = params.homingDistance;
         }
         else {
             this.followDistance = 500;
+        }
+
+        if(params.showHealthBar != null) {
+            this.showHealthBar = params.showHealthBar;
+        }
+        else {
+            this.showHealthBar = false;
         }
     } 
     
@@ -118,7 +142,44 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
         this.anims.play(this.idleAnim, true);
 
+        
+        // multiplayer health bar
+        this.multiplayerHealthBar = new HealthBar(this.getScene());
+        this.multiplayerHealthBar.init(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY,
+            this.health, 
+            100, 15, false);
+        this.multiplayerHealthBar.setDepth(Constants.depthHealthBar);
+        if(this.showHealthBar)
+            this.multiplayerHealthBar.show();
+        else
+            this.multiplayerHealthBar.hide();
+
+        // name text
+        var playerNameText = this.scene.add.text(this.x, this.y - this.GetTextOffsetY, this.enemyName,
+            {
+                fontFamily: 'KenneyRocketSquare',         
+                color:"rgb(255,255,255)",
+            });
+        playerNameText.setAlpha(0.5);
+        playerNameText.setOrigin(0, 0.5);
+        playerNameText.setDepth(7);
+        playerNameText.setStroke('rgb(0,0,0)', 4);     
+        playerNameText.setFontSize(24); 
+        
+        this.multiplayerNameText = playerNameText;
+        this.alignPlayerNameText(this.x + this.GetPlayerNameOffsetX, this.y + this.GetPlayerNameOffsetY);
+        this.multiplayerNameText.setOrigin(0, 0.5);
+        this.multiplayerNameText.setFontSize(16);
+        this.multiplayerNameText.setVisible(this.showHealthBar);
+
         return;        
+    }
+
+    alignPlayerNameText(x: number, y: number) {
+        var text = this.multiplayerNameText;
+        text.setX(x);
+        text.setY(y);// + this.GetTextOffsetY);
+        text.setOrigin(0, 0.5);
     }
 
     idle(): void {
@@ -174,12 +235,18 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.health -= damage;
         this.hurtTime = 60;
 
+        this.multiplayerHealthBar.updateHealth(this.health);
+
         if(this.health <= 0) {
             this.scene.sound.play("enemyDeathSound");
             
             var scene = <MainScene>this.scene;
             scene.player.enemiesKilled++;
 
+            this.multiplayerHealthBar.hide();
+            this.multiplayerHealthBar.destroy();
+
+            this.multiplayerNameText.destroy();
             this.destroy();       
             //this.anims.play(this.deadAnim, true);
             //var body = <Phaser.Physics.Arcade.Body>this.body;            
@@ -313,6 +380,11 @@ export class Enemy extends Phaser.GameObjects.Sprite {
             if(this.idleTime > 0) {
                 this.idleTime--;
             }    
+
+            if(this.health >= 0) {
+                this.multiplayerHealthBar.updatePosition(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY);
+                this.alignPlayerNameText(this.x + this.GetPlayerNameOffsetX, this.y + this.GetPlayerNameOffsetY);
+            }
         }
     }
 }
