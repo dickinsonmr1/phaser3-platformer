@@ -317,7 +317,6 @@ export class World {
                             drawScale: 1.25,
                             enemyOffsetY: 10,
                             defaultFacingRight: false,
-                            showHealthBar: true,
                             enemyName: "Walker"
                             });        
                         enemy.init("enemy01-Idle", "enemy01-Walk", "enemy01-Dead");
@@ -336,7 +335,6 @@ export class World {
                             drawScale: 0.5,
                             enemyOffsetY: 0,
                             defaultFacingRight: true,
-                            showHealthBar: true,
                             enemyName: "Slime"
                             });        
                         enemy.init("enemy02-Idle", "enemy02-Walk", "enemy02-Dead");
@@ -355,6 +353,7 @@ export class World {
                             drawScale: 1.25,
                             enemyOffsetY: 10,
                             defaultFacingRight: false,
+                            enemyName: "Eyeball"
                             });        
                         enemy.init("enemy03-Idle", "enemy03-Walk", "enemy03-Dead");
                         this.scene.enemies.push(enemy);
@@ -372,6 +371,7 @@ export class World {
                             drawScale: 0.75,
                             enemyOffsetY: 96,
                             defaultFacingRight: true,
+                            enemyName: "Worm"
                             });        
                         enemy.init("enemy04-Idle", "enemy04-Walk", "enemy04-Dead");
                         this.scene.enemies.push(enemy);
@@ -389,6 +389,7 @@ export class World {
                             drawScale: 0.75,
                             enemyOffsetY: 0,
                             defaultFacingRight: true,
+                            enemyName: "Buzz"
                             });        
                         enemy.init("enemy05-Idle", "enemy05-Walk", "enemy05-Dead");
                         this.scene.enemies.push(enemy);
@@ -406,16 +407,34 @@ export class World {
                             drawScale: 1.5,
                             enemyOffsetY: 2,
                             defaultFacingRight: true,
-                            homingDistance: 1000
+                            homingDistance: 1000,
+                            enemyName: "Spikey"
                             });        
                         enemy.init("enemy06-Idle", "enemy06-Walk", "enemy06-Dead");
                         this.scene.enemies.push(enemy);
                         break;
-
+                    case 8:
+                        var enemy = new Enemy({
+                            scene: this.scene,
+                            enemyType: EnemyType.Boss,
+                            x: x,
+                            y: y,
+                            widthOverride: 180,
+                            heightOverride: 150,
+                            key: "boss-Idle",
+                            drawScale: 1.0,
+                            enemyOffsetY: -4,
+                            defaultFacingRight: false,
+                            showHealthBar: true,
+                            enemyName: "Robot MK5"
+                            });        
+                        enemy.init("boss-Idle", "boss-Walk", "boss-Idle");
+                        this.scene.enemies.push(enemy);
+                        break;  
                     default:
                         var enemy = new Enemy({
                             scene: this.scene,
-                            enemyType: EnemyType.Patrol,
+                            enemyType: EnemyType.Stalker,
                             x: x,
                             y: y - 50,
                             widthOverride: 48,

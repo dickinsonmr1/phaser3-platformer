@@ -227,11 +227,36 @@ export class Animations {
             frameRate: 20,
             repeat: -1
         });
-        
+                
         anims.create({
             key: 'enemy07-Dead',
             frames: [{key: 'enemySprites3', frame: 'playerGreen_dead.png'}],
             frameRate: 10,
+        });
+
+        ////////////////////////////////////////////////////////////////
+        // enemy 9: robot boss
+        ////////////////////////////////////////////////////////////////
+        anims.create({
+            key: 'boss-Idle',
+            frames: [
+                {key: 'enemySprites4', frame: 'robot_redDrive1.png', },
+                {key: 'enemySprites4', frame: 'robot_redDrive2.png', }
+            ],
+            frameRate: 10,
+        });
+        
+        anims.create({
+            key: 'boss-Walk',
+            frames:
+            [
+                {key: 'enemySprites4', frame: 'robot_redDrive1.png'},
+                {key: 'enemySprites4', frame: 'robot_redDrive2.png'},
+                //{key: 'enemySprites3', frame: 'playerGreen_walk3.png'},
+                //{key: 'enemySprites3', frame: 'playerGreen_walk4.png'},
+            ],
+            frameRate: 10,
+            repeat: -1
         });
 
         ////////////////////////////////////////////////////////////////

@@ -18,7 +18,8 @@ export enum EnemyType {
     Stalker,
     Patrol,
     Homing,
-    Spectre
+    Spectre,
+    Boss
 }
 
 export class Enemy extends Phaser.GameObjects.Sprite {
@@ -46,15 +47,12 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     public homingDistance: number;
     public showHealthBar: boolean;
 
-    public multiplayerHealthBar: HealthBar;
-    private get healthBarOffsetX(): number {return -50;}
-    private get healthBarOffsetY(): number {return -50;}
+    public bossHealthBar: HealthBar;
+    //private get healthBarOffsetX(): number {return -110;}
+    private get healthBarOffsetY(): number {return -180;}
 
-    private get GetTextOffsetY(): number { return -100; }
-
-    private multiplayerNameText: Phaser.GameObjects.Text;
-    private get GetPlayerNameOffsetX(): number { return -50; }
-    private get GetPlayerNameOffsetY(): number { return -70; }
+    private bossNameText: Phaser.GameObjects.Text;
+    private get GetPlayerNameOffsetY(): number { return -200; }
 
     public enemyName: string;
 
@@ -77,12 +75,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
             this.followDistance = 500;
         }
 
-        if(params.showHealthBar != null) {
-            this.showHealthBar = params.showHealthBar;
-        }
-        else {
-            this.showHealthBar = false;
-        }
+        this.showHealthBar = this.enemyType == EnemyType.Boss;
     } 
     
     public getScene(): Scene {
@@ -126,10 +119,10 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         //this.body.debugBodyColor = 0xadfefe;
               
         this.displayOriginX = 0.5;
-        this.displayOriginY = 0.5;
+        this.displayOriginY = this.enemyType == EnemyType.Boss ? 0 : 0.5;
 
         this.originX = 0.5;
-        this.originY = 0.5;
+        this.originY = this.enemyType == EnemyType.Boss ? 1 : 0.5;
 
         this.setScale(this.drawScale, this.drawScale);
         
@@ -137,49 +130,54 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
         this.hurtTime = 0;
         this.idleTime = 0;
-        this.health = 100;
+        if(this.enemyType == EnemyType.Boss)
+            this.health = 3000;
+        else
+            this.health = 100;
+
         this.springTime = 0;
 
         this.anims.play(this.idleAnim, true);
 
         
         // multiplayer health bar
-        this.multiplayerHealthBar = new HealthBar(this.getScene());
-        this.multiplayerHealthBar.init(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY,
+        this.bossHealthBar = new HealthBar(this.getScene());
+        this.bossHealthBar.init(this.x - this.widthOverride / 2, this.y + this.healthBarOffsetY,
             this.health, 
-            100, 15, false);
-        this.multiplayerHealthBar.setDepth(Constants.depthHealthBar);
+            200, 15, false);
+        this.bossHealthBar.setDepth(Constants.depthHealthBar);
         if(this.showHealthBar)
-            this.multiplayerHealthBar.show();
+            this.bossHealthBar.show();
         else
-            this.multiplayerHealthBar.hide();
+            this.bossHealthBar.hide();
 
         // name text
-        var playerNameText = this.scene.add.text(this.x, this.y - this.GetTextOffsetY, this.enemyName,
+        var playerNameText = this.scene.add.text(this.x, this.y //- this.GetTextOffsetY
+            , this.enemyName,
             {
                 fontFamily: 'KenneyRocketSquare',         
                 color:"rgb(255,255,255)",
             });
-        playerNameText.setAlpha(0.5);
-        playerNameText.setOrigin(0, 0.5);
+        playerNameText.setAlpha(0.9);
+        //playerNameText.setOrigin(0.5, 0.5);
         playerNameText.setDepth(7);
         playerNameText.setStroke('rgb(0,0,0)', 4);     
         playerNameText.setFontSize(24); 
         
-        this.multiplayerNameText = playerNameText;
-        this.alignPlayerNameText(this.x + this.GetPlayerNameOffsetX, this.y + this.GetPlayerNameOffsetY);
-        this.multiplayerNameText.setOrigin(0, 0.5);
-        this.multiplayerNameText.setFontSize(16);
-        this.multiplayerNameText.setVisible(this.showHealthBar);
+        this.bossNameText = playerNameText;
+        this.alignPlayerNameText(this.x, this.y + this.GetPlayerNameOffsetY);
+        this.bossNameText.setOrigin(0.5, 0.5);
+        this.bossNameText.setFontSize(20);
+        this.bossNameText.setVisible(this.showHealthBar);
 
         return;        
     }
 
     alignPlayerNameText(x: number, y: number) {
-        var text = this.multiplayerNameText;
+        var text = this.bossNameText;
         text.setX(x);
         text.setY(y);// + this.GetTextOffsetY);
-        text.setOrigin(0, 0.5);
+        text.setOrigin(0.5, 0.5);
     }
 
     idle(): void {
@@ -187,7 +185,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
             var body = <Phaser.Physics.Arcade.Body>this.body;
             body.setVelocityX(0);            
             this.anims.play(this.idleAnim, true);
-            this.idleTime = 60;
+            this.idleTime = 5;
         }
     }
     
@@ -235,7 +233,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.health -= damage;
         this.hurtTime = 60;
 
-        this.multiplayerHealthBar.updateHealth(this.health);
+        this.bossHealthBar.updateHealth(this.health);
 
         if(this.health <= 0) {
             this.scene.sound.play("enemyDeathSound");
@@ -243,10 +241,10 @@ export class Enemy extends Phaser.GameObjects.Sprite {
             var scene = <MainScene>this.scene;
             scene.player.enemiesKilled++;
 
-            this.multiplayerHealthBar.hide();
-            this.multiplayerHealthBar.destroy();
+            this.bossHealthBar.hide();
+            this.bossHealthBar.destroy();
 
-            this.multiplayerNameText.destroy();
+            this.bossNameText.destroy();
             this.destroy();       
             //this.anims.play(this.deadAnim, true);
             //var body = <Phaser.Physics.Arcade.Body>this.body;            
@@ -300,13 +298,16 @@ export class Enemy extends Phaser.GameObjects.Sprite {
             {                
                 var scene = <MainScene>this.scene;
                 var body = <Phaser.Physics.Arcade.Body>this.body;
+                var walkOffEdgeTile: any;
+
                 switch(this.enemyType){
                     case EnemyType.Stalker:
-
                         if(Math.abs(playerX - body.center.x) < this.followDistance && Math.abs(playerY - body.center.y) < this.followDistance) {
                             if(playerX < this.x) {
                                 var tileAtEnemyPosition = scene.world.getLayer02().getTileAtWorldXY(body.center.x, body.center.y, true, null);
-                                var walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x - 1, tileAtEnemyPosition.y + 1, false);
+                                
+                                if(tileAtEnemyPosition != null && tileAtEnemyPosition.x > 0)
+                                    walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x - 1, tileAtEnemyPosition.y + 1, false);
                     
                                 if(!body.onWall() && body.onFloor() && walkOffEdgeTile != null)
                                     this.moveLeft();
@@ -317,7 +318,8 @@ export class Enemy extends Phaser.GameObjects.Sprite {
                             }
                             else if (playerX > this.x) {
                                 var tileAtEnemyPosition = scene.world.getLayer02().getTileAtWorldXY(body.center.x, body.center.y, true, null);
-                                var walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x + 1, tileAtEnemyPosition.y + 1, false);
+                                if(tileAtEnemyPosition != null)
+                                    walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x + 1, tileAtEnemyPosition.y + 1, false);
                     
                                 if(!body.onWall() && body.onFloor() && walkOffEdgeTile != null)
                                     this.moveRight();
@@ -331,6 +333,32 @@ export class Enemy extends Phaser.GameObjects.Sprite {
                             this.idle();
                         }              
                         break;
+                    case EnemyType.Boss:
+
+                        if(playerX < this.x) {
+                            //var tileAtEnemyPosition = scene.world.getLayer02().getTileAtWorldXY(body.center.x, body.center.y, true, null);
+                            
+                            //if(tileAtEnemyPosition != null && tileAtEnemyPosition.x > 0)
+                                //walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x - 1, tileAtEnemyPosition.y + 1, false);
+                
+                            if(body.onFloor()) //&& walkOffEdgeTile != null)
+                                this.moveLeft();
+                            else {
+                                //this.idle();
+                            }
+                        }
+                        else if (playerX > this.x) {
+                            //var tileAtEnemyPosition = scene.world.getLayer02().getTileAtWorldXY(body.center.x, body.center.y, true, null);
+                            //if(tileAtEnemyPosition != null)
+                                //walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x + 1, tileAtEnemyPosition.y + 1, false);
+                
+                            if(body.onFloor())// && walkOffEdgeTile != null)
+                                this.moveRight();
+                            else {
+                                //this.idle();
+                            }
+                        }      
+                        break;
                     case EnemyType.Homing:
                         if(Math.abs(playerX - body.center.x) < this.followDistance && Math.abs(playerY - body.center.y) < this.followDistance) {
                             this.homeTowardsPlayer(playerX, playerY);
@@ -340,10 +368,10 @@ export class Enemy extends Phaser.GameObjects.Sprite {
                         }              
                         break;
                     case EnemyType.Patrol:
-           
                         if(!this.patrolMoveRight) {
                             var tileAtEnemyPosition = scene.world.getLayer02().getTileAtWorldXY(body.center.x, body.center.y, true, null);
-                            var walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x - 1, tileAtEnemyPosition.y + 1, false);
+                            if(tileAtEnemyPosition != null && tileAtEnemyPosition.x > 0)
+                                walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x - 1, tileAtEnemyPosition.y + 1, false);
 
                             if(!body.onWall() && body.onFloor() && walkOffEdgeTile != null)
                                 this.moveLeft();
@@ -354,7 +382,8 @@ export class Enemy extends Phaser.GameObjects.Sprite {
                         }
                         else if (this.patrolMoveRight) {
                             var tileAtEnemyPosition = scene.world.getLayer02().getTileAtWorldXY(body.center.x, body.center.y, true, null);
-                            var walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x + 1, tileAtEnemyPosition.y + 1, false);
+                            if(tileAtEnemyPosition != null)
+                                walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x + 1, tileAtEnemyPosition.y + 1, false);
                 
                             if(!body.onWall() && body.onFloor() && walkOffEdgeTile != null)
                                 this.moveRight();
@@ -382,8 +411,9 @@ export class Enemy extends Phaser.GameObjects.Sprite {
             }    
 
             if(this.health >= 0) {
-                this.multiplayerHealthBar.updatePosition(this.x + this.healthBarOffsetX, this.y + this.healthBarOffsetY);
-                this.alignPlayerNameText(this.x + this.GetPlayerNameOffsetX, this.y + this.GetPlayerNameOffsetY);
+                var offsetX = Math.abs(this.bossHealthBar.healthMaxWidthInPixels - this.widthOverride / 2);
+                this.bossHealthBar.updatePosition(this.x - offsetX, this.y + this.healthBarOffsetY);
+                this.alignPlayerNameText(this.x, this.y + this.GetPlayerNameOffsetY);
             }
         }
     }
