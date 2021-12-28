@@ -258,6 +258,12 @@ export class Animations {
             frameRate: 10,
             repeat: -1
         });
+                        
+        anims.create({
+            key: 'boss-Jump',
+            frames: [{key: 'enemySprites4', frame: 'robot_redJump.png'}],
+            frameRate: 10,
+        });
 
         ////////////////////////////////////////////////////////////////
         // springs

@@ -319,7 +319,7 @@ export class World {
                             defaultFacingRight: false,
                             enemyName: "Walker"
                             });        
-                        enemy.init("enemy01-Idle", "enemy01-Walk", "enemy01-Dead");
+                        enemy.init("enemy01-Idle", "enemy01-Walk", "enemy01-Dead", null);
                         this.scene.enemies.push(enemy);
                         break;
                         
@@ -337,7 +337,7 @@ export class World {
                             defaultFacingRight: true,
                             enemyName: "Slime"
                             });        
-                        enemy.init("enemy02-Idle", "enemy02-Walk", "enemy02-Dead");
+                        enemy.init("enemy02-Idle", "enemy02-Walk", "enemy02-Dead", null);
                         this.scene.enemies.push(enemy);
                         break;
 
@@ -355,7 +355,7 @@ export class World {
                             defaultFacingRight: false,
                             enemyName: "Eyeball"
                             });        
-                        enemy.init("enemy03-Idle", "enemy03-Walk", "enemy03-Dead");
+                        enemy.init("enemy03-Idle", "enemy03-Walk", "enemy03-Dead", null);
                         this.scene.enemies.push(enemy);
                         break;
 
@@ -373,7 +373,7 @@ export class World {
                             defaultFacingRight: true,
                             enemyName: "Worm"
                             });        
-                        enemy.init("enemy04-Idle", "enemy04-Walk", "enemy04-Dead");
+                        enemy.init("enemy04-Idle", "enemy04-Walk", "enemy04-Dead", null);
                         this.scene.enemies.push(enemy);
                         break;
 
@@ -391,7 +391,7 @@ export class World {
                             defaultFacingRight: true,
                             enemyName: "Buzz"
                             });        
-                        enemy.init("enemy05-Idle", "enemy05-Walk", "enemy05-Dead");
+                        enemy.init("enemy05-Idle", "enemy05-Walk", "enemy05-Dead", null);
                         this.scene.enemies.push(enemy);
                         break;
 
@@ -410,7 +410,7 @@ export class World {
                             homingDistance: 1000,
                             enemyName: "Spikey"
                             });        
-                        enemy.init("enemy06-Idle", "enemy06-Walk", "enemy06-Dead");
+                        enemy.init("enemy06-Idle", "enemy06-Walk", "enemy06-Dead", null);
                         this.scene.enemies.push(enemy);
                         break;
                     case 8:
@@ -428,7 +428,7 @@ export class World {
                             showHealthBar: true,
                             enemyName: "Robot MK5"
                             });        
-                        enemy.init("boss-Idle", "boss-Walk", "boss-Idle");
+                        enemy.init("boss-Idle", "boss-Walk", "boss-Idle", "boss-Jump");
                         this.scene.enemies.push(enemy);
                         break;  
                     default:
@@ -444,7 +444,7 @@ export class World {
                             enemyOffsetY: 2,
                             defaultFacingRight: false,
                             });        
-                        enemy.init("enemy07-Idle", "enemy07-Walk", "enemy07-Dead");
+                        enemy.init("enemy07-Idle", "enemy07-Walk", "enemy07-Dead", null);
                         this.scene.enemies.push(enemy);
                         break;
                 }

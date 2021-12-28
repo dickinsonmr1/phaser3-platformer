@@ -32,6 +32,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     private idleAnim: string;
     private walkAnim: string;
     private deadAnim: string;
+    private jumpAnim: string;
     private drawScale: number;
     private widthOverride: number;
     private heightOverride: number;
@@ -41,6 +42,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     private followDistance: number;
 
     public idleTime: number;
+    public jumpTime: number;
 
     public patrolMoveRight: boolean;
 
@@ -84,7 +86,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
     //public getPosition(): 
 
-    public init(idleAnim: string, walkAnim: string, deadAnim: string): void {
+    public init(idleAnim: string, walkAnim: string, deadAnim: string, jumpAnim: string): void {
 
         this.setFlipX(this.defaultFacingRight);
 
@@ -93,6 +95,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.idleAnim = idleAnim;
         this.walkAnim = walkAnim;
         this.deadAnim = deadAnim;
+        this.jumpAnim = jumpAnim;
         
         if(this.widthOverride != undefined)
             this.width = this.widthOverride;
@@ -130,6 +133,8 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
         this.hurtTime = 0;
         this.idleTime = 0;
+        this.jumpTime = 0;
+
         if(this.enemyType == EnemyType.Boss)
             this.health = 3000;
         else
@@ -220,6 +225,34 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         }
     }
 
+    moveLeftIgnoreFloor(): void {
+        if(this.scene != undefined) {
+            var body = <Phaser.Physics.Arcade.Body>this.body;
+            
+            if(body.onFloor() || this.jumpTime == 0)
+                this.anims.play(this.walkAnim, true);
+            else
+                this.anims.play(this.jumpAnim, true);
+
+            body.setVelocityX(-150);
+            this.flipX = !this.defaultFacingRight;
+        }
+    }
+
+    moveRightIgnoreFloor(): void {        
+        if(this.scene != undefined) {
+            var body = <Phaser.Physics.Arcade.Body>this.body;
+            
+            if(body.onFloor() || this.jumpTime == 0)
+                this.anims.play(this.walkAnim, true);
+            else
+                this.anims.play(this.jumpAnim, true);
+
+            body.setVelocityX(150);            
+            this.flipX = this.defaultFacingRight;
+        }
+    }
+
     homeTowardsPlayer(playerX: number, playerY: number): void {        
         if(this.scene != undefined) {
 
@@ -261,11 +294,23 @@ export class Enemy extends Phaser.GameObjects.Sprite {
                         //if(springSound.)
                         //if (tile.alpha > 0) {
                 body.setVelocityY(-650);
+                this.anims.play(this.jumpAnim, true);
                 //sound.play("springSound");
 
                 //this.springTime = gameTime + 1000;
             //}        
         //}
+    }
+
+    tryJump() {     
+        
+        var body = <Phaser.Physics.Arcade.Body>this.body;
+        if(body.onFloor()) {           
+            body.setVelocityY(-300);
+            this.anims.play(this.jumpAnim, true);
+            this.jumpTime = 60;
+        }
+        //sound.play("springSound");
     }
 
 
@@ -333,30 +378,34 @@ export class Enemy extends Phaser.GameObjects.Sprite {
                             this.idle();
                         }              
                         break;
-                    case EnemyType.Boss:
+                    case EnemyType.Boss:   
 
+                        var randJump = Math.random() < 0.02;
+                        if(randJump)
+                            this.tryJump();
+                        
                         if(playerX < this.x) {
-                            //var tileAtEnemyPosition = scene.world.getLayer02().getTileAtWorldXY(body.center.x, body.center.y, true, null);
+                            var tileAtEnemyPosition = scene.world.getLayer02().getTileAtWorldXY(body.x - body.width, body.y + body.height * 0.8, true, null);
                             
-                            //if(tileAtEnemyPosition != null && tileAtEnemyPosition.x > 0)
-                                //walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x - 1, tileAtEnemyPosition.y + 1, false);
+                            if(tileAtEnemyPosition != null && tileAtEnemyPosition.x > 0)
+                                walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x - 1, tileAtEnemyPosition.y + 1, false);
                 
-                            if(body.onFloor()) //&& walkOffEdgeTile != null)
-                                this.moveLeft();
-                            else {
+                            //if(body.onFloor() && walkOffEdgeTile != null)
+                                this.moveLeftIgnoreFloor();
+                            //else {
                                 //this.idle();
-                            }
+                            //}
                         }
                         else if (playerX > this.x) {
-                            //var tileAtEnemyPosition = scene.world.getLayer02().getTileAtWorldXY(body.center.x, body.center.y, true, null);
-                            //if(tileAtEnemyPosition != null)
-                                //walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x + 1, tileAtEnemyPosition.y + 1, false);
+                            var tileAtEnemyPosition = scene.world.getLayer02().getTileAtWorldXY(body.x + body.width, body.y + body.height * 0.8, true, null);
+                            if(tileAtEnemyPosition != null)
+                                walkOffEdgeTile = scene.world.getLayer02().getTileAt(tileAtEnemyPosition.x + 1, tileAtEnemyPosition.y + 1, false);
                 
-                            if(body.onFloor())// && walkOffEdgeTile != null)
-                                this.moveRight();
-                            else {
+                            //if(body.onFloor() && walkOffEdgeTile != null)
+                                this.moveRightIgnoreFloor();
+                            //else {
                                 //this.idle();
-                            }
+                            //}
                         }      
                         break;
                     case EnemyType.Homing:
@@ -408,6 +457,10 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
             if(this.idleTime > 0) {
                 this.idleTime--;
+            }    
+
+            if(this.jumpTime > 0) {
+                this.jumpTime--;
             }    
 
             if(this.health >= 0) {
