@@ -13,6 +13,7 @@ import { METHODS } from "http";
 import { HealthBar } from "../client/scenes/healthBar";
 import { Constants } from "../client/constants";
 import { timeStamp } from "console";
+import { Bullet } from "./bullet";
 
 export enum EnemyType {
     Stalker,
@@ -55,8 +56,12 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
     private bossNameText: Phaser.GameObjects.Text;
     private get GetPlayerNameOffsetY(): number { return -200; }
+    private bulletTimeInterval: number = 30;
+    private bulletTime: number = 0; 
 
     public enemyName: string;
+
+    private bulletSpeed: number = 600;
 
     constructor(params) {
         super(params.scene, params.x, params.y, params.key, params.frame);
@@ -298,7 +303,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
                 //sound.play("springSound");
 
                 //this.springTime = gameTime + 1000;
-            //}        
+            //}        f
         //}
     }
 
@@ -313,6 +318,108 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         //sound.play("springSound");
     }
 
+    tryFireBullet(gameTime: number, playerX: number, playerY: number, sound: string): void {
+        
+        if(gameTime > this.bulletTime) {
+
+            var velocityX = 0;
+            var velocityY = 0;
+
+            var body = <Phaser.Physics.Arcade.Body>this.body;
+            var sourceX = body.center.x;
+            var sourceY = body.center.y;
+
+            var direction = Math.atan2(playerY-sourceY, playerX-sourceX);
+
+            // Calculate X and y velocity of bullet to moves it from shooter to target
+            
+            //if (playerX >= sourceX) {
+                velocityX = this.bulletSpeed*Math.cos(direction);    
+            //}
+            //else {
+                //velocityX = -this.bulletSpeed*Math.cos(direction);
+            //}
+            //if (playerY >= sourceY) {
+                velocityY = this.bulletSpeed*Math.sin(direction);
+            //}
+            //else {
+                //velocityY = -this.bulletSpeed*Math.sin(direction);
+            //}
+            var bullet = this.createBullet(velocityX, velocityY);
+            this.bulletTime = gameTime + this.bulletTimeInterval;
+        }
+        //this.currentWeapon.currentAmmo--;
+        
+        //sound.play(this.currentWeaponSoundName);
+        //this.scene.events.emit("weaponFired", this.currentWeapon.currentAmmo);
+
+        /*
+        var socket = this.getSocket();
+        //socket.emit('playerMovement', new PlayerOnServer(50, 50, socket.id));//{ x: player.x, y: player.y });
+        if(socket != null) {
+            // sends back to server
+            socket.emit('newBullet', bullet);
+        }
+        
+        //if(this.ammoCount < 3) 
+            //this.scene.sound.play("lowAmmoSound");            
+
+        if(this.currentWeapon.currentAmmo == 0) {
+            this.playerGun.alpha = 0.0;
+            this.scene.sound.play("noAmmoSound");
+        }*/            
+    }
+
+    private createBullet(velocityX: number, velocityY: number) : Bullet {
+
+        var body = <Phaser.Physics.Arcade.Body>this.body;
+
+        //var velocityX: number;
+
+        //velocityY
+        //if(this.flipX)
+            //velocityX = -this.playerBulletVelocityX
+        //else
+            //velocityX = this.playerBulletVelocityX;
+
+        var bullet = new Bullet({
+            scene: this.scene,
+            x: body.center.x, //+ this.playerBulletOffsetX(),
+            y: body.center.y, //+ this.getBulletOffsetY(),
+            key: "playerGunLaser1",//this.currentWeaponBulletName,
+            flipX: this.flipX,
+            damage: 1,//this.currentWeaponDamage,
+            velocityX: velocityX,
+            velocityY: velocityY
+        });
+        bullet.init();
+        //this.scene.physics.moveToObject(bullet, scene.player, 150);
+
+        let scene = <MainScene>this.scene;
+        scene.enemyBullets.add(bullet);
+
+        return bullet;
+
+        /*
+        if (this.flipX) {
+            var bullet = this.bullets
+                .create(body.x, body.y + this.getBulletOffsetY(), this.currentWeaponBulletName)
+                .setFlipX(true)
+                .body.setVelocityX(-this.playerBulletVelocityX)
+                .setVelocityY(0);
+
+            //bullet.damage = 4;
+        }
+        else {
+            var bullet = this.bullets
+                .create(body.x + Player.playerBulletOffsetX, body.y + this.getBulletOffsetY(), this.currentWeaponBulletName)
+                .body.setVelocityX(this.playerBulletVelocityX)
+                .setVelocityY(0);
+
+            //bullet.damage = 4;
+        }
+        */
+    }
 
     /*
     tryJump(sound): void {
@@ -383,6 +490,11 @@ export class Enemy extends Phaser.GameObjects.Sprite {
                         var randJump = Math.random() < 0.02;
                         if(randJump)
                             this.tryJump();
+
+                        var randFireBullet = Math.random() < 0.05;
+                        if(randFireBullet)
+                            this.tryFireBullet(scene.sys.game.loop.time, playerX, playerY, "");
+                            
                         
                         if(playerX < this.x) {
                             var tileAtEnemyPosition = scene.world.getLayer02().getTileAtWorldXY(body.x - body.width, body.y + body.height * 0.8, true, null);
@@ -461,7 +573,10 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
             if(this.jumpTime > 0) {
                 this.jumpTime--;
-            }    
+            }  
+            
+            if(this.bulletTime > 0)
+                this.bulletTime--;
 
             if(this.health >= 0) {
                 var offsetX = Math.abs(this.bossHealthBar.healthMaxWidthInPixels - this.widthOverride / 2);

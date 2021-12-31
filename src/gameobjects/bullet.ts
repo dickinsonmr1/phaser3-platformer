@@ -10,6 +10,7 @@ export class Bullet extends Phaser.GameObjects.Sprite {
 
     public damage: number;
     public velocityX: number;
+    public velocityY: number;
     public bulletId: uuidv4;
 
     constructor(params)
@@ -23,6 +24,10 @@ export class Bullet extends Phaser.GameObjects.Sprite {
         this.flipX = params.flipX;
         this.damage = params.damage;       
         this.velocityX = params.velocityX;
+        if(params.velocityY != null)
+            this.velocityY = params.velocityY;
+        else   
+            this.velocityY = 0;
 
         this.scene.physics.world.enable(this);
        
@@ -44,7 +49,7 @@ export class Bullet extends Phaser.GameObjects.Sprite {
 
         var body = <Phaser.Physics.Arcade.Body>this.body;
         body.setVelocityX(this.velocityX);
-        body.setVelocityY(0);
+        body.setVelocityY(this.velocityY);
         
         /*
         console.log('bulletMovement');

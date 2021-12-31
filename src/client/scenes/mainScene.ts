@@ -40,6 +40,7 @@ export class MainScene extends Phaser.Scene {
     public otherBullets: Phaser.GameObjects.Group;//<Bullet>;
 
     enemies: Array<Phaser.GameObjects.Sprite>;
+    enemyBullets: Phaser.GameObjects.Group;
 
     springs: Array<Phaser.GameObjects.Sprite>;
     flags: Array<Phaser.GameObjects.Sprite>;
@@ -229,6 +230,11 @@ export class MainScene extends Phaser.Scene {
                 
         this.enemies = new Array<Phaser.GameObjects.Sprite>();
 
+        this.enemyBullets = this.physics.add.group({
+            allowGravity: false
+        })
+        this.enemyBullets.setDepth(Constants.depthBullets);
+
         this.expiringMessagesComponent = new ExpiringMessagesComponent(this);
         this.expiringMessagesComponent.init();
         
@@ -384,8 +390,9 @@ export class MainScene extends Phaser.Scene {
             }
         }
         */
+        var playerBody = <Phaser.Physics.Arcade.Body>this.player.body;
 
-        this.enemies.forEach(enemy => { enemy.update(this.player.body.position.x, this.player.body.position.y) });
+        this.enemies.forEach(enemy => { enemy.update(playerBody.center.x, playerBody.center.y) });
         this.springs.forEach(spring => { spring.update(); });
         this.portals.forEach(portal => { portal.update(); });
     }
