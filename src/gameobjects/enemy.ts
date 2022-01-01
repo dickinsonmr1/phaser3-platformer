@@ -268,24 +268,26 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     }
 
     tryDamage(damage: number) {
-        this.health -= damage;
-        this.hurtTime = 60;
+        if(this.hurtTime == 0) {
+            this.health -= damage;
+            this.hurtTime = 60;
 
-        this.bossHealthBar.updateHealth(this.health);
+            this.bossHealthBar.updateHealth(this.health);
 
-        if(this.health <= 0) {
-            this.scene.sound.play("enemyDeathSound");
-            
-            var scene = <MainScene>this.scene;
-            scene.player.enemiesKilled++;
+            if(this.health <= 0) {
+                this.scene.sound.play("enemyDeathSound");
+                
+                var scene = <MainScene>this.scene;
+                scene.player.enemiesKilled++;
 
-            this.bossHealthBar.hide();
-            this.bossHealthBar.destroy();
+                this.bossHealthBar.hide();
+                this.bossHealthBar.destroy();
 
-            this.bossNameText.destroy();
-            this.destroy();       
-            //this.anims.play(this.deadAnim, true);
-            //var body = <Phaser.Physics.Arcade.Body>this.body;            
+                this.bossNameText.destroy();
+                this.destroy();       
+                //this.anims.play(this.deadAnim, true);
+                //var body = <Phaser.Physics.Arcade.Body>this.body;            
+            }
         }
     }
 
@@ -299,7 +301,8 @@ export class Enemy extends Phaser.GameObjects.Sprite {
                         //if(springSound.)
                         //if (tile.alpha > 0) {
                 body.setVelocityY(-650);
-                this.anims.play(this.jumpAnim, true);
+                if(this.jumpAnim != null)
+                    this.anims.play(this.jumpAnim, true);
                 //sound.play("springSound");
 
                 //this.springTime = gameTime + 1000;

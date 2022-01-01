@@ -629,7 +629,7 @@ export class MainScene extends Phaser.Scene {
         var scene = <MainScene>enemy.getScene();
 
         if(scene.player.isInSpaceship) {
-            var damageToEnemy = 1000;
+            var damageToEnemy = 200;
             scene.sound.play("enemyHurtSound");
            
             scene.addExpiringText(scene, enemy.x, enemy.y, damageToEnemy.toString())
@@ -731,6 +731,61 @@ export class MainScene extends Phaser.Scene {
                 socket.emit('bulletDestruction', {bulletId: bullet.bulletId});                
             }
         }
+
+        bullet.destroy();
+    }
+
+    enemyBulletsTouchingPlayerHandler(player: any, bullet: any): void {                
+        var scene = <MainScene>player.getScene();
+        scene.weaponHitParticleEmitter.explode(10, player.x, player.y);
+        
+        player.tryDamage();
+        //var damage = bullet.damage;
+        //scene.addExpiringText(scene, enemy.x, enemy.y, damage.toString())
+        
+        /*
+        enemy.tryDamage(damage);
+        scene.player.score += damage;
+
+        scene.sound.play("enemyHurtSound");
+        
+        if(this.isMultiplayer) {
+            var socket = scene.getSocket();        
+            if(socket != null) {
+                // sends back to server
+                socket.emit('bulletDestruction', {bulletId: bullet.bulletId});                
+            }
+        }
+        */
+
+        bullet.destroy();
+    }
+
+    
+    enemyBulletsTouchingSpaceshipHandler(spaceship: any, bullet: any): void {                
+        
+        var ship = <Spaceship>spaceship;
+        var scene = <MainScene>ship.getScene();
+        scene.weaponHitParticleEmitter.explode(10, ship.x, ship.y);
+                
+        var damage = bullet.damage;
+        ship.tryDamage(damage);
+        //scene.addExpiringText(scene, enemy.x, enemy.y, damage.toString())
+        
+        /*
+        enemy.tryDamage(damage);
+        scene.player.score += damage;
+
+        scene.sound.play("enemyHurtSound");
+        
+        if(this.isMultiplayer) {
+            var socket = scene.getSocket();        
+            if(socket != null) {
+                // sends back to server
+                socket.emit('bulletDestruction', {bulletId: bullet.bulletId});                
+            }
+        }
+        */
 
         bullet.destroy();
     }
